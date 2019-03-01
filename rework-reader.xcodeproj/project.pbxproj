@@ -45,6 +45,7 @@
 		D473F29F22278B4900DF3C6D /* MWPhotoBrowser.bundle in Resources */ = {isa = PBXBuildFile; fileRef = D473F29E22278B4900DF3C6D /* MWPhotoBrowser.bundle */; };
 		D473F2A32227DAD200DF3C6D /* RRTableOutput.m in Sources */ = {isa = PBXBuildFile; fileRef = D473F2A22227DAD200DF3C6D /* RRTableOutput.m */; };
 		D473F2A6222817F000DF3C6D /* Reader 版本.md in Resources */ = {isa = PBXBuildFile; fileRef = D473F2A5222817F000DF3C6D /* Reader 版本.md */; };
+		D473F2C4222970C000DF3C6D /* style_one.plist in Resources */ = {isa = PBXBuildFile; fileRef = D473F2C3222970C000DF3C6D /* style_one.plist */; };
 		D47717D821ED90CF0050DF14 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = D47717D721ED90CF0050DF14 /* AppDelegate.m */; };
 		D47717DE21ED90CF0050DF14 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = D47717DC21ED90CF0050DF14 /* Main.storyboard */; };
 		D47717E021ED90D00050DF14 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = D47717DF21ED90D00050DF14 /* Assets.xcassets */; };
@@ -180,6 +181,7 @@
 		D473F2A22227DAD200DF3C6D /* RRTableOutput.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RRTableOutput.m; sourceTree = "<group>"; };
 		D473F2A42227DBB200DF3C6D /* RRCanEditProtocol.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RRCanEditProtocol.h; sourceTree = "<group>"; };
 		D473F2A5222817F000DF3C6D /* Reader 版本.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = "Reader 版本.md"; sourceTree = "<group>"; };
+		D473F2C3222970C000DF3C6D /* style_one.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = style_one.plist; sourceTree = "<group>"; };
 		D47717D321ED90CF0050DF14 /* rework-reader.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "rework-reader.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		D47717D621ED90CF0050DF14 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		D47717D721ED90CF0050DF14 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
@@ -597,6 +599,7 @@
 			children = (
 				D499418621FC9AB10041B998 /* style.plist */,
 				D49941C521FE241C0041B998 /* style2.plist */,
+				D473F2C3222970C000DF3C6D /* style_one.plist */,
 			);
 			path = Defaults;
 			sourceTree = "<group>";
@@ -891,6 +894,7 @@
 				D48456302213E6D200202401 /* 什么是RSS.md in Resources */,
 				D499418A21FC9AB10041B998 /* style.plist in Resources */,
 				D49941C621FE241C0041B998 /* style2.plist in Resources */,
+				D473F2C4222970C000DF3C6D /* style_one.plist in Resources */,
 				D440CFE422154DB0003B7203 /* RRFeedInfoCell.xib in Resources */,
 				D4AC4DF8221821150028D342 /* h.js in Resources */,
 				D4E0F9092213C47400902540 /* templete.html in Resources */,
