@@ -1,0 +1,25 @@
+{
+    "setting": [
+        {
+            "title": "版本",
+            "value": "1.0",
+            "action": null,
+            "switchkey": null,
+            "select": null
+        },
+        {
+            "title": "关于RSS",
+            "value": null,
+            "action": "action_aboutReader",
+            "switchkey": null,
+            "select": null
+        },
+        {
+            "title": "订阅Reader官方源",
+            "value": null,
+            "action": "action_rssReader",
+            "switchkey": null,
+            "select": null
+        }
+    ]
+}

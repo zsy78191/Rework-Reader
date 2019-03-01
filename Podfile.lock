@@ -1,0 +1,142 @@
+PODS:
+  - ChameleonFramework (2.1.0):
+    - ChameleonFramework/Default (= 2.1.0)
+  - ChameleonFramework/Default (2.1.0)
+  - Classy (1.0.0)
+  - CocoaLumberjack (3.5.1):
+    - CocoaLumberjack/Core (= 3.5.1)
+  - CocoaLumberjack/Core (3.5.1)
+  - DACircularProgress (2.3.1)
+  - DateTools (2.0.0)
+  - DZNEmptyDataSet (1.8.1)
+  - Fork-MWFeedParser (0.0.9)
+  - IQKeyboardManager (6.2.0)
+  - MagicalRecord (2.3.2):
+    - MagicalRecord/Core (= 2.3.2)
+  - MagicalRecord/Core (2.3.2)
+  - Masonry (1.1.0)
+  - MBProgressHUD (0.9.2)
+  - MGJRouter (0.10.0)
+  - MMKV (1.0.17)
+  - mvc-base (0.2.9.2):
+    - DZNEmptyDataSet
+    - MagicalRecord
+    - Masonry
+    - MGJRouter
+    - oc-string
+    - ReactiveObjC
+    - ui-base
+  - MWPhotoBrowser (2.1.2):
+    - DACircularProgress (~> 2.3)
+    - MBProgressHUD (~> 0.9)
+    - "SDWebImage (!= 3.7.2, ~> 3.7)"
+  - oc-base (0.0.4):
+    - MagicalRecord
+    - MGJRouter
+    - ReactiveObjC
+    - RegexKitLite
+    - YYKit
+  - oc-date (0.0.3):
+    - DateTools
+  - oc-string (0.0.3):
+    - RegexKitLite (~> 4.0)
+    - YYKit (~> 1.0.9)
+  - oc-util (0.0.3):
+    - MMKV
+  - pop (1.0.12)
+  - ReactiveObjC (3.1.0)
+  - RegexKitLite (4.0)
+  - SDWebImage (3.8.2):
+    - SDWebImage/Core (= 3.8.2)
+  - SDWebImage/Core (3.8.2)
+  - SVProgressHUD (2.2.5)
+  - ui-base (0.0.8):
+    - ChameleonFramework
+    - Classy
+    - IQKeyboardManager
+    - Masonry
+    - oc-string
+    - pop
+    - SDWebImage
+    - SVProgressHUD (~> 2.2.5)
+    - YYKit
+  - ui-util (0.0.5)
+  - YYKit (1.0.9):
+    - YYKit/no-arc (= 1.0.9)
+  - YYKit/no-arc (1.0.9)
+
+DEPENDENCIES:
+  - CocoaLumberjack
+  - DateTools
+  - Fork-MWFeedParser
+  - mvc-base
+  - MWPhotoBrowser
+  - oc-base
+  - oc-date
+  - oc-string
+  - oc-util
+  - ui-base
+  - ui-util
+
+SPEC REPOS:
+  https://github.com/cocoapods/specs.git:
+    - ChameleonFramework
+    - Classy
+    - CocoaLumberjack
+    - DACircularProgress
+    - DateTools
+    - DZNEmptyDataSet
+    - Fork-MWFeedParser
+    - IQKeyboardManager
+    - MagicalRecord
+    - Masonry
+    - MBProgressHUD
+    - MGJRouter
+    - MMKV
+    - mvc-base
+    - MWPhotoBrowser
+    - oc-base
+    - oc-date
+    - oc-string
+    - oc-util
+    - pop
+    - ReactiveObjC
+    - RegexKitLite
+    - SDWebImage
+    - SVProgressHUD
+    - ui-base
+    - ui-util
+    - YYKit
+
+SPEC CHECKSUMS:
+  ChameleonFramework: d21a3cc247abfe5e37609a283a8238b03575cf64
+  Classy: bbe2436d6872dfeda5eaa2a3c3d705a9c30b1709
+  CocoaLumberjack: 2101f8a5508197a305e737d16c5c2e9e2157628c
+  DACircularProgress: 4dd437c0fc3da5161cb289e07ac449493d41db71
+  DateTools: 933ac9c490f21f92127cf690ccd8c397e0126caf
+  DZNEmptyDataSet: 9525833b9e68ac21c30253e1d3d7076cc828eaa7
+  Fork-MWFeedParser: b0a94c36969ee5cd1057b15b51ceae5bf139a6ff
+  IQKeyboardManager: 6194101620b73af5e67900b8f89707a99de0b804
+  MagicalRecord: 53bed74b4323b930992a725be713e53b37d19755
+  Masonry: 678fab65091a9290e40e2832a55e7ab731aad201
+  MBProgressHUD: 1569cf7ace17a8bac47aabfbb8580a49690386d1
+  MGJRouter: 15d94541eb2cc81eff7d577337288feb7ae9575f
+  MMKV: 890ba85ecf1d05546ed2c4d29fe618dbf92e3cf4
+  mvc-base: 91e8c5c5020ae2d9341f1d94e890330d6f125cd0
+  MWPhotoBrowser: 5836d7aa041dc05a13de380c246826578adc5ea5
+  oc-base: b0cc5eeae853acdf1b35d3f954ed8023fa37a74c
+  oc-date: d8601fcc9eeea98f9d84506b77ef508cf9057786
+  oc-string: 79be9e8e4c80dd3e668690d3ac462e79a713489d
+  oc-util: 8e423d4c1da426e4989b4f793468276f89fc0843
+  pop: d582054913807fd11fd50bfe6a539d91c7e1a55a
+  ReactiveObjC: 2a38ea15335de4119d8b17caf1db1484f61db902
+  RegexKitLite: c0e4c12e6e7de0769f3a3ed679f0f61604170661
+  SDWebImage: 098e97e6176540799c27e804c96653ee0833d13c
+  SVProgressHUD: 1428aafac632c1f86f62aa4243ec12008d7a51d6
+  ui-base: 4c397f9d295df2794bf99b3b253910c7bf53fdae
+  ui-util: 8f870cfb52b611516279bd0bf362ee2fac34d42d
+  YYKit: 7cda43304a8dc3696c449041e2cb3107b4e236e7
+
+PODFILE CHECKSUM: bd733bcac863e082bed8f1af03ab7ef7a045b240
+
+COCOAPODS: 1.6.0

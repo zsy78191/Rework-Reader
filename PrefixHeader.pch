@@ -1,0 +1,21 @@
+//
+//  PrefixHeader.pch
+//  rework-reader
+//
+//  Created by 张超 on 2019/1/26.
+//  Copyright © 2019 orzer. All rights reserved.
+//
+
+#ifndef PrefixHeader_pch
+#define PrefixHeader_pch
+
+// Include any system framework and library headers here that should be included in all compilation units.
+// You will also need to set the Prefix Header build setting of one or more of your targets to reference this file.
+@import CocoaLumberjack;
+#ifdef DEBUG
+static const int ddLogLevel = DDLogLevelVerbose;
+#else
+static const int ddLogLevel = DDLogLevelOff;
+#endif
+
+#endif /* PrefixHeader_pch */

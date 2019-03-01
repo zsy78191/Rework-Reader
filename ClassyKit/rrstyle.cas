@@ -1,0 +1,74 @@
+
+@import "style.cas";
+
+UIButton {
+    title-text-attributes: @{
+        font: $main-font $main-font-size
+    }
+}
+
+^UITableViewCell > ^UIView > ^UISwitch {
+    onTintColor $main-tint-color
+}
+
+^UITableViewCell > ^UIView > UILabel.MainLabel {
+    font $main-font $main-font-size
+}
+
+^UITableViewCell > ^UIView > UITextField.Input {
+    font $main-font $main-font-size
+    text-color $main-tint-color
+    tint-color $main-tint-color
+}
+
+^UITableViewCell > ^UIView > UILabel.BtnLabel{
+    font $main-font $main-font-size
+    text-color $main-tint-color
+}
+
+
+^UITableViewCell > ^UIView > UILabel.SubLabel {
+    font $main-font $sub-font-size
+    text-color $main-tint-color
+}
+
+^UITableViewCell > ^UIView > UILabel.DateLabel {
+    font $main-font 14
+    text-color $sub-text-color
+}
+
+
+
+^UITableViewCell > ^UIView.TitleContentView {
+    backgroundColor $bar-tint-color
+}
+
+UIProgressView {
+    progressTintColor $main-tint-color
+}
+
+UILabel.TipLabel {
+    font $main-font 14
+    text-color $sub-text-color
+}
+
+UIView.statuCover {
+    backgroundColor $bar-tint-color
+}
+
+
+UILabel.ArticleSubLabel{
+    font $main-font 14
+    text-color $sub-text-color
+}
+
+UILabel.ToastLabel{
+    font $main-font $main-font-size
+    text-color white
+}
+
+
+UIToolbar.PhotoToolBar{
+    barTintColor black
+    tintColor white
+}

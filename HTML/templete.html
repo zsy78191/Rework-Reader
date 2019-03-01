@@ -1,0 +1,101 @@
+<!DOCTYPE html><html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no">
+    <title><#title#></title>
+<#latex#>
+<#mardownjs#>
+<link rel="stylesheet" href="style1.css" type="text/css" />
+<style> @media print{ .hljs{overflow: visible; word-wrap: break-word !important;} }</style>
+<script>
+    var imgs = document.getElementsByTagName('img');
+    for(var i = 0 ; i < imgs.length ; i ++ )
+    {
+        var img = imgs[i];
+        if (img.src.length == 0) {
+            if (img.dataset.original.length != 0) {
+                img.src = img.dataset.original;
+            }
+        }
+        img.dataset.src = img.src;
+        img.src = "load.jpg";
+    }
+</script>
+
+</head>
+
+<body>
+    <div id="markdown-body" class="markdown-body">
+        <div onclick="window.open('<#url#>');">
+            <h1>
+                <#title#>
+            </h1>
+            <p class="article_time"><#subtitle#><span class="btn_origin">点击标题阅读原文</span></p>
+                </div>
+ <#html#>
+</div></body>
+<script>
+    if(<#useMarkdown#>)
+    {
+        <#markdownhtml#>
+    }
+    else {
+     
+    }
+
+    var iframes = document.getElementsByTagName('iframe');
+    for(var i = 0 ; i < iframes.length ; i ++ )
+    {
+        var d = iframes[i];
+        d.style.width = "100%";
+        d.style.height = "auto";
+    }
+
+    var images = new Array;
+ 
+    var clickIndex = 0;
+    var imgs = document.getElementsByTagName('img');
+    for(var i = 0 ; i < imgs.length ; i ++ )
+    {
+        var img = imgs[i];
+        if (img.src.length == 0) {
+            if (img.dataset.original.length != 0) {
+                img.src = img.dataset.original;
+            }
+        }
+        
+        if (img.parentNode.nodeName == "A")
+        {
+            img.parentNode.classList.add("aimg");
+        }
+        
+        images.push(img.getAttribute("src"));
+        (function (){
+            var p = i;
+            clickIndex = i;
+            if(img.parentNode.nodeName != "A")
+            {
+                img.onclick = function(){
+                    alert("openimage:"+ p);
+                };
+            }
+         })();
+    }
+
+    function removeInlineCss(name)
+    {
+        var spans = document.getElementsByTagName(name);
+        for(var i in spans)
+        {
+            spans[i].style.cssText = "";
+        }
+    }
+    removeInlineCss("span");
+    removeInlineCss("p");
+    removeInlineCss("div");
+    removeInlineCss("a");
+    removeInlineCss("img");
+    
+</script>
+<#highlight#>
+</html>
