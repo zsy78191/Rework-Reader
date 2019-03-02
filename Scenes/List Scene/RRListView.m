@@ -31,8 +31,8 @@
     if ([m isKindOfClass:[RRFeedInfoListModel class]]) {
         RRFeedInfoListModel* mm = m;
         
-        UIBarButtonItem* item = [self mvp_buttonItemWithSystem:UIBarButtonSystemItemTrash actionName:@"deleteIt" title:@"删除"];
-        UIBarButtonItem* item2 = [self mvp_buttonItemWithActionName:@"configit" title:@"设置"];
+        UIBarButtonItem* item = [self mvp_buttonItemWithSystem:UIBarButtonSystemItemTrash actionName:@"deleteIt:" title:@"删除"];
+        UIBarButtonItem* item2 = [self mvp_buttonItemWithActionName:@"configit:" title:@"设置"];
  
         self.navigationItem.rightBarButtonItems = @[item2,item];
         
@@ -73,6 +73,13 @@
     [self.navigationController setToolbarHidden:NO animated:animated];
 }
 
+- (void)viewDidAppear:(BOOL)animated
+{
+    [super viewDidAppear:animated];
+    if ([self.presenter respondsToSelector:@selector(viewDidAppear:)]) {
+        [(id)self.presenter viewDidAppear:animated];
+    }
+}
 
 - (Class)mvp_presenterClass
 {

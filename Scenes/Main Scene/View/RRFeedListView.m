@@ -70,6 +70,8 @@
     self.toolbarItems = @[space,bAddRss];
     
     self.navigationItem.backBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"返回" style:1 target:nil action:nil];
+    
+    
 }
 
 - (void)motionBegan:(UIEventSubtype)motion withEvent:(UIEvent *)event

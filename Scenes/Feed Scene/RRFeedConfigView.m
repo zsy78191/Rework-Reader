@@ -15,6 +15,7 @@
 }
 @property (nonatomic, assign) BOOL isLoading;
 @property (nonatomic, assign) BOOL canceled;
+@property (nonatomic, assign) BOOL feeded;
 @end
 
 @implementation RRFeedConfigView
@@ -59,13 +60,32 @@
     UIBarButtonItem* item = [self mvp_buttonItemWithActionName:@"feedit" title:@"订阅"];
     UIBarButtonItem* sp = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
     self.toolbarItems = @[sp,item];
+    self.feeded = NO;
 }
 
 - (void)showDissubcribeButton
 {
-    UIBarButtonItem* item = [self mvp_buttonItemWithActionName:@"unfeedit" title:@"取消订阅"];
+    UIBarButtonItem* item = [self mvp_buttonItemWithActionName:@"unfeedit:" title:@"取消订阅"];
     UIBarButtonItem* sp = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
     self.toolbarItems = @[sp,item];
+    self.feeded = YES;
+}
+
+- (BOOL)navigationShouldPopOnBackButton
+{
+    if (self.feeded) {
+        return YES;
+    }
+    
+    UIAlertController* a = [self alert:@"是否放弃订阅？" recommend:@"继续订阅" action:nil cancel:@"放弃" block:^(NSInteger idx, __kindof UIViewController *vc) {
+//        NSLog(@"%@",@(idx));
+        if (idx == 0) {
+            [[vc navigationController] popViewControllerAnimated:YES];
+        }
+    }];
+    a.show(self);
+    
+    return NO;
 }
 
 - (void)loadData:(id)data

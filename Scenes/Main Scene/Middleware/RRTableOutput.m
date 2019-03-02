@@ -55,10 +55,18 @@
         
         id model = [self.inputer mvp_modelAtIndexPath:indexPath];
         if ([model isKindOfClass:[RRFeedInfoListModel class]]) {
+            
             RRFeedInfoListModel* m = model;
             __weak typeof(self) weakSelf = self;
-            [RRFeedAction delFeed:m.feed view:(id)self.presenter.view finish:^{
-                [(id)weakSelf.presenter loadData];
+            
+            CGRect r = [tableView rectForRowAtIndexPath:indexPath];
+            r = [tableView convertRect:r toView:nil];
+            r.origin.x += 0.9 * r.size.width;
+            r.origin.y += 0.5 * r.size.height;
+            r.size.width = 0;
+            r.size.height = 0;
+            [RRFeedAction delFeed:m.feed view:(id)self.presenter.view rect:r arrow:UIPopoverArrowDirectionRight finish:^{
+                 [(id)weakSelf.presenter loadData];
             }];
         }
     }

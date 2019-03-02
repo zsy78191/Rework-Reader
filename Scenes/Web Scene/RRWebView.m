@@ -442,7 +442,7 @@
         [self preloadData:m feed:feedInfo];
         self.showToolbar = YES;
         
-        UIBarButtonItem* rb = [self mvp_buttonItemWithSystem:UIBarButtonSystemItemAction actionName:@"openAction" title:@"更多操作"];
+        UIBarButtonItem* rb = [self mvp_buttonItemWithSystem:UIBarButtonSystemItemAction actionName:@"openAction:" title:@"更多操作"];
         
         self.navigationItem.rightBarButtonItem = rb;
         
