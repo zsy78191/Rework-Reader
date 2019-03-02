@@ -68,7 +68,7 @@
         o.feedURL = [NSURL URLWithString:url];
         o.title = name;
         o.netWorkQuene = quene;
-        o.timeout = 8;
+        o.timeout = 16;
         return o;
     };
     

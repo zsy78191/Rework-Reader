@@ -46,6 +46,9 @@
         if (m.placeholder) {
             self.inputField.placeholder = m.placeholder;
         }
+        if (m.value) {
+            self.inputField.text = m.value;
+        }
         
         [self.inputField setClearButtonMode:UITextFieldViewModeWhileEditing];
         switch (m.inputType) {

@@ -56,13 +56,15 @@
 
 - (void)viewWillAppear:(BOOL)animated
 {
+    
+}
+
+- (void)viewDidAppear:(BOOL)animated
+{
     [self.hashTable removeAllObjects];
-//    NSArray* a = self.inputerCoreData.allModels;
-//    [a enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
-//        [self.hashTable addObject:obj];
-//    }];
     [self.hashTable addObjectsFromArray:self.inputerCoreData.allModels];
 }
+
 
 - (RRFeedInfoInputer *)inputer
 {
@@ -106,15 +108,23 @@
     }
 }
 
-- (void)deleteIt
+- (void)deleteIt:(id)sender
 {
+    UIBarButtonItem* i = sender;
+    CGRect r =({
+        CGRect r = [[i valueForKeyPath:@"view.superview.frame"] CGRectValue];
+        r.origin.x -= r.size.width/4;
+        r.origin.y += r.size.height/2;
+        r;
+    });
+  
     __weak typeof(self) weakSelf = self;
-    [RRFeedAction delFeed:self.infoModel.feed view:(id)self.view finish:^{
-         [(id)weakSelf.view mvp_popViewController:nil];
+    [RRFeedAction delFeed:self.infoModel.feed view:(id)self.view rect:r arrow:UIPopoverArrowDirectionUp finish:^{
+        [(id)weakSelf.view mvp_popViewController:nil];
     }];
 }
 
-- (void)deleteIt2
+- (void)deleteIt2:(id)sender
 {
     NSSet* s = [self.infoModel.feed.articles filteredSetUsingPredicate:[NSPredicate predicateWithFormat:@"liked = YES"]];
     NSString* m = [NSString stringWithFormat:@"共有%ld篇文章",self.infoModel.feed.articles.count];
@@ -132,6 +142,8 @@
         [self delFeedInfo:self.infoModel.feed];
     })
     .show((id)self.view);
+    
+    
 }
 
 - (void)delFeedInfo:(EntityFeedInfo*)info
@@ -419,15 +431,23 @@
     }];
 }
 
-- (void)configit
+- (void)configit:(id)sender
 {
     EntityFeedInfo* feed = self.infoModel.feed;
     BOOL usetll = feed.usettl;
     BOOL useauto = feed.useautoupdate;
     BOOL usesafari = feed.usesafari;
     
+    UIBarButtonItem* i = sender;
+    CGRect r =({
+        CGRect r = [[i valueForKeyPath:@"view.superview.frame"] CGRectValue];
+        r.origin.x -= r.size.width/4;
+        r.origin.y += r.size.height/2;
+        r;
+    });
+    
     __weak typeof(self) weakSelf = self;
-    UI_ActionSheet()
+    UIAlertController* a = UI_ActionSheet()
     .titled(@"设置")
     .recommend(@"修改标题", ^(UIAlertAction * _Nonnull action, UIAlertController * _Nonnull alert) {
         UI_Alert()
@@ -467,8 +487,15 @@
     })
     .cancel(@"取消", ^(UIAlertAction * _Nonnull action) {
         
-    })
-    .show((id)self.view);
+    });
+    
+    if ([UIDevice currentDevice].iPad()) {
+        [[self view] showAsProver:a view:[(UIViewController*)self.view view] rect:r arrow:UIPopoverArrowDirectionUp];
+    }
+    else {
+        a.show((id)self.view);
+    }
+    
     
 }
 

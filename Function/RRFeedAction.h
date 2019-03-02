@@ -21,7 +21,7 @@ NS_ASSUME_NONNULL_BEGIN
 + (void)recordArticle:(NSString*)articleUUID position:(CGFloat)position;
 + (CGFloat)loadPositionWithArticle:(NSString*)articleUUID;
 
-+ (void)delFeed:(EntityFeedInfo*)info view:(UIViewController*)view finish:(void (^)(void))finishBlock;
++ (void)delFeed:(EntityFeedInfo*)info view:(UIViewController*)view rect:(CGRect)rect arrow:(UIPopoverArrowDirection)arrow finish:(void (^)(void))finishBlock;
 
 @end
 

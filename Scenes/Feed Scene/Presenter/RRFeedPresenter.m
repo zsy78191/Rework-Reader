@@ -328,7 +328,7 @@
     [self.view mvp_pushViewController:web];
 }
 
-- (void)unfeedit
+- (void)unfeedit:(id)sender
 {
     if (!self.feedInfo) {
         return;
@@ -336,8 +336,21 @@
     EntityFeedInfo* x = [[RPDataManager sharedManager] getFirst:@"EntityFeedInfo" predicate:nil key:@"url" value:self.feedInfo.url sort:@"sort" asc:YES];
     
     __weak typeof(self) weakSelf = self;
-    [RRFeedAction delFeed:x view:(id)self.view finish:^{
-        weakSelf.cancelFeed = NO;
+    UIBarButtonItem* i = sender;
+    CGRect r =({
+        CGRect r = [[i valueForKeyPath:@"view.frame"] CGRectValue];
+        r.origin.x -= r.size.width/4;
+        r.origin.y += r.size.height/2;
+        r;
+    });
+   
+    r = [[[(UIViewController*)self.view navigationController] toolbar] convertRect:r toView:nil];
+    r.origin.x += r.size.width/2;
+    r.origin.y -= r.size.height;
+    r.size.width = 0;
+    r.size.height = 0;
+    [RRFeedAction delFeed:x view:(id)self.view  rect:r arrow:UIPopoverArrowDirectionDown finish:^{
+         weakSelf.cancelFeed = NO;
     }];
 }
 
