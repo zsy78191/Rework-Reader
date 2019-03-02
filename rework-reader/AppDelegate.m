@@ -24,7 +24,7 @@
 {
     [ClassyKitLoader cleanStyleFiles]; // 删除本地cas文件
     [ClassyKitLoader copyStyleFile]; // 拷贝cas文件
-    [ClassyKitLoader loadWithStyle:@"rrstyle" variables:@"style"]; //加载cas文件
+    [ClassyKitLoader loadWithStyle:@"rrstyle" variables:@"style2"]; //加载cas文件
 }
 
 - (void)preload

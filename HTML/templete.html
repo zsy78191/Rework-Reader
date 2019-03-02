@@ -17,6 +17,10 @@
                 img.src = img.dataset.original;
             }
         }
+        var fdStart = img.src.indexOf("http");
+        if(fdStart == 0) {
+            img.src = "reader" + img.src;
+        }
         img.dataset.src = img.src;
         img.src = "load.jpg";
     }
@@ -30,7 +34,7 @@
             <h1>
                 <#title#>
             </h1>
-            <p class="article_time"><#subtitle#><span class="btn_origin">点击标题阅读原文</span></p>
+            <p class="article_time"><#subtitle#><span class="btn_origin">阅读原文</span></p>
                 </div>
  <#html#>
 </div></body>
@@ -80,6 +84,11 @@
                 };
             }
          })();
+         
+         var fdStart = img.src.indexOf("http");
+         if(fdStart == 0) {
+             img.src = "inner" + img.src;
+         }
     }
 
     function removeInlineCss(name)
@@ -87,7 +96,9 @@
         var spans = document.getElementsByTagName(name);
         for(var i in spans)
         {
-            spans[i].style.cssText = "";
+            if (typeof spans[i].style != "undefined") {
+                spans[i].style.cssText = "";
+            }
         }
     }
     removeInlineCss("span");
@@ -96,6 +107,18 @@
     removeInlineCss("a");
     removeInlineCss("img");
     
+    function setFont(e)
+    {
+        document.getElementsByTagName('body')[0].style.cssText = 'font-family:'+e+',sans-serif !important';
+        document.getElementsByTagName('html')[0].style.cssText = 'font-family:'+e+',sans-serif !important';
+    }
+
+    function setAlign(e)
+    {
+        document.getElementsByTagName('body')[0].style.textAlign = e;
+        document.getElementsByTagName('html')[0].style.textAlign = e;
+    }
+
 </script>
 <#highlight#>
 </html>

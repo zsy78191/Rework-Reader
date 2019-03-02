@@ -55,7 +55,7 @@
     }
 }
 
-- (void)openAction
+- (void)openAction2
 {
     if (self.model) {
         UIActivityViewController* v = [[UIActivityViewController alloc] initWithActivityItems:@[[NSURL URLWithString:self.model.link]] applicationActivities:nil];
@@ -69,7 +69,7 @@
     
 }
 
-- (void)openAction2
+- (void)openAction
 {
     UI_ActionSheet()
     .titled(@"更多操作")

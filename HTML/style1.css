@@ -21,10 +21,12 @@ h1,h2,h3,h4,h5,h6 {
 
 h1 b{
     font-weight: lighter;
+    text-align: left !important;
 }
 
 h2 b{
     font-weight: lighter;
+    text-align: left !important;
 }
 
 h3 b{
@@ -45,10 +47,10 @@ h6 b{
 
 h1,h2{position:relative;padding-top:0.2rem;padding-bottom:0.2rem;margin-bottom:1rem;background:url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACgAAAABCAYAAACsXeyTAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAFUlEQVQIHWNIS0sr/v//PwMMDzY+ADqMahlW4J91AAAAAElFTkSuQmCC') bottom left repeat-x;}
 h2{padding-top:0.8rem;padding-bottom:0.2rem;}
-h1{ font-size: 1.6rem;}
-h2{ font-size: 1.4rem;}
-h3{ font-size: 1.2rem;}
-h4{ font-size: 1.1rem;}
+h1{ font-size: 1.3rem;}
+h2{ font-size: 1.2rem;}
+h3{ font-size: 1.1rem;}
+h4{ font-size: 1.05rem;}
 h5{ font-size: 1.0rem;}
 h6{ font-size: 0.9rem;}
 

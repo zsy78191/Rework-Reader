@@ -21,7 +21,7 @@
 @import RegexKitLite;
 #import "RRFeedAction.h"
 #import "RRPhotoBrowser.h"
-
+@import SDWebImage;
 
 
 @interface RRWebView () <WKUIDelegate,WKNavigationDelegate,UIScrollViewDelegate,MWPhotoBrowserDelegate>
@@ -149,8 +149,15 @@
 {
     if (!_webView) {
         WKWebViewConfiguration* c = [[WKWebViewConfiguration alloc] init];
+        WKUserContentController* u = [[WKUserContentController alloc] init];
+        WKUserScript* s = [[WKUserScript alloc] initWithSource:@"setFont('PingFangSC-Light');setAlign('justify');" injectionTime:WKUserScriptInjectionTimeAtDocumentEnd forMainFrameOnly:NO];
+        [u addUserScript:s];
+        c.userContentController = u;
+        
+        
         [c setDataDetectorTypes:WKDataDetectorTypeAll];
-        [c setURLSchemeHandler:self.hander forURLScheme:@"siyuan"];
+        [c setURLSchemeHandler:self.hander forURLScheme:@"innerhttp"];
+        [c setURLSchemeHandler:self.hander forURLScheme:@"innerhttps"];
 //        [c setURLSchemeHandler:self.hander forURLScheme:@"innerhttps"];
         _webView = [[RRWKWebview alloc] initWithFrame:self.view.bounds configuration:c];
         if (@available(iOS 11, *)) {
@@ -329,6 +336,11 @@
 
 - (void)setProgress:(CGFloat)progress
 {
+    if (progress > 0.8 && self.webView.alpha == 0) {
+        [UIView animateWithDuration:0.8 animations:^{
+            self. webView.alpha = 1;
+        }];
+    }
 //    NSLog(@"1 %f",progress);
     [self.progressView setProgress:progress animated:YES];
     if (self.progressView.alpha == 0) {
@@ -796,6 +808,7 @@
 - (void)webView:(WKWebView *)webView didStartProvisionalNavigation:(WKNavigation *)navigation
 {
 //    [self hudWait:@"加载中"];
+ 
 
 }
 
@@ -815,15 +828,14 @@
             
         }];
     }
+    
     if (self.currentArticle) {
         [RRFeedAction readArticle:self.currentArticle.uuid];
     }
     [self hudDismiss];
     
 //    if(0){
-        [UIView animateWithDuration:0.4 animations:^{
-            webView.alpha = 1;
-        }];
+    
 //    }
     
     [webView evaluateJavaScript:@"document.title;" completionHandler:^(id _Nullable title, NSError * _Nullable error) {

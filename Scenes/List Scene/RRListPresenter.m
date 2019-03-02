@@ -389,6 +389,9 @@
         return nil;
     }
     NSInteger lastidx = x+1;
+    if (lastidx > all.lenght -1) {
+        return nil;
+    }
     id last = [all objectAtIndex:lastidx];
     if ([last isKindOfClass:[RRFeedArticleModel class]] || [last isKindOfClass:[EntityFeedArticle class]]) {
         return last;
