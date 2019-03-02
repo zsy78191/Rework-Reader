@@ -55,13 +55,29 @@
     }
 }
 
-- (void)openAction2
+- (void)openAction:(id)sender
 {
     if (self.model) {
+
         UIActivityViewController* v = [[UIActivityViewController alloc] initWithActivityItems:@[[NSURL URLWithString:self.model.link]] applicationActivities:nil];
-        [self.view mvp_presentViewController:v animated:YES completion:^{
-            
-        }];
+        
+        
+        if ([UIDevice currentDevice].iPad()) {
+            UIPopoverPresentationController* p = v.popoverPresentationController;
+//            [p setSourceRect:r];
+            [p setBarButtonItem:sender];
+//            NSLog(@"%@",v.popoverPresentationController);
+            v.modalPresentationStyle = UIModalPresentationPopover;
+            [[self view] mvp_presentViewController:v animated:YES completion:^{
+                
+            }];
+        }
+        else
+        {
+            [self.view mvp_presentViewController:v animated:YES completion:^{
+                
+            }];
+        }
     }
     else {
         
@@ -69,17 +85,33 @@
     
 }
 
-- (void)openAction
+- (void)openAction2:(id)sender
 {
-    UI_ActionSheet()
+    UIBarButtonItem* i = sender;
+    CGRect r =({
+        CGRect r = [[i valueForKeyPath:@"view.superview.frame"] CGRectValue];
+        r.origin.x -= r.size.width/4;
+        r.origin.y += r.size.height/2;
+        r;
+    });
+    
+    UIAlertController* a = UI_ActionSheet()
     .titled(@"更多操作")
     .action(@"全文HTML输出", ^(UIAlertAction * _Nonnull action, UIAlertController * _Nonnull alert) {
         [self outputHTML];
     })
     .cancel(@"取消", ^(UIAlertAction * _Nonnull action) {
         
-    })
-    .show((id)self.view);
+    });
+    
+    if ([UIDevice currentDevice].iPad()) {
+        [self.view showAsProver:a view:[(id)self.view view] rect:r arrow:UIPopoverArrowDirectionUp];
+    }
+    else
+    {
+        a.show((id)self.view);
+    }
+    
 }
 
 - (WKWebView*)webView

@@ -58,8 +58,11 @@
 + (NSInteger)exist:(id)obj feed:(EntityFeedInfo*)info;
 {
     RRFeedArticleModel* m = obj;
-    NSPredicate * p = [NSPredicate predicateWithFormat:@"feed.uuid = %@ and link = %@ and title = %@",info.uuid,m.link,m.title];
+    
+    // FIXED: 这里很奇怪，判断条件顺序变化，会导致结果变化
+    NSPredicate * p = [NSPredicate predicateWithFormat:@"title = %@ and link = %@ and feed.uuid = %@",m.title,m.link,info.uuid];
     NSNumber* c = [[RPDataManager sharedManager] getCount:@"EntityFeedArticle" predicate:p key:nil value:nil sort:nil asc:YES];
+//    id x = [[RPDataManager sharedManager] getFirst:@"EntityFeedArticle" predicate:p key:nil value:nil sort:nil asc:YES];
     return [c integerValue];
 }
 
@@ -70,7 +73,7 @@
         NSMutableArray* ps = [[obj ob_propertys] mutableCopy];
         [ps removeObject:@"feedEntity"];
         
-        NSLog(@"%@",obj);
+//        NSLog(@"%@",obj);
         NSUInteger i = [[self class] exist:obj feed:info];
         if (i == 0) {
             c++;
@@ -133,7 +136,7 @@
     return [MVCKeyValue getFloatforKey:key];
 }
 
-+ (void)delFeed:(EntityFeedInfo*)info view:(UIViewController*)view finish:(void (^)(void))finishBlock;
++ (void)delFeed:(EntityFeedInfo*)info view:(nonnull UIViewController *)view rect:(CGRect)rect arrow:(UIPopoverArrowDirection)arrow finish:(nonnull void (^)(void))finishBlock
 {
     NSSet* s = [info.articles filteredSetUsingPredicate:[NSPredicate predicateWithFormat:@"liked = YES"]];
     NSString* m = [NSString stringWithFormat:@"共有%ld篇文章",info.articles.count];
@@ -141,6 +144,7 @@
         m = [NSString stringWithFormat:@"共有%ld篇文章，其中有%ld篇收藏不会删除",info.articles.count,s.count];
     }
     
+    UIAlertController* alert =
     UI_ActionSheet()
     .titled([NSString stringWithFormat:@"确认删除「%@」?",info.title])
     .descripted(m)
@@ -149,8 +153,14 @@
     })
     .recommend(@"删除", ^(UIAlertAction * _Nonnull action, UIAlertController * _Nonnull alert) {
         [RRFeedAction delFeedInfo:info view:view finish:finishBlock];
-    })
-    .show(view);
+    });
+    
+    if ([UIDevice currentDevice].iPad()) {
+        [view showAsProver:alert view:view.view rect:rect arrow:arrow];
+    }
+    else {
+        alert.show(view);
+    }
 }
 
 + (void)delFeedInfo:(EntityFeedInfo*)info view:(UIViewController*)view  finish:(void (^)(void))finishBlock;
