@@ -23,6 +23,9 @@ NS_ASSUME_NONNULL_BEGIN
 
 + (void)delFeed:(EntityFeedInfo*)info view:(UIViewController*)view rect:(CGRect)rect arrow:(UIPopoverArrowDirection)arrow finish:(void (^)(void))finishBlock;
 
++ (void)preloadImages:(NSString*)uuid;
++ (void)preloadEntityImages:(EntityFeedArticle*)article;
+
 @end
 
 NS_ASSUME_NONNULL_END

@@ -8,6 +8,7 @@
 
 #import "RRSwitchCell.h"
 #import "RRFeedInfoModel.h"
+#import "RRModelItem.h"
 
 @interface RRSwitchCell ()
 {
@@ -33,11 +34,18 @@
 - (void)loadModel:(id<MVPModelProtocol>)model
 {
     [super loadModel:model];
-    RRFeedInfoModel* m = model;
-    self.titleLabel.text = m.title;
-//    self.subLabel.text = m.value;
-//    self.opener.on = [m.switchValue boolValue];
-    [self mvp_bindModel:model withProperties:@[@"switchValue",@"value"]];
+    if ([model isKindOfClass:[RRFeedInfoModel class]]) {
+        RRFeedInfoModel* m = model;
+        self.titleLabel.text = m.title;
+        
+        [self mvp_bindModel:model withProperties:@[@"switchValue",@"value"]];
+    }
+    else if([model isKindOfClass:[RRSetting class]])
+    {
+        RRSetting* s = model;
+        self.titleLabel.text = s.title;
+        [self mvp_bindModel:s withProperties:@[@"switchValue",@"value"]];
+    }
 }
 
 - (void)mvp_value:(id)value updateForKeypath:(NSString *)keypath
@@ -58,7 +66,14 @@
 
 - (void)actionSwitch:(UISwitch*)sender
 {
-    RRFeedInfoModel* m = self.model;
-    m.switchValue = @(sender.on);
+    if ([self.model isKindOfClass:[RRFeedInfoModel class]]) {
+        RRFeedInfoModel* m = self.model;
+        m.switchValue = @(sender.on);
+    }
+    else if([self.model isKindOfClass:[RRSetting class]]){
+        RRSetting* m = self.model;
+        m.switchValue = @(sender.on);
+        [self.presenter mvp_runAction:m.action value:sender];
+    }
 }
 @end

@@ -266,12 +266,12 @@
     
     [[RRFeedLoader sharedLoader] refresh:all endRefreshBlock:^{
 //        [sender endRefreshing];
-        if (finished) {
-            finished(0);
-        }
+//        if (finished) {
+//            finished(0);
+//        }
     } finishBlock:^(NSUInteger all, NSUInteger error, NSUInteger article) {
         if (finished) {
-            finished(0);
+            finished(article);
         }
     }];
 }

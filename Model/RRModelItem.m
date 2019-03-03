@@ -13,6 +13,8 @@ NS_ASSUME_NONNULL_BEGIN
 #pragma mark - Private model interfaces
 
 @interface RRModelItem (JSONConversion)
+
+
 + (instancetype)fromJSONDictionary:(NSDictionary *)dict;
 - (NSDictionary *)JSONDictionary;
 @end
@@ -72,10 +74,12 @@ NSString *_Nullable RRModelItemToJSON(RRModelItem *modelItem, NSStringEncoding e
 
 @implementation RRModelItem
 
+
 - (id)copyWithZone:(nullable NSZone *)zone;
 {
     return [[RRModelItem allocWithZone:zone] initWithJSONDictionary:self.JSONDictionary];
 }
+
 
 + (NSDictionary<NSString *, NSString *> *)properties
 {
@@ -134,6 +138,8 @@ NSString *_Nullable RRModelItemToJSON(RRModelItem *modelItem, NSStringEncoding e
 
 @implementation RRSetting
 
+
+
 - (id)copyWithZone:(nullable NSZone *)zone;
 {
     return [[RRSetting allocWithZone:zone] initWithJSONDictionary:self.JSONDictionary];
@@ -148,6 +154,7 @@ NSString *_Nullable RRModelItemToJSON(RRModelItem *modelItem, NSStringEncoding e
                                                     @"action": @"action",
                                                     @"switchkey": @"switchkey",
                                                     @"select": @"select",
+                                                    @"type": @"type",
                                                     };
 }
 

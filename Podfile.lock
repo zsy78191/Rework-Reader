@@ -18,7 +18,7 @@ PODS:
   - MBProgressHUD (0.9.2)
   - MGJRouter (0.10.0)
   - MMKV (1.0.17)
-  - mvc-base (0.3.0):
+  - mvc-base (0.3.0.1):
     - DZNEmptyDataSet
     - MagicalRecord
     - Masonry
@@ -122,7 +122,7 @@ SPEC CHECKSUMS:
   MBProgressHUD: 1569cf7ace17a8bac47aabfbb8580a49690386d1
   MGJRouter: 15d94541eb2cc81eff7d577337288feb7ae9575f
   MMKV: 890ba85ecf1d05546ed2c4d29fe618dbf92e3cf4
-  mvc-base: b701b93e7d9d219bbc2509260b7d4fb80477a77d
+  mvc-base: 20f09b41c96c1c12f663bc1d5e3df4287fc327ad
   MWPhotoBrowser: 5836d7aa041dc05a13de380c246826578adc5ea5
   oc-base: b0cc5eeae853acdf1b35d3f954ed8023fa37a74c
   oc-date: d8601fcc9eeea98f9d84506b77ef508cf9057786

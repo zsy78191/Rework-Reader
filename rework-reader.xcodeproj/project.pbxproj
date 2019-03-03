@@ -52,7 +52,7 @@
 		D47717E321ED90D00050DF14 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = D47717E121ED90D00050DF14 /* LaunchScreen.storyboard */; };
 		D47717E621ED90D00050DF14 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = D47717E521ED90D00050DF14 /* main.m */; };
 		D47717F021ED90D00050DF14 /* rework_readerTests.m in Sources */ = {isa = PBXBuildFile; fileRef = D47717EF21ED90D00050DF14 /* rework_readerTests.m */; };
-		D47A7A26221911E800F13194 /* SourceHanSerifCN-Regular.otf in Resources */ = {isa = PBXBuildFile; fileRef = D499418921FC9AB10041B998 /* SourceHanSerifCN-Regular.otf */; };
+		D47A7A26221911E800F13194 /* SourceHanSerifCN-Regular.otf in Resources */ = {isa = PBXBuildFile; fileRef = D499418921FC9AB10041B998 /* SourceHanSerifCN-Regular.otf */; settings = {ASSET_TAGS = (Hans, ); }; };
 		D47A7A28221A9E9D00F13194 /* Reader SP说明书.md in Resources */ = {isa = PBXBuildFile; fileRef = D47A7A27221A9E9D00F13194 /* Reader SP说明书.md */; };
 		D484562E2213E38300202401 /* marked.js in Resources */ = {isa = PBXBuildFile; fileRef = D484562D2213E38300202401 /* marked.js */; };
 		D48456302213E6D200202401 /* 什么是RSS.md in Resources */ = {isa = PBXBuildFile; fileRef = D484562F2213E6D200202401 /* 什么是RSS.md */; };
@@ -826,6 +826,9 @@
 		D47717CB21ED90CF0050DF14 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
+				KnownAssetTags = (
+					Hans,
+				);
 				LastUpgradeCheck = 1010;
 				ORGANIZATIONNAME = orzer;
 				TargetAttributes = {

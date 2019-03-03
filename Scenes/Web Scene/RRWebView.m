@@ -454,9 +454,9 @@
         [self preloadData:m feed:feedInfo];
         self.showToolbar = YES;
         
-        UIBarButtonItem* rb = [self mvp_buttonItemWithSystem:UIBarButtonSystemItemAction actionName:@"openAction:" title:@"更多操作"];
+//        UIBarButtonItem* rb = [self mvp_buttonItemWithSystem:UIBarButtonSystemItemAction actionName:@"openAction:" title:@"更多操作"];
         
-        self.navigationItem.rightBarButtonItem = rb;
+//        self.navigationItem.rightBarButtonItem = rb;
         
     }
     
@@ -710,7 +710,10 @@
     UIBarButtonItem* loadNextItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"icon_xia"] style:UIBarButtonItemStylePlain target:self action:@selector(loadNext)];
     loadNextItem.title = @"下一篇";
     loadNextItem.accessibilityLabel = @"下一篇";
-    return @[[self fixedItem],loadLastItem,[self fixedItem],loadNextItem,[self fixedItem]];
+    
+     UIBarButtonItem* rb = [self mvp_buttonItemWithSystem:UIBarButtonSystemItemAction actionName:@"openAction:" title:@"更多操作"];
+    
+    return @[[self fixedItem],loadLastItem,[self fixedItem],loadNextItem,[self fixedItem],rb,[self fixedItem]];
 }
 
 - (void)mvp_configOther
@@ -863,6 +866,7 @@
 //                NSLog(@"1 %@ %@",m,feed);
                 if (m && feed) {
                     [self setUpViewText:[NSString stringWithFormat:@"%@\n%@",[self cutString:m.title],feed.title]];
+                    [RRFeedAction preloadImages:m.uuid];
                 }
                 else {
                     [self setUpViewText:@"没有更多了"];
@@ -877,6 +881,7 @@
 //                NSLog(@"2 %@ %@",m,feed);
                 if (m && feed) {
                     [self setDownViewText:[NSString stringWithFormat:@"%@\n%@",[self cutString:m.title],feed.title]];
+                    [RRFeedAction preloadImages:m.uuid];
                 }
                 else {
                     [self setDownViewText:@"没有更多了"];

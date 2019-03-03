@@ -56,6 +56,9 @@
     }
 
     var images = new Array;
+    var exclude = [
+        'https://www.zhihu.com/equation'
+    ];
  
     var clickIndex = 0;
     var imgs = document.getElementsByTagName('img');
@@ -85,10 +88,19 @@
             }
          })();
          
-         var fdStart = img.src.indexOf("http");
-         if(fdStart == 0) {
-             img.src = "inner" + img.src;
-         }
+        var fdStart = img.src.indexOf("http");
+        
+        if(fdStart == 0) {
+            var change = true;
+            for(var j in exclude)
+            {
+                console.log(img.src.indexOf(exclude[j]),img.src);
+                change = change && img.src.indexOf(exclude[j]) != 0;
+            }
+            if(change){
+                img.src = "inner" + img.src;
+            }
+        }
     }
 
     function removeInlineCss(name)

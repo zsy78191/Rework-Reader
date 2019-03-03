@@ -34,6 +34,8 @@
     
     MVPTableViewOutput* outputer = self.outputer;
     [outputer mvp_registerNib:[UINib nibWithNibName:@"RRSettingCell" bundle:[NSBundle mainBundle]] forCellReuseIdentifier:@"settingBaseCell"];
+    [outputer mvp_registerNib:[UINib nibWithNibName:@"RRTitleCell" bundle:[NSBundle mainBundle]] forCellReuseIdentifier:@"titleCell"];
+    [outputer mvp_registerNib:[UINib nibWithNibName:@"RRSwitchCell" bundle:[NSBundle mainBundle]] forCellReuseIdentifier:@"switchCell"];
 }
 
 - (void)viewWillAppear:(BOOL)animated

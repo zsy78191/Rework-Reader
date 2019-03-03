@@ -4,11 +4,16 @@
 //   RRModelItem *modelItem = [RRModelItem fromJSON:json encoding:NSUTF8Encoding error:&error];
 
 #import <Foundation/Foundation.h>
-
 @import mvc_base;
-
 @class RRModelItem;
 @class RRSetting;
+
+typedef enum : NSUInteger {
+    RRSettingTypeBase = 0,
+    RRSettingTypeOnlyTitle,
+    RRSettingTypeTitle,
+    RRSettingTypeSwitch,
+} RRSettingType;
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -21,7 +26,7 @@ NSString    *_Nullable RRModelItemToJSON(RRModelItem *modelItem, NSStringEncodin
 
 #pragma mark - Object interfaces
 
-@interface RRModelItem : MVPModel <NSCopying>
+@interface RRModelItem : MVPModel
 @property (nonatomic, nullable, copy) NSArray<RRSetting *> *setting;
 
 + (_Nullable instancetype)fromJSON:(NSString *)json encoding:(NSStringEncoding)encoding error:(NSError *_Nullable *)error;
@@ -30,12 +35,15 @@ NSString    *_Nullable RRModelItemToJSON(RRModelItem *modelItem, NSStringEncodin
 - (NSData *_Nullable)toData:(NSError *_Nullable *)error;
 @end
 
-@interface RRSetting : MVPModel <NSCopying>
-@property (nonatomic, nullable, copy) NSString *title;
-@property (nonatomic, nullable, copy) NSString *value;
-@property (nonatomic, nullable, copy) NSString *action;
-@property (nonatomic, nullable, copy) id switchkey;
-@property (nonatomic, nullable, copy) id select;
+@interface RRSetting : MVPModel
+@property (nonatomic, nullable, copy)   NSString *title;
+@property (nonatomic, nullable, copy)   NSString *value;
+@property (nonatomic, nullable, copy)   NSString *action;
+@property (nonatomic, nullable, copy)   id switchkey;
+@property (nonatomic, nullable, copy)   id select;
+@property (nonatomic, nullable, strong) NSNumber *type;
+@property (nonatomic, nullable, strong) NSNumber *switchValue;
+
 @end
 
 NS_ASSUME_NONNULL_END

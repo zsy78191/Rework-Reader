@@ -8,6 +8,16 @@
 
 #import "RRFeedInfoListOtherModel.h"
 
+//@property (nonatomic, assign) RRFeedInfoListOtherModelType type;
+//@property (nonatomic, strong) NSString* title;
+//@property (nonatomic, assign) NSUInteger count;
+//@property (nonatomic, strong) NSString* subtitle;
+//@property (nonatomic, strong) NSString* icon;
+//@property (nonatomic, strong, nullable) NSString* key;
+//@property (nonatomic, assign) BOOL canRefresh;
+//
+//@property (nonatomic, strong, nullable) RRReadStyle* readStyle;
+
 @implementation RRFeedInfoListOtherModel
 
 @synthesize canEdit = _canEdit;

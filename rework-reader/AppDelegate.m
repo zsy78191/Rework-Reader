@@ -13,8 +13,20 @@
 @import mvc_base;
 @import ui_base;
 @import MagicalRecord;
+#import "RRFeedAction.h"
+#import "RPDataManager.h"
+@import oc_string;
+#import "RRFeedInfoListModel.h"
+@import oc_util;
+#import "RRFeedLoader.h"
+@import DateTools;
+@import UserNotifications;
+#import "RRFeedInfoListOtherModel.h"
 
 @interface AppDelegate ()
+{
+    
+}
 
 @end
 
@@ -67,13 +79,50 @@
     [MVPRouter registView:NSClassFromString(@"RRFeedConfigView") forURL:@"rr://feed"];
     [MVPRouter registView:NSClassFromString(@"RRAddFeedView") forURL:@"rr://addfeed"];
     [MVPRouter registView:NSClassFromString(@"RRListView") forURL:@"rr://list"];
-    
 }
 
 - (void)loadPage
 {
+//    [[NSUserDefaults standardUserDefaults] setValue:url forKey:@"lastUrl"];
+//    [[NSUserDefaults standardUserDefaults] setValue:userInfo forKey:@"lastInfo"];
+//    id url = [[NSUserDefaults standardUserDefaults] valueForKey:@"lastUrl"];
+//    id info = [[NSUserDefaults standardUserDefaults] valueForKey:@"lastInfo"];
+//    info = [NSKeyedUnarchiver unarchiveTopLevelObjectWithData:info error:nil];
+//
     id vc = [MVPRouter viewForURL:@"rr://feedlist" withUserInfo:nil];
     RRExtraViewController* nv = [[RRExtraViewController alloc] initWithRootViewController:vc];
+    if ([[NSUserDefaults standardUserDefaults] boolForKey:@"openUnread"]) {
+        // RRTODO:优化
+//        id v2 = []
+        RRFeedInfoListOtherModel* (^model)(NSString* title,NSString* icon, NSString* subtitle, NSString* key) = ^(NSString* title,NSString* icon, NSString* subtitle, NSString* key){
+            RRFeedInfoListOtherModel* m = [[RRFeedInfoListOtherModel alloc] init];
+            m.title = title;
+            m.icon = icon;
+            m.subtitle = subtitle;
+            m.key = key;
+            m.type = RRFeedInfoListOtherModelTypeItem;
+            return m;
+        };
+        
+        RRFeedInfoListOtherModel* mUnread = model(@"未读订阅",@"favicon",@"三日内的未读文章",@"unread");
+        mUnread.canRefresh = YES;
+        mUnread.canEdit = NO;
+        mUnread.readStyle = ({
+            RRReadStyle* s = [[RRReadStyle alloc] init];
+            s.onlyUnread = YES;
+            s.daylimit = 3;
+            s.liked = NO;
+            s;
+        });
+        
+        id v2 = [MVPRouter viewForURL:@"rr://list" withUserInfo:@{@"model":mUnread}];
+        [nv pushViewController:v2 animated:NO];
+    }
+//    if (url) {
+//        id vc2 = [MVPRouter viewForURL:url withUserInfo:info];
+//        [nv pushViewController:vc2 animated:YES];
+//    }
+    
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
     self.window.rootViewController = nv;
     [self.window makeKeyAndVisible];
@@ -103,9 +152,104 @@
     // 加载VC
     [self loadPage];
     
+    // 配置background fetch
+    [[UIApplication sharedApplication] setMinimumBackgroundFetchInterval:UIApplicationBackgroundFetchIntervalMinimum];
+    NSLog(@"%@",launchOptions);
+    
     return YES;
 }
 
+- (void)notiArticle:(NSUInteger)count
+{
+     __weak typeof(self) weakSelf = self;
+    if ([weakSelf kBackgroundFetchNoti]) {
+        UNMutableNotificationContent* c = [[UNMutableNotificationContent alloc] init];
+        if ([weakSelf kBackgroundFetchNotiBadge]) {
+            c.badge = @(count);
+        }
+        c.title = @"新的订阅";
+        c.body = [NSString stringWithFormat:@"更新了%ld篇订阅",count];
+        c.userInfo = @{@"action":@"noti"};
+        UNNotificationRequest* r = [UNNotificationRequest requestWithIdentifier:[[NSUUID UUID] UUIDString] content:c trigger:nil];
+        [[UNUserNotificationCenter currentNotificationCenter] addNotificationRequest:r withCompletionHandler:^(NSError * _Nullable error) {
+            if (error) {
+                NSLog(@"%@",error);
+            }
+        }];
+    }
+}
+
+- (void)application:(UIApplication *)application performFetchWithCompletionHandler:(void (^)(UIBackgroundFetchResult))completionHandler
+{
+    __weak typeof(self) weakSelf = self;
+    [self updateFeedData:^(NSInteger x) {
+        
+        if (x> 0) {
+            [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"openUnread"];
+            [[NSUserDefaults standardUserDefaults] synchronize];
+            [weakSelf notiArticle:x];
+        }
+        NSLog(@"更新了%ld",x);
+        if (x > 0) {
+            completionHandler(UIBackgroundFetchResultNewData);
+        }
+        else
+        {
+            completionHandler(UIBackgroundFetchResultNoData);
+        }
+    }];
+    NSLog(@"%s",__func__);
+}
+
+
+- (void)updateFeedData:(void (^)(NSInteger x))finished
+{
+    NSArray* all = nil;
+    if (!all) {
+        all = [[RPDataManager sharedManager] getAll:@"EntityFeedInfo" predicate:nil key:nil value:nil sort:@"sort" asc:YES];
+    }
+    all =
+    all.filter(^BOOL(RRFeedInfoListModel*  _Nonnull x) {
+        
+        if (!x.useautoupdate) {
+            return NO;
+        }
+        
+        NSString* key = [NSString stringWithFormat:@"UPDATE_%@",x.url];
+        NSInteger lastU = [MVCKeyValue getIntforKey:key];
+        if (lastU != 0) {
+            NSDate* d = [NSDate dateWithTimeIntervalSince1970:lastU];
+            NSLog(@"last %@ %@",d,@([d timeIntervalSinceDate:[NSDate date]]));
+            if ([d timeIntervalSinceDate:[NSDate date]] > - 60 * 10) {
+                return NO;
+            }
+        }
+        
+        if (x.usettl) {
+            NSUInteger ttl = [x.ttl integerValue];
+            NSDate* d = [x.updateDate dateByAddingMinutes:ttl];
+            if ([d timeIntervalSinceDate:[NSDate date]] > 0) {
+                return NO;
+            }
+        }
+        return YES;
+    })
+    .map(^id _Nonnull(RRFeedInfoListModel*  _Nonnull x) {
+        return [x.url absoluteString];
+    });
+    
+    [[RRFeedLoader sharedLoader] refresh:all endRefreshBlock:^{
+        //        [sender endRefreshing];
+//        if (finished) {
+//            finished(0);
+//        }
+    } finishBlock:^(NSUInteger all, NSUInteger error, NSUInteger article) {
+        if (finished) {
+            finished(article);
+        }
+    }];
+    
+}
 
 - (void)applicationWillResignActive:(UIApplication *)application {
     // Sent when the application is about to move from active to inactive state. This can occur for certain types of temporary interruptions (such as an incoming phone call or SMS message) or when the user quits the application and it begins the transition to the background state.
@@ -116,6 +260,7 @@
 - (void)applicationDidEnterBackground:(UIApplication *)application {
     // Use this method to release shared resources, save user data, invalidate timers, and store enough application state information to restore your application to its current state in case it is terminated later.
     // If your application supports background execution, this method is called instead of applicationWillTerminate: when the user quits.
+    [application setApplicationIconBadgeNumber:0];
 }
 
 
@@ -131,6 +276,16 @@
 
 - (void)applicationWillTerminate:(UIApplication *)application {
     // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
+}
+
+- (BOOL)kBackgroundFetchNoti
+{
+    return [[NSUserDefaults standardUserDefaults] boolForKey:@"kBackgroundFetchNoti"];
+}
+
+- (BOOL)kBackgroundFetchNotiBadge
+{
+    return [[NSUserDefaults standardUserDefaults] boolForKey:@"kBackgroundFetchNotiBadge"];
 }
 
 

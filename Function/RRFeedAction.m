@@ -13,6 +13,8 @@
 @import oc_base;
 @import oc_util;
 @import ui_base;
+@import SDWebImage;
+@import RegexKitLite;
 
 @implementation RRFeedAction
 
@@ -52,6 +54,8 @@
         return value;
     } finish:^(__kindof NSManagedObject * _Nonnull obj, NSError * _Nonnull e) {
         NSLog(@"save %@ %@",obj,e);
+        
+//        [RRFeedAction preloadEntityImages:obj];
     }];
 }
 
@@ -65,6 +69,37 @@
 //    id x = [[RPDataManager sharedManager] getFirst:@"EntityFeedArticle" predicate:p key:nil value:nil sort:nil asc:YES];
     return [c integerValue];
 }
+
+
++ (void)preloadImages:(NSString *)uuid
+{
+    EntityFeedArticle* a = [[RPDataManager sharedManager] getFirst:@"EntityFeedArticle" predicate:nil key:@"uuid" value:uuid sort:nil asc:YES];
+    [[self class] preloadEntityImages:a];
+}
+
++ (void)preloadEntityImages:(EntityFeedArticle *)article
+{
+  
+    NSString* temp = article.content.length>30?article.content:article.summary;
+    NSArray* imgs = [temp componentsMatchedByRegex:@"(?<=<img).*?(?=\\>)"];
+    [imgs enumerateObjectsUsingBlock:^(NSString*  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+        NSString* url = [obj componentsMatchedByRegex:@"(?<=src=\").*?(?=\")"].firstObject;
+        if (!url) {
+            url = [obj componentsMatchedByRegex:@"(?<=data-original=\").*?(?=\")"].firstObject;
+        }
+//        NSLog(@"11 %@",url);
+        if ([url hasPrefix:@"//"]) {
+            url = [@"http:" stringByAppendingString:url];
+        }
+        [[SDWebImageManager sharedManager] downloadImageWithURL:[NSURL URLWithString:url] options:SDWebImageLowPriority progress:^(NSInteger receivedSize, NSInteger expectedSize) {
+            
+        } completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, BOOL finished, NSURL *imageURL) {
+            NSLog(@"cached %@ %@",@(cacheType),imageURL);
+        }];
+    }];
+}
+
+
 
 + (void)insertArticle:(NSArray*)article withFeed:(EntityFeedInfo*)info finish:(void (^)(NSUInteger))finish
 {

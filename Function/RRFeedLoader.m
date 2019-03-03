@@ -42,7 +42,7 @@
 {
     if (!_quene) {
         _quene = [[NSOperationQueue alloc] init];
-        [_quene setMaxConcurrentOperationCount:10];
+        [_quene setMaxConcurrentOperationCount:30];
     }
     return _quene;
 }
@@ -51,7 +51,7 @@
 {
     if (!_netQuene) {
         _netQuene = [[NSOperationQueue alloc] init];
-        [_netQuene setMaxConcurrentOperationCount:10];
+        [_netQuene setMaxConcurrentOperationCount:30];
     }
     return _netQuene;
 }
@@ -239,6 +239,11 @@
 
 - (void)refresh:(NSArray*)origin endRefreshBlock:(void (^)(void))endBlock finishBlock:(void (^)(NSUInteger all,NSUInteger error, NSUInteger article))finishBlock;
 {
+    [self refresh:origin endRefreshBlock:endBlock progress:nil finishBlock:finishBlock];
+}
+
+- (void)refresh:(NSArray*)origin endRefreshBlock:(void (^)(void))endBlock progress:(void(^ _Nullable )(NSUInteger current,NSUInteger all))progressblock finishBlock:(void (^)(NSUInteger all,NSUInteger error, NSUInteger article))finishBlock;
+{
     NSArray* all = origin;
     if (all.count == 0) {
 //        [sender endRefreshing];
@@ -261,7 +266,7 @@
     NSMutableArray* a = [[NSMutableArray alloc] init];
     
     [[RRFeedLoader sharedLoader] reloadAll:all infoBlock:^(MWFeedInfo * _Nonnull info) {
-        //        NSLog(@"更新%@",info.title);
+                NSLog(@"更新%@",info.title);
         
         dispatch_async(dispatch_get_main_queue(), ^{
             NSString* key = [NSString stringWithFormat:@"UPDATE_%@",info.url];
@@ -288,6 +293,11 @@
         
         finishCount ++;
         NSLog(@"finish %ld %ld",errorCount,finishCount);
+        
+        if (progressblock) {
+            progressblock(finishCount+errorCount,feedCount);
+        }
+        
         if (finishCount + errorCount == feedCount) {
             dispatch_async(dispatch_get_main_queue(), ^{
 //                [sender endRefreshing];

@@ -226,7 +226,7 @@
         if (lastU != 0) {
             NSDate* d = [NSDate dateWithTimeIntervalSince1970:lastU];
             NSLog(@"last %@ %@",d,@([d timeIntervalSinceDate:[NSDate date]]));
-            if ([d timeIntervalSinceDate:[NSDate date]] > - 60 * 10) {
+            if ([d timeIntervalSinceDate:[NSDate date]] > - 10) {
                 return NO;
             }
         }
@@ -244,21 +244,31 @@
         return [x.url absoluteString];
     });
     
+    __weak typeof(self) weakSelf = self;
     [[RRFeedLoader sharedLoader] refresh:all endRefreshBlock:^{
-        [sender endRefreshing];
-    } finishBlock:^(NSUInteger all, NSUInteger error, NSUInteger article) {
-        if (article == 0) {
-            [PWToastView showText:@"没有更新的订阅"];
-        }
-        else {
-            [self loadData];
-            if (error == 0) {
-                [PWToastView showText:[NSString stringWithFormat:@"更新了%ld个订阅源，共计%ld篇订阅",all,article]];
+        dispatch_async(dispatch_get_main_queue(), ^{
+             [sender endRefreshing];
+        });
+    } progress:^(NSUInteger current, NSUInteger all) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            weakSelf.title = [@"更新" stringByAppendingFormat:@"(%ld/%ld)",current,all];
+        });
+    }  finishBlock:^(NSUInteger all, NSUInteger error, NSUInteger article) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            weakSelf.title = @"Reader Special";
+            if (article == 0) {
+                [PWToastView showText:@"没有更新的订阅"];
             }
             else {
-                [PWToastView showText:[NSString stringWithFormat:@"更新了%ld个订阅源，共计%ld篇订阅，%ld个源更新失败",all,article,error]];
+                [weakSelf loadData];
+                if (error == 0) {
+                    [PWToastView showText:[NSString stringWithFormat:@"更新了%ld个订阅源，共计%ld篇订阅",all,article]];
+                }
+                else {
+                    [PWToastView showText:[NSString stringWithFormat:@"更新了%ld个订阅源，共计%ld篇订阅，%ld个源更新失败",all,article,error]];
+                }
             }
-        }
+        });
     }];
 }
 
@@ -373,6 +383,12 @@
         [self.view mvp_pushViewController:vc];
     }
    
+}
+
+- (void)recommand
+{
+    id vc = [MVPRouter viewForURL:@"rr://web" withUserInfo:@{@"name":@"推荐订阅源.md"}];
+    [[self view] mvp_pushViewController:vc];
 }
 
 @end
