@@ -7,7 +7,7 @@
 //
 
 #import "RRWebHandler.h"
-
+@import SDWebImage;
 @implementation RRWebHandler
 //这里拦截到URLScheme为customScheme的请求后，读取本地图片test.jpg，并返回给WKWebView显示
 - (void)webView:(WKWebView *)webView startURLSchemeTask:(id <WKURLSchemeTask>)urlSchemeTask;
@@ -15,8 +15,69 @@
     NSString *urlString = urlSchemeTask.request.URL.relativeString;
    
 //    NSLog(@"-- %@",urlString);
-    NSData *data = nil;
+//    __block NSData *data = nil;
     
+//    UIImage* i = [[[SDWebImageManager sharedManager] imageCache] imageFromMemoryCacheForKey:[urlString substringFromIndex:5]];
+    NSLog(@"d %@",urlString);
+    NSURL* url = [NSURL URLWithString:[urlString substringFromIndex:5]];
+    [[SDWebImageManager sharedManager] loadImageWithURL:url options:SDWebImageHighPriority progress:^(NSInteger receivedSize, NSInteger expectedSize, NSURL * _Nullable targetURL) {
+        
+    } completed:^(UIImage * _Nullable image, NSData * _Nullable data, NSError * _Nullable error, SDImageCacheType cacheType, BOOL finished, NSURL * _Nullable imageURL) {
+//        NSLog(@"%@",image);
+        if (error) {
+            NSLog(@"%@",error);
+            [urlSchemeTask didFailWithError:error];
+            return;
+        }
+        
+//        data = UIImageJPEGRepresentation(image, 1);
+        NSString* mtype = @"application/x-img";
+        switch ([image sd_imageFormat]) {
+            case SDImageFormatGIF:
+            {
+                mtype = @"image/gif";
+                break;
+            }
+            case SDImageFormatPNG:
+            {
+                mtype = @"image/png";
+                break;
+            }
+            case SDImageFormatJPEG:
+            {
+                mtype = @"image/jpeg";
+                break;
+            }
+            case SDImageFormatWebP:
+            {
+                mtype = @"application/x-img";
+                break;
+            }
+            case SDImageFormatUndefined:
+            {
+                mtype = @"text/xml";
+                break;
+            }
+            default:
+                break;
+        }
+        
+        if (!data && image) {
+//            NSLog(@"没有图");
+            data = [image sd_imageData];
+        }
+        NSURLResponse *response = [[NSURLResponse alloc] initWithURL:urlSchemeTask.request.URL MIMEType:mtype expectedContentLength:data.length textEncodingName:nil];
+        [urlSchemeTask didReceiveResponse:response];
+        [urlSchemeTask didReceiveData:data];
+        [urlSchemeTask didFinish];
+    }];
+}
+
+- (void)t
+{
+    id <WKURLSchemeTask> urlSchemeTask;
+    NSString* urlString;
+    NSData* data;
     if([urlString containsString:@"siyuan"]) {
         
         if ([urlString hasSuffix:@"otf"]) {
@@ -24,7 +85,7 @@
             data = [NSData dataWithContentsOfFile:fontUrl];
             NSURLResponse *response = [[NSURLResponse alloc] initWithURL:urlSchemeTask.request.URL MIMEType:@"application/x-font-truetype" expectedContentLength:data.length textEncodingName:nil];
             [urlSchemeTask didReceiveResponse:response];
-          
+            
         }
         else if([urlString hasSuffix:@"js"])
         {
@@ -33,7 +94,7 @@
             data = [NSData dataWithContentsOfFile:[[NSBundle mainBundle] pathForResource:jsArr[0] ofType:jsArr[1]]];
             NSURLResponse *response = [[NSURLResponse alloc] initWithURL:urlSchemeTask.request.URL MIMEType:@"application/x-javascript" expectedContentLength:data.length textEncodingName:nil];
             [urlSchemeTask didReceiveResponse:response];
-   
+            
         }
         else if([urlString hasPrefix:@"innerhttps"])
         {
@@ -41,8 +102,6 @@
         }
     }
     
-    [urlSchemeTask didReceiveData:data];
-    [urlSchemeTask didFinish];
 }
 
 - (void)webView:(WKWebView *)webVie stopURLSchemeTask:(id)urlSchemeTask {

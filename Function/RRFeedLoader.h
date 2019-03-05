@@ -50,7 +50,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 
 - (void)refresh:(NSArray*)origin endRefreshBlock:(void (^)(void))endBlock finishBlock:(void (^)(NSUInteger all,NSUInteger error, NSUInteger article))finishBlock;
-
+- (void)refresh:(NSArray*)origin endRefreshBlock:(void (^)(void))endBlock progress:(void(^ _Nullable)(NSUInteger current,NSUInteger all))progressblock finishBlock:(void (^)(NSUInteger all,NSUInteger error, NSUInteger article))finishBlock;
 
 @end
 

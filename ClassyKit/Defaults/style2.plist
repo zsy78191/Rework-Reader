@@ -17,12 +17,16 @@
 	<key>$bar-tint-color</key>
 	<string>#f9f9f9</string>
 	<key>$title-font</key>
-	<string>SourceHanSerifCN-SemiBold</string>
+	<string>PingFangSC-Light</string>
 	<key>$main-font-size</key>
 	<string>17</string>
 	<key>$main-font-1</key>
-	<string>SourceHanSerifCN-Regular</string>
+	<string>PingFangSC-Light</string>
 	<key>$main-font</key>
-	<string>PingFangSC-Regular</string>
+	<string>PingFangSC-Light</string>
+	<key>$sub-font-size</key>
+	<string>16</string>
+	<key>$large-title-font-size</key>
+	<string>34</string>
 </dict>
 </plist>

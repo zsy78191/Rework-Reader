@@ -6,7 +6,7 @@
 //  Copyright © 2019 orzer. All rights reserved.
 //
 
-@import MWPhotoBrowser;
+@import Fork_MWPhotoBrowser;
 
 NS_ASSUME_NONNULL_BEGIN
 

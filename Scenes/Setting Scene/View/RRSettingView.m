@@ -17,11 +17,22 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
+    
+    //设置内容区域大小
+    self.preferredContentSize = CGSizeMake(100, 200);
+    
+    //设置内容背景颜色
+    self.view.backgroundColor = [UIColor blueColor];
 }
 
 - (Class)mvp_presenterClass
 {
     return NSClassFromString(@"RRSettingPresenter");
+}
+
+- (void)mvp_initFromModel:(MVPInitModel *)model
+{
+  
 }
 
 - (void)mvp_configMiddleware
@@ -34,6 +45,8 @@
     
     MVPTableViewOutput* outputer = self.outputer;
     [outputer mvp_registerNib:[UINib nibWithNibName:@"RRSettingCell" bundle:[NSBundle mainBundle]] forCellReuseIdentifier:@"settingBaseCell"];
+    [outputer mvp_registerNib:[UINib nibWithNibName:@"RRTitleCell" bundle:[NSBundle mainBundle]] forCellReuseIdentifier:@"titleCell"];
+    [outputer mvp_registerNib:[UINib nibWithNibName:@"RRSwitchCell" bundle:[NSBundle mainBundle]] forCellReuseIdentifier:@"switchCell"];
 }
 
 - (void)viewWillAppear:(BOOL)animated

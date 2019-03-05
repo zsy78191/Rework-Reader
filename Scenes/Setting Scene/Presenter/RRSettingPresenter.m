@@ -14,6 +14,7 @@
 @import ui_base;
 #import "MVPViewLoadProtocol.h"
 #import "RRGetWebIconOperation.h"
+@import UserNotifications;
 
 @interface RRSettingPresenter ()
 {
@@ -22,6 +23,8 @@
 @property (nonatomic, strong) RRModelItem* item;
 @property (nonatomic, strong) RPSettingInputer* inputer;
 @property (nonatomic, assign) BOOL feeding;
+@property (nonatomic, weak) RRSetting* notiSetting;
+@property (nonatomic, weak) RRSetting* badgeSetting;
 @property (nonatomic, weak) FMFeedParserOperation* currentOperation;
 
 @end
@@ -59,8 +62,26 @@
     self = [super init];
     if (self) {
         self.title = @"更多内容";
+        __weak typeof(self) weakSelf = self;
         [[self.item setting] enumerateObjectsUsingBlock:^(RRSetting * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
-            [self.inputer mvp_addModel:obj];
+//            if ([obj switchkey]) {
+            
+//            }
+            
+            if ([[obj switchkey] isEqualToString:@"kBackgroundFetchNoti"]) {
+                weakSelf.notiSetting = obj;
+            }
+            else if([[obj switchkey] isEqualToString:@"kBackgroundFetchNotiBadge"])
+            {
+                weakSelf.badgeSetting = obj;
+            }
+            if ([obj switchkey]) {
+                obj.switchValue = [[NSUserDefaults standardUserDefaults] valueForKey:obj.switchkey];
+            }
+            if ([[obj title] isEqualToString:@"版本"]) {
+                [obj setValue:[NSString stringWithFormat:@"%@ (build %@)",[UIApplication sharedApplication].version(),[UIApplication sharedApplication].buildVersion()]];
+            }
+            [weakSelf.inputer mvp_addModel:obj];
         }];
     }
     return self;
@@ -92,7 +113,12 @@
         }
         case 3:
         {
-            [self openWiki];
+//            [self openWiki];
+            break;
+        }
+        case 4:
+        {
+            
             break;
         }
         default:
@@ -189,7 +215,53 @@
     });
 }
 
+- (void)changeNoti:(UISwitch*)sender
+{
+//    NSLog(@"%@",sender);
+    if (sender.on == NO) {
+        [[NSUserDefaults standardUserDefaults] setBool:NO forKey:self.notiSetting.switchkey];
+        [[NSUserDefaults standardUserDefaults] synchronize];
+        return;
+    }
+    
+    
+    __weak typeof(self) weakSelf = self;
+    [[UNUserNotificationCenter currentNotificationCenter] requestAuthorizationWithOptions:UNAuthorizationOptionAlert|UNAuthorizationOptionBadge|UNAuthorizationOptionSound completionHandler:^(BOOL granted, NSError * _Nullable error) {
+        
+        if (!granted) {
+//            NSLog(@"%@",weakSelf.badgeSetting);
+            weakSelf.notiSetting.switchValue = @(NO);
+//            NSLog(@"%@",self.badgeSetting.switchValue);
+            UI_Alert().
+            titled(@"请在系统「设置」中开启Reader的通知功能")
+            .recommend(@"前往「设置」", ^(UIAlertAction * _Nonnull action, UIAlertController * _Nonnull alert) {
+                NSURL *url = [NSURL URLWithString:UIApplicationOpenSettingsURLString];
+                if([[UIApplication sharedApplication] canOpenURL:url]) {
+                    NSURL*url =[NSURL URLWithString:UIApplicationOpenSettingsURLString];
+                    [[UIApplication sharedApplication] openURL:url options:@{} completionHandler:^(BOOL success) {
+                        
+                    }];
+                }
+            })
+            .cancel(@"取消", ^(UIAlertAction * _Nonnull action) {
+                
+            })
+            .show((id)weakSelf.view);
+            
+        }
+        else {
+            [[NSUserDefaults standardUserDefaults] setBool:YES forKey:weakSelf.notiSetting.switchkey];
+            [[NSUserDefaults standardUserDefaults] synchronize];
+        }
+    }];
+    
+}
 
+- (void)changeNotiBadge:(UISwitch*)sender
+{
+    [[NSUserDefaults standardUserDefaults] setBool:[sender isOn] forKey:self.badgeSetting.switchkey];
+    [[NSUserDefaults standardUserDefaults] synchronize];
+}
 
 
 @end

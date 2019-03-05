@@ -107,17 +107,7 @@
     }
     
     {
-        RRFeedInfoListOtherModel* (^model)(NSString* title,NSString* icon, NSString* subtitle, NSString* key) = ^(NSString* title,NSString* icon, NSString* subtitle, NSString* key){
-            RRFeedInfoListOtherModel* m = [[RRFeedInfoListOtherModel alloc] init];
-            m.title = title;
-            m.icon = icon;
-            m.subtitle = subtitle;
-            m.key = key;
-            m.type = RRFeedInfoListOtherModelTypeItem;
-            return m;
-        };
-        
-        RRFeedInfoListOtherModel* mUnread = model(@"未读订阅",@"favicon",@"三日内的未读文章",@"unread");
+        RRFeedInfoListOtherModel* mUnread = GetRRFeedInfoListOtherModel(@"未读订阅",@"favicon_2",@"三日内的未读文章",@"unread");
         mUnread.canRefresh = YES;
         mUnread.canEdit = NO;
         mUnread.readStyle = ({
@@ -133,7 +123,7 @@
         
         [self.readStyleInputer mvp_addModel:mUnread];
         
-        RRFeedInfoListOtherModel* mFavourite = model(@"收藏",@"favicon",@"收藏的文章",@"favourite");
+        RRFeedInfoListOtherModel* mFavourite = GetRRFeedInfoListOtherModel(@"收藏",@"favicon_1",@"收藏的文章",@"favourite");
         mFavourite.canRefresh = NO;
         mFavourite.canEdit = NO;
         mFavourite.readStyle = ({
@@ -152,7 +142,7 @@
         }
         
         {
-            RRFeedInfoListOtherModel* mLast = model(@"最近阅读",@"favicon",@"近期阅读的文章",@"last");
+            RRFeedInfoListOtherModel* mLast = GetRRFeedInfoListOtherModel(@"最近阅读",@"favicon_3",@"近期阅读的文章",@"last");
             mLast.canRefresh = NO;
             mLast.canEdit = NO;
             mLast.readStyle = ({
@@ -226,7 +216,7 @@
         if (lastU != 0) {
             NSDate* d = [NSDate dateWithTimeIntervalSince1970:lastU];
             NSLog(@"last %@ %@",d,@([d timeIntervalSinceDate:[NSDate date]]));
-            if ([d timeIntervalSinceDate:[NSDate date]] > - 60 * 10) {
+            if ([d timeIntervalSinceDate:[NSDate date]] > - 10) {
                 return NO;
             }
         }
@@ -244,21 +234,31 @@
         return [x.url absoluteString];
     });
     
+    __weak typeof(self) weakSelf = self;
     [[RRFeedLoader sharedLoader] refresh:all endRefreshBlock:^{
-        [sender endRefreshing];
-    } finishBlock:^(NSUInteger all, NSUInteger error, NSUInteger article) {
-        if (article == 0) {
-            [PWToastView showText:@"没有更新的订阅"];
-        }
-        else {
-            [self loadData];
-            if (error == 0) {
-                [PWToastView showText:[NSString stringWithFormat:@"更新了%ld个订阅源，共计%ld篇订阅",all,article]];
+        dispatch_async(dispatch_get_main_queue(), ^{
+             [sender endRefreshing];
+        });
+    } progress:^(NSUInteger current, NSUInteger all) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            weakSelf.title = [@"更新" stringByAppendingFormat:@"(%ld/%ld)",current,all];
+        });
+    }  finishBlock:^(NSUInteger all, NSUInteger error, NSUInteger article) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            weakSelf.title = @"Reader Special";
+            if (article == 0) {
+                [PWToastView showText:@"没有更新的订阅"];
             }
             else {
-                [PWToastView showText:[NSString stringWithFormat:@"更新了%ld个订阅源，共计%ld篇订阅，%ld个源更新失败",all,article,error]];
+                [weakSelf loadData];
+                if (error == 0) {
+                    [PWToastView showText:[NSString stringWithFormat:@"更新了%ld个订阅源，共计%ld篇订阅",all,article]];
+                }
+                else {
+                    [PWToastView showText:[NSString stringWithFormat:@"更新了%ld个订阅源，共计%ld篇订阅，%ld个源更新失败",all,article,error]];
+                }
             }
-        }
+        });
     }];
 }
 
@@ -373,6 +373,12 @@
         [self.view mvp_pushViewController:vc];
     }
    
+}
+
+- (void)recommand
+{
+    id vc = [MVPRouter viewForURL:@"rr://web" withUserInfo:@{@"name":@"推荐订阅源.md"}];
+    [[self view] mvp_pushViewController:vc];
 }
 
 @end

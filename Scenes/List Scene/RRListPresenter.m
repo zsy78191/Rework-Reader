@@ -266,12 +266,12 @@
     
     [[RRFeedLoader sharedLoader] refresh:all endRefreshBlock:^{
 //        [sender endRefreshing];
-        if (finished) {
-            finished(0);
-        }
+//        if (finished) {
+//            finished(0);
+//        }
     } finishBlock:^(NSUInteger all, NSUInteger error, NSUInteger article) {
         if (finished) {
-            finished(0);
+            finished(article);
         }
     }];
 }
@@ -311,9 +311,21 @@
             
             [RRFeedAction readArticle:a.uuid];
             
+            NSString* link = a.link;
+            if ([a.link hasPrefix:@"//"]) {
+                link = [@"http:" stringByAppendingString:link];
+            }
+            
+            NSURL* u = [NSURL URLWithString:link];
+            
+            if (!u) {
+                [[self view] hudFail:@"链接不可用"];
+                return;
+            }
+            
             SFSafariViewControllerConfiguration* c = [[SFSafariViewControllerConfiguration alloc] init];
             c.entersReaderIfAvailable = YES;
-            SFSafariViewController* s = [[SFSafariViewController alloc] initWithURL:[NSURL URLWithString:a.link] configuration:c];
+            SFSafariViewController* s = [[SFSafariViewController alloc] initWithURL:u configuration:c];
             [self.view mvp_presentViewController:s animated:YES completion:^{
             }];
             return;
@@ -401,6 +413,9 @@
         return nil;
     }
     NSInteger lastidx = x+1;
+    if (lastidx > all.lenght -1) {
+        return nil;
+    }
     id last = [all objectAtIndex:lastidx];
     if ([last isKindOfClass:[RRFeedArticleModel class]] || [last isKindOfClass:[EntityFeedArticle class]]) {
         return last;

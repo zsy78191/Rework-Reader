@@ -27,7 +27,10 @@ target 'rework-reader' do
   pod 'DateTools'
   
   #图片浏览器
-  pod 'MWPhotoBrowser'
+  pod 'Fork-MWPhotoBrowser' 
+  
+  #img
+  pod 'SDWebImage', '~> 4.4.6'
 
   # Pods for rework-reader
 

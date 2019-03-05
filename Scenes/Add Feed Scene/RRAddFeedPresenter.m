@@ -69,11 +69,7 @@
     return self.inputer;
 }
 
-- (void)recommand
-{
-    id vc = [MVPRouter viewForURL:@"rr://web" withUserInfo:@{@"name":@"推荐订阅源.md"}];
-    [[self view] mvp_pushViewController:vc];
-}
+
 
 - (void)mvp_action_selectItemAtIndexPath:(NSIndexPath *)path
 {

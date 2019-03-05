@@ -59,15 +59,18 @@
 - (void)mvp_configOther
 {
     UIBarButtonItem* bSetting = [self mvp_buttonItemWithActionName:@"openSetting" title:@"更多内容"];
+    bSetting.image = [UIImage imageNamed:@"icon_set"];
     self.navigationItem.leftBarButtonItem = bSetting;
     
     UIBarButtonItem* bSearch = [self mvp_buttonItemWithSystem:UIBarButtonSystemItemSearch actionName:@"openSearch" title:@"搜索"];
     self.navigationItem.rightBarButtonItem = self.editButtonItem;
     
+    UIBarButtonItem* item = [self mvp_buttonItemWithActionName:@"recommand" title:@"推荐订阅源"];
+    
     UIBarButtonItem* bAddRss = [self mvp_buttonItemWithActionName:@"addRSS" title:@"添加订阅源"];
 //    UIBarButtonItem* bAddHub = [self mvp_buttonItemWithActionName:@"addHub" title:@"添加阅读规则"];
     UIBarButtonItem* space = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
-    self.toolbarItems = @[space,bAddRss];
+    self.toolbarItems = @[space,item,bAddRss];
     
     self.navigationItem.backBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"返回" style:1 target:nil action:nil];
     
