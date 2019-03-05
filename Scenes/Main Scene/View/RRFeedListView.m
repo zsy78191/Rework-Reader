@@ -59,6 +59,7 @@
 - (void)mvp_configOther
 {
     UIBarButtonItem* bSetting = [self mvp_buttonItemWithActionName:@"openSetting" title:@"更多内容"];
+    bSetting.image = [UIImage imageNamed:@"icon_set"];
     self.navigationItem.leftBarButtonItem = bSetting;
     
     UIBarButtonItem* bSearch = [self mvp_buttonItemWithSystem:UIBarButtonSystemItemSearch actionName:@"openSearch" title:@"搜索"];

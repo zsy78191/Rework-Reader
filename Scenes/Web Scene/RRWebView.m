@@ -63,6 +63,14 @@
 
 @implementation RRWebView
 
+- (void)motionBegan:(UIEventSubtype)motion withEvent:(UIEvent *)event
+{
+    [super motionBegan:motion withEvent:event];
+    if (motion == UIEventSubtypeMotionShake) {
+        [self.presenter mvp_runAction:@"openAction2:"];
+    }
+}
+
 - (UIImpactFeedbackGenerator *)g
 {
     if (!_g) {
@@ -153,8 +161,6 @@
         WKUserScript* s = [[WKUserScript alloc] initWithSource:@"setFont('PingFangSC-Light');setAlign('justify');" injectionTime:WKUserScriptInjectionTimeAtDocumentEnd forMainFrameOnly:NO];
         [u addUserScript:s];
         c.userContentController = u;
-        
-        
         [c setDataDetectorTypes:WKDataDetectorTypeAll];
         [c setURLSchemeHandler:self.hander forURLScheme:@"innerhttp"];
         [c setURLSchemeHandler:self.hander forURLScheme:@"innerhttps"];
@@ -228,25 +234,28 @@
         return;
     }
     
+    
+    
     __weak typeof(self) weakSelf = self;
-    [self recordReadProgress:^{
-        UIView* fakeCover = [[weakSelf webView] snapshotViewAfterScreenUpdates:YES];
-        [weakSelf.view addSubview:fakeCover];
-        
-        [weakSelf preloadData:weakSelf.nextArticle(weakSelf.currentArticle) feed:weakSelf.nextFeed(weakSelf.currentArticle)];
-        
-        //    [[self.webView scrollView] setContentOffset:CGPointMake(-64, 0)];
-        //    [self loadData:self.currentArticle feed:self.currentFeed];
-        //    self.webView.transform = CGAffineTransformMakeTranslation(0, 100);
-        [UIView animateWithDuration:0.4 animations:^{
-            //        [fakeCover setAlpha:0];
-            fakeCover.transform = CGAffineTransformMakeTranslation(0, -fakeCover.frame.size.height);
-            //        self.webView.transform = CGAffineTransformIdentity;
-        } completion:^(BOOL finished) {
-            [fakeCover removeFromSuperview];
-        }];
+    if (self.currentArticle) {
+        [self cleanReadProgress];
+    }
+    
+    UIView* fakeCover = [[weakSelf webView] snapshotViewAfterScreenUpdates:YES];
+    [weakSelf.view addSubview:fakeCover];
+    
+    [weakSelf preloadData:weakSelf.nextArticle(weakSelf.currentArticle) feed:weakSelf.nextFeed(weakSelf.currentArticle)];
+    
+    //    [[self.webView scrollView] setContentOffset:CGPointMake(-64, 0)];
+    //    [self loadData:self.currentArticle feed:self.currentFeed];
+    //    self.webView.transform = CGAffineTransformMakeTranslation(0, 100);
+    [UIView animateWithDuration:0.4 animations:^{
+        //        [fakeCover setAlpha:0];
+        fakeCover.transform = CGAffineTransformMakeTranslation(0, -fakeCover.frame.size.height);
+        //        self.webView.transform = CGAffineTransformIdentity;
+    } completion:^(BOOL finished) {
+        [fakeCover removeFromSuperview];
     }];
-   
 
 }
 
@@ -336,12 +345,18 @@
 
 - (void)setProgress:(CGFloat)progress
 {
-    if (progress > 0.8 && self.webView.alpha == 0) {
-        [UIView animateWithDuration:0.8 animations:^{
-            self. webView.alpha = 1;
-        }];
-    }
+//    if (progress > 0.8 && self.webView.alpha == 0) {
+//        [UIView animateWithDuration:0.8 animations:^{
+//            self. webView.alpha = 1;
+//        }];
+//    }
 //    NSLog(@"1 %f",progress);
+    if (fabs(progress - 1) < 0.00001 || fabs(progress) < 0.00001) {
+        if (self.navigationController.navigationBar.alpha == 0) {
+            self.navigationController.navigationBar.alpha = 1;
+        }
+    }
+    
     [self.progressView setProgress:progress animated:YES];
     if (self.progressView.alpha == 0) {
         [UIView animateWithDuration:0.24 animations:^{
@@ -454,9 +469,10 @@
         [self preloadData:m feed:feedInfo];
         self.showToolbar = YES;
         
-//        UIBarButtonItem* rb = [self mvp_buttonItemWithSystem:UIBarButtonSystemItemAction actionName:@"openAction:" title:@"更多操作"];
+        UIBarButtonItem* rb = [self mvp_buttonItemWithActionName:@"openActionText:" title:@"更多操作"];
+        rb.image = [UIImage imageNamed:@"icon_text"];
         
-//        self.navigationItem.rightBarButtonItem = rb;
+        self.navigationItem.rightBarButtonItem = rb;
         
     }
     
@@ -469,9 +485,13 @@
 - (void)preloadData:(RRFeedArticleModel*)m feed:(MWFeedInfo*)feedInfo
 {
     self.title = @"";
-    if ([self.presenter conformsToProtocol:@protocol(RRProvideDataProtocol)]) {
-        [(id)self.presenter loadData:m feed:feedInfo];
-    }
+    __weak typeof(self) weakSelf = self;
+    [self.webView stopLoading];
+    [self.webView evaluateJavaScript:@"document.body.style.visibility=\"hidden\";" completionHandler:^(id _Nullable x, NSError * _Nullable error) {
+        if ([weakSelf.presenter conformsToProtocol:@protocol(RRProvideDataProtocol)]) {
+            [(id)weakSelf.presenter loadData:m feed:feedInfo];
+        }
+    }];
 }
 
 - (void)loadData:(RRFeedArticleModel*)m feed:(MWFeedInfo*)feedInfo
@@ -479,8 +499,9 @@
     if (!m && ! feedInfo) {
         return;
     }
+   
 //    if(0){
-        self.webView.alpha = 0;
+//        self.webView.alpha = 0;
 //    }
     
     self.prepareLoadNext = NO;
@@ -542,7 +563,12 @@
     
     //        NSLog(@"%@",m.link);
     if (m.link) {
-        string = [string stringByReplacingOccurrencesOfString:@"<#url#>" withString:[NSString stringWithFormat:@"safari%@",m.link]];
+        NSString* url = m.link;
+        if ([m.link hasPrefix:@"//"]) {
+            url = [@"http:" stringByAppendingString:url];
+        }
+        
+        string = [string stringByReplacingOccurrencesOfString:@"<#url#>" withString:[NSString stringWithFormat:@"safari%@",url]];
     }
     
     if ([self hasLatex:string]) {
@@ -556,9 +582,15 @@
     
     string = [string stringByReplacingOccurrencesOfString:@"src=\"//" withString:@"src=\"http://"];
     
+    NSURL* u = [NSURL URLWithString:m.link];
+    string = [string stringByReplacingOccurrencesOfString:@"<#host#>" withString:[NSString stringWithFormat:@"%@://%@",u.scheme,u.host]];
+    
     //        NSURL* url = [NSURL URLWithString:m.link];
     //        NSURL* base = [NSURL URLWithString:[NSString stringWithFormat:@"%@://%@",[url scheme],[url host]]];
-    [self.webView loadHTMLString:string baseURL:[[NSBundle mainBundle] bundleURL]];
+    __weak typeof(self) weakSelf = self;
+  
+    [weakSelf.webView loadHTMLString:string baseURL:[[NSBundle mainBundle] bundleURL]];
+   
 }
 
 - (BOOL)hasPreMark:(NSString*)html isMd:(BOOL)isMd
@@ -655,13 +687,17 @@
     }];
 }
 
+- (void)cleanReadProgress
+{
+    [RRFeedAction recordArticle:self.currentArticle.uuid position:0];
+}
+
 - (void)recordReadProgress:(void (^)(void))finish
 {
     if (self.currentArticle) {
         __weak typeof(self) weakSelf = self;
         [[self webView] evaluateJavaScript:@"document.body.scrollTop" completionHandler:^(id _Nullable x, NSError * _Nullable error) {
             NSLog(@"当前滚动位置 %@ %@",x,weakSelf.currentArticle);
-            
             [RRFeedAction recordArticle:weakSelf.currentArticle.uuid position:[x doubleValue]];
             
             if (finish) {

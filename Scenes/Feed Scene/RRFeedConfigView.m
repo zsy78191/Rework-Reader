@@ -24,6 +24,7 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     [self view];
+    
    
 }
 
@@ -31,6 +32,18 @@
 {
     self.isLoading = YES;
     self.canceled = NO;
+    
+    __weak typeof(self) weakSelf = self;
+    [self.presenter mvp_bindBlock:^(id view, id value) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            if ([value boolValue]) {
+                [weakSelf showDissubcribeButton];
+            }
+            else {
+                [weakSelf showSubcribeButton];
+            }
+        });
+    } keypath:@"cancelFeed"];
 }
 
 - (Class)mvp_presenterClass
@@ -57,7 +70,7 @@
 
 - (void)showSubcribeButton
 {
-    UIBarButtonItem* item = [self mvp_buttonItemWithActionName:@"feedit" title:@"订阅"];
+    UIBarButtonItem* item = [self mvp_buttonItemWithActionName:@"feedit:" title:@"订阅"];
     UIBarButtonItem* sp = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
     self.toolbarItems = @[sp,item];
     self.feeded = NO;
@@ -99,8 +112,10 @@
 
 - (void)loadError:(NSError *)error
 {
-    [self hudFail:@"订阅失败"];
-    [self mvp_popViewController:nil];
+    dispatch_async(dispatch_get_main_queue(), ^{
+//        [self hudFail:@"订阅失败"];
+//        [self mvp_popViewController:nil];
+    });
 }
 
 - (void)loadIcon:(NSString *)icon
@@ -126,17 +141,7 @@
 //        id exist_value = [self.presenter mvp_valueWithSelectorName:@"isFeedExist"];
 //        NSLog(@"%@",exist_value);
         
-        __weak typeof(self) weakSelf = self;
-        [self.presenter mvp_bindBlock:^(id view, id value) {
-            dispatch_async(dispatch_get_main_queue(), ^{
-                if ([value boolValue]) {
-                    [weakSelf showDissubcribeButton];
-                }
-                else {
-                    [weakSelf showSubcribeButton];
-                }
-            });
-        } keypath:@"cancelFeed"];
+
     });
     
     self.isLoading = NO;

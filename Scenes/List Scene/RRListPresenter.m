@@ -311,9 +311,21 @@
             
             [RRFeedAction readArticle:a.uuid];
             
+            NSString* link = a.link;
+            if ([a.link hasPrefix:@"//"]) {
+                link = [@"http:" stringByAppendingString:link];
+            }
+            
+            NSURL* u = [NSURL URLWithString:link];
+            
+            if (!u) {
+                [[self view] hudFail:@"链接不可用"];
+                return;
+            }
+            
             SFSafariViewControllerConfiguration* c = [[SFSafariViewControllerConfiguration alloc] init];
             c.entersReaderIfAvailable = YES;
-            SFSafariViewController* s = [[SFSafariViewController alloc] initWithURL:[NSURL URLWithString:a.link] configuration:c];
+            SFSafariViewController* s = [[SFSafariViewController alloc] initWithURL:u configuration:c];
             [self.view mvp_presentViewController:s animated:YES completion:^{
             }];
             return;

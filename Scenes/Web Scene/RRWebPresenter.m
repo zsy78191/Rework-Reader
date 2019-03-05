@@ -16,7 +16,7 @@
 #import "RRFeedAction.h"
 
 
-@interface RRWebPresenter ()
+@interface RRWebPresenter () <UIPopoverPresentationControllerDelegate>
 {
     
 }
@@ -171,7 +171,44 @@
     self.articleLiked = NO;
 }
 
+- (void)openActionText:(UIBarButtonItem*)sender
+{
+    UIViewController* vc = [MVPRouter viewForURL:@"rr://setting" withUserInfo:nil];
+    vc.modalTransitionStyle = UIModalPresentationPopover;
+    
+    vc.popoverPresentationController.barButtonItem = sender;
+    vc.popoverPresentationController.permittedArrowDirections = UIPopoverArrowDirectionUp;
+    
+//    vc.preferredContentSize = CGSizeMake(100, 100);
+//    vc.popoverPresentationController.sourceRect = CGRectMake(0, 0, 100, 100);
+    vc.popoverPresentationController.delegate = self;
+    vc.popoverPresentationController.popoverLayoutMargins = UIEdgeInsetsMake(100, 100, 100, 100);
+//    [(UIViewController*)self.view showViewController:vc sender:nil];
+    
+//    [(UIViewController*)self.view setModalPresentationStyle:UIModalPresentationPopover];
+    NSLog(@"-- %@",vc.popoverPresentationController);
+    [(UIViewController*)self.view presentViewController:vc animated:YES completion:^{
+        
+    }];
+}
 
+#pragma mark --  实现代理方法
+//默认返回的是覆盖整个屏幕，需设置成UIModalPresentationNone。
+-(UIModalPresentationStyle)adaptivePresentationStyleForPresentationController:(UIPresentationController *)controller{
+    return UIModalPresentationPopover;
+}
 
+//点击蒙版是否消失，默认为yes；
+
+-(BOOL)popoverPresentationControllerShouldDismissPopover:(UIPopoverPresentationController *)popoverPresentationController{
+    return YES;
+}
+
+//弹框消失时调用的方法
+-(void)popoverPresentationControllerDidDismissPopover:(UIPopoverPresentationController *)popoverPresentationController{
+    
+    NSLog(@"弹框已经消失");
+    
+}
 
 @end

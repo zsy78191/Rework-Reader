@@ -107,17 +107,7 @@
     }
     
     {
-        RRFeedInfoListOtherModel* (^model)(NSString* title,NSString* icon, NSString* subtitle, NSString* key) = ^(NSString* title,NSString* icon, NSString* subtitle, NSString* key){
-            RRFeedInfoListOtherModel* m = [[RRFeedInfoListOtherModel alloc] init];
-            m.title = title;
-            m.icon = icon;
-            m.subtitle = subtitle;
-            m.key = key;
-            m.type = RRFeedInfoListOtherModelTypeItem;
-            return m;
-        };
-        
-        RRFeedInfoListOtherModel* mUnread = model(@"未读订阅",@"favicon",@"三日内的未读文章",@"unread");
+        RRFeedInfoListOtherModel* mUnread = GetRRFeedInfoListOtherModel(@"未读订阅",@"favicon_2",@"三日内的未读文章",@"unread");
         mUnread.canRefresh = YES;
         mUnread.canEdit = NO;
         mUnread.readStyle = ({
@@ -133,7 +123,7 @@
         
         [self.readStyleInputer mvp_addModel:mUnread];
         
-        RRFeedInfoListOtherModel* mFavourite = model(@"收藏",@"favicon",@"收藏的文章",@"favourite");
+        RRFeedInfoListOtherModel* mFavourite = GetRRFeedInfoListOtherModel(@"收藏",@"favicon_1",@"收藏的文章",@"favourite");
         mFavourite.canRefresh = NO;
         mFavourite.canEdit = NO;
         mFavourite.readStyle = ({
@@ -152,7 +142,7 @@
         }
         
         {
-            RRFeedInfoListOtherModel* mLast = model(@"最近阅读",@"favicon",@"近期阅读的文章",@"last");
+            RRFeedInfoListOtherModel* mLast = GetRRFeedInfoListOtherModel(@"最近阅读",@"favicon_3",@"近期阅读的文章",@"last");
             mLast.canRefresh = NO;
             mLast.canEdit = NO;
             mLast.readStyle = ({

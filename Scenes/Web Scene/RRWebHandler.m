@@ -15,19 +15,59 @@
     NSString *urlString = urlSchemeTask.request.URL.relativeString;
    
 //    NSLog(@"-- %@",urlString);
-    __block NSData *data = nil;
+//    __block NSData *data = nil;
     
 //    UIImage* i = [[[SDWebImageManager sharedManager] imageCache] imageFromMemoryCacheForKey:[urlString substringFromIndex:5]];
-    
-    [[SDWebImageManager sharedManager] downloadImageWithURL:[NSURL URLWithString:[urlString substringFromIndex:5]] options:SDWebImageHighPriority progress:^(NSInteger receivedSize, NSInteger expectedSize) {
+    NSLog(@"d %@",urlString);
+    NSURL* url = [NSURL URLWithString:[urlString substringFromIndex:5]];
+    [[SDWebImageManager sharedManager] loadImageWithURL:url options:SDWebImageHighPriority progress:^(NSInteger receivedSize, NSInteger expectedSize, NSURL * _Nullable targetURL) {
         
-    } completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, BOOL finished, NSURL *imageURL) {
+    } completed:^(UIImage * _Nullable image, NSData * _Nullable data, NSError * _Nullable error, SDImageCacheType cacheType, BOOL finished, NSURL * _Nullable imageURL) {
+//        NSLog(@"%@",image);
+        if (error) {
+            NSLog(@"%@",error);
+            [urlSchemeTask didFailWithError:error];
+            return;
+        }
         
+//        data = UIImageJPEGRepresentation(image, 1);
+        NSString* mtype = @"application/x-img";
+        switch ([image sd_imageFormat]) {
+            case SDImageFormatGIF:
+            {
+                mtype = @"image/gif";
+                break;
+            }
+            case SDImageFormatPNG:
+            {
+                mtype = @"image/png";
+                break;
+            }
+            case SDImageFormatJPEG:
+            {
+                mtype = @"image/jpeg";
+                break;
+            }
+            case SDImageFormatWebP:
+            {
+                mtype = @"application/x-img";
+                break;
+            }
+            case SDImageFormatUndefined:
+            {
+                mtype = @"text/xml";
+                break;
+            }
+            default:
+                break;
+        }
         
-        data = UIImageJPEGRepresentation(image, 1);
-        NSURLResponse *response = [[NSURLResponse alloc] initWithURL:urlSchemeTask.request.URL MIMEType:@"image/jpeg" expectedContentLength:data.length textEncodingName:nil];
+        if (!data && image) {
+//            NSLog(@"没有图");
+            data = [image sd_imageData];
+        }
+        NSURLResponse *response = [[NSURLResponse alloc] initWithURL:urlSchemeTask.request.URL MIMEType:mtype expectedContentLength:data.length textEncodingName:nil];
         [urlSchemeTask didReceiveResponse:response];
-        
         [urlSchemeTask didReceiveData:data];
         [urlSchemeTask didFinish];
     }];

@@ -16,6 +16,10 @@ typedef enum : NSUInteger {
 
 NS_ASSUME_NONNULL_BEGIN
 
+@class RRFeedInfoListOtherModel;
+
+extern RRFeedInfoListOtherModel* (^GetRRFeedInfoListOtherModel)(NSString* title,NSString* icon, NSString* subtitle, NSString* key);
+
 @interface RRFeedInfoListOtherModel : MVPModel <RRCanEditProtocol>
 
 @property (nonatomic, assign) RRFeedInfoListOtherModelType type;

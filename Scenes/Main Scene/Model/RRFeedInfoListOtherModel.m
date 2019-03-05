@@ -18,8 +18,22 @@
 //
 //@property (nonatomic, strong, nullable) RRReadStyle* readStyle;
 
+
+RRFeedInfoListOtherModel* (^GetRRFeedInfoListOtherModel)(NSString* title,NSString* icon, NSString* subtitle, NSString* key) = ^(NSString* title,NSString* icon, NSString* subtitle, NSString* key){
+    @autoreleasepool{
+        RRFeedInfoListOtherModel* m = [[RRFeedInfoListOtherModel alloc] init];
+        m.title = title;
+        m.icon = icon;
+        m.subtitle = subtitle;
+        m.key = key;
+        m.type = RRFeedInfoListOtherModelTypeItem;
+        return m;
+    }
+};
+
 @implementation RRFeedInfoListOtherModel
 
 @synthesize canEdit = _canEdit;
+
 
 @end

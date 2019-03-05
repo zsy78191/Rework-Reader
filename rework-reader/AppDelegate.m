@@ -22,8 +22,9 @@
 @import DateTools;
 @import UserNotifications;
 #import "RRFeedInfoListOtherModel.h"
+@import SDWebImage;
 
-@interface AppDelegate ()
+@interface AppDelegate () <SDWebImageManagerDelegate>
 {
     
 }
@@ -91,20 +92,16 @@
 //
     id vc = [MVPRouter viewForURL:@"rr://feedlist" withUserInfo:nil];
     RRExtraViewController* nv = [[RRExtraViewController alloc] initWithRootViewController:vc];
+    
+    
     if ([[NSUserDefaults standardUserDefaults] boolForKey:@"openUnread"]) {
+        
+        [[NSUserDefaults standardUserDefaults] setBool:NO forKey:@"openUnread"];
+        [[NSUserDefaults standardUserDefaults] synchronize];
         // RRTODO:优化
 //        id v2 = []
-        RRFeedInfoListOtherModel* (^model)(NSString* title,NSString* icon, NSString* subtitle, NSString* key) = ^(NSString* title,NSString* icon, NSString* subtitle, NSString* key){
-            RRFeedInfoListOtherModel* m = [[RRFeedInfoListOtherModel alloc] init];
-            m.title = title;
-            m.icon = icon;
-            m.subtitle = subtitle;
-            m.key = key;
-            m.type = RRFeedInfoListOtherModelTypeItem;
-            return m;
-        };
-        
-        RRFeedInfoListOtherModel* mUnread = model(@"未读订阅",@"favicon",@"三日内的未读文章",@"unread");
+    
+        RRFeedInfoListOtherModel* mUnread = GetRRFeedInfoListOtherModel(@"未读订阅",@"favicon",@"三日内的未读文章",@"unread");
         mUnread.canRefresh = YES;
         mUnread.canEdit = NO;
         mUnread.readStyle = ({
@@ -131,6 +128,8 @@
 #pragma mark - lifecircle
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
+    
+    [[SDWebImageManager sharedManager] setDelegate:self];
     
     [MagicalRecord setupCoreDataStackWithiCloudContainer:[@"iCloud." stringByAppendingString:[UIApplication sharedApplication].bundleID()] localStoreNamed:@"Model"];
     

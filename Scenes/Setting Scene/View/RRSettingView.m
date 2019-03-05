@@ -17,11 +17,22 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
+    
+    //设置内容区域大小
+    self.preferredContentSize = CGSizeMake(100, 200);
+    
+    //设置内容背景颜色
+    self.view.backgroundColor = [UIColor blueColor];
 }
 
 - (Class)mvp_presenterClass
 {
     return NSClassFromString(@"RRSettingPresenter");
+}
+
+- (void)mvp_initFromModel:(MVPInitModel *)model
+{
+  
 }
 
 - (void)mvp_configMiddleware

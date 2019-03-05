@@ -43,6 +43,12 @@
 			</dict>
 		</dict>
 	</dict>
+	<key>NSCalendarsUsageDescription</key>
+	<string>Reader 请求使用您的系统日历</string>
+	<key>NSCameraUsageDescription</key>
+	<string>Reader 请求使用您的相机</string>
+	<key>NSPhotoLibraryAddUsageDescription</key>
+	<string>Reader 请求使用您的系统相册</string>
 	<key>UIBackgroundModes</key>
 	<array>
 		<string>fetch</string>

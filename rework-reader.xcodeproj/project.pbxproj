@@ -46,6 +46,7 @@
 		D473F2A32227DAD200DF3C6D /* RRTableOutput.m in Sources */ = {isa = PBXBuildFile; fileRef = D473F2A22227DAD200DF3C6D /* RRTableOutput.m */; };
 		D473F2A6222817F000DF3C6D /* Reader 版本.md in Resources */ = {isa = PBXBuildFile; fileRef = D473F2A5222817F000DF3C6D /* Reader 版本.md */; };
 		D473F2C4222970C000DF3C6D /* style_one.plist in Resources */ = {isa = PBXBuildFile; fileRef = D473F2C3222970C000DF3C6D /* style_one.plist */; };
+		D473F2C6222DE48B00DF3C6D /* action.js in Resources */ = {isa = PBXBuildFile; fileRef = D473F2C5222DE48B00DF3C6D /* action.js */; };
 		D47717D821ED90CF0050DF14 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = D47717D721ED90CF0050DF14 /* AppDelegate.m */; };
 		D47717DE21ED90CF0050DF14 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = D47717DC21ED90CF0050DF14 /* Main.storyboard */; };
 		D47717E021ED90D00050DF14 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = D47717DF21ED90D00050DF14 /* Assets.xcassets */; };
@@ -182,6 +183,7 @@
 		D473F2A42227DBB200DF3C6D /* RRCanEditProtocol.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RRCanEditProtocol.h; sourceTree = "<group>"; };
 		D473F2A5222817F000DF3C6D /* Reader 版本.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = "Reader 版本.md"; sourceTree = "<group>"; };
 		D473F2C3222970C000DF3C6D /* style_one.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = style_one.plist; sourceTree = "<group>"; };
+		D473F2C5222DE48B00DF3C6D /* action.js */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.javascript; path = action.js; sourceTree = "<group>"; };
 		D47717D321ED90CF0050DF14 /* rework-reader.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "rework-reader.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		D47717D621ED90CF0050DF14 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		D47717D721ED90CF0050DF14 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
@@ -740,6 +742,7 @@
 		D4E0F9062213C46200902540 /* HTML */ = {
 			isa = PBXGroup;
 			children = (
+				D473F2C5222DE48B00DF3C6D /* action.js */,
 				D473F28F2224F42800DF3C6D /* load.jpg */,
 				D4E0F9082213C47400902540 /* templete.html */,
 				D4AC4DF7221821150028D342 /* h.js */,
@@ -878,6 +881,7 @@
 			files = (
 				D47A7A28221A9E9D00F13194 /* Reader SP说明书.md in Resources */,
 				D4AC4DD72216F9E70028D342 /* 推荐订阅源.md in Resources */,
+				D473F2C6222DE48B00DF3C6D /* action.js in Resources */,
 				D440CFF0221555E0003B7203 /* RRFeedArticleCell.xib in Resources */,
 				D473F29F22278B4900DF3C6D /* MWPhotoBrowser.bundle in Resources */,
 				D473F2A6222817F000DF3C6D /* Reader 版本.md in Resources */,
@@ -968,11 +972,11 @@
 				"${BUILT_PRODUCTS_DIR}/DZNEmptyDataSet/DZNEmptyDataSet.framework",
 				"${BUILT_PRODUCTS_DIR}/DateTools/DateTools.framework",
 				"${BUILT_PRODUCTS_DIR}/Fork-MWFeedParser/Fork_MWFeedParser.framework",
+				"${BUILT_PRODUCTS_DIR}/Fork-MWPhotoBrowser/Fork_MWPhotoBrowser.framework",
 				"${BUILT_PRODUCTS_DIR}/IQKeyboardManager/IQKeyboardManager.framework",
 				"${BUILT_PRODUCTS_DIR}/MBProgressHUD/MBProgressHUD.framework",
 				"${BUILT_PRODUCTS_DIR}/MGJRouter/MGJRouter.framework",
 				"${BUILT_PRODUCTS_DIR}/MMKV/MMKV.framework",
-				"${BUILT_PRODUCTS_DIR}/MWPhotoBrowser/MWPhotoBrowser.framework",
 				"${BUILT_PRODUCTS_DIR}/MagicalRecord/MagicalRecord.framework",
 				"${BUILT_PRODUCTS_DIR}/Masonry/Masonry.framework",
 				"${BUILT_PRODUCTS_DIR}/ReactiveObjC/ReactiveObjC.framework",
@@ -998,11 +1002,11 @@
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/DZNEmptyDataSet.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/DateTools.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Fork_MWFeedParser.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Fork_MWPhotoBrowser.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/IQKeyboardManager.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/MBProgressHUD.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/MGJRouter.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/MMKV.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/MWPhotoBrowser.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/MagicalRecord.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Masonry.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/ReactiveObjC.framework",

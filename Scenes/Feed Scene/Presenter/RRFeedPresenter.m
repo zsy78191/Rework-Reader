@@ -354,8 +354,10 @@
     }];
 }
 
-- (void)feedit
+- (void)feedit:(UIBarButtonItem*)sender
 {
+    sender.enabled = NO;
+    
     NSMutableDictionary* d = [[[RPDataManager sharedManager] dictionaryWithModels:self.inputer.allModels getKeys:@[@"title",@"summary",@"link",@"url",@"language",@"updateDate",@"managingEditor",@"ttl",@"copyright",@"icon",@"generator",@"usettl",@"usesafari",@"useautoupdate"] getModel:NO] mutableCopy];
     
 //    NSLog(@"%@",d);
@@ -383,6 +385,7 @@
         dispatch_async(dispatch_get_main_queue(), ^{
             [(UIViewController*)self.view hudSuccess:@"订阅成功"];
             [self.view mvp_popViewController:nil];
+            sender.enabled = YES;
         });
     }];
 }
