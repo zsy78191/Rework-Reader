@@ -1,5 +1,9 @@
 本仓是一个完整项目
 
+## 协议
+
+本仓库遵循GNU General Public License V3（以下简称GPL）协议，GPL的出发点是代码的开源、免费使用和引用、修改/衍生代码的开源、免费使用，**但不允许使用修改后和衍生的代码做为闭源的商业软件发布和销售**。
+
 ## Pods
 
 依赖的第三方库包括
@@ -22,7 +26,7 @@
 
 `MMKV` 微信的高速缓存工具
 
-`MWPhotoBrowser` 图片浏览器
+`Fork-MWPhotoBrowser` 图片浏览器，因为原作者不更新了，为了用上最新的SDWebImage，这个是我修改过的库
 
 `pop` Facebook的动画库
 
