@@ -16,6 +16,7 @@
 @property (nonatomic, assign) BOOL isLoading;
 @property (nonatomic, assign) BOOL canceled;
 @property (nonatomic, assign) BOOL feeded;
+@property (nonatomic, weak) UIBarButtonItem* feedBarItem;
 @end
 
 @implementation RRFeedConfigView
@@ -44,6 +45,8 @@
             }
         });
     } keypath:@"cancelFeed"];
+    
+ 
 }
 
 - (Class)mvp_presenterClass
@@ -71,6 +74,8 @@
 - (void)showSubcribeButton
 {
     UIBarButtonItem* item = [self mvp_buttonItemWithActionName:@"feedit:" title:@"订阅"];
+    self.feedBarItem = item;
+    item.enabled = NO;
     UIBarButtonItem* sp = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
     self.toolbarItems = @[sp,item];
     self.feeded = NO;
@@ -141,10 +146,13 @@
 //        id exist_value = [self.presenter mvp_valueWithSelectorName:@"isFeedExist"];
 //        NSLog(@"%@",exist_value);
         
+        //Fixed bug
+        self.feedBarItem.enabled = YES;
 
     });
     
     self.isLoading = NO;
+    
 }
 
 
@@ -188,6 +196,7 @@
         [self cancelit];
     }
 //    [[self navigationController] setToolbarHidden:YES animated:animated];
+ 
 }
 
 - (void)cancelit

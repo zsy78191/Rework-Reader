@@ -57,6 +57,7 @@
     self.count = 0;
     self.allWords = 0;
     self.canceled = NO;
+//    self.cancelFeed = YES;
 }
 
 - (id)mvp_inputerWithOutput:(id<MVPOutputProtocol>)output
