@@ -9,7 +9,8 @@ for(var i = 0 ; i < iframes.length ; i ++ )
 
 var images = new Array;
 var exclude = [
-               'https://www.zhihu.com/equation'
+               'https://www.zhihu.com/equation',
+               'http://www.zhihu.com/equation'
                ];
 
 function endWith(str,endStr){
@@ -89,14 +90,41 @@ removeInlineCss("div");
 removeInlineCss("a");
 removeInlineCss("img");
 
+
+
+
 function setFont(e)
 {
-    document.getElementsByTagName('body')[0].style.cssText = 'font-family:'+e+',sans-serif !important';
-    document.getElementsByTagName('html')[0].style.cssText = 'font-family:'+e+',sans-serif !important';
+    document.getElementsByTagName('body')[0].style.setProperty('font-family',e+',sans-serif','important');
+    document.getElementsByTagName('html')[0].style.setProperty('font-family',e+',sans-serif','important');
+}
+
+function setFontSize(e)
+{
+    document.getElementsByTagName('body')[0].style.setProperty('font-size',e+"px","important");
+    document.getElementsByTagName('html')[0].style.setProperty('font-size',e+"px","important");
+}
+
+function setLineHeight(e)
+{
+    document.getElementsByTagName('body')[0].style.setProperty('line-height',e+"rem","important");
+    document.getElementsByTagName('html')[0].style.setProperty('line-height',e+"rem","important");
 }
 
 function setAlign(e)
 {
-    document.getElementsByTagName('body')[0].style.textAlign = e;
-    document.getElementsByTagName('html')[0].style.textAlign = e;
+    document.getElementsByTagName('body')[0].style.setProperty('text-align',e,"important");
+    document.getElementsByTagName('html')[0].style.setProperty('text-align',e,"important");
 }
+
+var fontSize = window.prompt('getFontSize','20');
+setFontSize(fontSize);
+
+var lineHeight = window.prompt('getLineHeight','1.6');
+setLineHeight(lineHeight);
+
+var align = window.prompt('getAlign','justify');
+setAlign(align);
+
+var font = window.prompt('getFont','PingFangSC-Light');
+setFont(font);

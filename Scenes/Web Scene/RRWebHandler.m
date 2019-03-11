@@ -8,24 +8,41 @@
 
 #import "RRWebHandler.h"
 @import SDWebImage;
+
+@interface RRWebHandler ()
+{
+    
+}
+@property (nonatomic, strong) NSHashTable* table;
+@end
+
 @implementation RRWebHandler
+
+- (NSHashTable *)table
+{
+    if (!_table) {
+        _table = [[NSHashTable alloc] initWithOptions:NSPointerFunctionsWeakMemory capacity:10];
+    }
+    return _table;
+}
+
 //这里拦截到URLScheme为customScheme的请求后，读取本地图片test.jpg，并返回给WKWebView显示
 - (void)webView:(WKWebView *)webView startURLSchemeTask:(id <WKURLSchemeTask>)urlSchemeTask;
 {
     NSString *urlString = urlSchemeTask.request.URL.relativeString;
    
-//    NSLog(@"-- %@",urlString);
+//    //NSLog(@"-- %@",urlString);
 //    __block NSData *data = nil;
     
 //    UIImage* i = [[[SDWebImageManager sharedManager] imageCache] imageFromMemoryCacheForKey:[urlString substringFromIndex:5]];
-    NSLog(@"d %@",urlString);
+//    //NSLog(@"d %@",urlString);
     NSURL* url = [NSURL URLWithString:[urlString substringFromIndex:5]];
     [[SDWebImageManager sharedManager] loadImageWithURL:url options:SDWebImageHighPriority progress:^(NSInteger receivedSize, NSInteger expectedSize, NSURL * _Nullable targetURL) {
         
     } completed:^(UIImage * _Nullable image, NSData * _Nullable data, NSError * _Nullable error, SDImageCacheType cacheType, BOOL finished, NSURL * _Nullable imageURL) {
-//        NSLog(@"%@",image);
+//        //NSLog(@"%@",image);
         if (error) {
-            NSLog(@"%@",error);
+            //NSLog(@"%@",error);
             [urlSchemeTask didFailWithError:error];
             return;
         }
@@ -63,13 +80,25 @@
         }
         
         if (!data && image) {
-//            NSLog(@"没有图");
+//            //NSLog(@"没有图");
             data = [image sd_imageData];
         }
-        NSURLResponse *response = [[NSURLResponse alloc] initWithURL:urlSchemeTask.request.URL MIMEType:mtype expectedContentLength:data.length textEncodingName:nil];
-        [urlSchemeTask didReceiveResponse:response];
-        [urlSchemeTask didReceiveData:data];
-        [urlSchemeTask didFinish];
+        
+        // FIXBUG: urltask结束了
+        if (self.table.count > 0) {
+//            NSLog(@"%@",self.table);
+            if ([self.table containsObject:urlSchemeTask]) {
+                return;
+            }
+        }
+        
+        
+        if (urlSchemeTask) {
+            NSURLResponse *response = [[NSURLResponse alloc] initWithURL:urlSchemeTask.request.URL MIMEType:mtype expectedContentLength:data.length textEncodingName:nil];
+            [urlSchemeTask didReceiveResponse:response];
+            [urlSchemeTask didReceiveData:data];
+            [urlSchemeTask didFinish];
+        }
     }];
 }
 
@@ -104,7 +133,10 @@
     
 }
 
-- (void)webView:(WKWebView *)webVie stopURLSchemeTask:(id)urlSchemeTask {
+- (void)webView:(WKWebView *)webView stopURLSchemeTask:(id)urlSchemeTask {
 //    urlSchemeTask = nil;
+//    urlSchemeTask = nil;
+//    [urlSchemeTask didFinish];
+    [self.table addObject:urlSchemeTask];
 }
 @end

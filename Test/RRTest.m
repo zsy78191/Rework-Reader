@@ -21,7 +21,7 @@
     [[RRFeedLoader sharedLoader] loadOfficalWithInfoBlock:^(MWFeedInfo * _Nonnull info) {
         
     } itemBlock:^(MWFeedItem * _Nonnull item) {
-        NSLog(@"%@",item);
+        //NSLog(@"%@",item);
     } errorBlock:^(NSError * _Nonnull error) {
         
     } finishBlock:^{
@@ -38,9 +38,9 @@
         NLLanguageRecognizer * r = [[NLLanguageRecognizer alloc] init];
         [r processString:@"困死了去睡觉了"];
         NLLanguage l = r.dominantLanguage;
-        NSLog(@"%@",l);
+        //NSLog(@"%@",l);
         NSDictionary* d = [r languageHypothesesWithMaximum:2];
-        NSLog(@"%@",d);
+        //NSLog(@"%@",d);
         
         // 分词
         NLTokenizer* tokenizer = [[NLTokenizer alloc] initWithUnit:NLTokenUnitWord];
@@ -48,7 +48,7 @@
         NSRange range = NSMakeRange(0, str.length);
         tokenizer.string = str;
         NSArray* allWords = [tokenizer tokensForRange:range];
-        NSLog(@"%@",allWords);
+        //NSLog(@"%@",allWords);
         
         // 文本标签
         NLLanguageRecognizer * r2 = [[NLLanguageRecognizer alloc] init];
@@ -64,9 +64,9 @@
 //
 //        }];
         [tagger enumerateTagsInRange:range2 unit:NLTokenUnitWord scheme:NLTagSchemeNameType options:NLTaggerOmitWhitespace|NLTaggerJoinNames usingBlock:^(NLTag  _Nullable tag, NSRange tokenRange, BOOL * _Nonnull stop) {
-            NSLog(@"%@",[str2 substringWithRange:tokenRange]);
-            NSLog(@"%@",tag);
-            NSLog(@"--");
+            //NSLog(@"%@",[str2 substringWithRange:tokenRange]);
+            //NSLog(@"%@",tag);
+            //NSLog(@"--");
         }];
     }
 }
@@ -77,7 +77,7 @@
     RRGetWebIconOperation* o = [[RRGetWebIconOperation alloc] init];
     o.host = [NSURL URLWithString:@"https://www.cnblogs.com/lijIT/p/8980348.html"];
     [o setGetIconBlock:^(NSString * _Nonnull icon) {
-        NSLog(@"%@",icon);
+        //NSLog(@"%@",icon);
     }];
     [o start];
 }
@@ -88,7 +88,7 @@
    NSArray* x = [[RPDataManager sharedManager] getAll:@"EntityFeedArticle" predicate:nil key:nil value:nil sort:@"sort" asc:YES];
  
     [x enumerateObjectsUsingBlock:^(EntityFeedArticle*  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
-        NSLog(@"%@ %@ %@",obj.title,obj.lastread,obj.uuid);
+        //NSLog(@"%@ %@ %@",obj.title,obj.lastread,obj.uuid);
     }];
 }
 
@@ -97,7 +97,25 @@
     NSArray* x = [[RPDataManager sharedManager] getAll:@"EntityFeedInfo" predicate:nil key:nil value:nil sort:@"sort" asc:YES];
     
     [x enumerateObjectsUsingBlock:^(EntityFeedInfo*  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
-        NSLog(@"%@ %@",obj.title,obj.uuid);
+        //NSLog(@"%@ %@",obj.title,obj.uuid);
     }];
 }
+
+- (void)del_all_article
+{
+    [[RPDataManager sharedManager] delData:@"EntityFeedArticle" predicate:nil key:nil value:nil beforeDel:^BOOL(__kindof NSManagedObject * _Nonnull o) {
+        return YES;
+    } finish:^(NSUInteger count, NSError * _Nonnull e) {
+        //NSLog(@"del %@",@(count));
+    }];
+}
+
+- (void)font_test
+{
+    NSString* path = [[NSBundle mainBundle] pathForResource:@"SourceHanSerifCN-Light" ofType:@"otf"];
+    //NSLog(@"%@",path);
+    //NSLog(@"%@",@([[NSFileManager defaultManager] fileExistsAtPath:path]));
+    
+}
+
 @end

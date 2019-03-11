@@ -22,6 +22,12 @@
     [self.toolbar setValue:@(YES) forKey:@"hidesShadow"];
     [self.navigationBar setPrefersLargeTitles:YES];
     [self setToolbarHidden:NO animated:NO];
+   
+}
+
+- (void)viewDidAppear:(BOOL)animated
+{
+    [super viewDidAppear:animated];
 }
 
 - (UIStatusBarStyle)preferredStatusBarStyle

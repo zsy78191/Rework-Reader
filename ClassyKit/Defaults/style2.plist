@@ -7,11 +7,11 @@
 	<key>$main-text-color</key>
 	<string>#000000</string>
 	<key>$sub-text-color</key>
-	<string>#707070</string>
+	<string>#B0B0B0</string>
 	<key>$main-tint-color</key>
 	<string>#BD10E0</string>
 	<key>$main-separator-color</key>
-	<string>#f9f9f9</string>
+	<string>#404040</string>
 	<key>$main-bg-color</key>
 	<string>#ffffff</string>
 	<key>$bar-tint-color</key>
@@ -21,9 +21,9 @@
 	<key>$main-font-size</key>
 	<string>17</string>
 	<key>$main-font-1</key>
-	<string>PingFangSC-Light</string>
+	<string>PingFangSC-Semibold</string>
 	<key>$main-font</key>
-	<string>PingFangSC-Light</string>
+	<string>PingFangSC-Regular</string>
 	<key>$sub-font-size</key>
 	<string>16</string>
 	<key>$large-title-font-size</key>

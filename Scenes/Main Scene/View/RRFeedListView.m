@@ -65,6 +65,8 @@
     UIBarButtonItem* bSearch = [self mvp_buttonItemWithSystem:UIBarButtonSystemItemSearch actionName:@"openSearch" title:@"搜索"];
     self.navigationItem.rightBarButtonItem = self.editButtonItem;
     
+     UIBarButtonItem* item2 = [self mvp_buttonItemWithActionName:@"recommand2" title:@"推荐测试"];
+    
     UIBarButtonItem* item = [self mvp_buttonItemWithActionName:@"recommand" title:@"推荐订阅源"];
     
     UIBarButtonItem* bAddRss = [self mvp_buttonItemWithActionName:@"addRSS" title:@"添加订阅源"];

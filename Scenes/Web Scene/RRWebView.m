@@ -22,9 +22,9 @@
 #import "RRFeedAction.h"
 #import "RRPhotoBrowser.h"
 @import SDWebImage;
+#import "RRWebStyleModel.h"
 
-
-@interface RRWebView () <WKUIDelegate,WKNavigationDelegate,UIScrollViewDelegate,MWPhotoBrowserDelegate>
+@interface RRWebView () <WKUIDelegate,WKNavigationDelegate,UIScrollViewDelegate,MWPhotoBrowserDelegate,WKScriptMessageHandler>
 {
     
 }
@@ -135,8 +135,6 @@
     return _downView;
 }
 
-
-
 - (UIProgressView *)progressView
 {
     if (!_progressView) {
@@ -156,15 +154,20 @@
 - (RRWKWebview *)webView
 {
     if (!_webView) {
+//        RRWebStyleModel* m = [RRWebStyleModel currentStyle];
         WKWebViewConfiguration* c = [[WKWebViewConfiguration alloc] init];
         WKUserContentController* u = [[WKUserContentController alloc] init];
-        WKUserScript* s = [[WKUserScript alloc] initWithSource:@"setFont('PingFangSC-Light');setAlign('justify');" injectionTime:WKUserScriptInjectionTimeAtDocumentEnd forMainFrameOnly:NO];
+        NSString* js = [NSString stringWithFormat:@"\
+                        "];
+        WKUserScript* s = [[WKUserScript alloc] initWithSource:js  injectionTime:WKUserScriptInjectionTimeAtDocumentEnd forMainFrameOnly:NO];
         [u addUserScript:s];
         c.userContentController = u;
         [c setDataDetectorTypes:WKDataDetectorTypeAll];
         [c setURLSchemeHandler:self.hander forURLScheme:@"innerhttp"];
         [c setURLSchemeHandler:self.hander forURLScheme:@"innerhttps"];
 //        [c setURLSchemeHandler:self.hander forURLScheme:@"innerhttps"];
+        [u addScriptMessageHandler:self name:@"getFontSize"];
+        
         _webView = [[RRWKWebview alloc] initWithFrame:self.view.bounds configuration:c];
         if (@available(iOS 11, *)) {
             _webView.scrollView.contentInsetAdjustmentBehavior = UIScrollViewContentInsetAdjustmentNever;
@@ -174,9 +177,39 @@
     return _webView;
 }
 
+- (void)userContentController:(WKUserContentController *)userContentController didReceiveScriptMessage:(WKScriptMessage *)message
+{
+    
+}
+
+- (void)webView:(WKWebView *)webView runJavaScriptTextInputPanelWithPrompt:(NSString *)prompt defaultText:(nullable NSString *)defaultText initiatedByFrame:(WKFrameInfo *)frame completionHandler:(void (^)(NSString * _Nullable result))completionHandler {
+    
+    //NSLog(@"prompt %@",prompt);
+    //NSLog(@" defaultText%@",defaultText);
+    RRWebStyleModel* m = [RRWebStyleModel currentStyle];
+    if ([prompt isEqualToString:@"getFontSize"]) {
+        completionHandler([NSString stringWithFormat:@"%@",@(m.fontSize)]);
+    }
+    else if([prompt isEqualToString:@"getLineHeight"])
+    {
+        completionHandler([NSString stringWithFormat:@"%@",@(m.lineHeight)]);
+    }
+    else if([prompt isEqualToString:@"getAlign"])
+    {
+        completionHandler(m.align);
+    }
+    else if([prompt isEqualToString:@"getFont"])
+    {
+        completionHandler(m.font);
+    }
+    else {
+        completionHandler(defaultText);
+    }
+}
+
 - (void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate
 {
-//    NSLog(@"- %f %f" ,scrollView.contentOffset.y,scrollView.contentSize.height-scrollView.frame.size.height);
+//    //NSLog(@"- %f %f" ,scrollView.contentOffset.y,scrollView.contentSize.height-scrollView.frame.size.height);
     
     if (scrollView.contentOffset.y < - 130) {
         [self loadLast];
@@ -220,7 +253,6 @@
     }];
 }
 
-
 - (void)loadNext
 {
     if (!self.canDragPage) {
@@ -233,8 +265,6 @@
         [self.g impactOccurred];
         return;
     }
-    
-    
     
     __weak typeof(self) weakSelf = self;
     if (self.currentArticle) {
@@ -266,7 +296,7 @@
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView
 {
-//    NSLog(@"(2)%f %d",scrollView.contentOffset.y,self.loadFinished);
+//    //NSLog(@"(2)%f %d",scrollView.contentOffset.y,self.loadFinished);
     if (scrollView.contentOffset.y > 0 && self.loadFinished) {
         if (!self.hideNaviBar && (self.progressView.progress == 0 || self.progressView.progress == 1)) {
             self.hideNaviBar = YES;
@@ -338,8 +368,7 @@
 - (void)viewDidLayoutSubviews
 {
     [super viewDidLayoutSubviews];
-    [self.progressView setFrame:CGRectMake(0, self.navigationController.navigationBar.height+[UIApplication sharedApplication].statusBarFrame.size.height, self.view.frame.size.width, 3)];
-    
+    [self.progressView setFrame:CGRectMake(0, self.navigationController.navigationBar.height+[UIApplication sharedApplication].statusBarFrame.size.height, self.view.frame.size.width, 2)];
     [self.webView setFrame:self.view.bounds];
 }
 
@@ -350,7 +379,7 @@
 //            self. webView.alpha = 1;
 //        }];
 //    }
-//    NSLog(@"1 %f",progress);
+//    //NSLog(@"1 %f",progress);
     if (fabs(progress - 1) < 0.00001 || fabs(progress) < 0.00001) {
         if (self.navigationController.navigationBar.alpha == 0) {
             self.navigationController.navigationBar.alpha = 1;
@@ -376,8 +405,62 @@
     }
 }
 
+- (void)setFontSize:(NSInteger)size
+{
+    NSString* js = [NSString stringWithFormat:@"setFontSize(%@);",@(size)];
+    [self.webView evaluateJavaScript:js completionHandler:^(id _Nullable x, NSError * _Nullable error) {
+    }];
+}
+
+- (void)setLineHeight:(double)lineHeight
+{
+    NSString* js = [NSString stringWithFormat:@"setLineHeight(%@);",@(lineHeight)];
+    [self.webView evaluateJavaScript:js completionHandler:^(id _Nullable x, NSError * _Nullable error) {
+    }];
+}
+
+- (void)setAlign:(NSString*)align
+{
+    NSString* js = [NSString stringWithFormat:@"setAlign(\"%@\");",align];
+    [self.webView evaluateJavaScript:js completionHandler:^(id _Nullable x, NSError * _Nullable error) {
+    }];
+}
+
+- (void)setFont:(NSString*)font
+{
+    NSString* js = [NSString stringWithFormat:@"setFont(\"%@\");",font];
+    [self.webView evaluateJavaScript:js completionHandler:^(id _Nullable x, NSError * _Nullable error) {
+    }];
+}
+
+- (void)setTitleFontSize:(NSInteger)size
+{
+    
+}
+
 - (void)mvp_initFromModel:(MVPInitModel *)model
 {
+    [[self presenter] mvp_bindBlock:^(RRWebView* view, id value) {
+        [view setFontSize:[value integerValue]];
+        [view resetDownView];
+    } keypath:@"webStyle.fontSize"];
+    
+    [[self presenter] mvp_bindBlock:^(RRWebView* view, id value) {
+        [view setLineHeight:[value doubleValue]];
+        [view resetDownView];
+    } keypath:@"webStyle.lineHeight"];
+
+    [[self presenter] mvp_bindBlock:^(RRWebView* view, id value) {
+        [view setAlign:value];
+        [view resetDownView];
+    } keypath:@"webStyle.align"];
+    
+    [[self presenter] mvp_bindBlock:^(RRWebView* view, id value) {
+        [view setFont:value];
+        [view resetDownView];
+    } keypath:@"webStyle.font"];
+    
+    
     [[[self navigationController] navigationBar] setPrefersLargeTitles:NO];
     
     self.prepareLoadLast = NO;
@@ -401,7 +484,7 @@
     
     __weak typeof(self) weakSelf = self;
     [[RACObserve(self.webView, estimatedProgress) takeUntil:[self rac_willDeallocSignal]]  subscribeNext:^(id  _Nullable x) {
-        //        NSLog(@"%@",x);
+        //        //NSLog(@"%@",x);
         [weakSelf setProgress:[x doubleValue]];
     }];
     
@@ -454,11 +537,11 @@
         
         
         if ([self hasLatex:string]) {
-            NSLog(@"有latex");
+            //NSLog(@"有latex");
             string = [self addLatex:string];
         }
         else {
-            NSLog(@"没有latex");
+            //NSLog(@"没有latex");
             string = [self removeLatex:string];
         }
         
@@ -545,15 +628,15 @@
     }
     
     if ([self hasPreMark:string isMd:NO]) {
-        NSLog(@"有Pre");
+        //NSLog(@"有Pre");
         string = [self addHighlight:string];
     }
     else {
-        NSLog(@"没有Pre");
+        //NSLog(@"没有Pre");
         string = [self removeHighlight:string];
     }
     
-    NSDate* d = m.date?m.date : m.updated;
+    NSDate* d = m.date;
     if(d){
         string = [string stringByReplacingOccurrencesOfString:@"<#subtitle#>" withString:[NSString stringWithFormat:@"%@ · %@",![feedInfo isKindOfClass:[NSNull class]]?feedInfo.title:@"无订阅源",[[RRFeedLoader sharedLoader].shrotDateAndTimeFormatter stringFromDate:d]]];
     }
@@ -561,7 +644,7 @@
         string = [string stringByReplacingOccurrencesOfString:@"<#subtitle#>" withString:[NSString stringWithFormat:@"%@",![feedInfo isKindOfClass:[NSNull class]]?feedInfo.title:@"无订阅源"]];
     }
     
-    //        NSLog(@"%@",m.link);
+    //        //NSLog(@"%@",m.link);
     if (m.link) {
         NSString* url = m.link;
         if ([m.link hasPrefix:@"//"]) {
@@ -572,11 +655,11 @@
     }
     
     if ([self hasLatex:string]) {
-        NSLog(@"有latex");
+        //NSLog(@"有latex");
         string = [self addLatex:string];
     }
     else {
-        NSLog(@"没有latex");
+        //NSLog(@"没有latex");
         string = [self removeLatex:string];
     }
     
@@ -697,7 +780,7 @@
     if (self.currentArticle) {
         __weak typeof(self) weakSelf = self;
         [[self webView] evaluateJavaScript:@"document.body.scrollTop" completionHandler:^(id _Nullable x, NSError * _Nullable error) {
-            NSLog(@"当前滚动位置 %@ %@",x,weakSelf.currentArticle);
+            //NSLog(@"当前滚动位置 %@ %@",x,weakSelf.currentArticle);
             [RRFeedAction recordArticle:weakSelf.currentArticle.uuid position:[x doubleValue]];
             
             if (finish) {
@@ -749,6 +832,8 @@
     
      UIBarButtonItem* rb = [self mvp_buttonItemWithSystem:UIBarButtonSystemItemAction actionName:@"openAction:" title:@"更多操作"];
     
+    UIBarButtonItem* test = [self mvp_buttonItemWithActionName:@"testf" title:@"测试"];
+    
     return @[[self fixedItem],loadLastItem,[self fixedItem],loadNextItem,[self fixedItem],rb,[self fixedItem]];
 }
 
@@ -757,7 +842,7 @@
     __weak typeof(self) weakSelf = self;
     
     [self.presenter mvp_bindBlock:^(id view, id value) {
-//        NSLog(@"---- %@",value);
+//        //NSLog(@"---- %@",value);
         BOOL hasModel = [[weakSelf.presenter mvp_valueWithSelectorName:@"hasModel"] boolValue];
         UIViewController* v = view;
         if (![value boolValue]) {
@@ -791,7 +876,7 @@
 
 - (void)webView:(WKWebView *)webView decidePolicyForNavigationAction:(WKNavigationAction *)navigationAction decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler
 {
-//    NSLog(@"1 %@",navigationAction.request.URL.absoluteString);
+//    //NSLog(@"1 %@",navigationAction.request.URL.absoluteString);
     NSString* url = navigationAction.request.URL.absoluteString;
     if (![self.originURL isEqualToString:url]) {
         
@@ -815,10 +900,10 @@
     
 - (void)webView:(WKWebView *)webView decidePolicyForNavigationResponse:(WKNavigationResponse *)navigationResponse decisionHandler:(void (^)(WKNavigationResponsePolicy))decisionHandler
 {
-//    NSLog(@"2 %@",navigationResponse.response.URL.absoluteString);
-//    NSLog(@"%@",navigationResponse.response);
-//    NSLog(@"%@",navigationResponse.response.MIMEType);
-//    NSLog(@"%@",navigationResponse.response.textEncodingName);
+//    //NSLog(@"2 %@",navigationResponse.response.URL.absoluteString);
+//    //NSLog(@"%@",navigationResponse.response);
+//    //NSLog(@"%@",navigationResponse.response.MIMEType);
+//    //NSLog(@"%@",navigationResponse.response.textEncodingName);
     
     if ([navigationResponse.response.MIMEType rangeOfString:@"xml"].location != NSNotFound || [navigationResponse.response.MIMEType rangeOfString:@"rss"].location != NSNotFound || [navigationResponse.response.MIMEType rangeOfString:@"atom"].location != NSNotFound) {
         
@@ -881,9 +966,9 @@
         self.title = title;
     }];
     
-//    NSLog(@"%f",webView.scrollView.contentSize.height);
+//    //NSLog(@"%f",webView.scrollView.contentSize.height);
     [webView evaluateJavaScript:@"document.body.scrollHeight" completionHandler:^(id _Nullable h, NSError * _Nullable error) {
-//        NSLog(@"%@",h);
+//        //NSLog(@"%@",h);
         self.downView.frame = ({
             CGRect r = self.downView.frame;
             r.origin.y = [h doubleValue];
@@ -899,7 +984,7 @@
             if (self.lastFeed && self.lastArticle) {
                 RRFeedArticleModel* m = self.lastArticle(self.currentArticle);
                 MWFeedInfo* feed = self.lastFeed(self.currentArticle);
-//                NSLog(@"1 %@ %@",m,feed);
+//                //NSLog(@"1 %@ %@",m,feed);
                 if (m && feed) {
                     [self setUpViewText:[NSString stringWithFormat:@"%@\n%@",[self cutString:m.title],feed.title]];
                     [RRFeedAction preloadImages:m.uuid];
@@ -914,7 +999,7 @@
             if (self.nextFeed && self.nextArticle) {
                 RRFeedArticleModel* m = self.nextArticle(self.currentArticle);
                 MWFeedInfo* feed = self.nextFeed(self.currentArticle);
-//                NSLog(@"2 %@ %@",m,feed);
+//                //NSLog(@"2 %@ %@",m,feed);
                 if (m && feed) {
                     [self setDownViewText:[NSString stringWithFormat:@"%@\n%@",[self cutString:m.title],feed.title]];
                     [RRFeedAction preloadImages:m.uuid];
@@ -929,6 +1014,19 @@
         }
     }];
    
+}
+
+- (void)resetDownView
+{
+    [self.webView evaluateJavaScript:@"document.body.scrollHeight" completionHandler:^(id _Nullable h, NSError * _Nullable error) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            self.downView.frame = ({
+                CGRect r = self.downView.frame;
+                r.origin.y = [h doubleValue];
+                r;
+            });
+        });
+    }];
 }
 
 - (void)setCanDragPage:(BOOL)canDragPage
@@ -1037,7 +1135,7 @@
 
 - (void)dealloc
 {
-    NSLog(@"%s",__func__);
+    //NSLog(@"%s",__func__);
 }
 
 - (void)loadFeed:(NSString*)url
@@ -1065,7 +1163,7 @@
         __weak typeof(self) weakSelf = self;
         NSInteger idx = [[message substringFromIndex:10] integerValue];
         [webView evaluateJavaScript:@"images" completionHandler:^(id _Nullable x, NSError * _Nullable error) {
-            NSLog(@"%@",x);
+            //NSLog(@"%@",x);
             dispatch_async(dispatch_get_main_queue(), ^{
                 [weakSelf showImage:x index:idx];
             });
@@ -1076,7 +1174,7 @@
             
         }).show(self);
     }
-//    NSLog(@"%@",message);
+//    //NSLog(@"%@",message);
     completionHandler();
 }
 
@@ -1097,7 +1195,7 @@
 
 - (void)showImage:(NSArray*)imgs index:(NSUInteger)idx
 {
-    //    NSLog(@"%@",imgs);
+    //    //NSLog(@"%@",imgs);
     if (idx >= imgs.count || imgs.count == 0) {
         return;
     }

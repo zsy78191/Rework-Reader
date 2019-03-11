@@ -11,7 +11,7 @@ UIButton {
     onTintColor $main-tint-color
 }
 
-^UITableViewCell > ^UIView > UILabel.MainLabel {
+^UITableViewCell > ^UIView > ^UILabel.MainLabel {
     font $main-font $main-font-size
 }
 
@@ -72,3 +72,18 @@ UIToolbar.PhotoToolBar{
     barTintColor black
     tintColor white
 }
+
+
+^UITableViewCell > ^UIView > ^UILabel.F1 {
+    font PingFangSC-Light $main-font-size
+}
+
+^UITableViewCell > ^UIView > ^UILabel.F2 {
+    font PingFangSC-Regular $main-font-size
+}
+
+^UITableViewCell > ^UIView > ^UILabel.F3 {
+    font SourceHanSerifCN-Light $main-font-size
+}
+
+

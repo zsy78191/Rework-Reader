@@ -61,10 +61,14 @@
 
 - (void)viewDidAppear:(BOOL)animated
 {
+    [self updateHashData];
+}
+
+- (void)updateHashData
+{
     [self.hashTable removeAllObjects];
     [self.hashTable addObjectsFromArray:self.inputerCoreData.allModels];
 }
-
 
 - (RRFeedInfoInputer *)inputer
 {
@@ -87,8 +91,15 @@
     return self.inputerCoreData;
 }
 
+- (void)dealloc
+{
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:UIApplicationDidBecomeActiveNotification object:nil];
+}
+
 - (void)mvp_initFromModel:(MVPInitModel *)model
 {
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateHashData) name:UIApplicationDidBecomeActiveNotification object:nil];
+    
     id m = model.userInfo[@"model"];
     if (!m) {
         return;
@@ -154,7 +165,7 @@
     [[RPDataManager sharedManager] delData:@"EntityFeedArticle" predicate:p key:nil value:nil beforeDel:^BOOL(__kindof NSManagedObject * _Nonnull o) {
         return YES;
     } finish:^(NSUInteger count, NSError * _Nonnull e) {
-        NSLog(@"delete %ld articles",count);
+        //NSLog(@"delete %ld articles",count);
         if (!e) {
             [weakSelf delFeedInfoStep2:info];
         }
@@ -182,6 +193,7 @@
 
 - (void)refreshData:(UIRefreshControl*)sender
 {
+    __weak typeof(self) weakSelf = self;
     [self updateFeedData:^(NSInteger x) {
         dispatch_async(dispatch_get_main_queue(), ^{
             //                [P]
@@ -192,9 +204,7 @@
                 [PWToastView showText:[NSString stringWithFormat:@"更新了%ld篇订阅",x]];
             }
             [sender endRefreshing];
-            
-            [self.hashTable removeAllObjects];
-            [self.hashTable addObjectsFromArray:self.inputerCoreData.allModels];
+            [weakSelf updateHashData];
         });
     }];
    
@@ -207,7 +217,7 @@
         [[RRFeedLoader sharedLoader] loadFeed:[self.infoModel.feed.url absoluteString] infoBlock:^(MWFeedInfo * _Nonnull info) {
             
         } itemBlock:^(MWFeedItem * _Nonnull item) {
-            NSLog(@"%@",item.title);
+            //NSLog(@"%@",item.title);
             
             // AllReadyTODO:新增文章
             RRFeedArticleModel* m = [[RRFeedArticleModel alloc] initWithItem:item];
@@ -228,6 +238,7 @@
     }
     else if(self.styleModel)
     {
+        //RRTODO: 为了适配更多更新方式，这里要优化
         [self updateFeedData2:finished];
     }
 }
@@ -245,8 +256,8 @@
         NSInteger lastU = [MVCKeyValue getIntforKey:key];
         if (lastU != 0) {
             NSDate* d = [NSDate dateWithTimeIntervalSince1970:lastU];
-            NSLog(@"last %@ %@",d,@([d timeIntervalSinceDate:[NSDate date]]));
-            if ([d timeIntervalSinceDate:[NSDate date]] > - 60 * 10) {
+            //NSLog(@"last %@ %@",d,@([d timeIntervalSinceDate:[NSDate date]]));
+            if ([d timeIntervalSinceDate:[NSDate date]] > - 10) {
                 return NO;
             }
         }
@@ -390,7 +401,7 @@
 //    NSArray* all = [self.hashTable allObjects];
     NSArray* all = self.hashTable;
     NSInteger x = [all indexOfObject:current];
-    //    NSLog(@"%@ %ld" ,current,x);
+    //    //NSLog(@"%@ %ld" ,current,x);
     if (x == 0) {
         return nil;
     }
@@ -408,7 +419,7 @@
 //    NSArray* all = [self.hashTable allObjects];
     NSArray* all = self.hashTable;
     NSInteger x = [all indexOfObject:current];
-    //    NSLog(@"%@ %ld" ,current,x);
+    //    //NSLog(@"%@ %ld" ,current,x);
     if (x == all.count - 1) {
         return nil;
     }

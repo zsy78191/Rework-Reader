@@ -23,7 +23,7 @@
     Class a = self.insertClass;
     
     if (self.models) {
-        NSManagedObjectContext* c = [NSManagedObjectContext MR_rootSavingContext];
+        NSManagedObjectContext* c = [NSManagedObjectContext MR_newPrivateQueueContext];
         NSMutableArray* aa = [NSMutableArray arrayWithCapacity:10];
         [self.models enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL * _Nonnull stop) {
             NSManagedObject* ca = [(id)a MR_findFirstByAttribute:self.queryKey withValue:[obj valueForKey:self.queryKey] inContext:c];
@@ -61,12 +61,14 @@
     [self.saveKeys enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
  
         id value = [self.model valueForKey:obj];
+        
         if (self.modifyValue) {
             value = self.modifyValue(obj,value);
         }
-        
+//        //NSLog(@"set %@ %@",obj,value);
         if (value) {
             [p removeObject:obj];
+//            //NSLog(@"--) %@ %@",value,obj);
             [cd setValue:value forKey:obj];
         }
        
@@ -79,11 +81,14 @@
         }
         [p removeObject:key];
         if (![value isKindOfClass:[NSNull class]]) {
+//            //NSLog(@"--) %@ %@",value,key);
             [cd setValue:value forKey:key];
         }
         else {
             [cd setValue:nil forKey:key];
         }
+        
+        
     }];
     
 //    [cd setValue:@(i) forKey:@"sort"];

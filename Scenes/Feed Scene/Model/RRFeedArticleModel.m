@@ -67,4 +67,9 @@
     return self;
 }
 
+- (NSString *)description
+{
+    return [[super description] stringByAppendingFormat:@"%@ %@ %@",self.title,self.date,self.updated];
+}
+
 @end

@@ -266,7 +266,7 @@
     NSMutableArray* a = [[NSMutableArray alloc] init];
     
     [[RRFeedLoader sharedLoader] reloadAll:all infoBlock:^(MWFeedInfo * _Nonnull info) {
-                NSLog(@"更新%@",info.title);
+                //NSLog(@"更新%@",info.title);
         
         dispatch_async(dispatch_get_main_queue(), ^{
             NSString* key = [NSString stringWithFormat:@"UPDATE_%@",info.url];
@@ -284,21 +284,22 @@
         m.feedEntity = i;
         [a addObject:m];
         
-        //        NSLog(@"- %@- %@",info.title, item.title);
+        //        //NSLog(@"- %@- %@",info.title, item.title);
     } errorBlock:^(NSError * _Nonnull error) {
-        NSLog(@"err %@",error);
+        //NSLog(@"err %@",error);
         errorCount ++;
         
     } finishBlock:^{
         
         finishCount ++;
-        NSLog(@"finish %ld %ld",errorCount,finishCount);
+        //NSLog(@"finish %ld %ld",errorCount,finishCount);
         
         if (progressblock) {
-            progressblock(finishCount+errorCount,feedCount);
+            progressblock(finishCount,feedCount);
         }
         
-        if (finishCount + errorCount == feedCount) {
+        if (finishCount == feedCount) {
+            //NSLog(@"end block --");
             dispatch_async(dispatch_get_main_queue(), ^{
 //                [sender endRefreshing];
                 if (endBlock) {
@@ -307,7 +308,7 @@
             });
             
             [RRFeedAction insertArticle:a finish:^(NSUInteger x) {
-                NSLog(@"添加 %ld 篇文章",x);
+                //NSLog(@"添加 %ld 篇文章",x);
                 dispatch_async(dispatch_get_main_queue(), ^{
                     if (finishBlock) {
                         finishBlock(finishCount,errorCount,x);

@@ -27,7 +27,7 @@
         [all.filter(^BOOL(id  _Nonnull x) {
             return [x hasSuffix:@"cas"];
         }) enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
-//            NSLog(@"%@",obj);
+//            //NSLog(@"%@",obj);
             BOOL x = [[NSFileManager defaultManager] removeItemAtURL:[u URLByAppendingPathComponent:obj] error:nil];
             if (x) {
                 DDLogVerbose(@"删除成功%@",obj);

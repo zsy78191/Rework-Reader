@@ -24,7 +24,7 @@
     [[RPDataManager sharedManager] updateClass:@"EntityFeedArticle" queryKey:@"uuid" queryValue:uuid keysAndValues:kv modify:^id _Nonnull(id  _Nonnull key, id  _Nonnull value) {
         return value;
     } finish:^(__kindof NSManagedObject * _Nonnull obj, NSError * _Nonnull e) {
-//        NSLog(@"%@",e);
+//        //NSLog(@"%@",e);
         if (finished) {
             finished(e);
         }
@@ -33,7 +33,13 @@
 
 + (void)_insert:(id)obj keys:(NSArray*)k feed:(EntityFeedInfo*)info
 {
+    
     [[RPDataManager sharedManager] insertClass:@"EntityFeedArticle" model:obj keys:k modify:^id _Nonnull(id  _Nonnull key, id  _Nonnull value) {
+        if ([key isEqualToString:@"date"] || [key isEqualToString:@"updated"]) {
+//            //NSLog(@"-- %@ %@ %@",key,value,[obj valueForKey:key]);
+            return [obj valueForKey:key];
+        }
+        
         if ([key isEqualToString:@"enclosures"]) {
             if (value) {
                 return [NSJSONSerialization dataWithJSONObject:value options:kNilOptions error:nil];
@@ -53,7 +59,7 @@
         }
         return value;
     } finish:^(__kindof NSManagedObject * _Nonnull obj, NSError * _Nonnull e) {
-        NSLog(@"save %@ %@",obj,e);
+//        //NSLog(@"save %@ %@",obj,e);
         
 //        [RRFeedAction preloadEntityImages:obj];
     }];
@@ -87,7 +93,7 @@
         if (!url) {
             url = [obj componentsMatchedByRegex:@"(?<=data-original=\").*?(?=\")"].firstObject;
         }
-//        NSLog(@"11 %@",url);
+//        //NSLog(@"11 %@",url);
         if ([url hasPrefix:@"//"]) {
             url = [@"http:" stringByAppendingString:url];
         }
@@ -108,10 +114,12 @@
         NSMutableArray* ps = [[obj ob_propertys] mutableCopy];
         [ps removeObject:@"feedEntity"];
         
-//        NSLog(@"%@",obj);
+//        //NSLog(@"%@",obj);
         NSUInteger i = [[self class] exist:obj feed:info];
         if (i == 0) {
             c++;
+//            //NSLog(@"%@",[obj valueForKey:@"updated"]);
+            
             [[self class] _insert:obj keys:ps feed:info];
         }
     }];
@@ -119,7 +127,7 @@
     if (finish) {
         finish(c);
     }
-    NSLog(@"一共增加%ld篇文章",c);
+    //NSLog(@"一共增加%ld篇文章",c);
 }
 
 + (void)insertArticle:(NSArray*)article finish:(void (^)(NSUInteger))finish
@@ -130,7 +138,7 @@
         id info = [obj valueForKey:@"feedEntity"];
         [ps removeObject:@"feedEntity"];
         
-//        NSLog(@"%@",obj);
+//        //NSLog(@"%@",obj);
         NSUInteger i = [[self class] exist:obj feed:info];
         if (i == 0) {
             c++;
@@ -141,7 +149,7 @@
     if (finish) {
         finish(c);
     }
-    NSLog(@"一共增加%ld篇文章",c);
+    //NSLog(@"一共增加%ld篇文章",c);
 }
 
 + (void)readArticle:(NSString *)articleUUID
@@ -151,9 +159,9 @@
         return value;
     } finish:^(__kindof NSManagedObject * _Nonnull obj, NSError * _Nonnull e) {
         if (e) {
-            NSLog(@"%s %@",__func__,e);
+            //NSLog(@"%s %@",__func__,e);
         }
-        NSLog(@"%@",obj);
+        //NSLog(@"%@",obj);
     }];
 }
 
@@ -206,7 +214,7 @@
     [[RPDataManager sharedManager] delData:@"EntityFeedArticle" predicate:p key:nil value:nil beforeDel:^BOOL(__kindof NSManagedObject * _Nonnull o) {
         return YES;
     } finish:^(NSUInteger count, NSError * _Nonnull e) {
-        NSLog(@"delete %ld articles",count);
+        //NSLog(@"delete %ld articles",count);
         if (!e) {
             [RRFeedAction delFeedInfoStep2:info view:view finish:finishBlock];
         }
