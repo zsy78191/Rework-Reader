@@ -39,6 +39,8 @@
 @property (nonatomic, strong) NSString* ttl;
 
 @property (nonatomic, assign) BOOL cancelFeed;
+@property (nonatomic, assign) BOOL finished;
+@property (nonatomic, assign) BOOL feedError;
 
 @end
 
@@ -57,6 +59,8 @@
     self.count = 0;
     self.allWords = 0;
     self.canceled = NO;
+    self.feedError = NO;
+    self.finished = NO;
 //    self.cancelFeed = YES;
 }
 
@@ -67,7 +71,12 @@
 
 - (void)loadError:(NSError *)error
 {
-    
+    self.feedError = YES;
+}
+
+- (NSNumber*)canFeed
+{
+    return @(!self.feedError);
 }
 
 - (void)loadData:(id)data
@@ -189,14 +198,14 @@
         [self.inputer mvp_addModel:m];
         
         if (m.date || m.updated) {
-            NSDate* up = m.date ? m.date : m.updated;
+            NSDate* up = m.date;
             if ([self.lastedArticleDate timeIntervalSinceDate:up] < 0) {
                 self.lastedArticleDate = up;
             }
         }
         
         
-//        NSLog(@"%@",m);
+//        //NSLog(@"%@",m);
     }
 }
 
@@ -224,10 +233,14 @@
     if (self.canceled) {
         return;
     }
-//    NSLog(@"%@",@());
+    
+    self.finished = YES;
+    
+    
+//    //NSLog(@"%@",@());
     CGFloat avg = self.allWords/self.count;
     CGFloat imgavg = self.allImgs/self.count;
-//    NSLog(@"avg %@",@(avg));
+//    //NSLog(@"avg %@",@(avg));
     if (avg > 250 || imgavg > 3) {
         self.directOpenSwitch.switchValue = @(NO);
     }
@@ -240,7 +253,7 @@
         }
     }
     
-//    NSLog(@"%@",self.lastedArticleDate);
+//    //NSLog(@"%@",self.lastedArticleDate);
     
     if (![self.autoFeedSwitch.switchValue boolValue]) {
         if (self.lastedArticleDate) {
@@ -263,6 +276,11 @@
     }
 }
 
+- (NSNumber*)feeded
+{
+    return @(self.cancelFeed);
+}
+
 - (MWFeedInfo*)lastFeed:(id)current
 {
     return self.feedInfo;
@@ -277,7 +295,7 @@
 {
     NSArray* all = [self.inputer allModels];
     NSInteger x = [all indexOfObject:current];
-//    NSLog(@"%@ %ld" ,current,x);
+//    //NSLog(@"%@ %ld" ,current,x);
     if (x == 0) {
         return nil;
     }
@@ -293,7 +311,7 @@
 {
     NSArray* all = [self.inputer allModels];
     NSInteger x = [all indexOfObject:current];
-    //    NSLog(@"%@ %ld" ,current,x);
+    //    //NSLog(@"%@ %ld" ,current,x);
     if (x == all.count - 1) {
         return nil;
     }
@@ -358,10 +376,9 @@
 - (void)feedit:(UIBarButtonItem*)sender
 {
     sender.enabled = NO;
-    
     NSMutableDictionary* d = [[[RPDataManager sharedManager] dictionaryWithModels:self.inputer.allModels getKeys:@[@"title",@"summary",@"link",@"url",@"language",@"updateDate",@"managingEditor",@"ttl",@"copyright",@"icon",@"generator",@"usettl",@"usesafari",@"useautoupdate"] getModel:NO] mutableCopy];
     
-//    NSLog(@"%@",d);
+//    //NSLog(@"%@",d);
     d[@"icon"] = self.feedInfo.icon;
     d[@"ttl"] = self.ttl;
     

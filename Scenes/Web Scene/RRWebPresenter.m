@@ -14,7 +14,9 @@
 #import "RRFeedArticleModel.h"
 @import Fork_MWFeedParser;
 #import "RRFeedAction.h"
-
+#import "RRExtraViewController.h"
+@import Classy;
+#import "RRWebStyleModel.h"
 
 @interface RRWebPresenter () <UIPopoverPresentationControllerDelegate>
 {
@@ -24,7 +26,7 @@
 @property (nonatomic, strong) MWFeedInfo* info;
 
 @property (nonatomic, assign) BOOL articleLiked;
-
+@property (nonatomic, strong) RRWebStyleModel* webStyle;
 @end
 
 @implementation RRWebPresenter
@@ -37,6 +39,9 @@
     self.info = feedInfo;
     self.articleLiked = self.model.liked;
 //    self.hasModel = self.model!=nil;
+    self.webStyle = [RRWebStyleModel currentStyle];
+    
+    //NSLog(@"%ld %ld",self.webStyle.fontSize,self.webStyle.titleFontSize);
 }
 
 - (NSNumber*)hasModel
@@ -66,7 +71,7 @@
             UIPopoverPresentationController* p = v.popoverPresentationController;
 //            [p setSourceRect:r];
             [p setBarButtonItem:sender];
-//            NSLog(@"%@",v.popoverPresentationController);
+//            //NSLog(@"%@",v.popoverPresentationController);
             v.modalPresentationStyle = UIModalPresentationPopover;
             [[self view] mvp_presentViewController:v animated:YES completion:^{
                 
@@ -138,7 +143,7 @@
 
 - (void)favIt
 {
-//    NSLog(@"%d",self.model.liked);
+//    //NSLog(@"%d",self.model.liked);
     __weak typeof(self) weakSelf = self;
     [RRFeedAction likeArticle:YES withUUID:self.model.uuid block:^(NSError * _Nonnull e) {
         dispatch_async(dispatch_get_main_queue(), ^{
@@ -152,6 +157,11 @@
     }];
     
     self.articleLiked = YES;
+}
+
+- (void)testf
+{
+    self.webStyle.fontSize ++;
 }
 
 - (void)unfavIt
@@ -173,21 +183,26 @@
 
 - (void)openActionText:(UIBarButtonItem*)sender
 {
-    UIViewController* vc = [MVPRouter viewForURL:@"rr://setting" withUserInfo:nil];
-    vc.modalTransitionStyle = UIModalPresentationPopover;
+//    UIAlertController;
+    UIViewController* vc = [MVPRouter viewForURL:@"rr://websetting" withUserInfo:@{@"model":self.webStyle}];
+    RRExtraViewController* nv = [[RRExtraViewController alloc] initWithRootViewController:vc];
+//    nv.setNavibarClear = YES;
+    vc.preferredContentSize = CGSizeMake(200, 300);
+    [nv.view setBackgroundColor:[UIColor clearColor]];
+//    [vc.view setBackgroundColor:[UIColor clearColor]];
+//    nv.view.cas_styleClass = @"CleanBackground";
+//    vc.view.cas_styleClass = @"CleanBackground";
     
-    vc.popoverPresentationController.barButtonItem = sender;
-    vc.popoverPresentationController.permittedArrowDirections = UIPopoverArrowDirectionUp;
-    
-//    vc.preferredContentSize = CGSizeMake(100, 100);
-//    vc.popoverPresentationController.sourceRect = CGRectMake(0, 0, 100, 100);
-    vc.popoverPresentationController.delegate = self;
-    vc.popoverPresentationController.popoverLayoutMargins = UIEdgeInsetsMake(100, 100, 100, 100);
+    nv.modalPresentationStyle = UIModalPresentationPopover;
+    nv.popoverPresentationController.barButtonItem = sender;
+    nv.popoverPresentationController.permittedArrowDirections = UIPopoverArrowDirectionUp;
+    nv.popoverPresentationController.delegate = self;
+    vc.popoverPresentationController.popoverLayoutMargins = UIEdgeInsetsMake(15,15,15,15);
 //    [(UIViewController*)self.view showViewController:vc sender:nil];
     
 //    [(UIViewController*)self.view setModalPresentationStyle:UIModalPresentationPopover];
-    NSLog(@"-- %@",vc.popoverPresentationController);
-    [(UIViewController*)self.view presentViewController:vc animated:YES completion:^{
+//    //NSLog(@"-- %@",vc.popoverPresentationController);
+    [(UIViewController*)self.view presentViewController:nv animated:YES completion:^{
         
     }];
 }
@@ -195,7 +210,7 @@
 #pragma mark --  实现代理方法
 //默认返回的是覆盖整个屏幕，需设置成UIModalPresentationNone。
 -(UIModalPresentationStyle)adaptivePresentationStyleForPresentationController:(UIPresentationController *)controller{
-    return UIModalPresentationPopover;
+    return UIModalPresentationNone;
 }
 
 //点击蒙版是否消失，默认为yes；
@@ -207,7 +222,7 @@
 //弹框消失时调用的方法
 -(void)popoverPresentationControllerDidDismissPopover:(UIPopoverPresentationController *)popoverPresentationController{
     
-    NSLog(@"弹框已经消失");
+    //NSLog(@"弹框已经消失");
     
 }
 

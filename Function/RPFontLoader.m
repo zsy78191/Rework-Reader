@@ -36,9 +36,9 @@
 + (void)testShowAllFonts
 {
     [[UIFont familyNames] enumerateObjectsUsingBlock:^(NSString * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
-        NSLog(@"[family] %@ ----",obj);
+        //NSLog(@"[family] %@ ----",obj);
         NSArray* a = [UIFont fontNamesForFamilyName:obj];
-        NSLog(@"%@",a);
+        //NSLog(@"%@",a);
     }];
 }
 

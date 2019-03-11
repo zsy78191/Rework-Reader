@@ -37,7 +37,7 @@
     if ([model isKindOfClass:[RRFeedArticleModel class]]) {
         RRFeedArticleModel* m = model;
         self.titleLabel.text = m.title;
-        NSDate* date = m.date ? m.date : m.updated;
+        NSDate* date = m.date;
         NSString* des = @"";
         if (date) {
             des = [NSString stringWithFormat:@"%@ · %@  · ",[date timeAgoSinceNow],[[RRFeedLoader sharedLoader].shrotDateAndTimeFormatter stringFromDate:date]];
@@ -46,7 +46,7 @@
         if (m.summary.length > 30 || m.content.length > 30) {
             NSString* temp = m.content.length > 30 ? m.content : m.summary;
             temp = [temp stringByConvertingHTMLToPlainText];
-            //        NSLog(@"%@ %@",@(temp.length),temp);
+            //        //NSLog(@"%@ %@",@(temp.length),temp);
             des = [des stringByAppendingFormat:@"%.1f分钟", (float)temp.length/300];
         }
         self.dateLabel.text = des;
@@ -77,7 +77,8 @@
     {
         EntityFeedArticle* m = model;
         self.titleLabel.text = m.title;
-        NSDate* date = m.date ? m.date : m.updated;
+        NSDate* date = m.date;
+        //NSLog(@"%@ %@",m.date,m.updated);
         NSString* des = @"";
         if (date) {
             des = [NSString stringWithFormat:@"%@ · %@  · ",[date timeAgoSinceNow],[[RRFeedLoader sharedLoader].shrotDateAndTimeFormatter stringFromDate:date]];
@@ -86,7 +87,7 @@
         if (m.summary.length > 30 || m.content.length > 30) {
             NSString* temp = m.content.length > 30 ? m.content : m.summary;
             temp = [temp stringByConvertingHTMLToPlainText];
-            //        NSLog(@"%@ %@",@(temp.length),temp);
+            //        //NSLog(@"%@ %@",@(temp.length),temp);
             des = [des stringByAppendingFormat:@"%.1f分钟", (float)temp.length/300];
         }
         self.dateLabel.text = des;
@@ -106,7 +107,7 @@
             self.feedLabel.text = @"无订阅源";
         }
         
-//        NSLog(@"%@ %@",@(m.liked),m.lastread);
+//        //NSLog(@"%@ %@",@(m.liked),m.lastread);
         
         if (m.liked) {
             self.i1.image = [UIImage imageNamed:@"icon_i3"];

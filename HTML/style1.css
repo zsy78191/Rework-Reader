@@ -1,16 +1,16 @@
 
 @font-face {
     font-family: 'SourceHanSerifCN';
-    src : url('SourceHanSerifCN-Regular.otf');
+    src : url('SourceHanSerifCN-Light.otf');
 }
 html,body{
     font-family: 'SourceHanSerifCN','Consolas', 'Courier', 'Monaco', sans-serif, monospace !important;
-    font-size: 20px !important;
+    font-size: 16px !important;
     color:#C0C0C0
     -webkit-text-size-adjust:none;  min-width: 200px;
     max-width: 760px;
     margin: 0 auto; padding: 0.5rem;
-    line-height: 1.5rem;
+    line-height: 1.8rem;
     text-align: inherit;
 }
 

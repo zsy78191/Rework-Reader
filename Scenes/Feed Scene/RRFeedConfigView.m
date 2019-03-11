@@ -7,6 +7,7 @@
 //
 
 #import "RRFeedConfigView.h"
+#import "RREmptyStyleOne.h"
 
 @import ui_base;
 @interface RRFeedConfigView ()
@@ -34,18 +35,23 @@
     self.isLoading = YES;
     self.canceled = NO;
     
-    __weak typeof(self) weakSelf = self;
-    [self.presenter mvp_bindBlock:^(id view, id value) {
-        dispatch_async(dispatch_get_main_queue(), ^{
-            if ([value boolValue]) {
-                [weakSelf showDissubcribeButton];
-            }
-            else {
-                [weakSelf showSubcribeButton];
-            }
-        });
-    } keypath:@"cancelFeed"];
-    
+    [self.presenter mvp_bindBlock:^(RRFeedConfigView* view, id value) {
+        if (![value boolValue]) {
+            return;
+        }
+        
+        [[view presenter] mvp_bindBlock:^(RRFeedConfigView* view2, id value2) {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                if ([value2 boolValue]) {
+                    [view2 showDissubcribeButton];
+                }
+                else {
+                    [view2 showSubcribeButton];
+                }
+            });
+        } keypath:@"cancelFeed"];
+       
+    } keypath:@"finished"];
  
 }
 
@@ -62,6 +68,13 @@
     [o mvp_registerNib:[UINib nibWithNibName:@"RRFeedArticleCell" bundle:[NSBundle mainBundle]] forCellReuseIdentifier:@"articleCell"];
     [o mvp_registerNib:[UINib nibWithNibName:@"RRTitleCell" bundle:[NSBundle mainBundle]] forCellReuseIdentifier:@"titleCell"];
     [o mvp_registerNib:[UINib nibWithNibName:@"RRSwitchCell" bundle:[NSBundle mainBundle]] forCellReuseIdentifier:@"switchCell"];
+    
+    RREmptyStyleOne* one =  [[RREmptyStyleOne alloc] init];
+    self.empty = one;
+    __weak typeof(self) weakSelf = self;
+    [one setAction:^{
+        [weakSelf mvp_popViewController:nil];
+    }];
 }
 
 - (void)mvp_bindData
@@ -75,7 +88,8 @@
 {
     UIBarButtonItem* item = [self mvp_buttonItemWithActionName:@"feedit:" title:@"订阅"];
     self.feedBarItem = item;
-    item.enabled = NO;
+    
+    item.enabled = [[self.presenter mvp_valueWithSelectorName:@"canFeed"] boolValue];
     UIBarButtonItem* sp = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
     self.toolbarItems = @[sp,item];
     self.feeded = NO;
@@ -91,12 +105,16 @@
 
 - (BOOL)navigationShouldPopOnBackButton
 {
+    if (![[self.presenter mvp_valueWithSelectorName:@"canFeed"] boolValue]) {
+        return YES;
+    }
+    
     if (self.feeded) {
         return YES;
     }
     
     UIAlertController* a = [self alert:@"是否放弃订阅？" recommend:@"继续订阅" action:nil cancel:@"放弃" block:^(NSInteger idx, __kindof UIViewController *vc) {
-//        NSLog(@"%@",@(idx));
+//        //NSLog(@"%@",@(idx));
         if (idx == 0) {
             [[vc navigationController] popViewControllerAnimated:YES];
         }
@@ -117,15 +135,16 @@
 
 - (void)loadError:(NSError *)error
 {
-    dispatch_async(dispatch_get_main_queue(), ^{
-//        [self hudFail:@"订阅失败"];
-//        [self mvp_popViewController:nil];
-    });
+ 
+    
+    if ([self.presenter respondsToSelector:@selector(loadError:)]) {
+        [(id)self.presenter loadError:error];
+    }
 }
 
 - (void)loadIcon:(NSString *)icon
 {
-//    NSLog(@"%@",icon);
+//    //NSLog(@"%@",icon);
     dispatch_async(dispatch_get_main_queue(), ^{
         if ([self.presenter conformsToProtocol:@protocol(MVPViewLoadProtocol)]) {
             [(id)self.presenter loadIcon:icon];
@@ -143,11 +162,16 @@
         }
         [self hudDismiss];
         
+        
+        RREmptyStyleOne* e = (RREmptyStyleOne*)self.empty;
+        e.shouldDisplay = YES;
+        
+        
 //        id exist_value = [self.presenter mvp_valueWithSelectorName:@"isFeedExist"];
-//        NSLog(@"%@",exist_value);
+//        //NSLog(@"%@",exist_value);
         
         //Fixed bug
-        self.feedBarItem.enabled = YES;
+//        self.feedBarItem.enabled = YES;
 
     });
     

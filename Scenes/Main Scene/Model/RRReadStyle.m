@@ -19,10 +19,10 @@
         self.daylimit = style.dayLimit;
         self.onlyUnread = style.unread;
         self.liked = style.liked;
+        self.countlimit = style.countLimit;
     }
     return self;
 }
-
 
 - (NSArray<NSSortDescriptor*>*)sort
 {
@@ -88,10 +88,9 @@
             NSDate* d = [[NSDate date] dateBySubtractingDays:self.daylimit-1];
             [m appendFormat:@"date > %%@"];
             NSPredicate * pp = [NSPredicate predicateWithFormat:m,d];
-            NSLog(@"%@",pp.predicateFormat);
             return pp;
         }
-        //        NSLog(@"%@",m);
+        //        //NSLog(@"%@",m);
         return [NSPredicate predicateWithFormat:m];
     }
     return [NSPredicate predicateWithFormat:@"feed = %@",self.feed];

@@ -148,11 +148,12 @@
             mLast.readStyle = ({
                 RRReadStyle* s = [[RRReadStyle alloc] init];
                 s.onlyReaded = YES;
+                s.countlimit = 20;
                 s;
             });
             
             NSNumber* count3 = [[RPDataManager sharedManager] getCount:@"EntityFeedArticle" predicate:[mLast.readStyle predicate] key:nil value:nil sort:nil asc:YES];
-            mLast.count = [count3 intValue];
+            mLast.count = [count3 intValue] > mLast.readStyle.countlimit ? mLast.readStyle.countlimit : [count3 intValue];
             
             if ([count3 integerValue] > 0) {
                 [self.readStyleInputer mvp_addModel:mLast];
@@ -198,7 +199,7 @@
 - (void)addHub
 {
     NSArray* d = [[RPDataManager sharedManager] getAll:@"EntityFeedInfo"  predicate:nil key:nil value:nil sort:nil asc:YES];
-    NSLog(@"%@",d);
+    //NSLog(@"%@",d);
 }
 
 - (void)dealloc
@@ -209,13 +210,15 @@
 - (void)refreshData:(UIRefreshControl*)sender
 {
     NSArray* all = self.inputer.allModels;
+    
+    // RRTODO:这部分也需要拆分，目前已经有三个地方用到了
     all =
     all.filter(^BOOL(RRFeedInfoListModel*  _Nonnull x) {
         NSString* key = [NSString stringWithFormat:@"UPDATE_%@",x.url];
         NSInteger lastU = [MVCKeyValue getIntforKey:key];
         if (lastU != 0) {
             NSDate* d = [NSDate dateWithTimeIntervalSince1970:lastU];
-            NSLog(@"last %@ %@",d,@([d timeIntervalSinceDate:[NSDate date]]));
+            //NSLog(@"last %@ %@",d,@([d timeIntervalSinceDate:[NSDate date]]));
             if ([d timeIntervalSinceDate:[NSDate date]] > - 10) {
                 return NO;
             }
@@ -273,7 +276,7 @@
         NSInteger lastU = [MVCKeyValue getIntforKey:key];
         if (lastU != 0) {
             NSDate* d = [NSDate dateWithTimeIntervalSince1970:lastU];
-            NSLog(@"last %@ %@",d,@([d timeIntervalSinceDate:[NSDate date]]));
+            //NSLog(@"last %@ %@",d,@([d timeIntervalSinceDate:[NSDate date]]));
             if ([d timeIntervalSinceDate:[NSDate date]] > - 60 * 10) {
                 return NO;
             }
@@ -307,7 +310,7 @@
     NSMutableArray* a = [[NSMutableArray alloc] init];
     
     [[RRFeedLoader sharedLoader] reloadAll:all infoBlock:^(MWFeedInfo * _Nonnull info) {
-//        NSLog(@"更新%@",info.title);
+//        //NSLog(@"更新%@",info.title);
         
         dispatch_async(dispatch_get_main_queue(), ^{
             NSString* key = [NSString stringWithFormat:@"UPDATE_%@",info.url];
@@ -325,22 +328,22 @@
         m.feedEntity = i;
         [a addObject:m];
  
-//        NSLog(@"- %@- %@",info.title, item.title);
+//        //NSLog(@"- %@- %@",info.title, item.title);
     } errorBlock:^(NSError * _Nonnull error) {
-        NSLog(@"err %@",error);
+        //NSLog(@"err %@",error);
         errorCount ++;
         
     } finishBlock:^{
         
         finishCount ++;
-        NSLog(@"finish %ld %ld",errorCount,finishCount);
+        //NSLog(@"finish %ld %ld",errorCount,finishCount);
         if (finishCount + errorCount == feedCount) {
             dispatch_async(dispatch_get_main_queue(), ^{
                 [sender endRefreshing];
             });
             
             [RRFeedAction insertArticle:a finish:^(NSUInteger x) {
-                NSLog(@"添加 %ld 篇文章",x);
+                //NSLog(@"添加 %ld 篇文章",x);
                 dispatch_async(dispatch_get_main_queue(), ^{
                     if (x == 0) {
                         [PWToastView showText:@"没有更新的订阅"];
@@ -380,5 +383,12 @@
     id vc = [MVPRouter viewForURL:@"rr://web" withUserInfo:@{@"name":@"推荐订阅源.md"}];
     [[self view] mvp_pushViewController:vc];
 }
+
+- (void)recommand2
+{
+    id vc = [MVPRouter viewForURL:@"rr://web" withUserInfo:@{@"name":@"Test.md"}];
+    [[self view] mvp_pushViewController:vc];
+}
+
 
 @end

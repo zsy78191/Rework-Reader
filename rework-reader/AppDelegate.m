@@ -23,6 +23,8 @@
 @import UserNotifications;
 #import "RRFeedInfoListOtherModel.h"
 @import SDWebImage;
+@import MMKV;
+#import "RRWebStyleModel.h"
 
 @interface AppDelegate () <SDWebImageManagerDelegate>
 {
@@ -54,8 +56,12 @@
 {
 //    BOOL a1 = [RPFontLoader registerFontsAtPath:[[NSBundle mainBundle] pathForResource:@"TsangerXuanSanM-W02" ofType:@"ttf"]];
 //    BOOL a2 = [RPFontLoader registerFontsAtPath:[[NSBundle mainBundle] pathForResource:@"SourceHanSerifCN-Regular" ofType:@"otf"]];
-//    NSLog(@"font load %@ %@",@(a1),@(a2));
-
+//    //NSLog(@"font load %@ %@",@(a1),@(a2));
+    
+    //加载预设字体大小
+    [RRWebStyleModel setupDefalut];
+    
+//    [RPFontLoader testShowAllFonts];
 }
 
 - (NSURL *)applicationDocumentsDirectory {
@@ -68,7 +74,9 @@
     self.window.backgroundColor = [UIColor whiteColor];
     [[UIApplication sharedApplication] setHUDStyle];
     
-//    NSLog(@"%@",[UIApplication sharedApplication].bundleID());
+//    //NSLog(@"%@",[UIApplication sharedApplication].bundleID());
+    
+    [MMKV setLogLevel:MMKVLogNone];
     
 }
 
@@ -80,6 +88,8 @@
     [MVPRouter registView:NSClassFromString(@"RRFeedConfigView") forURL:@"rr://feed"];
     [MVPRouter registView:NSClassFromString(@"RRAddFeedView") forURL:@"rr://addfeed"];
     [MVPRouter registView:NSClassFromString(@"RRListView") forURL:@"rr://list"];
+    [MVPRouter registView:NSClassFromString(@"RRWebSettingView") forURL:@"rr://websetting"];
+    
 }
 
 - (void)loadPage
@@ -131,7 +141,17 @@
     
     [[SDWebImageManager sharedManager] setDelegate:self];
     
-    [MagicalRecord setupCoreDataStackWithiCloudContainer:[@"iCloud." stringByAppendingString:[UIApplication sharedApplication].bundleID()] localStoreNamed:@"Model"];
+//    [MagicalRecord isICloudEnabled]
+//    if ([MagicalRecord isICloudEnabled]) {
+//        [MagicalRecord setupCoreDataStackWithiCloudContainer:[@"iCloud." stringByAppendingString:[UIApplication sharedApplication].bundleID()] localStoreNamed:@"Model"];
+//
+//        [MagicalRecord setupAutoMigratingCoreDataStack];
+//    }
+//    else {
+    [MagicalRecord setupCoreDataStackWithAutoMigratingSqliteStoreNamed:@"Model"];
+//    }
+    
+   
     
     // 加载logger
     [self preload];
@@ -153,7 +173,7 @@
     
     // 配置background fetch
     [[UIApplication sharedApplication] setMinimumBackgroundFetchInterval:UIApplicationBackgroundFetchIntervalMinimum];
-    NSLog(@"%@",launchOptions);
+    //NSLog(@"%@",launchOptions);
     
     return YES;
 }
@@ -162,9 +182,12 @@
 {
      __weak typeof(self) weakSelf = self;
     if ([weakSelf kBackgroundFetchNoti]) {
+        // Fixbug: 推送要加上当前的数量;
+        NSInteger currentBadge = [UIApplication sharedApplication].applicationIconBadgeNumber;
+        
         UNMutableNotificationContent* c = [[UNMutableNotificationContent alloc] init];
         if ([weakSelf kBackgroundFetchNotiBadge]) {
-            c.badge = @(count);
+            c.badge = @(count + currentBadge);
         }
         c.title = @"新的订阅";
         c.body = [NSString stringWithFormat:@"更新了%ld篇订阅",count];
@@ -172,7 +195,7 @@
         UNNotificationRequest* r = [UNNotificationRequest requestWithIdentifier:[[NSUUID UUID] UUIDString] content:c trigger:nil];
         [[UNUserNotificationCenter currentNotificationCenter] addNotificationRequest:r withCompletionHandler:^(NSError * _Nullable error) {
             if (error) {
-                NSLog(@"%@",error);
+                //NSLog(@"%@",error);
             }
         }];
     }
@@ -188,7 +211,7 @@
             [[NSUserDefaults standardUserDefaults] synchronize];
             [weakSelf notiArticle:x];
         }
-        NSLog(@"更新了%ld",x);
+        //NSLog(@"更新了%ld",x);
         if (x > 0) {
             completionHandler(UIBackgroundFetchResultNewData);
         }
@@ -197,7 +220,7 @@
             completionHandler(UIBackgroundFetchResultNoData);
         }
     }];
-    NSLog(@"%s",__func__);
+    //NSLog(@"%s",__func__);
 }
 
 
@@ -218,8 +241,8 @@
         NSInteger lastU = [MVCKeyValue getIntforKey:key];
         if (lastU != 0) {
             NSDate* d = [NSDate dateWithTimeIntervalSince1970:lastU];
-            NSLog(@"last %@ %@",d,@([d timeIntervalSinceDate:[NSDate date]]));
-            if ([d timeIntervalSinceDate:[NSDate date]] > - 60 * 10) {
+            //NSLog(@"last %@ %@",d,@([d timeIntervalSinceDate:[NSDate date]]));
+            if ([d timeIntervalSinceDate:[NSDate date]] > - 10) {
                 return NO;
             }
         }

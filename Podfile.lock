@@ -9,7 +9,7 @@ PODS:
   - DACircularProgress (2.3.1)
   - DateTools (2.0.0)
   - DZNEmptyDataSet (1.8.1)
-  - Fork-MWFeedParser (0.0.9)
+  - Fork-MWFeedParser (0.1.1.1)
   - Fork-MWPhotoBrowser (2.1.4):
     - DACircularProgress (~> 2.3)
     - MBProgressHUD (~> 0.9)
@@ -22,7 +22,7 @@ PODS:
   - MBProgressHUD (0.9.2)
   - MGJRouter (0.10.0)
   - MMKV (1.0.17)
-  - mvc-base (0.3.0.1):
+  - mvc-base (0.3.1):
     - DZNEmptyDataSet
     - MagicalRecord
     - Masonry
@@ -116,7 +116,7 @@ SPEC CHECKSUMS:
   DACircularProgress: 4dd437c0fc3da5161cb289e07ac449493d41db71
   DateTools: 933ac9c490f21f92127cf690ccd8c397e0126caf
   DZNEmptyDataSet: 9525833b9e68ac21c30253e1d3d7076cc828eaa7
-  Fork-MWFeedParser: b0a94c36969ee5cd1057b15b51ceae5bf139a6ff
+  Fork-MWFeedParser: 9937281705697ca95499bff515cdbdddebf6e9b8
   Fork-MWPhotoBrowser: b4fbd050f833c94b8ec07843df19c380fecbcffb
   IQKeyboardManager: 6194101620b73af5e67900b8f89707a99de0b804
   MagicalRecord: 53bed74b4323b930992a725be713e53b37d19755
@@ -124,7 +124,7 @@ SPEC CHECKSUMS:
   MBProgressHUD: 1569cf7ace17a8bac47aabfbb8580a49690386d1
   MGJRouter: 15d94541eb2cc81eff7d577337288feb7ae9575f
   MMKV: 890ba85ecf1d05546ed2c4d29fe618dbf92e3cf4
-  mvc-base: 20f09b41c96c1c12f663bc1d5e3df4287fc327ad
+  mvc-base: 522530db2807a5e1b1199ec7c9ce8cd6e4828d81
   oc-base: b0cc5eeae853acdf1b35d3f954ed8023fa37a74c
   oc-date: d8601fcc9eeea98f9d84506b77ef508cf9057786
   oc-string: 79be9e8e4c80dd3e668690d3ac462e79a713489d

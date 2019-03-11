@@ -11,6 +11,7 @@
 #import "RRAddModel.h"
 #import "RRFeedLoader.h"
 @import ui_base;
+@import oc_string;
 @interface RRAddFeedPresenter ()
 {
     
@@ -83,22 +84,24 @@
                 [(UIViewController*)self.view hudInfo:@"订阅源URL无效"];
                 return;
             }
+            NSString * e = [x._urlEncodeString stringByReplacingOccurrencesOfString:@"%3A" withString:@":"];
+//            //NSLog(@"%@",e);
+            
+            if (x.length != e.length) {
+                x = e;
+            }
             
             __weak UIViewController<MVPViewProtocol>* vv = (UIViewController<MVPViewProtocol>*)self.view;
             id vc = [[RRFeedLoader sharedLoader] feedItem:x errorBlock:^(NSError * _Nonnull error) {
-                dispatch_async(dispatch_get_main_queue(), ^{
-                    [vv mvp_popViewController:nil];
-                    
-                    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(.5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-                         [vv hudInfo:@"订阅源URL无效"];
-                    });
-                });
+              
             } cancelBlock:^{
                 dispatch_async(dispatch_get_main_queue(), ^{
                     [vv hudDismiss];
                 });
             } finishBlock:^{
-                
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    [vv hudDismiss];
+                });
             }];
             [[self view] mvp_pushViewController:vc];
             break;

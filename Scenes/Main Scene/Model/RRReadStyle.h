@@ -24,6 +24,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, assign) NSInteger daylimit;
 @property (nonatomic, assign) BOOL liked;
 @property (nonatomic, assign) BOOL canEdit;
+@property (nonatomic, assign) NSInteger countlimit;
 
 - (NSPredicate*)predicate;
 - (NSArray<NSSortDescriptor*>*)sort;

@@ -31,7 +31,7 @@
 - (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath
 {
     id model = [self.inputer mvp_modelAtIndexPath:indexPath];
-//    NSLog(@"%@",model);
+//    //NSLog(@"%@",model);
     if ([model conformsToProtocol:@protocol(RRCanEditProtocol)]) {
         id<RRCanEditProtocol>m = model;
         return m.canEdit;

@@ -23,16 +23,12 @@
 - (NSArray<NSSortDescriptor *> *)sortDescriptors
 {
     if (self.model.readStyle) {
-//        if (self.model.readStyle.liked) {
-//           return @[d3,d1,d2];
-//        }
         return [self.model.readStyle sort];
     }
     
     NSSortDescriptor* d1 = [[NSSortDescriptor alloc] initWithKey:@"date" ascending:NO];
     NSSortDescriptor* d0 = [[NSSortDescriptor alloc] initWithKey:@"sort" ascending:YES];
     NSSortDescriptor* d2 = [[NSSortDescriptor alloc] initWithKey:@"updated" ascending:NO];
-//    NSSortDescriptor* d3 = [[NSSortDescriptor alloc] initWithKey:@"likedTime" ascending:NO];
     return @[d1,d0,d2];
 }
 
@@ -48,6 +44,16 @@
         return [s predicate];
     }
     return nil;
+}
+
+- (NSUInteger)fetchLimitCount
+{
+    if(self.model)
+    {
+        //NSLog(@"%@",@(self.model.readStyle.countlimit));
+        return self.model.readStyle.countlimit;
+    }
+    return 0;
 }
 
 - (NSString *)mvp_identifierForModel:(id<MVPModelProtocol>)model

@@ -18,7 +18,7 @@
 
 - (NSDictionary *)attributesForEmptyTitle
 {
-//    NSLog(@"%@",[ClassyKitLoader values]);
+//    //NSLog(@"%@",[ClassyKitLoader values]);
     NSDictionary* d = [ClassyKitLoader values];
     return @{
              NSFontAttributeName: [UIFont fontWithName:d[@"$main-font"] size:[d[@"$main-font-size"] floatValue]]

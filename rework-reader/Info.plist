@@ -19,7 +19,7 @@
 	<key>CFBundleShortVersionString</key>
 	<string>1.0.3</string>
 	<key>CFBundleVersion</key>
-	<string>1.0.3.1</string>
+	<string>1.0.3.2</string>
 	<key>ITSAppUsesNonExemptEncryption</key>
 	<false/>
 	<key>LSRequiresIPhoneOS</key>
@@ -49,6 +49,10 @@
 	<string>Reader 请求使用您的相机</string>
 	<key>NSPhotoLibraryAddUsageDescription</key>
 	<string>Reader 请求使用您的系统相册</string>
+	<key>UIAppFonts</key>
+	<array>
+		<string>SourceHanSerifCN-Light.otf</string>
+	</array>
 	<key>UIBackgroundModes</key>
 	<array>
 		<string>fetch</string>
