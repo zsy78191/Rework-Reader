@@ -26,6 +26,7 @@
 @property (nonatomic, strong) MWFeedInfo* info;
 
 @property (nonatomic, assign) BOOL articleLiked;
+@property (nonatomic, assign) BOOL articleReadLaterd;
 @property (nonatomic, strong) RRWebStyleModel* webStyle;
 @end
 
@@ -38,6 +39,7 @@
     self.model = m;
     self.info = feedInfo;
     self.articleLiked = self.model.liked;
+    self.articleReadLaterd = self.model.readlater;
 //    self.hasModel = self.model!=nil;
     self.webStyle = [RRWebStyleModel currentStyle];
     
@@ -54,6 +56,7 @@
     self.model = m;
     self.info = feedInfo;
     self.articleLiked = self.model.liked;
+    self.articleReadLaterd = self.model.readlater;
     id view = self.view;
     if ([view conformsToProtocol:@protocol(RRProvideDataProtocol)]) {
         [view loadData:m feed:feedInfo];
@@ -63,10 +66,7 @@
 - (void)openAction:(id)sender
 {
     if (self.model) {
-
         UIActivityViewController* v = [[UIActivityViewController alloc] initWithActivityItems:@[[NSURL URLWithString:self.model.link]] applicationActivities:nil];
-        
-        
         if ([UIDevice currentDevice].iPad()) {
             UIPopoverPresentationController* p = v.popoverPresentationController;
 //            [p setSourceRect:r];
@@ -87,7 +87,6 @@
     else {
         
     }
-    
 }
 
 - (void)openAction2:(id)sender
@@ -143,7 +142,6 @@
 
 - (void)favIt
 {
-//    //NSLog(@"%d",self.model.liked);
     __weak typeof(self) weakSelf = self;
     [RRFeedAction likeArticle:YES withUUID:self.model.uuid block:^(NSError * _Nonnull e) {
         dispatch_async(dispatch_get_main_queue(), ^{
@@ -155,8 +153,41 @@
             }
         });
     }];
-    
     self.articleLiked = YES;
+}
+
+- (void)readLater
+{
+    __weak typeof(self) weakSelf = self;
+    [RRFeedAction readLaterArticle:YES withUUID:self.model.uuid block:^(NSError * _Nonnull e) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            if (e) {
+                [(id)weakSelf.view hudFail:@"操作失败"];
+            }
+            else {
+                weakSelf.articleReadLaterd = YES;
+                [(id)weakSelf.view hudSuccess:@"加入稍后阅读"];
+            }
+        });
+    }];
+//    self.articleReadLaterd = YES;
+}
+
+- (void)cancelReadLater
+{
+    __weak typeof(self) weakSelf = self;
+    [RRFeedAction readLaterArticle:NO withUUID:self.model.uuid block:^(NSError * _Nonnull e) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            if (e) {
+                [(id)weakSelf.view hudFail:@"操作失败"];
+            }
+            else {
+                weakSelf.articleReadLaterd = NO;
+//                [(id)weakSelf.view hudSuccess:@"加入稍后阅读"];
+            }
+        });
+    }];
+//    self.articleReadLaterd = NO;
 }
 
 - (void)testf

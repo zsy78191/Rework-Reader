@@ -23,7 +23,7 @@
     Class a = self.insertClass;
     
     if (self.models) {
-        NSManagedObjectContext* c = [NSManagedObjectContext MR_newPrivateQueueContext];
+        NSManagedObjectContext* c = [NSManagedObjectContext MR_rootSavingContext];
         NSMutableArray* aa = [NSMutableArray arrayWithCapacity:10];
         [self.models enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL * _Nonnull stop) {
             NSManagedObject* ca = [(id)a MR_findFirstByAttribute:self.queryKey withValue:[obj valueForKey:self.queryKey] inContext:c];

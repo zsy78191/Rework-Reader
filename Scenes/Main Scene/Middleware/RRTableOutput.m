@@ -11,7 +11,8 @@
 #import "RRFeedAction.h"
 #import "RRFeedInfoListModel.h"
 #import "RRFeedInfoListOtherModel.h"
-@interface RRTableOutput () 
+#import "RRFeedInputer.h"
+@interface RRTableOutput ()  <UITableViewDelegate>
 {
     
 }
@@ -38,6 +39,24 @@
     }
     return YES;
 }
+
+//- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
+//{
+//    id model = [self.inputer mvp_modelAtIndexPath:indexPath];
+//    if ([model isKindOfClass:[RRFeedInfoListModel class]]) {
+//        //        RRFeedInfoListModel* m = model;
+//        return 60;
+//    }
+//    else if([model isKindOfClass:[RRFeedInfoListOtherModel class]])
+//    {
+//        RRFeedInfoListOtherModel* m = model;
+//        if (m.type == RRFeedInfoListOtherModelTypeTitle) {
+//            return 40;
+//        }
+//        return 60;
+//    }
+//    return 0;
+//}
 
 
 - (NSIndexPath *)tableView:(UITableView *)tableView targetIndexPathForMoveFromRowAtIndexPath:(NSIndexPath *)sourceIndexPath toProposedIndexPath:(NSIndexPath *)proposedDestinationIndexPath

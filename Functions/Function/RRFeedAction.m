@@ -24,7 +24,18 @@
     [[RPDataManager sharedManager] updateClass:@"EntityFeedArticle" queryKey:@"uuid" queryValue:uuid keysAndValues:kv modify:^id _Nonnull(id  _Nonnull key, id  _Nonnull value) {
         return value;
     } finish:^(__kindof NSManagedObject * _Nonnull obj, NSError * _Nonnull e) {
-//        //NSLog(@"%@",e);
+        if (finished) {
+            finished(e);
+        }
+    }];
+}
+
++ (void)readLaterArticle:(BOOL)readerLater withUUID:(NSString *)uuid block:(void (^)(NSError * _Nonnull))finished
+{
+    NSDictionary* kv = @{@"readlater":@(readerLater)};
+    [[RPDataManager sharedManager] updateClass:@"EntityFeedArticle" queryKey:@"uuid" queryValue:uuid keysAndValues:kv modify:^id _Nonnull(id  _Nonnull key, id  _Nonnull value) {
+        return value;
+    } finish:^(__kindof NSManagedObject * _Nonnull obj, NSError * _Nonnull e) {
         if (finished) {
             finished(e);
         }
@@ -35,7 +46,7 @@
 {
     
     [[RPDataManager sharedManager] insertClass:@"EntityFeedArticle" model:obj keys:k modify:^id _Nonnull(id  _Nonnull key, id  _Nonnull value) {
-        if ([key isEqualToString:@"date"] || [key isEqualToString:@"updated"]) {
+        if ([key isEqualToString:@"date"] || [key isEqualToString:@"updateTime"]) {
 //            //NSLog(@"-- %@ %@ %@",key,value,[obj valueForKey:key]);
             return [obj valueForKey:key];
         }
@@ -154,7 +165,15 @@
 
 + (void)readArticle:(NSString *)articleUUID
 {
-    NSDictionary* kv = @{@"lastread":[NSDate date]};
+    [[self class] readArticle:articleUUID onlyMark:NO];
+}
+
++ (void)readArticle:(NSString *)articleUUID onlyMark:(BOOL)onlymark
+{
+    NSDictionary* kv = @{@"lastread":[NSDate date],@"readed":@(YES)};
+    if (onlymark) {
+        kv = @{@"readed":@(YES)};
+    }
     [[RPDataManager sharedManager] updateClass:@"EntityFeedArticle" queryKey:@"uuid" queryValue:articleUUID keysAndValues:kv modify:^id _Nonnull(id  _Nonnull key, id  _Nonnull value) {
         return value;
     } finish:^(__kindof NSManagedObject * _Nonnull obj, NSError * _Nonnull e) {

@@ -26,7 +26,7 @@
 		D42F55EA221E73A500321A21 /* RRFeedInfoListOtherModel.m in Sources */ = {isa = PBXBuildFile; fileRef = D42F55E9221E73A500321A21 /* RRFeedInfoListOtherModel.m */; };
 		D42F55ED221E752B00321A21 /* RRFeedReaderStyleInputer.m in Sources */ = {isa = PBXBuildFile; fileRef = D42F55EC221E752B00321A21 /* RRFeedReaderStyleInputer.m */; };
 		D42F55F1221E7E2200321A21 /* RRListView.m in Sources */ = {isa = PBXBuildFile; fileRef = D42F55F0221E7E2200321A21 /* RRListView.m */; };
-		D42F55F4221E7F1200321A21 /* RRListPresenter.m in Sources */ = {isa = PBXBuildFile; fileRef = D42F55F3221E7F1200321A21 /* RRListPresenter.m */; };
+		D42F55F4221E7F1200321A21 /* refreshData.m in Sources */ = {isa = PBXBuildFile; fileRef = D42F55F3221E7F1200321A21 /* refreshData.m */; };
 		D440CFD52214218B003B7203 /* RRFeedLoader.m in Sources */ = {isa = PBXBuildFile; fileRef = D440CFD42214218B003B7203 /* RRFeedLoader.m */; };
 		D440CFD922153CB4003B7203 /* RRFeedConfigView.m in Sources */ = {isa = PBXBuildFile; fileRef = D440CFD822153CB4003B7203 /* RRFeedConfigView.m */; };
 		D440CFDE2215420E003B7203 /* RRFeedPresenter.m in Sources */ = {isa = PBXBuildFile; fileRef = D440CFDD2215420E003B7203 /* RRFeedPresenter.m */; };
@@ -64,6 +64,8 @@
 		D47A3959223421A6006251A6 /* Test.md in Resources */ = {isa = PBXBuildFile; fileRef = D47A3958223421A6006251A6 /* Test.md */; };
 		D47A395F223620F9006251A6 /* RREmptyStyleOne.m in Sources */ = {isa = PBXBuildFile; fileRef = D47A395E223620F9006251A6 /* RREmptyStyleOne.m */; };
 		D47A396322363ABE006251A6 /* Model.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = D47A396122363ABE006251A6 /* Model.xcdatamodeld */; };
+		D47A39672236D69A006251A6 /* RRFeedArticleCell2.xib in Resources */ = {isa = PBXBuildFile; fileRef = D47A39662236D69A006251A6 /* RRFeedArticleCell2.xib */; };
+		D47A396A22394C1D006251A6 /* RRListEmpty.m in Sources */ = {isa = PBXBuildFile; fileRef = D47A396922394C1D006251A6 /* RRListEmpty.m */; };
 		D47A7A26221911E800F13194 /* SourceHanSerifCN-Regular.otf in Resources */ = {isa = PBXBuildFile; fileRef = D499418921FC9AB10041B998 /* SourceHanSerifCN-Regular.otf */; };
 		D47A7A28221A9E9D00F13194 /* Reader SP说明书.md in Resources */ = {isa = PBXBuildFile; fileRef = D47A7A27221A9E9D00F13194 /* Reader SP说明书.md */; };
 		D484562E2213E38300202401 /* marked.js in Resources */ = {isa = PBXBuildFile; fileRef = D484562D2213E38300202401 /* marked.js */; };
@@ -161,7 +163,7 @@
 		D42F55EF221E7E2200321A21 /* RRListView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RRListView.h; sourceTree = "<group>"; };
 		D42F55F0221E7E2200321A21 /* RRListView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RRListView.m; sourceTree = "<group>"; };
 		D42F55F2221E7F1200321A21 /* RRListPresenter.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RRListPresenter.h; sourceTree = "<group>"; };
-		D42F55F3221E7F1200321A21 /* RRListPresenter.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RRListPresenter.m; sourceTree = "<group>"; };
+		D42F55F3221E7F1200321A21 /* refreshData.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = refreshData.m; sourceTree = "<group>"; };
 		D440CFD32214218B003B7203 /* RRFeedLoader.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RRFeedLoader.h; sourceTree = "<group>"; };
 		D440CFD42214218B003B7203 /* RRFeedLoader.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RRFeedLoader.m; sourceTree = "<group>"; };
 		D440CFD722153CB4003B7203 /* RRFeedConfigView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RRFeedConfigView.h; sourceTree = "<group>"; };
@@ -224,6 +226,9 @@
 		D47A395D223620F9006251A6 /* RREmptyStyleOne.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RREmptyStyleOne.h; sourceTree = "<group>"; };
 		D47A395E223620F9006251A6 /* RREmptyStyleOne.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RREmptyStyleOne.m; sourceTree = "<group>"; };
 		D47A396222363ABE006251A6 /* Model.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Model.xcdatamodel; sourceTree = "<group>"; };
+		D47A39662236D69A006251A6 /* RRFeedArticleCell2.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = RRFeedArticleCell2.xib; sourceTree = "<group>"; };
+		D47A396822394C1D006251A6 /* RRListEmpty.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RRListEmpty.h; sourceTree = "<group>"; };
+		D47A396922394C1D006251A6 /* RRListEmpty.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RRListEmpty.m; sourceTree = "<group>"; };
 		D47A7A242219112F00F13194 /* SourceHanSerifCN-Light.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "SourceHanSerifCN-Light.otf"; sourceTree = "<group>"; };
 		D47A7A27221A9E9D00F13194 /* Reader SP说明书.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = "Reader SP说明书.md"; sourceTree = "<group>"; };
 		D484562D2213E38300202401 /* marked.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = marked.js; sourceTree = "<group>"; };
@@ -348,22 +353,22 @@
 			name = Pods;
 			sourceTree = "<group>";
 		};
-		D418CDE822311D2D004F5706 /* Model */ = {
+		D418CDE822311D2D004F5706 /* SettingModel */ = {
 			isa = PBXGroup;
 			children = (
 				D418CDE922311D45004F5706 /* RRIconSettingModel.h */,
 				D418CDEA22311D45004F5706 /* RRIconSettingModel.m */,
 			);
-			path = Model;
+			path = SettingModel;
 			sourceTree = "<group>";
 		};
-		D418CDEF22312028004F5706 /* Model */ = {
+		D418CDEF22312028004F5706 /* WebModel */ = {
 			isa = PBXGroup;
 			children = (
 				D418CDEC22312025004F5706 /* RRWebStyleModel.h */,
 				D418CDED22312025004F5706 /* RRWebStyleModel.m */,
 			);
-			path = Model;
+			path = WebModel;
 			sourceTree = "<group>";
 		};
 		D42F55D3221D499400321A21 /* Web */ = {
@@ -385,7 +390,7 @@
 			path = Cell;
 			sourceTree = "<group>";
 		};
-		D42F55E4221E4F3B00321A21 /* Model */ = {
+		D42F55E4221E4F3B00321A21 /* MainModel */ = {
 			isa = PBXGroup;
 			children = (
 				D42F55E5221E4F5C00321A21 /* RRFeedInfoListModel.h */,
@@ -396,7 +401,7 @@
 				D473F28A221FE9BC00DF3C6D /* RRReadStyle.m */,
 				D473F2A42227DBB200DF3C6D /* RRCanEditProtocol.h */,
 			);
-			path = Model;
+			path = MainModel;
 			sourceTree = "<group>";
 		};
 		D42F55EE221E7E0600321A21 /* List Scene */ = {
@@ -405,9 +410,11 @@
 				D42F55EF221E7E2200321A21 /* RRListView.h */,
 				D42F55F0221E7E2200321A21 /* RRListView.m */,
 				D42F55F2221E7F1200321A21 /* RRListPresenter.h */,
-				D42F55F3221E7F1200321A21 /* RRListPresenter.m */,
+				D42F55F3221E7F1200321A21 /* refreshData.m */,
 				D473F285221FCCE800DF3C6D /* RRListInputer.h */,
 				D473F286221FCCE800DF3C6D /* RRListInputer.m */,
+				D47A396822394C1D006251A6 /* RRListEmpty.h */,
+				D47A396922394C1D006251A6 /* RRListEmpty.m */,
 			);
 			path = "List Scene";
 			sourceTree = "<group>";
@@ -416,7 +423,6 @@
 			isa = PBXGroup;
 			children = (
 				D47A395C223620E0006251A6 /* Middleware */,
-				D440CFE822154E53003B7203 /* Model */,
 				D440CFDF22154D72003B7203 /* Cell */,
 				D440CFDB221541FC003B7203 /* Presenter */,
 				D440CFDA221540EE003B7203 /* MVPViewLoadProtocol.h */,
@@ -446,6 +452,7 @@
 				D440CFEC221555E0003B7203 /* RRFeedArticleCell.h */,
 				D440CFED221555E0003B7203 /* RRFeedArticleCell.m */,
 				D440CFEE221555E0003B7203 /* RRFeedArticleCell.xib */,
+				D47A39662236D69A006251A6 /* RRFeedArticleCell2.xib */,
 				D440CFF42216529F003B7203 /* RRTitleCell.h */,
 				D440CFF52216529F003B7203 /* RRTitleCell.m */,
 				D440CFF62216529F003B7203 /* RRTitleCell.xib */,
@@ -456,7 +463,7 @@
 			path = Cell;
 			sourceTree = "<group>";
 		};
-		D440CFE822154E53003B7203 /* Model */ = {
+		D440CFE822154E53003B7203 /* FeedModel */ = {
 			isa = PBXGroup;
 			children = (
 				D440CFE922154E60003B7203 /* RRFeedInfoModel.h */,
@@ -464,13 +471,12 @@
 				D440CFF122155697003B7203 /* RRFeedArticleModel.h */,
 				D440CFF222155697003B7203 /* RRFeedArticleModel.m */,
 			);
-			path = Model;
+			path = FeedModel;
 			sourceTree = "<group>";
 		};
 		D440E1BD21FEEB410087B228 /* Setting Scene */ = {
 			isa = PBXGroup;
 			children = (
-				D418CDE822311D2D004F5706 /* Model */,
 				D4E0F8EC221148DE00902540 /* Cell */,
 				D440E1CB21FF09210087B228 /* Middleware */,
 				D440E1BF21FEEE6E0087B228 /* Presenter */,
@@ -517,14 +523,9 @@
 		D47717CA21ED90CF0050DF14 = {
 			isa = PBXGroup;
 			children = (
+				D47A39652236CC23006251A6 /* Models */,
+				D47A39642236C972006251A6 /* Functions */,
 				D4AC4DD22216BB9B0028D342 /* Scenes */,
-				D4E0F9062213C46200902540 /* HTML */,
-				D49941C721FEA6A90041B998 /* Test */,
-				D49941CD21FEA7450041B998 /* CoreData */,
-				D49941CC21FEA7370041B998 /* Model */,
-				D49941BF21FE1A9F0041B998 /* Extra Partment */,
-				D499418E21FC9B0E0041B998 /* Function */,
-				D499418521FC9AB10041B998 /* ClassyKit */,
 				D47717D521ED90CF0050DF14 /* rework-reader */,
 				D47717EE21ED90D00050DF14 /* rework-readerTests */,
 				D47717D421ED90CF0050DF14 /* Products */,
@@ -575,6 +576,32 @@
 				D47A395E223620F9006251A6 /* RREmptyStyleOne.m */,
 			);
 			path = Middleware;
+			sourceTree = "<group>";
+		};
+		D47A39642236C972006251A6 /* Functions */ = {
+			isa = PBXGroup;
+			children = (
+				D499418521FC9AB10041B998 /* ClassyKit */,
+				D499418E21FC9B0E0041B998 /* Function */,
+				D49941BF21FE1A9F0041B998 /* Extra Partment */,
+				D49941CC21FEA7370041B998 /* Model */,
+				D49941CD21FEA7450041B998 /* CoreData */,
+				D49941C721FEA6A90041B998 /* Test */,
+				D4E0F9062213C46200902540 /* HTML */,
+			);
+			path = Functions;
+			sourceTree = "<group>";
+		};
+		D47A39652236CC23006251A6 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				D440CFE822154E53003B7203 /* FeedModel */,
+				D4AC4DE42217C1020028D342 /* AddFeedModel */,
+				D418CDEF22312028004F5706 /* WebModel */,
+				D418CDE822311D2D004F5706 /* SettingModel */,
+				D42F55E4221E4F3B00321A21 /* MainModel */,
+			);
+			path = Models;
 			sourceTree = "<group>";
 		};
 		D499418521FC9AB10041B998 /* ClassyKit */ = {
@@ -684,7 +711,6 @@
 		D49941CB21FEA7300041B998 /* Main Scene */ = {
 			isa = PBXGroup;
 			children = (
-				D42F55E4221E4F3B00321A21 /* Model */,
 				D42F55D9221E4CAC00321A21 /* Cell */,
 				D4E0F8FF22117E5100902540 /* Middleware */,
 				D49941CF21FEA7760041B998 /* Presenter */,
@@ -733,7 +759,6 @@
 		D4AC4DD12216BB8C0028D342 /* Add Feed Scene */ = {
 			isa = PBXGroup;
 			children = (
-				D4AC4DE42217C1020028D342 /* Model */,
 				D4AC4DDE2217BEFB0028D342 /* Cell */,
 				D4AC4DD32216BBD60028D342 /* RRAddFeedView.h */,
 				D4AC4DD42216BBD60028D342 /* RRAddFeedView.m */,
@@ -771,13 +796,13 @@
 			path = Cell;
 			sourceTree = "<group>";
 		};
-		D4AC4DE42217C1020028D342 /* Model */ = {
+		D4AC4DE42217C1020028D342 /* AddFeedModel */ = {
 			isa = PBXGroup;
 			children = (
 				D4AC4DE52217C1160028D342 /* RRAddModel.h */,
 				D4AC4DE62217C1160028D342 /* RRAddModel.m */,
 			);
-			path = Model;
+			path = AddFeedModel;
 			sourceTree = "<group>";
 		};
 		D4E0F8EC221148DE00902540 /* Cell */ = {
@@ -838,7 +863,6 @@
 		D4E0F90A2213C9FD00902540 /* Web Scene */ = {
 			isa = PBXGroup;
 			children = (
-				D418CDEF22312028004F5706 /* Model */,
 				D4E0F90E2213CA3E00902540 /* RRWebPresenter.h */,
 				D4E0F90F2213CA3E00902540 /* RRWebPresenter.m */,
 				D4AC4DEE2217FBAA0028D342 /* RRWebView.h */,
@@ -952,6 +976,7 @@
 			files = (
 				D47A7A28221A9E9D00F13194 /* Reader SP说明书.md in Resources */,
 				D4AC4DD72216F9E70028D342 /* 推荐订阅源.md in Resources */,
+				D47A39672236D69A006251A6 /* RRFeedArticleCell2.xib in Resources */,
 				D473F2C6222DE48B00DF3C6D /* action.js in Resources */,
 				D440CFF0221555E0003B7203 /* RRFeedArticleCell.xib in Resources */,
 				D473F29F22278B4900DF3C6D /* MWPhotoBrowser.bundle in Resources */,
@@ -1129,7 +1154,7 @@
 			files = (
 				D49941AB21FC9B0E0041B998 /* RPSortItemOperation.m in Sources */,
 				D440CFE722154DE0003B7203 /* RRFeedInfoInputer.m in Sources */,
-				D42F55F4221E7F1200321A21 /* RRListPresenter.m in Sources */,
+				D42F55F4221E7F1200321A21 /* refreshData.m in Sources */,
 				D418CDDC2231135A004F5706 /* RRSettingApperance.m in Sources */,
 				D49941D221FEA7AE0041B998 /* RRFeedListView.m in Sources */,
 				D49941AE21FC9B0E0041B998 /* RPDataLocker.m in Sources */,
@@ -1148,6 +1173,7 @@
 				D4E0F90222117E6300902540 /* RREmpty.m in Sources */,
 				D440E1C221FEF8840087B228 /* RRSettingView.m in Sources */,
 				D440CFF72216529F003B7203 /* RRTitleCell.m in Sources */,
+				D47A396A22394C1D006251A6 /* RRListEmpty.m in Sources */,
 				D4AC4DF02217FBAA0028D342 /* RRWebView.m in Sources */,
 				D49941C221FE1AC00041B998 /* RRExtraViewController.m in Sources */,
 				D4AC4DEB2217CF290028D342 /* RRBtnCell.m in Sources */,

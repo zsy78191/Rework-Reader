@@ -31,6 +31,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic) BOOL useautoupdate;
 @property (nonatomic) BOOL usesafari;
 @property (nonatomic) BOOL usettl;
+@property (nonatomic) BOOL useachieve;
 
 - (void)loadFromFeed:(EntityFeedInfo*)feed;
 

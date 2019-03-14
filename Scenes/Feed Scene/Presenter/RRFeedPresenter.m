@@ -197,7 +197,7 @@
         self.allImgs += imgs.count;
         [self.inputer mvp_addModel:m];
         
-        if (m.date || m.updated) {
+        if (m.date || m.updateTime) {
             NSDate* up = m.date;
             if ([self.lastedArticleDate timeIntervalSinceDate:up] < 0) {
                 self.lastedArticleDate = up;

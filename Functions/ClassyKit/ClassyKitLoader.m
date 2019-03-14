@@ -64,11 +64,16 @@
     
     NSMutableDictionary* styleVariables = [[NSMutableDictionary alloc] initWithContentsOfFile:[[NSBundle mainBundle] pathForResource:variablesFileName ofType:@"plist"]];
     
-    [styleVariables setValue:[RPFontLoader fontSizeWithTextStyle:UIFontTextStyleLargeTitle] forKey:@"$large-title-font-size"];
+    if(1){
+        [styleVariables setValue:[RPFontLoader fontSizeWithTextStyle:UIFontTextStyleLargeTitle] forKey:@"$large-title-font-size"];
+        
+        NSNumber* n = [RPFontLoader fontSizeWithTextStyle:UIFontTextStyleHeadline];
+        [styleVariables setValue:n forKey:@"$main-font-size"];
+        
+        [styleVariables setValue:[RPFontLoader fontSizeWithTextStyle:UIFontTextStyleSubheadline] forKey:@"$sub-font-size"];
+    }
     
-    [styleVariables setValue:[RPFontLoader fontSizeWithTextStyle:UIFontTextStyleHeadline] forKey:@"$main-font-size"];
-    
-    [styleVariables setValue:[RPFontLoader fontSizeWithTextStyle:UIFontTextStyleSubheadline] forKey:@"$sub-font-size"];
+    DDLogInfo(@"%@",styleVariables);
     
     [[CASStyler defaultStyler] setVariables:styleVariables];
 

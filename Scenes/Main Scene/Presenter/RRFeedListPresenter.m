@@ -123,6 +123,26 @@
         
         [self.readStyleInputer mvp_addModel:mUnread];
         
+        {
+            RRFeedInfoListOtherModel* mLater = GetRRFeedInfoListOtherModel(@"稍后阅读",@"favicon_4",@"想看还没有看的文章",@"readlater");
+            mLater.canRefresh = NO;
+            mLater.canEdit = NO;
+            mLater.readStyle = ({
+                RRReadStyle* s = [[RRReadStyle alloc] init];
+//                s.onlyReaded = YES;
+//                s.countlimit = 20;
+                s.readlater = YES;
+                s;
+            });
+            
+            NSNumber* count3 = [[RPDataManager sharedManager] getCount:@"EntityFeedArticle" predicate:[mLater.readStyle predicate] key:nil value:nil sort:nil asc:YES];
+            mLater.count = [count3 integerValue];
+            
+            if ([count3 integerValue] > 0) {
+                [self.readStyleInputer mvp_addModel:mLater];
+            }
+        }
+        
         RRFeedInfoListOtherModel* mFavourite = GetRRFeedInfoListOtherModel(@"收藏",@"favicon_1",@"收藏的文章",@"favourite");
         mFavourite.canRefresh = NO;
         mFavourite.canEdit = NO;
@@ -135,14 +155,14 @@
         });
         
         NSNumber* count2 = [[RPDataManager sharedManager] getCount:@"EntityFeedArticle" predicate:[mFavourite.readStyle predicate] key:nil value:nil sort:nil asc:YES];
-        mFavourite.count = [count2 intValue];
+        mFavourite.count = [count2 integerValue];
         
         if ([count2 integerValue] > 0) {
             [self.readStyleInputer mvp_addModel:mFavourite];
         }
         
         {
-            RRFeedInfoListOtherModel* mLast = GetRRFeedInfoListOtherModel(@"最近阅读",@"favicon_3",@"近期阅读的文章",@"last");
+            RRFeedInfoListOtherModel* mLast = GetRRFeedInfoListOtherModel(@"最近阅读",@"favicon_3",@"近期阅读的20篇文章",@"last");
             mLast.canRefresh = NO;
             mLast.canEdit = NO;
             mLast.readStyle = ({
@@ -153,7 +173,7 @@
             });
             
             NSNumber* count3 = [[RPDataManager sharedManager] getCount:@"EntityFeedArticle" predicate:[mLast.readStyle predicate] key:nil value:nil sort:nil asc:YES];
-            mLast.count = [count3 intValue] > mLast.readStyle.countlimit ? mLast.readStyle.countlimit : [count3 intValue];
+            mLast.count = [count3 integerValue] > mLast.readStyle.countlimit ? mLast.readStyle.countlimit : [count3 integerValue];
             
             if ([count3 integerValue] > 0) {
                 [self.readStyleInputer mvp_addModel:mLast];

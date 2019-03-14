@@ -10,6 +10,14 @@
 @import DateTools;
 @implementation RRReadStyle
 
+- (void)setFeed:(EntityFeedInfo *)feed
+{
+    _feed = feed;
+    if (feed.useachieve) {
+        self.onlyUnread = YES;
+    }
+}
+
 - (instancetype)initWithEntity:(EntityFeedStyle*)style;
 {
     self = [super init];
@@ -27,7 +35,7 @@
 - (NSArray<NSSortDescriptor*>*)sort
 {
     NSSortDescriptor* d1 = [[NSSortDescriptor alloc] initWithKey:@"date" ascending:NO];
-    NSSortDescriptor* d2 = [[NSSortDescriptor alloc] initWithKey:@"updated" ascending:NO];
+    NSSortDescriptor* d2 = [[NSSortDescriptor alloc] initWithKey:@"updateTime" ascending:NO];
     NSSortDescriptor* d3 = [[NSSortDescriptor alloc] initWithKey:@"likedTime" ascending:NO];
     NSSortDescriptor* d4 = [[NSSortDescriptor alloc] initWithKey:@"lastread" ascending:NO];
     NSSortDescriptor* d5 = [[NSSortDescriptor alloc] initWithKey:@"sort" ascending:NO];
@@ -42,13 +50,24 @@
             return @[d3];
         }
     }
-    return @[d1,d2,d5];
+    return @[d1,d5];
 }
 
 
 - (NSPredicate *)predicate
 {
     if (self.feed) {
+        if (self.onlyUnread) {
+            return [NSPredicate predicateWithFormat:@"feed = %@ and readed = false",self.feed];
+        }
+        else if(self.onlyReaded)
+        {
+            return [NSPredicate predicateWithFormat:@"feed = %@ and readed = true",self.feed];
+        }
+        else if(self.liked)
+        {
+            return [NSPredicate predicateWithFormat:@"feed = %@ and liked = true",self.feed];
+        }
         return [NSPredicate predicateWithFormat:@"feed = %@",self.feed];
     }
     else {
@@ -63,17 +82,20 @@
             }];
             [m appendString:@")"];
         }
+        if (self.readlater) {
+            return [NSPredicate predicateWithFormat:@"readlater = true"];
+        }
         if (self.onlyUnread) {
             if (m.length != 0) {
                 [m appendString:@" && "];
             }
-            [m appendString:@"lastread = nil"];
+            [m appendString:@"readed = false"];
         }
         if (self.onlyReaded) {
             if (m.length != 0) {
                 [m appendString:@" && "];
             }
-            [m appendString:@"lastread != nil"];
+            [m appendString:@"readed = true"];
         }
         if (self.liked) {
             if (m.length != 0) {

@@ -17,6 +17,8 @@
 - (void)awakeFromNib {
     [super awakeFromNib];
     // Initialization code
+    self.imageView.clipsToBounds = YES;
+//    self.imageView.layer.cornerRadius = 50;
 }
 
 - (void)setSelected:(BOOL)selected animated:(BOOL)animated {
@@ -37,7 +39,13 @@
             [self.iconView setImage:[UIImage imageNamed:@"favicon"]];
         }
         self.subLabel.text = m.summary;
-        self.countLabel.text = [NSString stringWithFormat:@"%ld",m.feed.articles.count];
+        if (m.useachieve) {
+            NSSet* t = [m.feed.articles filteredSetUsingPredicate:[NSPredicate predicateWithFormat:@"readed = false"]];
+            self.countLabel.text = [NSString stringWithFormat:@"%ld",t.count];
+        }
+        else {
+            self.countLabel.text = [NSString stringWithFormat:@"%ld",m.feed.articles.count];
+        }
     }
     else if([model isKindOfClass:[RRFeedInfoListOtherModel class]])
     {

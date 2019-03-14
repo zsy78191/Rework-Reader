@@ -11,6 +11,7 @@
 NS_ASSUME_NONNULL_BEGIN
 
 @interface RRFeedArticleCell : MVPContentCell
+@property (weak, nonatomic) IBOutlet UILabel *detialLabel;
 @property (weak, nonatomic) IBOutlet UIImageView *iconView;
 @property (weak, nonatomic) IBOutlet UILabel *feedLabel;
 @property (weak, nonatomic) IBOutlet UILabel *titleLabel;

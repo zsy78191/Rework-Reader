@@ -59,6 +59,9 @@
 
 @property (nonatomic, assign) BOOL openedFeed;
 
+@property (nonatomic, assign) BOOL articleLiked;
+@property (nonatomic, assign) BOOL articleReadLatered;
+
 @end
 
 @implementation RRWebView
@@ -831,48 +834,89 @@
     loadNextItem.accessibilityLabel = @"下一篇";
     
      UIBarButtonItem* rb = [self mvp_buttonItemWithSystem:UIBarButtonSystemItemAction actionName:@"openAction:" title:@"更多操作"];
+
+    
     
     UIBarButtonItem* test = [self mvp_buttonItemWithActionName:@"testf" title:@"测试"];
+    [test setTarget:self];
+    [test setAction:@selector(likedItem)];
     
     return @[[self fixedItem],loadLastItem,[self fixedItem],loadNextItem,[self fixedItem],rb,[self fixedItem]];
 }
 
 - (void)mvp_configOther
 {
-    __weak typeof(self) weakSelf = self;
-    
-    [self.presenter mvp_bindBlock:^(id view, id value) {
-//        //NSLog(@"---- %@",value);
-        BOOL hasModel = [[weakSelf.presenter mvp_valueWithSelectorName:@"hasModel"] boolValue];
-        UIViewController* v = view;
-        if (![value boolValue]) {
-            dispatch_async(dispatch_get_main_queue(), ^{
-                if (hasModel) {
-                    UIBarButtonItem* favItem = [(id)view mvp_buttonItemWithActionName:@"favIt" title:@"收藏"];
-                    favItem.image = [UIImage imageNamed:@"icon_fav"];
-                    v.toolbarItems = [@[[self fixedItem],favItem] arrayByAddingObjectsFromArray:[weakSelf barItems]];
-                }
-                else {
-                    v.toolbarItems = [weakSelf barItems];
-                }
-            });
-        }
-        else {
-            dispatch_async(dispatch_get_main_queue(), ^{
-                 if (hasModel) {
-                     UIBarButtonItem* favItem = [(id)view mvp_buttonItemWithActionName:@"unfavIt" title:@"取消收藏"];
-                     favItem.image = [UIImage imageNamed:@"icon_faved"];
-                     v.toolbarItems = [@[[self fixedItem],favItem] arrayByAddingObjectsFromArray:[weakSelf barItems]];
-                 }
-                 else {
-                     v.toolbarItems = [weakSelf barItems];
-                 }
-            });
-        }
+//    __weak typeof(self) weakSelf = self;
+    [self.presenter mvp_bindBlock:^(RRWebView* view, id value) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            view.articleLiked = [value boolValue];
+            [view reloadItems];
+        });
     } keypath:@"articleLiked"];
     
-    
+    [self.presenter mvp_bindBlock:^(RRWebView* view, id value) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            view.articleReadLatered = [value boolValue];
+            [view reloadItems];
+        });
+    } keypath:@"articleReadLaterd"];
 }
+
+- (void)reloadItems
+{
+    NSMutableArray* items = [NSMutableArray array];
+    [items addObjectsFromArray:[self likedItem]];
+    if (items.count>0) {
+        [items insertObject:[self fixedItem] atIndex:0];
+        [items addObject:[self fixedItem]];
+    }
+    [items addObjectsFromArray:[self readerLaterItem]];
+    [items addObjectsFromArray:[self barItems]];
+    self.toolbarItems = items;
+}
+
+- (NSArray*)readerLaterItem
+{
+    __weak typeof(self) weakSelf = self;
+    BOOL hasModel = [[weakSelf.presenter mvp_valueWithSelectorName:@"hasModel"] boolValue];
+    if (!hasModel) {
+        return @[];
+    }
+    NSMutableArray* result = [NSMutableArray array];
+    if (self.articleReadLatered) {
+        UIBarButtonItem* favItem = [self mvp_buttonItemWithActionName:@"cancelReadLater" title:@"取消稍后"];
+        favItem.image = [UIImage imageNamed:@"icon_bookmarked"];
+        [result addObject:favItem];
+    }
+    else {
+        UIBarButtonItem* favItem = [self mvp_buttonItemWithActionName:@"readLater" title:@"稍后阅读"];
+        favItem.image = [UIImage imageNamed:@"icon_bookmark"];
+        [result addObject:favItem];
+    }
+    return result;
+}
+
+- (NSArray*)likedItem
+{
+    __weak typeof(self) weakSelf = self;
+    BOOL hasModel = [[weakSelf.presenter mvp_valueWithSelectorName:@"hasModel"] boolValue];
+    if (!hasModel) {
+        return @[];
+    }
+    NSMutableArray* result = [NSMutableArray array];
+    if (self.articleLiked) {
+        UIBarButtonItem* favItem = [self mvp_buttonItemWithActionName:@"unfavIt" title:@"取消收藏"];
+        favItem.image = [UIImage imageNamed:@"icon_faved"];
+        [result addObject:favItem];
+    }
+    else {
+        UIBarButtonItem* favItem = [self mvp_buttonItemWithActionName:@"favIt" title:@"收藏"];
+        favItem.image = [UIImage imageNamed:@"icon_fav"];
+        [result addObject:favItem];
+    }
+    return result;
+}
+
 
 - (void)webView:(WKWebView *)webView decidePolicyForNavigationAction:(WKNavigationAction *)navigationAction decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler
 {

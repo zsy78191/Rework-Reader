@@ -13,6 +13,12 @@ UIButton {
 
 ^UITableViewCell > ^UIView > ^UILabel.MainLabel {
     font $main-font $main-font-size
+    text-color $main-text-color
+}
+
+^UITableViewCell > ^UIView > ^UILabel.MainLabelReaded {
+    font $main-font $main-font-size
+    text-color $main-text-color-readed
 }
 
 ^UITableViewCell > ^UIView > UITextField.Input {
@@ -33,11 +39,14 @@ UIButton {
 }
 
 ^UITableViewCell > ^UIView > UILabel.DateLabel {
-    font $main-font 14
+    font $num-font 14
     text-color $sub-text-color
 }
 
-
+^UITableViewCell > ^UIView > UILabel.NumLabel {
+    font $main-font $main-font-size
+    text-color $sub-text-color
+}
 
 ^UITableViewCell > ^UIView.TitleContentView {
     backgroundColor $bar-tint-color
@@ -73,6 +82,11 @@ UIToolbar.PhotoToolBar{
     tintColor white
 }
 
+UIView.SeparaterView
+{
+    backgroundColor $bar-tint-color
+}
+
 
 ^UITableViewCell > ^UIView > ^UILabel.F1 {
     font PingFangSC-Light $main-font-size
@@ -85,5 +99,7 @@ UIToolbar.PhotoToolBar{
 ^UITableViewCell > ^UIView > ^UILabel.F3 {
     font SourceHanSerifCN-Light $main-font-size
 }
+
+
 
 

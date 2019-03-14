@@ -135,8 +135,6 @@
 
 - (void)loadError:(NSError *)error
 {
- 
-    
     if ([self.presenter respondsToSelector:@selector(loadError:)]) {
         [(id)self.presenter loadError:error];
     }

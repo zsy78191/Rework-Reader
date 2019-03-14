@@ -13,6 +13,8 @@
 @import SDWebImage;
 @import oc_string;
 #import "RRCoreDataModel.h"
+@import RegexKitLite;
+@import Classy;
 //@import YYKit;
 @implementation RRFeedArticleCell
 
@@ -81,15 +83,15 @@
         //NSLog(@"%@ %@",m.date,m.updated);
         NSString* des = @"";
         if (date) {
-            des = [NSString stringWithFormat:@"%@ · %@  · ",[date timeAgoSinceNow],[[RRFeedLoader sharedLoader].shrotDateAndTimeFormatter stringFromDate:date]];
+//            des = [NSString stringWithFormat:@"%@ · %@  · ",[date timeAgoSinceNow],[[RRFeedLoader sharedLoader].shrotDateAndTimeFormatter stringFromDate:date]];
+            des = [NSString stringWithFormat:@"%@ · ",[date timeAgoSinceNow]];
         }
         
-        if (m.summary.length > 30 || m.content.length > 30) {
-            NSString* temp = m.content.length > 30 ? m.content : m.summary;
-            temp = [temp stringByConvertingHTMLToPlainText];
-            //        //NSLog(@"%@ %@",@(temp.length),temp);
-            des = [des stringByAppendingFormat:@"%.1f分钟", (float)temp.length/300];
-        }
+        NSString* temp = m.content.length > 30 ? m.content : m.summary;
+        temp = [temp stringByConvertingHTMLToPlainText];
+        temp = [temp stringByTrimmingCharactersInSet: [NSCharacterSet whitespaceAndNewlineCharacterSet]];
+        temp = [temp stringByReplacingOccurrencesOfRegex:@"\\s+" withString:@" "];
+        des = [des stringByAppendingFormat:@"%.1f分钟", (float)temp.length/300];
         self.dateLabel.text = des;
         
         if (m.feed) {
@@ -115,7 +117,8 @@
         else {
             self.i1.image = [UIImage new];
         }
-        if (!m.lastread) {
+        if (!m.readed) {
+            self.titleLabel.cas_styleClass = @"MainLabel";
             if (m.liked) {
                 [self.i2 setImage:[UIImage imageNamed:@"icon_i2"]];
             }
@@ -125,12 +128,17 @@
             
         }
         else {
+            self.titleLabel.cas_styleClass = @"MainLabelReaded";
             if (m.liked) {
                 [self.i2 setImage:[UIImage new]];
             }
             else {
                 [self.i1 setImage:[UIImage new]];
             }
+        }
+        
+        if (self.detialLabel) {
+            self.detialLabel.text = temp;
         }
     }
     

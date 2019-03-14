@@ -24,6 +24,7 @@
 @import oc_string;
 @import oc_util;
 @import DateTools;
+#import "RRListView.h"
 
 @interface RRListPresenter ()
 {
@@ -153,8 +154,6 @@
         [self delFeedInfo:self.infoModel.feed];
     })
     .show((id)self.view);
-    
-    
 }
 
 - (void)delFeedInfo:(EntityFeedInfo*)info
@@ -215,25 +214,19 @@
     if (self.infoModel) {
         __block NSMutableArray* temp = [[NSMutableArray alloc] init];
         [[RRFeedLoader sharedLoader] loadFeed:[self.infoModel.feed.url absoluteString] infoBlock:^(MWFeedInfo * _Nonnull info) {
-            
         } itemBlock:^(MWFeedItem * _Nonnull item) {
             //NSLog(@"%@",item.title);
-            
             // AllReadyTODO:新增文章
             RRFeedArticleModel* m = [[RRFeedArticleModel alloc] initWithItem:item];
             [temp addObject:m];
-            
         } errorBlock:^(NSError * _Nonnull error) {
             
         } finishBlock:^{
-            
             [RRFeedAction insertArticle:temp withFeed:self.infoModel.feed finish:^(NSUInteger x) {
                 if (finished) {
                     finished(x);
                 }
             }];
-            
-            
         } needUpdateIcon:NO];
     }
     else if(self.styleModel)
@@ -459,6 +452,10 @@
 
 - (void)configit:(id)sender
 {
+//    [[self.inputerCoreData allModels] enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+//        NSLog(@"%@",[obj valueForKey:@"date"]);
+//    }];
+    
     EntityFeedInfo* feed = self.infoModel.feed;
     BOOL usetll = feed.usettl;
     BOOL useauto = feed.useautoupdate;
@@ -495,24 +492,18 @@
         .show((id)self.view);
     })
     .action(usetll?@"关闭缓存期内更新":@"开启缓存期内更新", ^(UIAlertAction * _Nonnull action, UIAlertController * _Nonnull alert) {
-        
         [weakSelf changeFeedValue:@(!usetll) forKey:@"usettl" void:^(NSError *e) {
-            
         }];
     })
     .action(useauto?@"关闭自动更新文章":@"开启自动更新文章", ^(UIAlertAction * _Nonnull action, UIAlertController * _Nonnull alert) {
-        
         [weakSelf changeFeedValue:@(!useauto) forKey:@"useautoupdate" void:^(NSError *e) {
-            
         }];
     })
     .action(usesafari?@"关闭直接阅读原文":@"开启直接阅读原文", ^(UIAlertAction * _Nonnull action, UIAlertController * _Nonnull alert) {
         [weakSelf changeFeedValue:@(!usesafari) forKey:@"usesafari" void:^(NSError *e) {
-            
         }];
     })
     .cancel(@"取消", ^(UIAlertAction * _Nonnull action) {
-        
     });
     
     if ([UIDevice currentDevice].iPad()) {
@@ -521,8 +512,56 @@
     else {
         a.show((id)self.view);
     }
+}
+
+
+- (void)changeType:(UISegmentedControl*)sender
+{
+//    NSLog(@"%@",sender);
     
-    
+    switch (sender.selectedSegmentIndex) {
+        case 0:
+        {
+            self.inputerCoreData.style.onlyUnread = YES;
+            self.inputerCoreData.style.onlyReaded = NO;
+            self.inputerCoreData.style.liked = NO;
+            break;
+        }
+        case 1:
+        {
+            self.inputerCoreData.style.onlyUnread = NO;
+            self.inputerCoreData.style.onlyReaded = YES;
+            self.inputerCoreData.style.liked = NO;
+            break;
+        }
+        case 2:
+        {
+            self.inputerCoreData.style.onlyUnread = NO;
+            self.inputerCoreData.style.onlyReaded = NO;
+            self.inputerCoreData.style.liked = YES;
+            break;
+        }
+        default:
+            break;
+    }
+    [self.inputerCoreData rebuildFetch];
+//    [(id)self.view reloadData];
+    [self updateHashData];
+    [self.view mvp_reloadData];
+}
+
+- (void)maskAllReaded:(id)sender
+{
+    __weak typeof(self) weakSelf = self;
+    UI_Alert()
+    .titled(@"全部标记已读")
+    .recommend(@"已读", ^(UIAlertAction * _Nonnull action, UIAlertController * _Nonnull alert) {
+        [[weakSelf.inputerCoreData allModels] enumerateObjectsUsingBlock:^(EntityFeedArticle*  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+            [RRFeedAction readArticle:obj.uuid onlyMark:YES];
+        }];
+    })
+    .cancel(@"取消", nil)
+    .show((id)self.view);
 }
 
 

@@ -6,26 +6,28 @@
 	<string>#000000</string>
 	<key>$main-text-color</key>
 	<string>#000000</string>
+	<key>$main-text-color-readed</key>
+	<string>#606060</string>
 	<key>$sub-text-color</key>
 	<string>#B0B0B0</string>
 	<key>$main-tint-color</key>
 	<string>#BD10E0</string>
 	<key>$main-separator-color</key>
-	<string>#404040</string>
+	<string>#f9f9f9</string>
 	<key>$main-bg-color</key>
 	<string>#ffffff</string>
 	<key>$bar-tint-color</key>
 	<string>#f9f9f9</string>
 	<key>$title-font</key>
 	<string>PingFangSC-Light</string>
+	<key>$num-font</key>
+	<string>PingFangSC-Light</string>
 	<key>$main-font-size</key>
-	<string>17</string>
-	<key>$main-font-1</key>
-	<string>PingFangSC-Semibold</string>
+	<string>21</string>
 	<key>$main-font</key>
 	<string>PingFangSC-Regular</string>
 	<key>$sub-font-size</key>
-	<string>16</string>
+	<string>13</string>
 	<key>$large-title-font-size</key>
 	<string>34</string>
 </dict>

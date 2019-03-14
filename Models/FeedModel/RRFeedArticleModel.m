@@ -29,12 +29,14 @@
         self.identifier = item.identifier;
         self.link = item.link;
         self.date = item.date;
-        self.updated = item.updated;
+        self.updateTime = item.updated;
         self.summary = item.summary;
         self.content = item.content;
         self.author = item.author;
         self.enclosures = item.enclosures;
         self.categories = item.categories;
+        self.readed = NO;
+        self.liked = NO;
     }
     return self;
 }
@@ -47,10 +49,12 @@
         self.identifier = article.identifier;
         self.link = article.link;
         self.date = article.date;
-        self.updated = article.updated;
+        self.updateTime = article.updateTime;
         self.summary = article.summary;
         self.content = article.content;
         self.author = article.author;
+        self.readed = article.readed;
+        self.readlater = article.readlater;
         if (article.enclosures) {
             NSData* d = [article.enclosures dataUsingEncoding:NSUTF8StringEncoding];
             self.enclosures = [NSJSONSerialization JSONObjectWithData:d options:kNilOptions error:nil];
@@ -69,7 +73,7 @@
 
 - (NSString *)description
 {
-    return [[super description] stringByAppendingFormat:@"%@ %@ %@",self.title,self.date,self.updated];
+    return [[super description] stringByAppendingFormat:@"%@ %@ %@",self.title,self.date,self.updateTime];
 }
 
 @end

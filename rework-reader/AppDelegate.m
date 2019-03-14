@@ -92,6 +92,28 @@
     
 }
 
+- (void)loadCoreData
+{
+    [MagicalRecord setDefaultModelNamed:@"Model.momd"];
+//    NSString* ic = [@"iCloud." stringByAppendingString:[UIApplication sharedApplication].bundleID()];
+    
+    NSURL* d = [NSURL fileURLWithPath:[@"~/Library/Data" stringByExpandingTildeInPath]];
+//    if (![[NSFileManager defaultManager] fileExistsAtPath:[d path]]) {
+//        NSError* e;
+//        [[NSFileManager defaultManager] createDirectoryAtPath:[d path] withIntermediateDirectories:NO attributes:nil error:&e];
+//        if (e) {
+//            NSLog(@"%@",e);
+//        }
+//    }
+//    [MagicalRecord setupCoreDataStackWithiCloudContainer:ic contentNameKey:nil localStoreAtURL:d cloudStorePathComponent:@"data" completion:^{
+    
+//    }];
+//    [MagicalRecord setupCoreDataStackWithAutoMigratingSqliteStoreAtURL:]
+    [MagicalRecord setupCoreDataStackWithAutoMigratingSqliteStoreAtURL:d];
+    
+//    NSLog(@"%@",@([MagicalRecord isICloudEnabled]));
+}
+
 - (void)loadPage
 {
 //    [[NSUserDefaults standardUserDefaults] setValue:url forKey:@"lastUrl"];
@@ -148,9 +170,10 @@
 //        [MagicalRecord setupAutoMigratingCoreDataStack];
 //    }
 //    else {
-    [MagicalRecord setupCoreDataStackWithAutoMigratingSqliteStoreNamed:@"Model"];
+//    [MagicalRecord setupCoreDataStackWithAutoMigratingSqliteStoreNamed:@"Model"];
 //    }
     
+    [self loadCoreData];
    
     
     // 加载logger
