@@ -36,12 +36,17 @@
 {
     [super mvp_configMiddleware];
     
-    MVPTableViewOutput* o = self.outputer;
-    [o mvp_registerNib:[UINib nibWithNibName:@"RRFeedInfoListCell" bundle:[NSBundle mainBundle]] forCellReuseIdentifier:@"feedCell"];
-    [o mvp_registerNib:[UINib nibWithNibName:@"RRTitleCell" bundle:[NSBundle mainBundle]] forCellReuseIdentifier:@"titleCell"];
+//    MVPTableViewOutput* o = self.outputer;
+    [self.outputer setRegistBlock:^(MVPTableViewOutput* output) {
+        [output registNibCell:@"RRFeedInfoListCell" withIdentifier:@"feedCell"];
+        [output registNibCell:@"RRTitleCell" withIdentifier:@"titleCell"];
+        [output mvp_bindTableRefreshActionName:@"refreshData:"];
+    }];
+//    [o mvp_registerNib:[UINib nibWithNibName:@"RRFeedInfoListCell" bundle:[NSBundle mainBundle]] forCellReuseIdentifier:@"feedCell"];
+//    [o mvp_registerNib:[UINib nibWithNibName:@"RRTitleCell" bundle:[NSBundle mainBundle]] forCellReuseIdentifier:@"titleCell"];
     self.empty = [[RREmpty alloc] init];
     
-    [o mvp_bindTableRefreshActionName:@"refreshData:"];
+//    [o mvp_bindTableRefreshActionName:@"refreshData:"];
 }
 
 - (void)mvp_bindData

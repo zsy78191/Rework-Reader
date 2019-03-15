@@ -9,20 +9,21 @@ PODS:
   - DACircularProgress (2.3.1)
   - DateTools (2.0.0)
   - DZNEmptyDataSet (1.8.1)
-  - Fork-MWFeedParser (0.1.1.1)
+  - Fork-MWFeedParser (0.1.2)
   - Fork-MWPhotoBrowser (2.1.4):
     - DACircularProgress (~> 2.3)
     - MBProgressHUD (~> 0.9)
     - SDWebImage (~> 4.4.6)
   - IQKeyboardManager (6.2.0)
+  - KissXML (5.2.3)
   - MagicalRecord (2.3.2):
     - MagicalRecord/Core (= 2.3.2)
   - MagicalRecord/Core (2.3.2)
   - Masonry (1.1.0)
   - MBProgressHUD (0.9.2)
   - MGJRouter (0.10.0)
-  - MMKV (1.0.17)
-  - mvc-base (0.3.2):
+  - MMKV (1.0.18)
+  - mvc-base (0.3.3):
     - DZNEmptyDataSet
     - MagicalRecord
     - Masonry
@@ -70,6 +71,7 @@ DEPENDENCIES:
   - DateTools
   - Fork-MWFeedParser
   - Fork-MWPhotoBrowser
+  - KissXML
   - mvc-base
   - oc-base
   - oc-date
@@ -90,6 +92,7 @@ SPEC REPOS:
     - Fork-MWFeedParser
     - Fork-MWPhotoBrowser
     - IQKeyboardManager
+    - KissXML
     - MagicalRecord
     - Masonry
     - MBProgressHUD
@@ -116,15 +119,16 @@ SPEC CHECKSUMS:
   DACircularProgress: 4dd437c0fc3da5161cb289e07ac449493d41db71
   DateTools: 933ac9c490f21f92127cf690ccd8c397e0126caf
   DZNEmptyDataSet: 9525833b9e68ac21c30253e1d3d7076cc828eaa7
-  Fork-MWFeedParser: 9937281705697ca95499bff515cdbdddebf6e9b8
+  Fork-MWFeedParser: 335dcd79e4ce8c2bbb7c0bf0921837374e76559d
   Fork-MWPhotoBrowser: b4fbd050f833c94b8ec07843df19c380fecbcffb
   IQKeyboardManager: 6194101620b73af5e67900b8f89707a99de0b804
+  KissXML: 09f88ff8161fd058d67b70740b8b516687b52823
   MagicalRecord: 53bed74b4323b930992a725be713e53b37d19755
   Masonry: 678fab65091a9290e40e2832a55e7ab731aad201
   MBProgressHUD: 1569cf7ace17a8bac47aabfbb8580a49690386d1
   MGJRouter: 15d94541eb2cc81eff7d577337288feb7ae9575f
-  MMKV: 890ba85ecf1d05546ed2c4d29fe618dbf92e3cf4
-  mvc-base: d20b44828f6cca22145fa77dfd8cfeb2028420ab
+  MMKV: 2dc8974641213da7ab069f9e94caa0fba7241f14
+  mvc-base: fc4108c06cd70b502287ff9d13aa63fd866a35f7
   oc-base: b0cc5eeae853acdf1b35d3f954ed8023fa37a74c
   oc-date: d8601fcc9eeea98f9d84506b77ef508cf9057786
   oc-string: 79be9e8e4c80dd3e668690d3ac462e79a713489d
@@ -138,6 +142,6 @@ SPEC CHECKSUMS:
   ui-util: 8f870cfb52b611516279bd0bf362ee2fac34d42d
   YYKit: 7cda43304a8dc3696c449041e2cb3107b4e236e7
 
-PODFILE CHECKSUM: a1bdaecf947b8f846519920cfd6c5d766d4d73da
+PODFILE CHECKSUM: 63f1b7f048205cd47fca0cf9b9c08a8b7f68daa1
 
 COCOAPODS: 1.6.0

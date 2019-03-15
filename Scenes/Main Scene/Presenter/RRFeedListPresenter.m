@@ -30,6 +30,7 @@
 @property (nonatomic, strong) RRFeedInputer* inputer;
 @property (nonatomic, strong) RRFeedReaderStyleInputer* readStyleInputer;
 @property (nonatomic, assign) BOOL needUpdate;
+@property (nonatomic, assign) BOOL needUpdateFeed;
 @end
 
 @implementation RRFeedListPresenter
@@ -71,6 +72,7 @@
     if (self) {
         self.title = @"Reader Special";
         self.needUpdate = YES;
+        self.needUpdateFeed = NO;
     }
     return self;
 }
@@ -85,10 +87,17 @@
     if (self.needUpdate) {
         [self loadData];
     }
+    
+    if (self.needUpdateFeed) {
+        self.needUpdateFeed = NO;
+        [self refreshData:nil];
+    }
 }
 
 - (void)mvp_initFromModel:(MVPInitModel *)model
 {
+    self.needUpdateFeed = YES;
+    
     [[RPDataNotificationCenter defaultCenter] registEntityChange:@"EntityFeedInfo" observer:self sel:@selector(needUpdateData)];
     
     [[RPDataNotificationCenter defaultCenter] registEntityChange:@"EntityFeedArticle" observer:self sel:@selector(needUpdateData)];
@@ -239,7 +248,7 @@
         if (lastU != 0) {
             NSDate* d = [NSDate dateWithTimeIntervalSince1970:lastU];
             //NSLog(@"last %@ %@",d,@([d timeIntervalSinceDate:[NSDate date]]));
-            if ([d timeIntervalSinceDate:[NSDate date]] > - 10) {
+            if ([d timeIntervalSinceDate:[NSDate date]] > - 60) {
                 return NO;
             }
         }
@@ -270,7 +279,7 @@
         dispatch_async(dispatch_get_main_queue(), ^{
             weakSelf.title = @"Reader Special";
             if (article == 0) {
-                [PWToastView showText:@"没有更新的订阅"];
+//                [PWToastView showText:@"没有更新的订阅"];
             }
             else {
                 [weakSelf loadData];
@@ -392,10 +401,12 @@
     }
     else if([model isKindOfClass:[RRFeedInfoListOtherModel class]])
     {
-        id vc = [MVPRouter viewForURL:@"rr://list" withUserInfo:@{@"model":model}];
-        [self.view mvp_pushViewController:vc];
+        RRFeedInfoListOtherModel* m = model;
+        if (m.type == RRFeedInfoListOtherModelTypeItem) {
+            id vc = [MVPRouter viewForURL:@"rr://list" withUserInfo:@{@"model":model}];
+            [self.view mvp_pushViewController:vc];
+        }
     }
-   
 }
 
 - (void)recommand

@@ -15,8 +15,9 @@
 #import "MVPViewLoadProtocol.h"
 #import "RRGetWebIconOperation.h"
 @import UserNotifications;
+#import "OPMLDocument.h"
 
-@interface RRSettingPresenter ()
+@interface RRSettingPresenter () <UIDocumentPickerDelegate>
 {
     
 }
@@ -118,7 +119,7 @@
         }
         case 4:
         {
-            
+            [self openOPML];
             break;
         }
         default:
@@ -263,5 +264,33 @@
     [[NSUserDefaults standardUserDefaults] synchronize];
 }
 
+
+- (void)openOPML
+{
+    UIDocumentPickerViewController* dvc = [[UIDocumentPickerViewController alloc] initWithDocumentTypes:@[@"public.xml"] inMode:UIDocumentPickerModeImport];
+    [[self view] mvp_presentViewController:dvc animated:YES completion:^{
+        
+    }];
+    dvc.delegate = self;
+}
+
+- (void)documentPicker:(UIDocumentPickerViewController *)controller didPickDocumentsAtURLs:(NSArray<NSURL *> *)urls
+{
+//    NSLog(@"%@",urls);
+    OPMLDocument* d = [[RRFeedLoader sharedLoader] loadOPML:urls.firstObject];
+    __weak typeof(self) weakSelf = self;
+    [d openWithCompletionHandler:^(BOOL success) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            if (success) {
+                id view = [MVPRouter viewForURL:@"rr://import" withUserInfo:@{@"model":d}];
+                [weakSelf.view mvp_pushViewController:view];
+            }
+            else {
+                [self.view hudFail:@"导入文件失败"];
+            }
+        });
+    }];
+
+}
 
 @end

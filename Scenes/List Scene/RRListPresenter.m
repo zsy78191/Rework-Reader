@@ -41,6 +41,7 @@
 @property (nonatomic, strong) RRListInputer* inputerCoreData;
 
 @property (nonatomic, strong) NSMutableArray* hashTable;
+@property (nonatomic, assign) NSUInteger currentIdx;
 
 @end
 
@@ -67,8 +68,19 @@
 
 - (void)updateHashData
 {
-    [self.hashTable removeAllObjects];
-    [self.hashTable addObjectsFromArray:self.inputerCoreData.allModels];
+    
+    // BUGFIXED
+    
+    NSArray* a = self.inputerCoreData.allModels;
+    a = a.reverse.filter(^BOOL(id  _Nonnull x) {
+        return [self.hashTable indexOfObject:x] == NSNotFound;
+    });
+    [a enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+        [self.hashTable insertObject:obj atIndex:0];
+    }];
+    
+//    [self.hashTable removeAllObjects];
+//    [self.hashTable addObjectsFromArray:self.inputerCoreData.allModels];
 }
 
 - (RRFeedInfoInputer *)inputer
@@ -303,7 +315,6 @@
         feed = [model feedEntity];
         RRFeedArticleModel* m = model;
 
-        
     }
     else if([model isKindOfClass:[EntityFeedArticle class]])
     {
@@ -393,9 +404,9 @@
 //    NSArray* all = [self.inputerCoreData allModels];
 //    NSArray* all = [self.hashTable allObjects];
     NSArray* all = self.hashTable;
-    NSInteger x = [all indexOfObject:current];
+    NSUInteger x = [all indexOfObject:current];
     //    //NSLog(@"%@ %ld" ,current,x);
-    if (x == 0) {
+    if (x == 0 || x == NSNotFound) {
         return nil;
     }
     NSInteger lastidx = x-1;
@@ -413,7 +424,7 @@
     NSArray* all = self.hashTable;
     NSInteger x = [all indexOfObject:current];
     //    //NSLog(@"%@ %ld" ,current,x);
-    if (x == all.count - 1) {
+    if (x == all.count - 1 || x == NSNotFound) {
         return nil;
     }
     NSInteger lastidx = x+1;

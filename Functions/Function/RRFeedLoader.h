@@ -8,9 +8,12 @@
 
 #import <Foundation/Foundation.h>
 @import Fork_MWFeedParser;
+@class OPMLDocument;
 NS_ASSUME_NONNULL_BEGIN
 
 @interface RRFeedLoader : NSObject
+
+- (void)setQyalityLevel:(NSQualityOfService)service;
 
 + (instancetype)sharedLoader;
 
@@ -27,7 +30,7 @@ NS_ASSUME_NONNULL_BEGIN
      finishBlock:(void(^)(void))finishblock
   needUpdateIcon:(BOOL)need;
 
-- (void)reloadAll:(NSArray<NSString*>*)feedURIs
+- (NSArray*)reloadAll:(NSArray<NSString*>*)feedURIs
         infoBlock:(void(^)(MWFeedInfo* info))infoblock
         itemBlock:(void(^)(MWFeedInfo* info,MWFeedItem* item))itemblock
        errorBlock:(void(^)(NSError* error))errblock
@@ -51,6 +54,9 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (void)refresh:(NSArray*)origin endRefreshBlock:(void (^)(void))endBlock finishBlock:(void (^)(NSUInteger all,NSUInteger error, NSUInteger article))finishBlock;
 - (void)refresh:(NSArray*)origin endRefreshBlock:(void (^)(void))endBlock progress:(void(^ _Nullable)(NSUInteger current,NSUInteger all))progressblock finishBlock:(void (^)(NSUInteger all,NSUInteger error, NSUInteger article))finishBlock;
+
+
+- (OPMLDocument*)loadOPML:(NSURL*)fileURL;
 
 @end
 

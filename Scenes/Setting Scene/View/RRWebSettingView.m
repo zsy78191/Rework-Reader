@@ -35,9 +35,12 @@
     
     self.appear = [RRSettingApperance new];
     
-    MVPTableViewOutput* o = self.outputer;
-    [o mvp_registerNib:[UINib nibWithNibName:@"RRIconSettingCell" bundle:[NSBundle mainBundle]] forCellReuseIdentifier:@"iconCell"];
-    [o mvp_registerNib:[UINib nibWithNibName:@"RRTitleCell" bundle:[NSBundle mainBundle]] forCellReuseIdentifier:@"titleCell"];
+//    MVPTableViewOutput* o = self.outputer;
+    
+    [self.outputer setRegistBlock:^(MVPTableViewOutput* output) {
+        [output registNibCell:@"RRIconSettingCell" withIdentifier:@"iconCell"];
+        [output registNibCell:@"RRTitleCell" withIdentifier:@"titleCell"];
+    }];
 }
 
 - (Class)mvp_presenterClass

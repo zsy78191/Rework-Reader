@@ -8,6 +8,7 @@
 
 #import "RRTitleCell.h"
 #import "RRFeedInfoModel.h"
+#import "OPMLDocument.h"
 @implementation RRTitleCell
 
 - (void)awakeFromNib {
@@ -23,6 +24,11 @@
 
 - (void)loadModel:(id<MVPModelProtocol>)model
 {
+    if ([model isKindOfClass:[OPMLOutline class]]) {
+        OPMLOutline* o = model;
+        self.titleLabel.text = o.title?o.title:o.text;
+        return;
+    }
     RRFeedInfoModel* m = model;
     self.titleLabel.text = m.title;
 }

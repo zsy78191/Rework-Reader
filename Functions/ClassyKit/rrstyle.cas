@@ -48,6 +48,17 @@ UIButton {
     text-color $sub-text-color
 }
 
+^UITableViewCell > ^UIView > UILabel.TitleLabel
+{
+    font $main-font $main-font-size
+    text-color $sub-text-color
+}
+
+
+^UITableViewCell {
+    tint-color $main-tint-color
+}
+
 ^UITableViewCell > ^UIView.TitleContentView {
     backgroundColor $bar-tint-color
 }

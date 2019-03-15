@@ -24,6 +24,7 @@
 #import "RRFeedInfoListOtherModel.h"
 @import SDWebImage;
 @import MMKV;
+@import SVProgressHUD;
 #import "RRWebStyleModel.h"
 
 @interface AppDelegate () <SDWebImageManagerDelegate>
@@ -73,7 +74,7 @@
 {
     self.window.backgroundColor = [UIColor whiteColor];
     [[UIApplication sharedApplication] setHUDStyle];
-    
+    [SVProgressHUD setHapticsEnabled:YES];
 //    //NSLog(@"%@",[UIApplication sharedApplication].bundleID());
     
     [MMKV setLogLevel:MMKVLogNone];
@@ -89,7 +90,7 @@
     [MVPRouter registView:NSClassFromString(@"RRAddFeedView") forURL:@"rr://addfeed"];
     [MVPRouter registView:NSClassFromString(@"RRListView") forURL:@"rr://list"];
     [MVPRouter registView:NSClassFromString(@"RRWebSettingView") forURL:@"rr://websetting"];
-    
+    [MVPRouter registView:NSClassFromString(@"RRImportView") forURL:@"rr://import"];
 }
 
 - (void)loadCoreData
@@ -234,7 +235,7 @@
             [[NSUserDefaults standardUserDefaults] synchronize];
             [weakSelf notiArticle:x];
         }
-        //NSLog(@"更新了%ld",x);
+        NSLog(@"更新了%ld",x);
         if (x > 0) {
             completionHandler(UIBackgroundFetchResultNewData);
         }

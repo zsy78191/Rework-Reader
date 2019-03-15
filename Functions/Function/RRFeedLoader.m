@@ -18,8 +18,10 @@
 #import "RRFeedArticleModel.h"
 #import "RPDataManager.h"
 #import "RRFeedAction.h"
+#import "OPMLDocument.h"
 
 @interface RRFeedLoader ()
+@property (nonatomic, strong) NSOperationQueue* highQuene;
 @property (nonatomic, strong) NSOperationQueue* quene;
 @property (nonatomic, strong) NSOperationQueue* netQuene;
 @property (nonatomic, assign) BOOL isFeeding;
@@ -28,12 +30,20 @@
 
 @implementation RRFeedLoader
 
+- (void)setQyalityLevel:(NSQualityOfService)service
+{
+    [self.quene setQualityOfService:service];
+    [self.netQuene setQualityOfService:service];
+}
+
 + (instancetype)sharedLoader
 {
     static RRFeedLoader* _shared_loader_g = nil;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
         _shared_loader_g = [[RRFeedLoader alloc] init];
+//        _shared_loader_g.useMainQuene = NO;
+        [_shared_loader_g setQyalityLevel:NSQualityOfServiceBackground];
     });
     return _shared_loader_g;
 }
@@ -42,6 +52,7 @@
 {
     if (!_quene) {
         _quene = [[NSOperationQueue alloc] init];
+        
         [_quene setMaxConcurrentOperationCount:30];
     }
     return _quene;
@@ -54,6 +65,16 @@
         [_netQuene setMaxConcurrentOperationCount:30];
     }
     return _netQuene;
+}
+
+- (NSOperationQueue *)highQuene
+{
+    if (!_highQuene) {
+        _highQuene = [[NSOperationQueue alloc] init];
+        [_highQuene setQualityOfService:NSQualityOfServiceUtility];
+        [_netQuene setMaxConcurrentOperationCount:30];
+    }
+    return _highQuene;
 }
 
 - (FMFeedParserOperation*)loadOfficalWithInfoBlock:(void (^)(MWFeedInfo * _Nonnull))infoblock itemBlock:(void (^)(MWFeedItem * _Nonnull))itemblock errorBlock:(void (^)(NSError * _Nonnull))errblock finishBlock:(void (^)(void))finishblock
@@ -73,7 +94,6 @@
     };
     
     FMFeedParserOperation* o = feed(@"1",url,self.netQuene);
-    
     [o setParseInfoBlock:^(MWFeedInfo * _Nonnull info) {
         if (need) {
             RRGetWebIconOperation* o = [[RRGetWebIconOperation alloc] init];
@@ -107,15 +127,15 @@
     }];
     
     [self.quene addOperation:o];
-    
     return o;
 }
 
-- (void)reloadAll:(NSArray<NSString *> *)feedURIs infoBlock:(void (^)(MWFeedInfo * _Nonnull))infoblock itemBlock:(void (^)(MWFeedInfo * _Nonnull, MWFeedItem * _Nonnull))itemblock errorBlock:(void (^)(NSError * _Nonnull))errblock finishBlock:(void (^)(void))finishblock
+- (NSArray*)reloadAll:(NSArray<NSString *> *)feedURIs infoBlock:(void (^)(MWFeedInfo * _Nonnull))infoblock itemBlock:(void (^)(MWFeedInfo * _Nonnull, MWFeedItem * _Nonnull))itemblock errorBlock:(void (^)(NSError * _Nonnull))errblock finishBlock:(void (^)(void))finishblock
 {
+    __block NSMutableArray* operations = [[NSMutableArray alloc] init];
     __block NSMutableArray* feeds = [[NSMutableArray alloc] init];
     [feedURIs enumerateObjectsUsingBlock:^(NSString*  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
-        [self loadFeed:obj infoBlock:^(MWFeedInfo * _Nonnull info) {
+        id o = [self loadFeed:obj infoBlock:^(MWFeedInfo * _Nonnull info) {
             [feeds addObject:info];
             if (infoblock) {
                 infoblock(info);
@@ -139,7 +159,9 @@
                 finishblock();
             }
         } needUpdateIcon:NO];
+        [operations addObject:o];
     }];
+    return operations;
 }
 
 - (void)cancel:(FMFeedParserOperation *)operation
@@ -330,6 +352,12 @@
             }];
         }
     }];
+}
+
+- (OPMLDocument*)loadOPML:(NSURL *)fileURL
+{
+    OPMLDocument* d = [[OPMLDocument alloc] initWithFileURL:fileURL];
+    return d;
 }
 
 @end

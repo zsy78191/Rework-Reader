@@ -97,7 +97,7 @@
     NSArray* x = [[RPDataManager sharedManager] getAll:@"EntityFeedInfo" predicate:nil key:nil value:nil sort:@"sort" asc:YES];
     
     [x enumerateObjectsUsingBlock:^(EntityFeedInfo*  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
-        //NSLog(@"%@ %@",obj.title,obj.uuid);
+        NSLog(@"%@ %@ %@",obj.title,obj.uuid,obj.url);
     }];
 }
 

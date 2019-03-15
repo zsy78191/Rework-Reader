@@ -35,8 +35,12 @@
         
         UIBarButtonItem* item = [self mvp_buttonItemWithSystem:UIBarButtonSystemItemTrash actionName:@"deleteIt:" title:@"删除"];
         self.navigationItem.rightBarButtonItems = @[item];
-        MVPTableViewOutput* o = self.outputer;
-        [o mvp_bindTableRefreshActionName:@"refreshData:"];
+        
+//        MVPTableViewOutput* o = self.outputer;
+        [self.outputer setRegistBlock:^(id output) {
+            [output mvp_bindTableRefreshActionName:@"refreshData:"];
+        }];
+//        [o mvp_bindTableRefreshActionName:@"refreshData:"];
         self.showToolBar = YES;
     }
     else if([m isKindOfClass:[RRFeedInfoListOtherModel class]])
@@ -48,8 +52,11 @@
         }
         
         if (mm.canRefresh) {
-            MVPTableViewOutput* o = self.outputer;
-            [o mvp_bindTableRefreshActionName:@"refreshData:"];
+//            MVPTableViewOutput* o = self.outputer;
+            [self.outputer setRegistBlock:^(id output) {
+                [output mvp_bindTableRefreshActionName:@"refreshData:"];
+            }];
+//            [o mvp_bindTableRefreshActionName:@"refreshData:"];
         }
         self.showToolBar = NO;
     }
@@ -108,22 +115,25 @@
 {
     [super mvp_configMiddleware];
 
-    MVPTableViewOutput* o = self.outputer;
-    [o mvp_registerNib:[UINib nibWithNibName:@"RRFeedArticleCell2" bundle:[NSBundle mainBundle]] forCellReuseIdentifier:@"articleCell"];
     RRListEmpty* empty = [[RRListEmpty alloc] init];
     self.empty = empty;
     __weak typeof(self) weakSelf = self;
-    [empty setActionBlock:^{
-//        [weakSelf mvp_popViewController:nil];
-//        [[weakSelf presenter] mvp_runAction:@"refreshData"];
-        dispatch_async(dispatch_get_main_queue(), ^{
-            if ([[o refreshControl] isRefreshing]) {
-                return ;
-            }
-            [[o refreshControl] beginRefreshing];
-            [[weakSelf presenter] mvp_runAction:@"refreshData:" value:[o refreshControl]];
-        });
+   
+//    MVPTableViewOutput* o = self.outputer;
+    [self.outputer setRegistBlock:^(id output) {
+        [output registNibCell:@"RRFeedArticleCell2" withIdentifier:@"articleCell"];
+        [empty setActionBlock:^{
+            dispatch_async(dispatch_get_main_queue(), ^{
+                if ([[output refreshControl] isRefreshing]) {
+                    return ;
+                }
+                [[output refreshControl] beginRefreshing];
+                [[weakSelf presenter] mvp_runAction:@"refreshData:" value:[output refreshControl]];
+            });
+        }];
     }];
+//    [o mvp_registerNib:[UINib nibWithNibName:@"RRFeedArticleCell2" bundle:[NSBundle mainBundle]] forCellReuseIdentifier:@"articleCell"];
+   
 }
 
 //- (void)reloadData

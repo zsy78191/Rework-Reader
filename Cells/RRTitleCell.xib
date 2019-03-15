@@ -25,7 +25,7 @@
                         <nil key="textColor"/>
                         <nil key="highlightedColor"/>
                         <userDefinedRuntimeAttributes>
-                            <userDefinedRuntimeAttribute type="string" keyPath="cas_styleClass" value="MainLabel"/>
+                            <userDefinedRuntimeAttribute type="string" keyPath="cas_styleClass" value="TitleLabel"/>
                         </userDefinedRuntimeAttributes>
                     </label>
                 </subviews>

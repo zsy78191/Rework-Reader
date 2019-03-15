@@ -25,6 +25,22 @@
             "type": 1
         },
         {
+            "title": "数据",
+            "value": null,
+            "action": null,
+            "switchkey": null,
+            "select": null,
+            "type": 2
+        },
+        {
+            "title": "导入OPML文件",
+            "value": null,
+            "action": "openOPML",
+            "switchkey": null,
+            "select": null,
+            "type": 1
+        },
+        {
             "title": "设置",
             "value": null,
             "action": null,

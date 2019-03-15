@@ -63,11 +63,17 @@
 - (void)mvp_configMiddleware
 {
     [super mvp_configMiddleware];
-    MVPTableViewOutput* o = self.outputer;
-    [o mvp_registerNib:[UINib nibWithNibName:@"RRFeedInfoCell" bundle:[NSBundle mainBundle]] forCellReuseIdentifier:@"infoCell"];
-    [o mvp_registerNib:[UINib nibWithNibName:@"RRFeedArticleCell" bundle:[NSBundle mainBundle]] forCellReuseIdentifier:@"articleCell"];
-    [o mvp_registerNib:[UINib nibWithNibName:@"RRTitleCell" bundle:[NSBundle mainBundle]] forCellReuseIdentifier:@"titleCell"];
-    [o mvp_registerNib:[UINib nibWithNibName:@"RRSwitchCell" bundle:[NSBundle mainBundle]] forCellReuseIdentifier:@"switchCell"];
+//    MVPTableViewOutput* o = self.outputer;
+    [self.outputer setRegistBlock:^(id output) {
+        [output registNibCell:@"RRFeedInfoCell" withIdentifier:@"infoCell"];
+        [output registNibCell:@"RRFeedArticleCell" withIdentifier:@"articleCell"];
+        [output registNibCell:@"RRTitleCell" withIdentifier:@"titleCell"];
+        [output registNibCell:@"RRSwitchCell" withIdentifier:@"switchCell"];
+    }];
+//    [o mvp_registerNib:[UINib nibWithNibName:@"RRFeedInfoCell" bundle:[NSBundle mainBundle]] forCellReuseIdentifier:@"infoCell"];
+//    [o mvp_registerNib:[UINib nibWithNibName:@"RRFeedArticleCell" bundle:[NSBundle mainBundle]] forCellReuseIdentifier:@"articleCell"];
+//    [o mvp_registerNib:[UINib nibWithNibName:@"RRTitleCell" bundle:[NSBundle mainBundle]] forCellReuseIdentifier:@"titleCell"];
+//    [o mvp_registerNib:[UINib nibWithNibName:@"RRSwitchCell" bundle:[NSBundle mainBundle]] forCellReuseIdentifier:@"switchCell"];
     
     RREmptyStyleOne* one =  [[RREmptyStyleOne alloc] init];
     self.empty = one;
