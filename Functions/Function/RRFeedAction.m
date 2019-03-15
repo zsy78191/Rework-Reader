@@ -15,6 +15,7 @@
 @import ui_base;
 @import SDWebImage;
 @import RegexKitLite;
+@import Fork_MWFeedParser;
 
 @implementation RRFeedAction
 
@@ -79,11 +80,16 @@
 + (NSInteger)exist:(id)obj feed:(EntityFeedInfo*)info;
 {
     RRFeedArticleModel* m = obj;
-    
     // FIXED: 这里很奇怪，判断条件顺序变化，会导致结果变化
-    NSPredicate * p = [NSPredicate predicateWithFormat:@"title = %@ and link = %@ and feed.uuid = %@",m.title,m.link,info.uuid];
+    NSPredicate * p = [NSPredicate predicateWithFormat:@"(title = %@ or link = %@) and feed.uuid = %@",m.title,m.link,info.uuid];
     NSNumber* c = [[RPDataManager sharedManager] getCount:@"EntityFeedArticle" predicate:p key:nil value:nil sort:nil asc:YES];
-//    id x = [[RPDataManager sharedManager] getFirst:@"EntityFeedArticle" predicate:p key:nil value:nil sort:nil asc:YES];
+    return [c integerValue];
+}
+
++ (NSInteger)existFeed:(MWFeedInfo*)info
+{
+    NSPredicate* p = [NSPredicate predicateWithFormat:@"url = %@",info.url];
+    NSNumber* c = [[RPDataManager sharedManager] getCount:@"EntityFeedInfo" predicate:p key:nil value:nil sort:nil asc:YES];
     return [c integerValue];
 }
 
@@ -139,6 +145,60 @@
         finish(c);
     }
     //NSLog(@"一共增加%ld篇文章",c);
+}
+
++ (void)insertFeedInfo:(MWFeedInfo*)info finish:(void (^)(void))finish
+{
+    NSInteger count = [[self class] existFeed:info];
+    if(count > 0)
+    {
+        if (finish) {
+            finish();
+        }
+    }
+    else {
+        NSMutableDictionary* d = [NSMutableDictionary dictionary];
+        [[info ob_propertys] enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+            id value = [info valueForKey:obj];
+            if (value) {
+                [d setObject:value forKey:obj];
+            }
+        }];
+        if ([d valueForKey:@"ttl"]) {
+            [d setValue:@(YES) forKey:@"usettl"];
+        }
+        else
+        {
+            [d setValue:@(NO) forKey:@"usettl"];
+        }
+        NSDate* ddate = [d valueForKey:@"lastBuildDate"];
+        if (ddate) {
+//            NSLog(@"%@",@([ddate timeIntervalSinceNow]));
+            if ([ddate timeIntervalSinceNow] > -3600*24*3) {
+                [d setObject:@(YES) forKey:@"useautoupdate"];
+            }
+            else {
+                [d setObject:@(NO) forKey:@"useautoupdate"];
+            }
+        }
+        else {
+            [d setObject:@(NO) forKey:@"useautoupdate"];
+        }
+        [d setObject:@(NO) forKey:@"usesafari"];
+        NSDate* ddd = [d valueForKey:@"lastBuildDate"]?[d valueForKey:@"lastBuildDate"]:[d valueForKey:@"pubDate"];
+        if (ddd) {
+            [d setObject:ddd forKey:@"updateDate"];
+        }
+        [d removeObjectForKey:@"lastBuildDate"];
+        [d removeObjectForKey:@"pubDate"];
+        [[RPDataManager sharedManager] insertClass:@"EntityFeedInfo" keysAndValues:d modify:^id _Nonnull(id  _Nonnull key, id  _Nonnull value) {
+            return value;
+        } finish:^(__kindof NSManagedObject * _Nonnull obj, NSError * _Nonnull e) {
+            if (finish) {
+                finish();
+            }
+        }];
+    }
 }
 
 + (void)insertArticle:(NSArray*)article finish:(void (^)(NSUInteger))finish

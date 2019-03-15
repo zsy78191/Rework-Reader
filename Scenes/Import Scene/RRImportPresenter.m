@@ -10,6 +10,7 @@
 #import "RRImportInputer.h"
 #import "OPMLDocument.h"
 #import "RRFeedLoader.h"
+#import "RRFeedAction.h"
 @import oc_string;
 
 @interface RRImportPresenter ()
@@ -108,6 +109,7 @@
     [self.view hudWait:@"加载中"];
     
     __weak typeof(self) weakSelf = self;
+    __block NSUInteger successCount = 0;
     __block void (^setCount)(NSUInteger all,NSUInteger finish) = ^(NSUInteger all,NSUInteger finish){
         dispatch_async(dispatch_get_main_queue(), ^{
             weakSelf.allFeedCount = all;
@@ -118,17 +120,22 @@
             }
             if (finishCount == allCount) {
                 [weakSelf.view mvp_runAction:NSSelectorFromString(@"enableAllButton")];
-                [weakSelf.view hudDismiss];
+//                [weakSelf.view hudDismiss];
+                [weakSelf.view hudSuccess:[NSString stringWithFormat:@"成功导入%@个订阅源",@(successCount)]];
             }
         });
     };
     self.setCount = setCount;
-
+    
 //    [[RRFeedLoader sharedLoader] setUseMainQuene:YES];
     NSArray* op = [[RRFeedLoader sharedLoader] reloadAll:all infoBlock:^(MWFeedInfo * _Nonnull info) {
-        NSLog(@"%@",info);
+//        NSLog(@"%@",info);
+        successCount++;
+        [RRFeedAction insertFeedInfo:info finish:^{
+            
+        }];
     } itemBlock:^(MWFeedInfo * _Nonnull info, MWFeedItem * _Nonnull item) {
-        
+       
     } errorBlock:^(NSError * _Nonnull error) {
         NSLog(@"error");
         errorCount++;

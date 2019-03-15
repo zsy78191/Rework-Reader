@@ -10,10 +10,14 @@
 @class EntityFeedInfo,EntityFeedStyle,EntityFeedArticle;
 NS_ASSUME_NONNULL_BEGIN
 
+@class MWFeedInfo;
+
 @interface RRFeedAction : NSObject
 
 + (void)likeArticle:(BOOL)like withUUID:(NSString*)uuid block:(void (^)(NSError*))finished;
 + (void)readLaterArticle:(BOOL)readerLater withUUID:(NSString*)uuid block:(void (^)(NSError*))finished;
+
++ (void)insertFeedInfo:(MWFeedInfo*)info finish:(void (^)(void))finish;
 
 + (void)insertArticle:(NSArray*)article finish:(void (^)(NSUInteger))finish;
 + (void)insertArticle:(NSArray*)article withFeed:(EntityFeedInfo*)info finish:(void (^)(NSUInteger))finish;
