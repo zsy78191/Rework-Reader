@@ -22,6 +22,22 @@
     
     Class a = self.insertClass;
     
+    if (self.predicate) {
+        NSManagedObjectContext* c = [NSManagedObjectContext MR_rootSavingContext];
+        NSArray* aaa = [(id)a MR_findAllWithPredicate:self.predicate inContext:c];
+        [aaa enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+            if (self.modify) {
+                self.modify(obj);
+            }
+        }];
+        NSError* e;
+        [c save:&e];
+        if (self.finishesBlock) {
+            self.finishesBlock(aaa, e);
+        }
+        return;
+    }
+    
     if (self.models) {
         NSManagedObjectContext* c = [NSManagedObjectContext MR_rootSavingContext];
         NSMutableArray* aa = [NSMutableArray arrayWithCapacity:10];

@@ -48,6 +48,10 @@ UIButton {
     text-color $sub-text-color
 }
 
+^UITableViewCell > ^UIView > ^UIImageView {
+    tintColor $main-tint-color
+}
+
 ^UITableViewCell > ^UIView > UILabel.TitleLabel
 {
     font $main-font $main-font-size
@@ -72,6 +76,10 @@ UILabel.TipLabel {
     text-color $sub-text-color
 }
 
+^UIView.bgView
+{
+    backgroundColor $main-bg-color
+}
 UIView.statuCover {
     backgroundColor $bar-tint-color
 }
@@ -101,14 +109,17 @@ UIView.SeparaterView
 
 ^UITableViewCell > ^UIView > ^UILabel.F1 {
     font PingFangSC-Light $main-font-size
+    text-color $main-text-color
 }
 
 ^UITableViewCell > ^UIView > ^UILabel.F2 {
     font PingFangSC-Regular $main-font-size
+    text-color $main-text-color
 }
 
 ^UITableViewCell > ^UIView > ^UILabel.F3 {
     font SourceHanSerifCN-Light $main-font-size
+    text-color $main-text-color
 }
 
 

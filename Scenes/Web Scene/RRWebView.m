@@ -297,6 +297,13 @@
     self.loadFinished = YES;
 }
 
+- (void)viewDidLoad
+{
+    [super viewDidLoad];
+//    [self.view setBackgroundColor:[UIColor blackColor]];
+    self.view.cas_styleClass = @"bgView";
+}
+
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView
 {
 //    //NSLog(@"(2)%f %d",scrollView.contentOffset.y,self.loadFinished);
@@ -532,6 +539,9 @@
             string = [self removeHighlight:string];
         }
         
+        NSDictionary* style = [[NSUserDefaults standardUserDefaults] valueForKey:@"style"];
+        string = [self stylePreLoad:string];
+ 
         string = [string stringByReplacingOccurrencesOfString:@"<#title#>" withString:[filename stringByDeletingPathExtension]];
         
         string = [string stringByReplacingOccurrencesOfString:@"<#useMarkdown#>" withString:@"1"];
@@ -567,6 +577,16 @@
     
 }
 
+- (NSString*)stylePreLoad:(NSString*)string
+{
+    NSDictionary* style = [[NSUserDefaults standardUserDefaults] valueForKey:@"style"];
+    string = [string stringByReplacingOccurrencesOfString:@"<#main-tint-color#>" withString:style[@"$main-tint-color"]];
+    string = [string stringByReplacingOccurrencesOfString:@"<#bgColor#>" withString:style[@"$main-bg-color"]];
+    string = [string stringByReplacingOccurrencesOfString:@"<#main-color#>" withString:style[@"$main-text-color"]];
+    string = [string stringByReplacingOccurrencesOfString:@"<#sub-color#>" withString:style[@"$sub-text-color"]];
+    string = [string stringByReplacingOccurrencesOfString:@"<#sub-bg-color#>" withString:style[@"$sub-bg-color"]];
+    return string;
+}
 
 - (void)preloadData:(RRFeedArticleModel*)m feed:(MWFeedInfo*)feedInfo
 {
@@ -609,6 +629,10 @@
     
     string = [self removeMarddownJS:string];
     string = [self removeMarddownHTML:string];
+    
+
+ 
+    string = [self stylePreLoad:string];
     
     string = [string stringByReplacingOccurrencesOfString:@"<#useMarkdown#>" withString:@"0"];
     

@@ -26,6 +26,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface OPMLDocument : UIDocument
 @property (nonatomic, strong, nullable) NSMutableArray<OPMLOutline*>* outlines;
+@property (nonatomic, strong, nullable) NSString* headTitle;
 @end
 
 NS_ASSUME_NONNULL_END

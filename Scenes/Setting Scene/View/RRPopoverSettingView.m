@@ -6,20 +6,37 @@
 //  Copyright © 2019 orzer. All rights reserved.
 //
 
-#import "RRWebSettingView.h"
+#import "RRPopoverSettingView.h"
 #import "RRSettingApperance.h"
 @import Classy;
-@interface RRWebSettingView ()
-
+@interface RRPopoverSettingView ()
+{
+}
+@property (nonatomic, strong) NSString* presenterClassName;
 @end
 
-@implementation RRWebSettingView
+@implementation RRPopoverSettingView
+
+- (void)mvp_initFromModel:(MVPInitModel *)model
+{
+    NSString* presenterClassName =[[model queryProperties] valueForKey:@"p"];
+    if (presenterClassName) {
+        self.presenterClassName = presenterClassName;
+    }
+    else {
+        self.presenterClassName = @"RRWebSettingPresenter";
+    }
+}
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    
     // Do any additional setup after loading the view.
     self.navigationController.navigationBar.prefersLargeTitles = NO;
-    self.title = @"阅读设置";
+//    self.title = @"阅读设置";
+    [self.presenter mvp_bindBlock:^(RRPopoverSettingView* view, id value) {
+        view.title = value;
+    } keypath:@"title"];
 //    //NSLog(@"%@",self.view);
 }
 
@@ -45,7 +62,7 @@
 
 - (Class)mvp_presenterClass
 {
-   return NSClassFromString(@"RRWebSettingPresenter");
+   return NSClassFromString(self.presenterClassName);
 }
 
 

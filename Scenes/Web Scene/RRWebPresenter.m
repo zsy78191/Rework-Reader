@@ -214,25 +214,17 @@
 
 - (void)openActionText:(UIBarButtonItem*)sender
 {
-//    UIAlertController;
     UIViewController* vc = [MVPRouter viewForURL:@"rr://websetting" withUserInfo:@{@"model":self.webStyle}];
     RRExtraViewController* nv = [[RRExtraViewController alloc] initWithRootViewController:vc];
-//    nv.setNavibarClear = YES;
     vc.preferredContentSize = CGSizeMake(200, 300);
     [nv.view setBackgroundColor:[UIColor clearColor]];
-//    [vc.view setBackgroundColor:[UIColor clearColor]];
-//    nv.view.cas_styleClass = @"CleanBackground";
-//    vc.view.cas_styleClass = @"CleanBackground";
-    
     nv.modalPresentationStyle = UIModalPresentationPopover;
     nv.popoverPresentationController.barButtonItem = sender;
     nv.popoverPresentationController.permittedArrowDirections = UIPopoverArrowDirectionUp;
     nv.popoverPresentationController.delegate = self;
-    vc.popoverPresentationController.popoverLayoutMargins = UIEdgeInsetsMake(15,15,15,15);
-//    [(UIViewController*)self.view showViewController:vc sender:nil];
-    
-//    [(UIViewController*)self.view setModalPresentationStyle:UIModalPresentationPopover];
-//    //NSLog(@"-- %@",vc.popoverPresentationController);
+    nv.popoverPresentationController.popoverLayoutMargins = UIEdgeInsetsMake(15,15,15,15);
+    NSDictionary* style = [[NSUserDefaults standardUserDefaults] valueForKey:@"style"];
+    nv.popoverPresentationController.backgroundColor = UIColor.hex(style[@"$bar-tint-color"]);
     [(UIViewController*)self.view presentViewController:nv animated:YES completion:^{
         
     }];

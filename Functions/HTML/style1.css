@@ -6,7 +6,8 @@
 html,body{
     font-family: 'SourceHanSerifCN','Consolas', 'Courier', 'Monaco', sans-serif, monospace !important;
     font-size: 16px !important;
-    color:#C0C0C0
+    color: var(--main-color);
+    background-color: var(--bg-color);
     -webkit-text-size-adjust:none;  min-width: 200px;
     max-width: 760px;
     margin: 0 auto; padding: 0.5rem;
@@ -16,7 +17,12 @@ html,body{
 
 
 h1,h2,h3,h4,h5,h6 {
-    text-rendering:optimizelegibility;margin-bottom:1em; line-height: 1.8rem;color: #BD10E0;  font-weight: lighter;
+    text-rendering:optimizelegibility;margin-bottom:1em; line-height: 1.8rem; color: var(--main-tint-color); font-weight: lighter;
+}
+
+b,strong {
+    font-weight: normal;
+    color:var(--main-tint-color);
 }
 
 h1 b{
@@ -59,19 +65,23 @@ table{border-collapse:collapse;border-spacing:0;
     margin-top: 0.8rem;
     margin-bottom: 1.4rem;
 }
-tr{  background-color: #fff;
-    border-top: 1px solid #ccc;}
+tr{
+/*    background-color: #fff;*/
+    border-top: 1px solid #ccc;
+}
 th,td{padding: 5px 14px;
     border: 1px solid #ddd;}
 
-blockquote{font-style:normal;font-size:0.9em;line-height:1.5em;padding-left:1em; border-left:2px solid #BD10E0;    margin-left: 0;
+blockquote{font-style:normal;font-size:0.9em;line-height:1.5em;padding-left:1em; border-left:2px solid var(--main-tint-color);
+    margin-left: 0;
     margin-right: 0;
     margin-bottom: 1.5rem; }
 
 a{
-    color:#303E58;
+/*    color:#303E58;*/
+    color : var(--main-color);
     text-decoration: none;
-    border-bottom: 1px solid #BD10E0;
+    border-bottom: 1px solid var(--main-tint-color);
     word-break: break-all;
 }
 
@@ -81,14 +91,23 @@ a.aimg {
 
 pre,code,p code,li code{font-family:  consolas, Menlo, "PingFang SC", "Microsoft YaHei", monospace;}
 
-pre{-webkit-border-radius:0.4em;-moz-border-radius:0.4em;-ms-border-radius:0.4em;-o-border-radius:0.4em;border-radius:0.4em;line-height:1.45em;font-size:0.9rem;margin-bottom:2.1em;padding:.8em 1em;color:#586e75;overflow:auto; background-color:#f6f6f6;}
+pre{-webkit-border-radius:0.4em;-moz-border-radius:0.4em;-ms-border-radius:0.4em;-o-border-radius:0.4em;border-radius:0.4em;line-height:1.45em;font-size:0.9rem;margin-bottom:2.1em;padding:.8em 1em;color:#586e75;overflow:auto;
+    background-color:#f6f6f6;}
 
-p code,li code{display:inline-block;white-space:no-wrap;background:#fff;font-size:1.0rem;line-height:1.5em;color:#BD10E0;-webkit-border-radius:0.4em;-moz-border-radius:0.4em;-ms-border-radius:0.4em;-o-border-radius:0.4em;border-radius:0.4em;padding:0 .1em;margin:-1px 2px;}
+
+p code,li code{display:inline-block;white-space:no-wrap;
+    background:var(--bg-color);
+    font-size:1.0rem;line-height:1.5em;color:var(--main-tint-color);-webkit-border-radius:0.4em;-moz-border-radius:0.4em;-ms-border-radius:0.4em;-o-border-radius:0.4em;border-radius:0.4em;padding:0 .1em;margin:-1px 2px;}
 p pre code,li pre code{font-size:1em !important;background:none;border:none}
 
 img{max-width:100% !important;
     /*zoom: 0.5;*/
-    -webkit-border-radius:0.3em;-moz-border-radius:0.3em;-ms-border-radius:0.3em;-o-border-radius:0.3em;border-radius:0.3em;-webkit-box-shadow:rgba(0,0,0,0.15) 0 1px 4px;-moz-box-shadow:rgba(0,0,0,0.15) 0 1px 4px;box-shadow:rgba(0,0,0,0.15) 0 1px 4px;-webkit-box-sizing:border-box;-moz-box-sizing:border-box;box-sizing:border-box;border:#fff 0.2em solid}
+    -webkit-border-radius:0.3em;-moz-border-radius:0.3em;-ms-border-radius:0.3em;-o-border-radius:0.3em;border-radius:0.3em;
+    -webkit-box-shadow:rgba(0,0,0,0.15) 0 1px 4px;
+    -moz-box-shadow:rgba(0,0,0,0.15) 0 1px 4px;
+    box-shadow:rgba(0,0,0,0.15) 0 1px 4px;
+    -webkit-box-sizing:border-box;-moz-box-sizing:border-box;box-sizing:
+    border-box;border:var(--sub-bg-color) 0.2em solid}
 
 figure {
     padding: 0px;
@@ -126,7 +145,7 @@ hr {
     display: block;
     overflow-x: auto;
     padding: 0.5em;
-    background: #f6f6f6;
+    background: var(--sub-bg-color);
     color: #657b83;
     -webkit-text-size-adjust: none;
 }
@@ -230,7 +249,7 @@ th, td {
 }
 
 h1, h2 {
-    color: #BD10E0;
+    color:var(--main-tint-color);
 }
 html, body {
     word-wrap: break-word;
@@ -251,7 +270,7 @@ span.btn_origin{
     /*right: 5%;*/
     /*position: absolute;*/
     float: right;
-    color: #BD10E0;
+    color:var(--main-tint-color);
 }
 div {
     max-width:100%;
@@ -266,7 +285,7 @@ pre,
     padding: 0;
     font-size: 14px;
     color: #4d4d4c;
-    background: #f7f7f7;
+    background: var(--sub-bg-color);
     line-height: 1.6;
 }
 pre,
@@ -425,5 +444,5 @@ pre .coffeescript .title {
 }
 pre .keyword,
 pre .javascript .function {
-    color: #BD10E0;
+    color : var(--main-tint-color);
 }

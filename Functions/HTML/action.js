@@ -90,9 +90,6 @@ removeInlineCss("div");
 removeInlineCss("a");
 removeInlineCss("img");
 
-
-
-
 function setFont(e)
 {
     document.getElementsByTagName('body')[0].style.setProperty('font-family',e+',sans-serif','important');

@@ -25,12 +25,6 @@ UIToolbar {
     tintColor $main-tint-color
 }
 
-^UINavigationBar {
-    title-text-attributes: @{
-        font $main-font $main-font-size
-    }
-}
-
 ^UIBarButtonItem {
     title-text-attributes[state:normal]:@{
         font $main-font 17
@@ -44,8 +38,13 @@ UIToolbar {
 }
  
 
-UINavigationBar {
+^UINavigationBar {
+    title-text-attributes: @{
+        font $main-font $main-font-size
+        foreground-color $main-text-color
+    }
     large-title-text-attributes:@{
         font $main-font $large-title-font-size
+        foreground-color $main-text-color
     }
 }

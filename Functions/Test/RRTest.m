@@ -13,6 +13,7 @@
 @import ui_base;
 #import "RPDataManager.h"
 #import "RRCoreDataModel.h"
+@import SDWebImage;
 
 @implementation RRTest
 
@@ -116,6 +117,13 @@
     //NSLog(@"%@",path);
     //NSLog(@"%@",@([[NSFileManager defaultManager] fileExistsAtPath:path]));
     
+}
+
+- (void)cleanSDWebImageCache
+{
+    [[SDImageCache sharedImageCache] clearDiskOnCompletion:^{
+        NSLog(@"1");
+    }];
 }
 
 @end

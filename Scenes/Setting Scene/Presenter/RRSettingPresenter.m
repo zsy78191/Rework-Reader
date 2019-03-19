@@ -16,8 +16,9 @@
 #import "RRGetWebIconOperation.h"
 @import UserNotifications;
 #import "OPMLDocument.h"
+@import Classy;
 
-@interface RRSettingPresenter () <UIDocumentPickerDelegate>
+@interface RRSettingPresenter () <UIDocumentPickerDelegate,MVPPresenterProtocol_private>
 {
     
 }
@@ -27,7 +28,7 @@
 @property (nonatomic, weak) RRSetting* notiSetting;
 @property (nonatomic, weak) RRSetting* badgeSetting;
 @property (nonatomic, weak) FMFeedParserOperation* currentOperation;
-
+@property (nonatomic, strong) NSString* settingFileName;
 @end
 
 @implementation RRSettingPresenter
@@ -45,7 +46,7 @@
     if (!_item) {
         NSError *error;
         NSError *error2;
-        NSURL* url = [[NSBundle mainBundle] URLForResource:@"ModelTypeSetting" withExtension:@"json"];
+        NSURL* url = [[NSBundle mainBundle] URLForResource:self.settingFileName withExtension:@"json"];
         NSString* json = [[NSString alloc] initWithContentsOfURL:url encoding:NSUTF8StringEncoding error:&error];
         if (error) {
             DDLogError(@"%@",error);
@@ -58,32 +59,47 @@
     return _item;
 }
 
+- (void)mvp_initFromModel:(MVPInitModel *)model
+{
+    NSString* setting = [model.queryProperties valueForKey:@"setting"];
+    if (setting) {
+        self.settingFileName = setting;
+    }
+    else {
+        self.settingFileName = @"ModelTypeSetting";
+    }
+    NSString* title = [model.queryProperties valueForKey:@"title"];
+    if (title) {
+        self.title = title;
+    }
+    else {
+        self.title = @"更多内容";
+    }
+    __weak typeof(self) weakSelf = self;
+    [[self.item setting] enumerateObjectsUsingBlock:^(RRSetting * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+        if ([[obj switchkey] isEqualToString:@"kBackgroundFetchNoti"]) {
+            weakSelf.notiSetting = obj;
+        }
+        else if([[obj switchkey] isEqualToString:@"kBackgroundFetchNotiBadge"])
+        {
+            weakSelf.badgeSetting = obj;
+        }
+        if ([obj switchkey]) {
+            obj.switchValue = [[NSUserDefaults standardUserDefaults] valueForKey:obj.switchkey];
+        }
+        if ([[obj title] isEqualToString:@"版本"]) {
+            [obj setValue:[NSString stringWithFormat:@"%@ (build %@)",[UIApplication sharedApplication].version(),[UIApplication sharedApplication].buildVersion()]];
+        }
+        [weakSelf.inputer mvp_addModel:obj];
+    }];
+}
+
 - (instancetype)init
 {
     self = [super init];
     if (self) {
-        self.title = @"更多内容";
-        __weak typeof(self) weakSelf = self;
-        [[self.item setting] enumerateObjectsUsingBlock:^(RRSetting * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
-//            if ([obj switchkey]) {
-            
-//            }
-            
-            if ([[obj switchkey] isEqualToString:@"kBackgroundFetchNoti"]) {
-                weakSelf.notiSetting = obj;
-            }
-            else if([[obj switchkey] isEqualToString:@"kBackgroundFetchNotiBadge"])
-            {
-                weakSelf.badgeSetting = obj;
-            }
-            if ([obj switchkey]) {
-                obj.switchValue = [[NSUserDefaults standardUserDefaults] valueForKey:obj.switchkey];
-            }
-            if ([[obj title] isEqualToString:@"版本"]) {
-                [obj setValue:[NSString stringWithFormat:@"%@ (build %@)",[UIApplication sharedApplication].version(),[UIApplication sharedApplication].buildVersion()]];
-            }
-            [weakSelf.inputer mvp_addModel:obj];
-        }];
+        
+       
     }
     return self;
 }
@@ -96,36 +112,67 @@
 
 - (void)mvp_action_selectItemAtIndexPath:(NSIndexPath *)path
 {
-    switch (path.section*10 + path.row) {
-        case 0:
-        {
-            [self openVersion];
-            break;
+    RRSetting* s = [self.inputer mvp_modelAtIndexPath:path];
+    if (s.select) {
+        [self showSelect:s];
+    }
+    else if (s.action) {
+        if ([s.type integerValue] != RRSettingTypeSubSetting) {
+            [self mvp_runAction:s.action];
         }
-        case 1:
-        {
-            [self openAbout];
-            break;
+        else {
+            [self mvp_runAction:s.action value:s];
         }
-        case 2:
-        {
-            [self feedOffical];
-            break;
-        }
-        case 3:
-        {
-//            [self openWiki];
-            break;
-        }
-        case 4:
-        {
-            [self openOPML];
-            break;
-        }
-        default:
-            break;
     }
 }
+
+- (void)showSelect:(RRSetting*)setting
+{
+    __weak typeof(self) weakSelf = self;
+    UIAlertController* alert = UI_Alert();
+    [setting.select enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+        alert.action(obj, ^(UIAlertAction * _Nonnull action, UIAlertController * _Nonnull alert) {
+            [weakSelf mvp_runAction:setting.action value:[obj description]];
+        });
+    }];
+    alert.cancel(@"取消", ^(UIAlertAction * _Nonnull action) {
+        
+    });
+    alert.show((id)self.view);
+}
+
+- (void)selectFont:(NSString*)select
+{
+    NSDictionary* fontDict = @{
+                                @"苹方细体":@"PingFangSC-Light",
+                                @"苹方标准体":@"PingFangSC-Regular",
+                                @"思源宋体细体":@"SourceHanSerifCN-Light",
+                                };
+    NSString* font = fontDict[select];
+    if (font) {
+        [[NSUserDefaults standardUserDefaults] setObject:font forKey:@"mainFont"];
+        [[NSUserDefaults standardUserDefaults] synchronize];
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"RRCasNeedReload" object:nil userInfo:nil];
+    }
+}
+
+- (void)selectMainColor:(NSString*)select
+{
+    NSDictionary* colorDict = @{
+                                @"系统":@"#007AFF",
+                                @"紫色":@"#BD10E0",
+                                @"黑色":@"#303E58",
+                                @"橙色":@"#F5A623",
+                                @"青色":@"#50E3C2"
+                                };
+    NSString* color = colorDict[select];
+    if (color) {
+        [[NSUserDefaults standardUserDefaults] setObject:color forKey:@"mainTintColor"];
+        [[NSUserDefaults standardUserDefaults] synchronize];
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"RRCasNeedReload" object:nil userInfo:nil];
+    }
+}
+
 
 - (void)openAbout
 {
@@ -181,7 +228,7 @@
         [o start];
         
     } itemBlock:^(MWFeedItem * _Nonnull item) {
-//        //NSLog(@"%@",item);
+        //        //NSLog(@"%@",item);
         [tv loadData:item];
         
     } errorBlock:^(NSError * _Nonnull error) {
@@ -218,7 +265,7 @@
 
 - (void)changeNoti:(UISwitch*)sender
 {
-//    //NSLog(@"%@",sender);
+    //    //NSLog(@"%@",sender);
     if (sender.on == NO) {
         [[NSUserDefaults standardUserDefaults] setBool:NO forKey:self.notiSetting.switchkey];
         [[NSUserDefaults standardUserDefaults] synchronize];
@@ -230,9 +277,9 @@
     [[UNUserNotificationCenter currentNotificationCenter] requestAuthorizationWithOptions:UNAuthorizationOptionAlert|UNAuthorizationOptionBadge|UNAuthorizationOptionSound completionHandler:^(BOOL granted, NSError * _Nullable error) {
         
         if (!granted) {
-//            //NSLog(@"%@",weakSelf.badgeSetting);
+            //            //NSLog(@"%@",weakSelf.badgeSetting);
             weakSelf.notiSetting.switchValue = @(NO);
-//            //NSLog(@"%@",self.badgeSetting.switchValue);
+            //            //NSLog(@"%@",self.badgeSetting.switchValue);
             UI_Alert().
             titled(@"请在系统「设置」中开启Reader的通知功能")
             .recommend(@"前往「设置」", ^(UIAlertAction * _Nonnull action, UIAlertController * _Nonnull alert) {
@@ -274,9 +321,15 @@
     dvc.delegate = self;
 }
 
+- (void)openUISetting:(RRSetting*)set
+{
+    id vc = [MVPRouter viewForURL:[NSString stringWithFormat:@"rr://setting?setting=%@&title=%@",set.value,set.title] withUserInfo:nil];
+    [[self view] mvp_pushViewController:vc];
+}
+
 - (void)documentPicker:(UIDocumentPickerViewController *)controller didPickDocumentsAtURLs:(NSArray<NSURL *> *)urls
 {
-//    NSLog(@"%@",urls);
+    //    NSLog(@"%@",urls);
     OPMLDocument* d = [[RRFeedLoader sharedLoader] loadOPML:urls.firstObject];
     __weak typeof(self) weakSelf = self;
     [d openWithCompletionHandler:^(BOOL success) {
@@ -290,7 +343,8 @@
             }
         });
     }];
-
+    
 }
+ 
 
 @end

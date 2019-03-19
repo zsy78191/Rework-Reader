@@ -20,9 +20,12 @@
 #import "RPDataManager.h"
 #import "RRFeedArticleModel.h"
 #import "PWToastView.h"
+#import "RRReadMode.h"
 @import DateTools;
+#import "RRExtraViewController.h"
+@import ui_base;
 
-@interface RRFeedListPresenter()
+@interface RRFeedListPresenter() <UIPopoverPresentationControllerDelegate>
 {
     
 }
@@ -31,9 +34,29 @@
 @property (nonatomic, strong) RRFeedReaderStyleInputer* readStyleInputer;
 @property (nonatomic, assign) BOOL needUpdate;
 @property (nonatomic, assign) BOOL needUpdateFeed;
+@property (nonatomic, assign) RRReadMode mode;
+@property (nonatomic, assign) BOOL updating;
+@property (nonatomic, weak) UIRefreshControl* refresher;
 @end
 
 @implementation RRFeedListPresenter
+
+- (void)switchReadMode
+{
+    if (self.mode == RRReadModeDark) {
+        self.mode = RRReadModeLight;
+    }
+    else if(self.mode == RRReadModeLight)
+    {
+        self.mode = RRReadModeDark;
+    }
+    [[NSUserDefaults standardUserDefaults] setInteger:self.mode forKey:@"kRRReadMode"];
+    [[NSUserDefaults standardUserDefaults] synchronize];
+    
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"RRCasNeedReload" object:nil];
+    
+    [[(UIViewController*)self.view navigationController] setNeedsStatusBarAppearanceUpdate];
+}
 
 - (RRFeedInputer *)inputer
 {
@@ -73,6 +96,7 @@
         self.title = @"Reader Special";
         self.needUpdate = YES;
         self.needUpdateFeed = NO;
+        self.mode = [[NSUserDefaults standardUserDefaults] integerForKey:@"kRRReadMode"];
     }
     return self;
 }
@@ -238,6 +262,12 @@
 
 - (void)refreshData:(UIRefreshControl*)sender
 {
+    self.refresher = sender;
+    if (self.updating) {
+        return;
+    }
+    self.updating = YES;
+    
     NSArray* all = self.inputer.allModels;
     
     // RRTODO:这部分也需要拆分，目前已经有三个地方用到了
@@ -265,11 +295,12 @@
     .map(^id _Nonnull(RRFeedInfoListModel*  _Nonnull x) {
         return [x.url absoluteString];
     });
+  
     
     __weak typeof(self) weakSelf = self;
     [[RRFeedLoader sharedLoader] refresh:all endRefreshBlock:^{
         dispatch_async(dispatch_get_main_queue(), ^{
-             [sender endRefreshing];
+             [weakSelf.refresher endRefreshing];
         });
     } progress:^(NSUInteger current, NSUInteger all) {
         dispatch_async(dispatch_get_main_queue(), ^{
@@ -277,6 +308,7 @@
         });
     }  finishBlock:^(NSUInteger all, NSUInteger error, NSUInteger article) {
         dispatch_async(dispatch_get_main_queue(), ^{
+            weakSelf.updating = NO;
             weakSelf.title = @"Reader Special";
             if (article == 0) {
 //                [PWToastView showText:@"没有更新的订阅"];
@@ -420,6 +452,52 @@
     id vc = [MVPRouter viewForURL:@"rr://web" withUserInfo:@{@"name":@"Test.md"}];
     [[self view] mvp_pushViewController:vc];
 }
+
+- (void)openActionText:(UIBarButtonItem*)sender
+{
+    __weak typeof(self) weakSelf = self;
+    NSBlockOperation* action1 = [NSBlockOperation blockOperationWithBlock:^{
+        [weakSelf addRSS];
+    }];
+    
+    NSBlockOperation* action2 = [NSBlockOperation blockOperationWithBlock:^{
+        [weakSelf recommand];
+    }];
+    
+    UIViewController* vc = [MVPRouter viewForURL:@"rr://websetting?p=RRMainPageAddPresenter" withUserInfo:@{@"action1":action1,@"action2":action2}];
+    RRExtraViewController* nv = [[RRExtraViewController alloc] initWithRootViewController:vc];
+    vc.preferredContentSize = CGSizeMake(160, 40);
+    [nv.view setBackgroundColor:[UIColor clearColor]];
+    nv.modalPresentationStyle = UIModalPresentationPopover;
+    nv.popoverPresentationController.barButtonItem = sender;
+    nv.popoverPresentationController.permittedArrowDirections = UIPopoverArrowDirectionDown;
+    nv.popoverPresentationController.delegate = self;
+    nv.popoverPresentationController.popoverLayoutMargins = UIEdgeInsetsMake(15,15,15,15);
+    NSDictionary* style = [[NSUserDefaults standardUserDefaults] valueForKey:@"style"];
+    nv.popoverPresentationController.backgroundColor = UIColor.hex(style[@"$bar-tint-color"]);
+    [(UIViewController*)self.view presentViewController:nv animated:YES completion:^{
+        
+    }];
+}
+
+
+#pragma mark --  实现代理方法
+//默认返回的是覆盖整个屏幕，需设置成UIModalPresentationNone。
+-(UIModalPresentationStyle)adaptivePresentationStyleForPresentationController:(UIPresentationController *)controller{
+    return UIModalPresentationNone;
+}
+
+//点击蒙版是否消失，默认为yes；
+
+-(BOOL)popoverPresentationControllerShouldDismissPopover:(UIPopoverPresentationController *)popoverPresentationController{
+    return YES;
+}
+
+//弹框消失时调用的方法
+-(void)popoverPresentationControllerDidDismissPopover:(UIPopoverPresentationController *)popoverPresentationController{
+    //NSLog(@"弹框已经消失");
+}
+
 
 
 @end

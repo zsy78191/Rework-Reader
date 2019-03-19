@@ -41,6 +41,15 @@
         
     } completed:^(UIImage * _Nullable image, NSData * _Nullable data, NSError * _Nullable error, SDImageCacheType cacheType, BOOL finished, NSURL * _Nullable imageURL) {
 //        //NSLog(@"%@",image);
+        // FIXBUG: urltask结束了
+        if (self.table.count > 0) {
+            //            NSLog(@"%@",self.table);
+            if ([self.table containsObject:urlSchemeTask]) {
+                return;
+            }
+        }
+        
+        
         if (error) {
             //NSLog(@"%@",error);
             [urlSchemeTask didFailWithError:error];
@@ -84,14 +93,7 @@
             data = [image sd_imageData];
         }
         
-        // FIXBUG: urltask结束了
-        if (self.table.count > 0) {
-//            NSLog(@"%@",self.table);
-            if ([self.table containsObject:urlSchemeTask]) {
-                return;
-            }
-        }
-        
+     
         
         if (urlSchemeTask) {
             NSURLResponse *response = [[NSURLResponse alloc] initWithURL:urlSchemeTask.request.URL MIMEType:mtype expectedContentLength:data.length textEncodingName:nil];

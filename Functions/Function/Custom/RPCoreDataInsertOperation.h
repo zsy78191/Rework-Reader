@@ -18,8 +18,6 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, strong) void (^finishBlock)(__kindof NSManagedObject* _Nullable obj, NSError* e);
 @property (nonatomic, strong) void (^finishesBlock)(NSArray* objs, NSError* e);
 
-
-
 @property (nonatomic, strong) id model;
 @property (nonatomic, strong) NSArray* saveKeys;
 
@@ -29,9 +27,12 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, strong) NSString* queryValue;
 
 #pragma mark - 另一种批量
-@property (nonatomic, strong) NSArray* models;
+@property (nonatomic, strong, nullable) NSArray* models;
 //@property (nonatomic, strong) NSArray<NSString*>* saveKeys;
 
+#pragma mark - 第三种批量
+@property (nonatomic, strong, nullable) NSPredicate* predicate;
+@property (nonatomic, strong) void (^ modify)(id obj);
 
 @property (nonatomic, strong) id result;
 @property (nonatomic, strong) id results;

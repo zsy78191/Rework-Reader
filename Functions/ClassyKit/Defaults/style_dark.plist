@@ -2,22 +2,22 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-	<key>$iconColor</key>
-	<string>#000000</string>
 	<key>$main-text-color</key>
-	<string>#000000</string>
+	<string>#C0C0C0</string>
 	<key>$main-text-color-readed</key>
-	<string>#606060</string>
+	<string>#a0a0a0</string>
 	<key>$sub-text-color</key>
-	<string>#B0B0B0</string>
+	<string>#909090</string>
 	<key>$main-tint-color</key>
-	<string>#BD10E0</string>
+	<string>#F5A623</string>
 	<key>$main-separator-color</key>
-	<string>#f9f9f9</string>
+	<string>#090909</string>
 	<key>$main-bg-color</key>
-	<string>#ffffff</string>
+	<string>#000000</string>
+	<key>$sub-bg-color</key>
+	<string>#373737</string>
 	<key>$bar-tint-color</key>
-	<string>#f9f9f9</string>
+	<string>#090909</string>
 	<key>$title-font</key>
 	<string>PingFangSC-Light</string>
 	<key>$num-font</key>
@@ -25,7 +25,7 @@
 	<key>$main-font-size</key>
 	<string>21</string>
 	<key>$main-font</key>
-	<string>PingFangSC-Regular</string>
+	<string>PingFangSC-Light</string>
 	<key>$sub-font-size</key>
 	<string>13</string>
 	<key>$large-title-font-size</key>

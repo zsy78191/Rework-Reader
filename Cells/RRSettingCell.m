@@ -25,12 +25,18 @@
 - (void)loadModel:(RRSetting*)item
 {
     self.titleLabel.text = item.title;
-    self.subLabel.text = item.value;
     if ([item.type intValue] == 1) {
         self.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
     }
     else {
         self.accessoryType = UITableViewCellAccessoryNone;
+    }
+    if ([item.type integerValue] != RRSettingTypeSubSetting) {
+        self.subLabel.text = item.value;
+    }
+    else {
+        self.subLabel.text = @"";
+        self.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
     }
 }
 

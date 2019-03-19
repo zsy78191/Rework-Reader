@@ -18,4 +18,14 @@
 }
 */
 
+- (instancetype)initWithFrame:(CGRect)frame configuration:(WKWebViewConfiguration *)configuration
+{
+    self = [super initWithFrame:frame configuration:configuration];
+    if (self) {
+        self.opaque = NO;
+        self.backgroundColor = [UIColor clearColor];
+    }
+    return self;
+}
+
 @end

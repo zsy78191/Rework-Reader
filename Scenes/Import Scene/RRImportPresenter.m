@@ -26,6 +26,8 @@
 @property (nonatomic, assign) NSInteger allFeedCount;
 @property (nonatomic, assign) NSInteger finishCount;
 @property (nonatomic, assign) BOOL hideHUD;
+
+@property (nonatomic, strong) NSString* title;
 @end
 
 
@@ -51,6 +53,8 @@
 //        [self.inputer mvp_addModel:obj];
         [self appendOutline:obj];
     }];
+    
+    self.title = d.headTitle;
 }
 
 - (void)appendOutline:(OPMLOutline*)outline

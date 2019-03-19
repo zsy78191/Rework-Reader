@@ -66,6 +66,16 @@
         [self.content setString:s];
         self.xmlDocument = [[DDXMLDocument alloc] initWithXMLString:self.content options:DDXMLDocumentXMLKind error:outError];
         DDXMLElement* root = self.xmlDocument.rootElement;
+        DDXMLElement* headElement = [root elementForName:@"head"];
+        if ([headElement childCount] == 1) {
+            self.headTitle = headElement.stringValue;
+        }
+        else {
+            DDXMLElement* title = [headElement elementForName:@"title"];
+            if (title) {
+                self.headTitle = [title stringValue];
+            }
+        }
         DDXMLElement* bodyElement = [root elementForName:@"body"];
         NSArray* temp = [self outlineWithNode:bodyElement];
         self.outlines = [temp mutableCopy];

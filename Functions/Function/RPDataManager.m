@@ -93,6 +93,19 @@
     return o.results;
 }
 
+- (id)updateDatas:(NSString *)className predicate:(NSPredicate *)predicate modify:(void  (^)(id ))modify finish:(void (^)(NSArray * _Nonnull, NSError * _Nonnull))finish
+{
+    RPCoreDataInsertOperation* operation = [[RPCoreDataInsertOperation alloc] init];
+    operation.insertClass = NSClassFromString(className);
+    NSAssert(operation.class != nil, @"%@ not exist",className);
+    operation.modify = modify;
+    operation.finishesBlock = finish;
+    operation.predicate = predicate;
+    [[RPDataNotificationCenter defaultCenter] notificateWithEntityClass:className];
+    [operation start];
+    return operation;
+}
+
 
 - (id)getData:(NSString *)className predicate:(NSPredicate *)p key:(NSString *)key value:(id)value sort:(NSString *)sort asc:(BOOL)asc first:(BOOL)first count:(BOOL)count
 {

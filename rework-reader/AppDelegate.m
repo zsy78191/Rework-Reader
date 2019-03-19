@@ -26,6 +26,8 @@
 @import MMKV;
 @import SVProgressHUD;
 #import "RRWebStyleModel.h"
+#import "RRImageRender.h"
+#import "RRReadMode.h"
 
 @interface AppDelegate () <SDWebImageManagerDelegate>
 {
@@ -40,7 +42,42 @@
 {
     [ClassyKitLoader cleanStyleFiles]; // 删除本地cas文件
     [ClassyKitLoader copyStyleFile]; // 拷贝cas文件
-    [ClassyKitLoader loadWithStyle:@"rrstyle" variables:@"style2"]; //加载cas文件
+    [self notiReloadCas];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateStyle) name:@"RRCasNeedReload" object:nil];
+}
+
+- (void)dealloc
+{
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"RRCasNeedReload" object:nil];
+}
+
+- (void)updateStyle
+{
+    [ClassyKitLoader needReload];
+    [self notiReloadCas];
+}
+
+- (void)notiReloadCas
+{
+    RRReadMode mode = [[NSUserDefaults standardUserDefaults] integerForKey:@"kRRReadMode"];
+    switch (mode) {
+        case RRReadModeDark:
+        {
+            [ClassyKitLoader loadWithStyle:@"rrstyle" variables:@"style_dark"]; //加载cas文件
+            break;
+        }
+        case RRReadModeLight:
+        {
+            [ClassyKitLoader loadWithStyle:@"rrstyle" variables:@"style"]; //加载cas文件
+            break;
+        }
+        default:
+            break;
+    }
+    
+//    dispatch_async(dispatch_get_main_queue(), ^{
+
+//    });
 }
 
 - (void)preload
@@ -51,6 +88,8 @@
 //    fileLogger.rollingFrequency = 60 * 60 * 24; // 每24小时创建一个新文件
 //    fileLogger.logFileManager.maximumNumberOfLogFiles = 7; // 最多允许创建7个文件
 //    [DDLog addLogger:fileLogger];
+    
+    [[RRImageRender sharedRender] preloadFilters];
 }
 
 - (void)loadFonts
@@ -89,16 +128,57 @@
     [MVPRouter registView:NSClassFromString(@"RRFeedConfigView") forURL:@"rr://feed"];
     [MVPRouter registView:NSClassFromString(@"RRAddFeedView") forURL:@"rr://addfeed"];
     [MVPRouter registView:NSClassFromString(@"RRListView") forURL:@"rr://list"];
-    [MVPRouter registView:NSClassFromString(@"RRWebSettingView") forURL:@"rr://websetting"];
+    [MVPRouter registView:NSClassFromString(@"RRPopoverSettingView") forURL:@"rr://websetting"];
     [MVPRouter registView:NSClassFromString(@"RRImportView") forURL:@"rr://import"];
 }
 
-- (void)loadCoreData
+- (void)loadCoreData2
 {
     [MagicalRecord setDefaultModelNamed:@"Model.momd"];
-//    NSString* ic = [@"iCloud." stringByAppendingString:[UIApplication sharedApplication].bundleID()];
     
     NSURL* d = [NSURL fileURLWithPath:[@"~/Library/Data" stringByExpandingTildeInPath]];
+    if ([[NSFileManager defaultManager] fileExistsAtPath:[d path]]) {
+        NSLog(@"1");
+    }
+    else {
+        [[NSFileManager defaultManager] createDirectoryAtPath:[d path] withIntermediateDirectories:NO attributes:nil error:nil];
+    }
+    NSURL* r = [[NSPersistentStore MR_defaultLocalStoreUrl] URLByDeletingLastPathComponent];
+    NSArray* a = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:[r path] error:nil];
+    if (a.count > 0) {
+        NSMutableArray* cp = [[NSMutableArray alloc] initWithCapacity:10];
+        __block BOOL cpresult = YES;
+        [a enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+            NSURL* f = [r URLByAppendingPathComponent:obj];
+            NSLog(@"%@\n%@",f,d);
+            NSError* e;
+            NSURL* to = [d URLByAppendingPathComponent:obj];
+            if ([[NSFileManager defaultManager] fileExistsAtPath:[to path]]) {
+                [[NSFileManager defaultManager] removeItemAtURL:to error:nil];
+            }
+            cpresult  = cpresult && [[NSFileManager defaultManager] copyItemAtPath:[f path] toPath:[to path] error:&e];
+            if (cpresult) {
+                NSLog(@"拷贝成功");
+            }
+            else {
+                NSLog(@"%@",e);
+                NSLog(@"拷贝失败");
+            }
+            [cp addObject:f];
+        }];
+        if (cpresult) {
+            [cp enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+                [[NSFileManager defaultManager] removeItemAtURL:obj error:nil];
+            }];
+        }
+    }
+    NSLog(@"%@",r);
+    
+    
+    
+//    NSString* ic = [@"iCloud." stringByAppendingString:[UIApplication sharedApplication].bundleID()];
+    
+
 //    if (![[NSFileManager defaultManager] fileExistsAtPath:[d path]]) {
 //        NSError* e;
 //        [[NSFileManager defaultManager] createDirectoryAtPath:[d path] withIntermediateDirectories:NO attributes:nil error:&e];
@@ -110,9 +190,22 @@
     
 //    }];
 //    [MagicalRecord setupCoreDataStackWithAutoMigratingSqliteStoreAtURL:]
-    [MagicalRecord setupCoreDataStackWithAutoMigratingSqliteStoreAtURL:d];
+    [MagicalRecord setupCoreDataStackWithAutoMigratingSqliteStoreAtURL:[d URLByAppendingPathComponent:@"Model"]];
     
 //    NSLog(@"%@",@([MagicalRecord isICloudEnabled]));
+}
+
+- (void)loadCoreData3
+{
+    [MagicalRecord setDefaultModelNamed:@"Model.momd"];
+    NSURL* d = [NSURL fileURLWithPath:[@"~/Library/Data" stringByExpandingTildeInPath]];
+    [MagicalRecord setupCoreDataStackWithAutoMigratingSqliteStoreAtURL:[d URLByAppendingPathComponent:@"Model"]];
+}
+
+- (void)loadCoreData
+{
+//    [MagicalRecord setDefaultModelNamed:@"Model.momd"];
+    [MagicalRecord setupCoreDataStackWithAutoMigratingSqliteStoreNamed:@"Model"];
 }
 
 - (void)loadPage

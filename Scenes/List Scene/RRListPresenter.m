@@ -567,13 +567,24 @@
     UI_Alert()
     .titled(@"全部标记已读")
     .recommend(@"已读", ^(UIAlertAction * _Nonnull action, UIAlertController * _Nonnull alert) {
-        [[weakSelf.inputerCoreData allModels] enumerateObjectsUsingBlock:^(EntityFeedArticle*  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
-            [RRFeedAction readArticle:obj.uuid onlyMark:YES];
-        }];
+//        [[weakSelf.inputerCoreData allModels] enumerateObjectsUsingBlock:^(EntityFeedArticle*  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+//            [RRFeedAction readArticle:obj.uuid onlyMark:YES];
+//        }];
+        [self markAllAsReaded];
     })
     .cancel(@"取消", nil)
     .show((id)self.view);
 }
 
+- (void)markAllAsReaded
+{
+    NSPredicate* p = [self.inputerCoreData.style predicate];
+//    [[RPDataManager sharedManager] upd]
+    [[RPDataManager sharedManager] updateDatas:@"EntityFeedArticle" predicate:p modify:^(EntityFeedArticle*  _Nonnull obj) {
+        obj.readed = YES;
+    } finish:^(NSArray * _Nonnull results, NSError * _Nonnull e) {
+        NSLog(@"%@",e);
+    }];
+}
 
 @end

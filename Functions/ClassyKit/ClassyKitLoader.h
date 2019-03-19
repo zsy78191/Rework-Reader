@@ -20,6 +20,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 + (NSDictionary*)values;
 
++ (void)needReload;
+
 @end
 
 NS_ASSUME_NONNULL_END

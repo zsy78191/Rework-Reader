@@ -7,7 +7,7 @@
 //
 
 #import "RRExtraViewController.h"
-
+#import "RRReadMode.h"
 @interface RRExtraViewController ()
 
 @end
@@ -22,6 +22,8 @@
     [self.toolbar setValue:@(YES) forKey:@"hidesShadow"];
     [self.navigationBar setPrefersLargeTitles:YES];
     [self setToolbarHidden:NO animated:NO];
+    
+    
    
 }
 
@@ -32,6 +34,17 @@
 
 - (UIStatusBarStyle)preferredStatusBarStyle
 {
+    if ([self.topViewController isKindOfClass:NSClassFromString(@"MWPhotoBrowser")] && [self.topViewController respondsToSelector:@selector(preferredStatusBarStyle)]) {
+        return [self.topViewController preferredStatusBarStyle];
+    }
+    RRReadMode mode = [[NSUserDefaults standardUserDefaults] integerForKey:@"kRRReadMode"];
+    if (mode == RRReadModeDark) {
+          return UIStatusBarStyleLightContent;
+    }
+    else if(mode == RRReadModeLight)
+    {
+         return UIStatusBarStyleDefault;
+    }
     return [self.topViewController preferredStatusBarStyle];
 }
 

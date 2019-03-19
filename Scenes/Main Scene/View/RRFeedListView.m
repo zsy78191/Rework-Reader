@@ -9,6 +9,7 @@
 #import "RRFeedListView.h"
 @import ui_util;
 #import "RREmpty.h"
+#import "RRReadMode.h"
 
 @interface RRFeedListView ()
 
@@ -70,14 +71,41 @@
     UIBarButtonItem* bSearch = [self mvp_buttonItemWithSystem:UIBarButtonSystemItemSearch actionName:@"openSearch" title:@"搜索"];
     self.navigationItem.rightBarButtonItem = self.editButtonItem;
     
-     UIBarButtonItem* item2 = [self mvp_buttonItemWithActionName:@"recommand2" title:@"推荐测试"];
+//     UIBarButtonItem* item2 = [self mvp_buttonItemWithActionName:@"recommand2" title:@"推荐测试"];
     
-    UIBarButtonItem* item = [self mvp_buttonItemWithActionName:@"recommand" title:@"推荐订阅源"];
+//    UIBarButtonItem* item = [self mvp_buttonItemWithActionName:@"recommand" title:@"推荐订阅源"];
     
-    UIBarButtonItem* bAddRss = [self mvp_buttonItemWithActionName:@"addRSS" title:@"添加订阅源"];
+    UIBarButtonItem* item3 = [self mvp_buttonItemWithActionName:@"switchReadMode" title:@"阅读模式切换"];
+    item3.image = [UIImage imageNamed:@"icon_yue"];
+    
+    
+    [self.presenter mvp_bindBlock:^(id view, id value) {
+        NSInteger mode = [value integerValue];
+        dispatch_async(dispatch_get_main_queue(), ^{
+            switch (mode) {
+                case RRReadModeLight:
+                {
+                    item3.image = [UIImage imageNamed:@"icon_yue"];
+                    break;
+                }
+                case RRReadModeDark:
+                {
+                    item3.image = [UIImage imageNamed:@"icon_ri"];
+                    break;
+                }
+                default:
+                    break;
+            }
+        });
+    } keypath:@"mode"];
+    
+    
+//    UIBarButtonItem* bAddRss = [self mvp_buttonItemWithActionName:@"addRSS" title:@"添加订阅源"];
+    UIBarButtonItem* bAdd = [self mvp_buttonItemWithSystem:UIBarButtonSystemItemAdd actionName:@"openActionText:" title:@"添加订阅源"];
+    
 //    UIBarButtonItem* bAddHub = [self mvp_buttonItemWithActionName:@"addHub" title:@"添加阅读规则"];
     UIBarButtonItem* space = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
-    self.toolbarItems = @[space,item,bAddRss];
+    self.toolbarItems = @[item3,space,bAdd];
     
     self.navigationItem.backBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"返回" style:1 target:nil action:nil];
     

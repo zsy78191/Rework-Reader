@@ -51,6 +51,10 @@ NS_ASSUME_NONNULL_BEGIN
            modify:(id (^ _Nullable)(id key,id value))modifyValue
            finish:(void (^ _Nullable)(NSArray* results, NSError* e))finish;
 
+- (id)updateDatas:(NSString*)className
+        predicate:(NSPredicate* _Nullable )predicate
+           modify:(void (^ _Nullable)(id obj))modify
+           finish:(void (^ _Nullable)(NSArray* results, NSError* e))finish;
 
 - (id)getFirst:(NSString*)className
      predicate:(NSPredicate* _Nullable )p

@@ -62,8 +62,22 @@
 {
     NSURL* u = [UIApplication.sharedApplication.doucumentDictionary() URLByAppendingPathComponent:[style stringByAppendingString:@".cas"]];
     
+    NSString* mainTintColor = [[NSUserDefaults standardUserDefaults] valueForKey:@"mainTintColor"];
+    NSString* mainFont = [[NSUserDefaults standardUserDefaults] stringForKey:@"mainFont"];
+    
     NSMutableDictionary* styleVariables = [[NSMutableDictionary alloc] initWithContentsOfFile:[[NSBundle mainBundle] pathForResource:variablesFileName ofType:@"plist"]];
     
+    if (mainTintColor) {
+        [styleVariables setObject:mainTintColor forKey:@"$main-tint-color"];
+    }
+    if (mainFont) {
+        [styleVariables setObject:mainFont forKey:@"$main-font"];
+    }
+    
+    [[NSUserDefaults standardUserDefaults] setObject:styleVariables forKey:@"style"];
+    [[NSUserDefaults standardUserDefaults] synchronize];
+    
+
     if(1){
         [styleVariables setValue:[RPFontLoader fontSizeWithTextStyle:UIFontTextStyleLargeTitle] forKey:@"$large-title-font-size"];
         
@@ -81,14 +95,17 @@
     dispatch_once(&onceToken, ^{
          [CASStyler bootstrapClassyWithTargetWindows:UIApplication.sharedApplication.windows];
     });
+    [[CASStyler defaultStyler] setTargetWindows:UIApplication.sharedApplication.windows];
 //    [CASStyler defaultStyler].filePath = [[NSBundle mainBundle] pathForResource:[style stringByAppendingString:@".cas"] ofType:nil];
    
 #if TARGET_IPHONE_SIMULATOR
     NSString *absoluteFilePath = CASAbsoluteFilePath([@"../ClassyKit/" stringByAppendingString:[style stringByAppendingString:@".cas"]]);
     [CASStyler defaultStyler].watchFilePath = absoluteFilePath;
 #else
-//    [CASStyler defaultStyler].filePath = u.path;
-    [CASStyler defaultStyler].watchFilePath = u.path;
+    [CASStyler defaultStyler].filePath = u.path;
+//    [CASStyler defaultStyler].watchFilePath = u.path;
+    
+//    NSLog(@"%@",[CASStyler defaultStyler].targetWindows);
 #endif
 }
 
@@ -112,5 +129,17 @@
     [CASStyler defaultStyler].watchFilePath = u.path;
 }
 
+
++ (void)needReload
+{
+        [[CASStyler defaultStyler] setTargetWindows:UIApplication.sharedApplication.windows];
+//    [CASStyler]
+//    [[UIApplication.sharedApplication keyWindow].rootViewController cas_updateStyling];
+//    [[UIApplication.sharedApplication keyWindow].rootViewController cas_setNeedsUpdateStyling];
+//    [[UIApplication.sharedApplication keyWindow].rootViewController cas_updateStylingIfNeeded];
+    [[CASStyler defaultStyler].targetWindows enumerateObjectsUsingBlock:^(UIWindow*  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+        [obj.rootViewController cas_updateStyling];
+    }];
+}
 
 @end

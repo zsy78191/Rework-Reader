@@ -3,7 +3,7 @@
         {
             "title": "版本",
             "value": "1.0",
-            "action": null,
+            "action": "openVersion",
             "switchkey": null,
             "select": null,
             "type": 0
@@ -11,7 +11,7 @@
         {
             "title": "关于RSS",
             "value": null,
-            "action": "action_aboutReader",
+            "action": "openAbout",
             "switchkey": null,
             "select": null,
             "type": 1
@@ -19,10 +19,26 @@
         {
             "title": "订阅Reader官方源",
             "value": null,
-            "action": "action_rssReader",
+            "action": "feedOffical",
             "switchkey": null,
             "select": null,
             "type": 1
+        },
+        {
+            "title": "UI交互",
+            "value": null,
+            "action": null,
+            "switchkey": null,
+            "select": null,
+            "type": 2
+        },
+        {
+            "title": "界面设置",
+            "value": "UISetting",
+            "action": "openUISetting:",
+            "switchkey": null,
+            "select": null,
+            "type": 4
         },
         {
             "title": "数据",

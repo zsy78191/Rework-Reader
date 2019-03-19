@@ -50,6 +50,7 @@
         [output registNibCell:@"RRMutiSelectCell" withIdentifier:@"cell"];
         [output registNibCell:@"RRTitleCell" withIdentifier:@"titleCell"];
     }];
+    
 //    [o mvp_registerNib:[UINib nibWithNibName:@"RRMutiSelectCell" bundle:[NSBundle mainBundle]] forCellReuseIdentifier:@"cell"];
 //    [o mvp_registerNib:[UINib nibWithNibName:@"RRTitleCell" bundle:[NSBundle mainBundle]] forCellReuseIdentifier:@"titleCell"];
     self.appear = [[RRImportApper alloc] init];
@@ -58,6 +59,15 @@
         NSUInteger c = [[view.presenter mvp_valueWithSelectorName:@"allCounts"] integerValue];
         [view configTool:[value integerValue] isAll:c==[value integerValue]];
     } keypath:@"selectCount"];
+}
+
+- (void)mvp_bindData
+{
+    [self.presenter mvp_bindBlock:^(RRImportView* view, id value) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [view setTitle:value];
+        });
+    } keypath:@"title"];
 }
 
 - (void)configTool:(NSUInteger)count isAll:(BOOL)isall
