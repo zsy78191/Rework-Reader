@@ -18,6 +18,32 @@ function endWith(str,endStr){
     return (d>=0&&str.lastIndexOf(endStr)==d);
 }
 
+var links = document.getElementsByTagName('a');
+for(var i = 0 ; i < links.length ; i ++ )
+{
+    var link = links[i];
+    var noProxy = link.href.indexOf("file://");
+    if(noProxy == 0)
+    {
+        link.href = "http:" + link.href.toString().substr(7);
+    }
+    if (link.parentNode.nodeName == "U")
+    {
+        link.parentNode.classList.add("noUnderLine");
+    }
+}
+
+var underLines = document.getElementsByTagName('u');
+for(var i = 0 ; i < underLines.length ; i ++ )
+{
+    var under = underLines[i];
+    if (under.parentNode.nodeName == "A")
+    {
+        under.classList.add("noUnderLine");
+    }
+}
+
+
 var clickIndex = 0;
 var imgs = document.getElementsByTagName('img');
 for(var i = 0 ; i < imgs.length ; i ++ )
@@ -42,14 +68,14 @@ for(var i = 0 ; i < imgs.length ; i ++ )
     
     images.push(img.getAttribute("src"));
     (function (){
-     var p = i;
-     clickIndex = i;
-     if(img.parentNode.nodeName != "A")
-     {
-     img.onclick = function(){
-     alert("openimage:"+ p);
-     };
-     }
+         var p = i;
+         clickIndex = i;
+         if(img.parentNode.nodeName != "A")
+         {
+             img.onclick = function(){
+                 alert("openimage:"+ p);
+             };
+         }
      })();
     
     var fdStart = img.src.indexOf("http");

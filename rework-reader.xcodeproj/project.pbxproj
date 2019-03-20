@@ -111,6 +111,7 @@
 		D4AC4DF32217FC2F0028D342 /* RRWKWebview.m in Sources */ = {isa = PBXBuildFile; fileRef = D4AC4DF22217FC2F0028D342 /* RRWKWebview.m */; };
 		D4AC4DF62217FD140028D342 /* RRWebHandler.m in Sources */ = {isa = PBXBuildFile; fileRef = D4AC4DF52217FD140028D342 /* RRWebHandler.m */; };
 		D4AC4DF8221821150028D342 /* h.js in Resources */ = {isa = PBXBuildFile; fileRef = D4AC4DF7221821150028D342 /* h.js */; };
+		D4B3C6F922414D77008721AD /* Model.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = D47A396122363ABE006251A6 /* Model.xcdatamodeld */; };
 		D4E0F8EB2211486100902540 /* RPSettingInputer.m in Sources */ = {isa = PBXBuildFile; fileRef = D4E0F8EA2211486100902540 /* RPSettingInputer.m */; };
 		D4E0F8F9221149F000902540 /* RPFontLoader.m in Sources */ = {isa = PBXBuildFile; fileRef = D4E0F8F8221149F000902540 /* RPFontLoader.m */; };
 		D4E0F8FD22116AA400902540 /* RRSettingCell.m in Sources */ = {isa = PBXBuildFile; fileRef = D4E0F8FB22116AA400902540 /* RRSettingCell.m */; };
@@ -1282,6 +1283,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				D47717F021ED90D00050DF14 /* rework_readerTests.m in Sources */,
+				D4B3C6F922414D77008721AD /* Model.xcdatamodeld in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

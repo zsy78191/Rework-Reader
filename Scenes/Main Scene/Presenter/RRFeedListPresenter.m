@@ -426,19 +426,28 @@
 
 - (void)mvp_action_selectItemAtIndexPath:(NSIndexPath *)path
 {
+    id vc = [self viewControllerAtIndexPath:path];
+    [self.view mvp_pushViewController:vc];
+}
+
+- (id)viewControllerAtIndexPath:(NSIndexPath*)path
+{
     id model = [self.complexInput mvp_modelAtIndexPath:path];
     if ([model isKindOfClass:[RRFeedInfoListModel class]]) {
         id vc = [MVPRouter viewForURL:@"rr://list" withUserInfo:@{@"model":model}];
-        [self.view mvp_pushViewController:vc];
+//        [self.view mvp_pushViewController:vc];
+        return vc;
     }
     else if([model isKindOfClass:[RRFeedInfoListOtherModel class]])
     {
         RRFeedInfoListOtherModel* m = model;
         if (m.type == RRFeedInfoListOtherModelTypeItem) {
             id vc = [MVPRouter viewForURL:@"rr://list" withUserInfo:@{@"model":model}];
-            [self.view mvp_pushViewController:vc];
+//            [self.view mvp_pushViewController:vc];
+            return vc;
         }
     }
+    return nil;
 }
 
 - (void)recommand

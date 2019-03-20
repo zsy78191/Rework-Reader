@@ -3,13 +3,13 @@ PODS:
     - ChameleonFramework/Default (= 2.1.0)
   - ChameleonFramework/Default (2.1.0)
   - Classy (1.0.0)
-  - CocoaLumberjack (3.5.1):
-    - CocoaLumberjack/Core (= 3.5.1)
-  - CocoaLumberjack/Core (3.5.1)
+  - CocoaLumberjack (3.5.2):
+    - CocoaLumberjack/Core (= 3.5.2)
+  - CocoaLumberjack/Core (3.5.2)
   - DACircularProgress (2.3.1)
   - DateTools (2.0.0)
   - DZNEmptyDataSet (1.8.1)
-  - Fork-MWFeedParser (0.1.2)
+  - Fork-MWFeedParser (0.1.3)
   - Fork-MWPhotoBrowser (2.1.4):
     - DACircularProgress (~> 2.3)
     - MBProgressHUD (~> 0.9)
@@ -23,7 +23,7 @@ PODS:
   - MBProgressHUD (0.9.2)
   - MGJRouter (0.10.0)
   - MMKV (1.0.18)
-  - mvc-base (0.3.3):
+  - mvc-base (0.3.4.1):
     - DZNEmptyDataSet
     - MagicalRecord
     - Masonry
@@ -51,7 +51,7 @@ PODS:
     - SDWebImage/Core (= 4.4.6)
   - SDWebImage/Core (4.4.6)
   - SVProgressHUD (2.2.5)
-  - ui-base (0.0.8):
+  - ui-base (0.0.9):
     - ChameleonFramework
     - Classy
     - IQKeyboardManager
@@ -115,11 +115,11 @@ SPEC REPOS:
 SPEC CHECKSUMS:
   ChameleonFramework: d21a3cc247abfe5e37609a283a8238b03575cf64
   Classy: bbe2436d6872dfeda5eaa2a3c3d705a9c30b1709
-  CocoaLumberjack: 2101f8a5508197a305e737d16c5c2e9e2157628c
+  CocoaLumberjack: 118bf4a820efc641f79fa487b75ed928dccfae23
   DACircularProgress: 4dd437c0fc3da5161cb289e07ac449493d41db71
   DateTools: 933ac9c490f21f92127cf690ccd8c397e0126caf
   DZNEmptyDataSet: 9525833b9e68ac21c30253e1d3d7076cc828eaa7
-  Fork-MWFeedParser: 335dcd79e4ce8c2bbb7c0bf0921837374e76559d
+  Fork-MWFeedParser: 24f73d022ce84b43f21ffe66c87370de64cb0cb9
   Fork-MWPhotoBrowser: b4fbd050f833c94b8ec07843df19c380fecbcffb
   IQKeyboardManager: 6194101620b73af5e67900b8f89707a99de0b804
   KissXML: 09f88ff8161fd058d67b70740b8b516687b52823
@@ -128,7 +128,7 @@ SPEC CHECKSUMS:
   MBProgressHUD: 1569cf7ace17a8bac47aabfbb8580a49690386d1
   MGJRouter: 15d94541eb2cc81eff7d577337288feb7ae9575f
   MMKV: 2dc8974641213da7ab069f9e94caa0fba7241f14
-  mvc-base: fc4108c06cd70b502287ff9d13aa63fd866a35f7
+  mvc-base: 3ba0cb4ed3d09978b48333e80a04b4aaee8db6c7
   oc-base: b0cc5eeae853acdf1b35d3f954ed8023fa37a74c
   oc-date: d8601fcc9eeea98f9d84506b77ef508cf9057786
   oc-string: 79be9e8e4c80dd3e668690d3ac462e79a713489d
@@ -138,7 +138,7 @@ SPEC CHECKSUMS:
   RegexKitLite: c0e4c12e6e7de0769f3a3ed679f0f61604170661
   SDWebImage: 3f3f0c02f09798048c47a5ed0a13f17b063572d8
   SVProgressHUD: 1428aafac632c1f86f62aa4243ec12008d7a51d6
-  ui-base: 4c397f9d295df2794bf99b3b253910c7bf53fdae
+  ui-base: 0a495697728f7a51af17d5b02959c12820305795
   ui-util: 8f870cfb52b611516279bd0bf362ee2fac34d42d
   YYKit: 7cda43304a8dc3696c449041e2cb3107b4e236e7
 

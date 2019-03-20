@@ -84,8 +84,9 @@
                 [(UIViewController*)self.view hudInfo:@"订阅源URL无效"];
                 return;
             }
-            NSString * e = [x._urlEncodeString stringByReplacingOccurrencesOfString:@"%3A" withString:@":"];
+//            NSString * e = [x._urlEncodeString stringByReplacingOccurrencesOfString:@"%3A" withString:@":"];
 //            //NSLog(@"%@",e);
+            NSString* e = [x stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLFragmentAllowedCharacterSet]];
             
             if (x.length != e.length) {
                 x = e;

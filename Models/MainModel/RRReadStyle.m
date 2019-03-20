@@ -39,6 +39,8 @@
     NSSortDescriptor* d3 = [[NSSortDescriptor alloc] initWithKey:@"likedTime" ascending:NO];
     NSSortDescriptor* d4 = [[NSSortDescriptor alloc] initWithKey:@"lastread" ascending:NO];
     NSSortDescriptor* d5 = [[NSSortDescriptor alloc] initWithKey:@"sort" ascending:NO];
+    NSSortDescriptor* d6 = [[NSSortDescriptor alloc] initWithKey:@"readlatertime" ascending:NO];
+    
     if (self.feed) {
         return @[d5,d1,d2];
     }
@@ -48,6 +50,9 @@
         }
         if (self.liked) {
             return @[d3];
+        }
+        if (self.readlater) {
+            return @[d6];
         }
     }
     return @[d1,d5];

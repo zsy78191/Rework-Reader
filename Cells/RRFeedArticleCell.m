@@ -118,7 +118,7 @@
             self.i1.image = [UIImage new];
         }
         if (!m.readed) {
-            self.titleLabel.cas_styleClass = @"MainLabel";
+           
             if (m.liked) {
                 [self.i2 setImage:[UIImage imageNamed:@"icon_i2"]];
             }
@@ -128,13 +128,19 @@
             
         }
         else {
-            self.titleLabel.cas_styleClass = @"MainLabelReaded";
+            
             if (m.liked) {
                 [self.i2 setImage:[UIImage new]];
             }
             else {
                 [self.i1 setImage:[UIImage new]];
             }
+        }
+        if (!m.lastread) {
+            self.titleLabel.cas_styleClass = @"MainLabel";
+        }
+        else {
+            self.titleLabel.cas_styleClass = @"MainLabelReaded";
         }
         
         if (self.detialLabel) {

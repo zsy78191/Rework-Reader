@@ -13,6 +13,7 @@
         <attribute name="link" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="readed" optional="YES" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES" syncable="YES"/>
         <attribute name="readlater" optional="YES" attributeType="Boolean" usesScalarValueType="YES" syncable="YES"/>
+        <attribute name="readlatertime" optional="YES" attributeType="Date" usesScalarValueType="NO" syncable="YES"/>
         <attribute name="sort" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
         <attribute name="summary" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="title" optional="YES" attributeType="String" spotlightIndexingEnabled="YES" syncable="YES"/>
@@ -52,7 +53,7 @@
         <relationship name="feeds" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="EntityFeedInfo" inverseName="styles" inverseEntity="EntityFeedInfo" syncable="YES"/>
     </entity>
     <elements>
-        <element name="EntityFeedArticle" positionX="-54" positionY="99" width="128" height="315"/>
+        <element name="EntityFeedArticle" positionX="-54" positionY="99" width="128" height="330"/>
         <element name="EntityFeedInfo" positionX="-63" positionY="-18" width="128" height="330"/>
         <element name="EntityFeedStyle" positionX="-63" positionY="135" width="128" height="165"/>
     </elements>

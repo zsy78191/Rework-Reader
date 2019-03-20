@@ -103,7 +103,7 @@ UIToolbar.PhotoToolBar{
 
 UIView.SeparaterView
 {
-    backgroundColor $bar-tint-color
+    backgroundColor $main-separator-color
 }
 
 

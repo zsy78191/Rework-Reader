@@ -34,6 +34,9 @@
 + (void)readLaterArticle:(BOOL)readerLater withUUID:(NSString *)uuid block:(void (^)(NSError * _Nonnull))finished
 {
     NSDictionary* kv = @{@"readlater":@(readerLater)};
+    if (readerLater) {
+        kv = @{@"readlater":@(readerLater),@"readlatertime":[NSDate date]};
+    }
     [[RPDataManager sharedManager] updateClass:@"EntityFeedArticle" queryKey:@"uuid" queryValue:uuid keysAndValues:kv modify:^id _Nonnull(id  _Nonnull key, id  _Nonnull value) {
         return value;
     } finish:^(__kindof NSManagedObject * _Nonnull obj, NSError * _Nonnull e) {

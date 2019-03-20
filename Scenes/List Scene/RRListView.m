@@ -10,8 +10,9 @@
 #import "RRFeedInfoListModel.h"
 #import "RRFeedInfoListOtherModel.h"
 #import "RRListEmpty.h"
+@import ui_base;
 
-@interface RRListView ()
+@interface RRListView () <UIViewControllerPreviewingDelegate>
 {
 }
 @property (nonatomic, assign) BOOL showToolBar;
@@ -62,6 +63,13 @@
     }
 }
 
+- (void)motionBegan:(UIEventSubtype)motion withEvent:(UIEvent *)event
+{
+    if (motion == UIEventSubtypeMotionShake) {
+        [[self presenter] mvp_runAction:@"maskAllReaded:"];
+    }
+}
+
 - (void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
@@ -101,7 +109,7 @@
     
     UIBarButtonItem* t = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
     UIBarButtonItem* t2 = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
-    UISegmentedControl* c = [[UISegmentedControl alloc] initWithItems:@[@"未读",@"归档",@"收藏"]];
+    UISegmentedControl* c = [[UISegmentedControl alloc] initWithItems:@[@"未读",@"已读",@"收藏"]];
     UIBarButtonItem* i = [[UIBarButtonItem alloc] initWithCustomView:c];
     [c setSelectedSegmentIndex:0];
     [self mvp_bindAction:UIControlEventValueChanged target:c actionName:@"changeType:"];
@@ -120,8 +128,9 @@
     __weak typeof(self) weakSelf = self;
    
 //    MVPTableViewOutput* o = self.outputer;
-    [self.outputer setRegistBlock:^(id output) {
+    [self.outputer setRegistBlock:^(MVPTableViewOutput* output) {
         [output registNibCell:@"RRFeedArticleCell2" withIdentifier:@"articleCell"];
+        [weakSelf registerForPreviewingWithDelegate:weakSelf sourceView:output.tableview];
         [empty setActionBlock:^{
             dispatch_async(dispatch_get_main_queue(), ^{
                 if ([[output refreshControl] isRefreshing]) {
@@ -131,6 +140,25 @@
                 [[weakSelf presenter] mvp_runAction:@"refreshData:" value:[output refreshControl]];
             });
         }];
+        
+        
+        [[output actionsArrays] addObject:MVPCellActionModel.m(^(__kindof MVPCellActionModel * _Nonnull m) {
+            m.title = @"已读";
+            m.action = @"markAsReaded:";
+        })];
+        
+           NSDictionary* style = [[NSUserDefaults standardUserDefaults] valueForKey:@"style"];
+        
+        [[output leadActionsArrays] addObject:MVPCellActionModel.m(^(__kindof MVPCellActionModel * _Nonnull m) {
+            m.title = @"稍后阅读";
+            m.color = UIColor.hex(style[@"$main-tint-color"]);
+            m.action = @"markAsReadLater:";
+        })];
+        
+        [[output leadActionsArrays] addObject:MVPCellActionModel.m(^(__kindof MVPCellActionModel * _Nonnull m) {
+            m.title = @"收藏";
+            m.action = @"markAsFavourite:";
+        })];
     }];
 //    [o mvp_registerNib:[UINib nibWithNibName:@"RRFeedArticleCell2" bundle:[NSBundle mainBundle]] forCellReuseIdentifier:@"articleCell"];
    
@@ -150,5 +178,29 @@
     // Pass the selected object to the new view controller.
 }
 */
+
+- (void)previewingContext:(id<UIViewControllerPreviewing>)previewingContext commitViewController:(UIViewController *)viewControllerToCommit
+{
+    if ([viewControllerToCommit isKindOfClass:NSClassFromString(@"SFSafariViewController")]) {
+        [self mvp_presentViewController:viewControllerToCommit animated:YES completion:^{
+            
+        }];
+    }
+    else {
+        [self mvp_pushViewController:viewControllerToCommit];
+    }
+}
+
+- (UIViewController *)previewingContext:(id<UIViewControllerPreviewing>)previewingContext viewControllerForLocation:(CGPoint)location
+{
+    MVPTableViewOutput* outPut = (id)self.outputer;
+    NSIndexPath* path = [outPut.tableview indexPathForRowAtPoint:location];
+    if (!path) {
+        return nil;
+    }
+    //    id vc = [self.presenter mvp_runAction:@"viewControllerAtIndexPath" value:path];
+    id vc = [self.presenter mvp_valueWithSelectorName:@"viewControllerAtIndexPath:" sender:path];
+    return vc;
+}
 
 @end

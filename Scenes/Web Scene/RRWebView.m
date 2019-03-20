@@ -540,7 +540,7 @@
         }
         
         NSDictionary* style = [[NSUserDefaults standardUserDefaults] valueForKey:@"style"];
-        string = [self stylePreLoad:string];
+        string = [self preloadSystemCSSStyle:string];
  
         string = [string stringByReplacingOccurrencesOfString:@"<#title#>" withString:[filename stringByDeletingPathExtension]];
         
@@ -577,7 +577,7 @@
     
 }
 
-- (NSString*)stylePreLoad:(NSString*)string
+- (NSString*)preloadSystemCSSStyle:(NSString*)string
 {
     NSDictionary* style = [[NSUserDefaults standardUserDefaults] valueForKey:@"style"];
     string = [string stringByReplacingOccurrencesOfString:@"<#main-tint-color#>" withString:style[@"$main-tint-color"]];
@@ -594,10 +594,11 @@
     __weak typeof(self) weakSelf = self;
     [self.webView stopLoading];
     [self.webView evaluateJavaScript:@"document.body.style.visibility=\"hidden\";" completionHandler:^(id _Nullable x, NSError * _Nullable error) {
-        if ([weakSelf.presenter conformsToProtocol:@protocol(RRProvideDataProtocol)]) {
-            [(id)weakSelf.presenter loadData:m feed:feedInfo];
-        }
+
     }];
+    if ([weakSelf.presenter conformsToProtocol:@protocol(RRProvideDataProtocol)]) {
+        [(id)weakSelf.presenter loadData:m feed:feedInfo];
+    }
 }
 
 - (void)loadData:(RRFeedArticleModel*)m feed:(MWFeedInfo*)feedInfo
@@ -626,16 +627,11 @@
     }
     
     NSString* string = [[NSString alloc] initWithContentsOfURL:[[NSBundle mainBundle] URLForResource:@"templete" withExtension:@"html"] encoding:NSUTF8StringEncoding error:nil];
-    
+
     string = [self removeMarddownJS:string];
     string = [self removeMarddownHTML:string];
-    
-
- 
-    string = [self stylePreLoad:string];
-    
+    string = [self preloadSystemCSSStyle:string];
     string = [string stringByReplacingOccurrencesOfString:@"<#useMarkdown#>" withString:@"0"];
-    
     if (m.title) {
         string = [string stringByReplacingOccurrencesOfString:@"<#title#>" withString:m.title];
     }
@@ -653,13 +649,10 @@
     else {
         string = [string stringByReplacingOccurrencesOfString:@"<#html#>" withString:@"无内容"];
     }
-    
     if ([self hasPreMark:string isMd:NO]) {
-        //NSLog(@"有Pre");
         string = [self addHighlight:string];
     }
     else {
-        //NSLog(@"没有Pre");
         string = [self removeHighlight:string];
     }
     
@@ -670,8 +663,6 @@
     else{
         string = [string stringByReplacingOccurrencesOfString:@"<#subtitle#>" withString:[NSString stringWithFormat:@"%@",![feedInfo isKindOfClass:[NSNull class]]?feedInfo.title:@"无订阅源"]];
     }
-    
-    //        //NSLog(@"%@",m.link);
     if (m.link) {
         NSString* url = m.link;
         if ([m.link hasPrefix:@"//"]) {
@@ -680,27 +671,17 @@
         
         string = [string stringByReplacingOccurrencesOfString:@"<#url#>" withString:[NSString stringWithFormat:@"safari%@",url]];
     }
-    
     if ([self hasLatex:string]) {
-        //NSLog(@"有latex");
         string = [self addLatex:string];
     }
     else {
-        //NSLog(@"没有latex");
         string = [self removeLatex:string];
     }
-    
     string = [string stringByReplacingOccurrencesOfString:@"src=\"//" withString:@"src=\"http://"];
-    
     NSURL* u = [NSURL URLWithString:m.link];
     string = [string stringByReplacingOccurrencesOfString:@"<#host#>" withString:[NSString stringWithFormat:@"%@://%@",u.scheme,u.host]];
     
-    //        NSURL* url = [NSURL URLWithString:m.link];
-    //        NSURL* base = [NSURL URLWithString:[NSString stringWithFormat:@"%@://%@",[url scheme],[url host]]];
-    __weak typeof(self) weakSelf = self;
-  
-    [weakSelf.webView loadHTMLString:string baseURL:[[NSBundle mainBundle] bundleURL]];
-   
+    [self.webView loadHTMLString:string baseURL:[[NSBundle mainBundle] bundleURL]];
 }
 
 - (BOOL)hasPreMark:(NSString*)html isMd:(BOOL)isMd

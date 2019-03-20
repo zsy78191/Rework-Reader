@@ -165,12 +165,25 @@
                                 @"橙色":@"#F5A623",
                                 @"青色":@"#50E3C2"
                                 };
+    NSDictionary* colorDictDark = @{
+                                @"系统":@"#007AFF",
+                                @"紫色":@"#BD10E0",
+                                @"黑色":@"#CFD7DB",
+                                @"橙色":@"#F5A623",
+                                @"青色":@"#50E3C2"
+                                };
     NSString* color = colorDict[select];
+    NSString* colorDark = colorDictDark[select];
     if (color) {
         [[NSUserDefaults standardUserDefaults] setObject:color forKey:@"mainTintColor"];
         [[NSUserDefaults standardUserDefaults] synchronize];
-        [[NSNotificationCenter defaultCenter] postNotificationName:@"RRCasNeedReload" object:nil userInfo:nil];
     }
+    if (colorDark) {
+        [[NSUserDefaults standardUserDefaults] setObject:colorDark forKey:@"mainTintColorDark"];
+        [[NSUserDefaults standardUserDefaults] synchronize];
+        
+    }
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"RRCasNeedReload" object:nil userInfo:nil];
 }
 
 

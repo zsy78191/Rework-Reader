@@ -16,6 +16,8 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, strong) RRWKWebview *webView;
 
 
+// for test
+- (void)loadData:(RRFeedArticleModel*)m feed:(MWFeedInfo*)feedInfo;
 
 @end
 

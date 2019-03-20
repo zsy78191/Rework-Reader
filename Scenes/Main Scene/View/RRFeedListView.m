@@ -11,7 +11,7 @@
 #import "RREmpty.h"
 #import "RRReadMode.h"
 
-@interface RRFeedListView ()
+@interface RRFeedListView () <UIViewControllerPreviewingDelegate>
 
 @end
 
@@ -38,7 +38,9 @@
     [super mvp_configMiddleware];
     
 //    MVPTableViewOutput* o = self.outputer;
+    __weak typeof(self) weakSelf = self;
     [self.outputer setRegistBlock:^(MVPTableViewOutput* output) {
+        [weakSelf registerForPreviewingWithDelegate:weakSelf sourceView:output.tableview];
         [output registNibCell:@"RRFeedInfoListCell" withIdentifier:@"feedCell"];
         [output registNibCell:@"RRTitleCell" withIdentifier:@"titleCell"];
         [output mvp_bindTableRefreshActionName:@"refreshData:"];
@@ -137,6 +139,23 @@
 {
     [super viewWillDisappear:animated];
 //    [self.navigationController.navigationBar setPrefersLargeTitles:YES];
+}
+
+- (void)previewingContext:(id<UIViewControllerPreviewing>)previewingContext commitViewController:(UIViewController *)viewControllerToCommit
+{
+    [self mvp_pushViewController:viewControllerToCommit];
+}
+
+- (UIViewController *)previewingContext:(id<UIViewControllerPreviewing>)previewingContext viewControllerForLocation:(CGPoint)location
+{
+    MVPTableViewOutput* outPut = (id)self.outputer;
+    NSIndexPath* path = [outPut.tableview indexPathForRowAtPoint:location];
+    if (!path) {
+        return nil;
+    }
+//    id vc = [self.presenter mvp_runAction:@"viewControllerAtIndexPath" value:path];
+    id vc = [self.presenter mvp_valueWithSelectorName:@"viewControllerAtIndexPath:" sender:path];
+    return vc;
 }
 
 /*

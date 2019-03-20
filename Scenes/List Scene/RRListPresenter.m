@@ -293,28 +293,44 @@
 }
 
 
+- (UIViewController*)viewControllerAtIndexPath:(NSIndexPath*)path
+{
+    id model = [[self inputerCoreData] mvp_modelAtIndexPath:path];
+    return [self loadArticle:model];
+}
+
 - (void)mvp_action_selectItemAtIndexPath:(NSIndexPath *)path
 {
     id model = [[self inputerCoreData] mvp_modelAtIndexPath:path];
+    id vc = nil;
     if ([model isKindOfClass:[RRFeedArticleModel class]]) {
-        [self loadArticle:model];
+        vc = [self loadArticle:model];
     }
     else if([model isKindOfClass:[EntityFeedArticle class]])
     {
 //        RRFeedArticleModel* mm = [[RRFeedArticleModel alloc] initWithEntity:model];
 //        mm.feedEntity = [(EntityFeedArticle*)model feed];
-        [self loadArticle:model];
+        vc = [self loadArticle:model];
+    }
+    if (vc) {
+        if ([vc isKindOfClass:[SFSafariViewController class]]) {
+            [self.view mvp_presentViewController:vc animated:YES completion:^{
+                
+            }];
+        }
+        else {
+            [self.view mvp_pushViewController:vc];
+        }
     }
 }
 
-- (void)loadArticle:(id)model
+- (UIViewController*)loadArticle:(id)model
 {
     id feed = nil;
  
     if ([model isKindOfClass:[RRFeedArticleModel class]]) {
         feed = [model feedEntity];
         RRFeedArticleModel* m = model;
-
     }
     else if([model isKindOfClass:[EntityFeedArticle class]])
     {
@@ -323,7 +339,7 @@
         EntityFeedArticle* a = model;
 
         if (i.usesafari) {
-            
+
             [RRFeedAction readArticle:a.uuid];
             
             NSString* link = a.link;
@@ -335,15 +351,15 @@
             
             if (!u) {
                 [[self view] hudFail:@"链接不可用"];
-                return;
+                return nil;
             }
             
             SFSafariViewControllerConfiguration* c = [[SFSafariViewControllerConfiguration alloc] init];
             c.entersReaderIfAvailable = YES;
             SFSafariViewController* s = [[SFSafariViewController alloc] initWithURL:u configuration:c];
-            [self.view mvp_presentViewController:s animated:YES completion:^{
-            }];
-            return;
+//            [self.view mvp_presentViewController:s animated:YES completion:^{
+//            }];
+            return s;
         }
     }
     
@@ -368,7 +384,8 @@
             return [weakSelf next:current];
         }];
     }
-    [self.view mvp_pushViewController:web];
+//    [self.view mvp_pushViewController:web];
+    return web;
 }
 
 
@@ -586,5 +603,32 @@
         NSLog(@"%@",e);
     }];
 }
+
+- (void)markAsReaded:(NSIndexPath*)path
+{
+    EntityFeedArticle* model = [self.inputerCoreData mvp_modelAtIndexPath:path];
+    [RRFeedAction readArticle:model.uuid onlyMark:YES];
+}
+
+- (void)markAsReadLater:(NSIndexPath*)path
+{
+    EntityFeedArticle* model = [self.inputerCoreData mvp_modelAtIndexPath:path];
+    [RRFeedAction readLaterArticle:!model.readlater withUUID:model.uuid block:^(NSError * _Nonnull e) {
+        if (!e) {
+             [RRFeedAction readArticle:model.uuid onlyMark:YES];
+        }
+    }];
+}
+
+- (void)markAsFavourite:(NSIndexPath*)path
+{
+    EntityFeedArticle* model = [self.inputerCoreData mvp_modelAtIndexPath:path];
+    [RRFeedAction likeArticle:!model.liked withUUID:model.uuid block:^(NSError * _Nonnull e) {
+        if (!e) {
+            [RRFeedAction readArticle:model.uuid onlyMark:YES];
+        }
+    }];
+}
+
 
 @end

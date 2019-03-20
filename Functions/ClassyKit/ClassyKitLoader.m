@@ -10,7 +10,7 @@
 @import Classy;
 @import ui_base;
 @import oc_string;
-
+#import "RRReadMode.h"
 #import "RPFontLoader.h"
 
 @implementation ClassyKitLoader
@@ -62,7 +62,13 @@
 {
     NSURL* u = [UIApplication.sharedApplication.doucumentDictionary() URLByAppendingPathComponent:[style stringByAppendingString:@".cas"]];
     
-    NSString* mainTintColor = [[NSUserDefaults standardUserDefaults] valueForKey:@"mainTintColor"];
+    NSString* mainColorKey = @"mainTintColor";
+    RRReadMode mode = [[NSUserDefaults standardUserDefaults] integerForKey:@"kRRReadMode"];
+    if (mode == RRReadModeDark) {
+        mainColorKey = @"mainTintColorDark";
+    }
+ 
+    NSString* mainTintColor = [[NSUserDefaults standardUserDefaults] valueForKey:mainColorKey];
     NSString* mainFont = [[NSUserDefaults standardUserDefaults] stringForKey:@"mainFont"];
     
     NSMutableDictionary* styleVariables = [[NSMutableDictionary alloc] initWithContentsOfFile:[[NSBundle mainBundle] pathForResource:variablesFileName ofType:@"plist"]];
