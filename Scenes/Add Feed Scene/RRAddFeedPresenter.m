@@ -80,6 +80,9 @@
     switch (path.section*10 + path.row) {
         case 2: {
             NSString* x = self.inputModel.value;
+            if ([x hasPrefix:@"inner"]) {
+                x = [x substringFromIndex:5];
+            }
             if (![x hasPrefix:@"http://"] && ![x hasPrefix:@"https://"]) {
                 [(UIViewController*)self.view hudInfo:@"订阅源URL无效"];
                 return;

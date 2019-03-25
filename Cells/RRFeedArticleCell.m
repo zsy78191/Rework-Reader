@@ -42,7 +42,7 @@
         NSDate* date = m.date;
         NSString* des = @"";
         if (date) {
-            des = [NSString stringWithFormat:@"%@ · %@  · ",[date timeAgoSinceNow],[[RRFeedLoader sharedLoader].shrotDateAndTimeFormatter stringFromDate:date]];
+            des = [NSString stringWithFormat:@"%@ · %@  · ",[date timeAgoSinceNow],[[RRFeedLoader sharedLoader].shortDateAndTimeFormatter stringFromDate:date]];
         }
         
         if (m.summary.length > 30 || m.content.length > 30) {

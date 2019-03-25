@@ -20,7 +20,7 @@
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="irF-va-kkw">
-                        <rect key="frame" x="42" y="18" width="185" height="23.5"/>
+                        <rect key="frame" x="42" y="18" width="181" height="23.5"/>
                         <fontDescription key="fontDescription" type="system" pointSize="17"/>
                         <nil key="textColor"/>
                         <nil key="highlightedColor"/>
@@ -45,35 +45,15 @@
                             <userDefinedRuntimeAttribute type="string" keyPath="cas_styleClass" value="SeparaterView"/>
                         </userDefinedRuntimeAttributes>
                     </view>
-                    <view userInteractionEnabled="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="wxD-nd-LcE">
-                        <rect key="frame" x="0.0" y="0.0" width="4" height="60.5"/>
-                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                        <constraints>
-                            <constraint firstAttribute="width" constant="4" id="Vgg-Eq-OuU"/>
-                        </constraints>
-                        <userDefinedRuntimeAttributes>
-                            <userDefinedRuntimeAttribute type="string" keyPath="cas_styleClass" value="SeparaterView"/>
-                        </userDefinedRuntimeAttributes>
-                    </view>
-                    <view userInteractionEnabled="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="fRx-Mi-9ZZ">
-                        <rect key="frame" x="316" y="0.0" width="4" height="60.5"/>
-                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                        <constraints>
-                            <constraint firstAttribute="width" constant="4" id="ZoS-9a-MGH"/>
-                        </constraints>
-                        <userDefinedRuntimeAttributes>
-                            <userDefinedRuntimeAttribute type="string" keyPath="cas_styleClass" value="SeparaterView"/>
-                        </userDefinedRuntimeAttributes>
-                    </view>
                     <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="icon_right" translatesAutoresizingMaskIntoConstraints="NO" id="syD-1e-KhI">
-                        <rect key="frame" x="290" y="21" width="18" height="18"/>
+                        <rect key="frame" x="286" y="21" width="18" height="18"/>
                         <constraints>
                             <constraint firstAttribute="height" constant="18" id="57p-xe-oaM"/>
                             <constraint firstAttribute="width" constant="18" id="gD2-fq-IwJ"/>
                         </constraints>
                     </imageView>
                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="right" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" preferredMaxLayoutWidth="80" translatesAutoresizingMaskIntoConstraints="NO" id="wq3-Eh-KDd">
-                        <rect key="frame" x="234" y="19.5" width="48" height="20.5"/>
+                        <rect key="frame" x="230" y="19.5" width="48" height="20.5"/>
                         <constraints>
                             <constraint firstAttribute="width" constant="48" id="Aqc-9D-1Qm"/>
                         </constraints>
@@ -93,18 +73,12 @@
                     <constraint firstItem="syD-1e-KhI" firstAttribute="leading" secondItem="wq3-Eh-KDd" secondAttribute="trailing" constant="8" id="CRh-xu-jQW"/>
                     <constraint firstItem="SCi-0J-8SS" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" constant="16" id="DYw-cg-BOe"/>
                     <constraint firstItem="syD-1e-KhI" firstAttribute="centerY" secondItem="H2p-sc-9uM" secondAttribute="centerY" constant="-1" id="Vxy-gd-Z7Y"/>
-                    <constraint firstItem="fRx-Mi-9ZZ" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" id="Wah-Ku-kzs"/>
                     <constraint firstItem="wq3-Eh-KDd" firstAttribute="centerY" secondItem="H2p-sc-9uM" secondAttribute="centerY" constant="-1" id="XDI-Zh-vBq"/>
-                    <constraint firstAttribute="trailing" secondItem="fRx-Mi-9ZZ" secondAttribute="trailing" id="XEc-Qi-K9a"/>
                     <constraint firstItem="irF-va-kkw" firstAttribute="leading" secondItem="SCi-0J-8SS" secondAttribute="trailing" constant="8" id="ZNm-7X-QE0"/>
                     <constraint firstItem="irF-va-kkw" firstAttribute="centerY" secondItem="H2p-sc-9uM" secondAttribute="centerY" constant="-1" id="ays-Uv-Aza"/>
                     <constraint firstItem="SCi-0J-8SS" firstAttribute="centerY" secondItem="irF-va-kkw" secondAttribute="centerY" id="eZJ-f1-p1O"/>
-                    <constraint firstItem="fRx-Mi-9ZZ" firstAttribute="leading" secondItem="syD-1e-KhI" secondAttribute="trailing" constant="8" id="gh0-rW-UTQ"/>
-                    <constraint firstItem="wxD-nd-LcE" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" id="gzr-3H-aVg"/>
                     <constraint firstItem="wq3-Eh-KDd" firstAttribute="leading" secondItem="irF-va-kkw" secondAttribute="trailing" constant="7" id="hV3-Vi-Jti"/>
-                    <constraint firstItem="cGE-8f-DWq" firstAttribute="top" secondItem="fRx-Mi-9ZZ" secondAttribute="bottom" id="q8N-PL-aqZ"/>
-                    <constraint firstItem="cGE-8f-DWq" firstAttribute="top" secondItem="wxD-nd-LcE" secondAttribute="bottom" id="qag-ev-BOI"/>
-                    <constraint firstItem="wxD-nd-LcE" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" id="qxM-0P-Jbt"/>
+                    <constraint firstAttribute="trailing" secondItem="syD-1e-KhI" secondAttribute="trailing" constant="16" id="i1k-OF-pqb"/>
                     <constraint firstItem="cGE-8f-DWq" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" id="vhB-jS-Jje"/>
                 </constraints>
             </tableViewCellContentView>

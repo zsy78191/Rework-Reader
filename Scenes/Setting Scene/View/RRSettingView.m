@@ -8,11 +8,20 @@
 
 #import "RRSettingView.h"
 
-@interface RRSettingView ()
+@import StoreKit;
+@interface RRSettingView () <SKStoreProductViewControllerDelegate>
 
 @end
 
 @implementation RRSettingView
+
+
+- (void)productViewControllerDidFinish:(SKStoreProductViewController *)viewController
+{
+    [viewController dismissViewControllerAnimated:YES completion:^{
+        
+    }];
+}
 
 - (void)viewDidLoad {
     [super viewDidLoad];
@@ -28,6 +37,7 @@
 {
   
 }
+
 
 - (void)mvp_configMiddleware
 {

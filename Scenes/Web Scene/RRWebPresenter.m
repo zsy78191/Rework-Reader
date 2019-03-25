@@ -91,6 +91,7 @@
 
 - (void)openAction2:(id)sender
 {
+    __weak typeof(self) weakSelf = self;
     UIBarButtonItem* i = sender;
     CGRect r =({
         CGRect r = [[i valueForKeyPath:@"view.superview.frame"] CGRectValue];
@@ -102,7 +103,7 @@
     UIAlertController* a = UI_ActionSheet()
     .titled(@"更多操作")
     .action(@"全文HTML输出", ^(UIAlertAction * _Nonnull action, UIAlertController * _Nonnull alert) {
-        [self outputHTML];
+        [weakSelf outputHTML];
     })
     .cancel(@"取消", ^(UIAlertAction * _Nonnull action) {
         
@@ -125,6 +126,7 @@
 
 - (void)outputHTML
 {
+    __weak typeof(self) weakSelf = self;
     [[self webView] evaluateJavaScript:@"document.getElementsByTagName('html')[0].innerHTML;" completionHandler:^(NSString* _Nullable all, NSError * _Nullable error) {
         NSURL* u = [[UIApplication sharedApplication].doucumentDictionary() URLByAppendingPathComponent:@"output_temp.html"];
         NSError* e;
@@ -133,7 +135,7 @@
             NSArray* items = @[u];
             NSArray* activies = @[];
             UIActivityViewController* a = [[UIActivityViewController alloc] initWithActivityItems:items applicationActivities:activies];
-            [self.view mvp_presentViewController:a animated:YES completion:^{
+            [weakSelf.view mvp_presentViewController:a animated:YES completion:^{
                 
             }];
         }
@@ -247,6 +249,11 @@
     
     //NSLog(@"弹框已经消失");
     
+}
+
+- (void)dealloc
+{
+    NSLog(@"%s",__func__);
 }
 
 @end

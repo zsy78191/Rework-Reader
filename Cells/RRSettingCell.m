@@ -24,6 +24,7 @@
 
 - (void)loadModel:(RRSetting*)item
 {
+    [super loadModel:item];
     self.titleLabel.text = item.title;
     if ([item.type intValue] == 1) {
         self.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
@@ -37,6 +38,9 @@
     else {
         self.subLabel.text = @"";
         self.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+    }
+    if ([item.type integerValue] == RRSettingTypeDymaticValue) {
+        self.subLabel.text = [self.presenter mvp_valueWithSelectorName:item.value];
     }
 }
 

@@ -30,6 +30,8 @@
 	<string>13</string>
 	<key>$sub-bg-color</key>
 	<string>#ededed</string>
+	<key>$indicatorStyle</key>
+	<string>1</string>
 	<key>$large-title-font-size</key>
 	<string>34</string>
 </dict>

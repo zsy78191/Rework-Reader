@@ -13,43 +13,30 @@
 
 - (NSString *)titleForEmptyTitle
 {
-    return @"空空如也";
-}
-
-- (NSDictionary *)attributesForEmptyTitle
-{
-//    //NSLog(@"%@",[ClassyKitLoader values]);
-    NSDictionary* d = [ClassyKitLoader values];
-    return @{
-             NSFontAttributeName: [UIFont fontWithName:d[@"$main-font"] size:[d[@"$main-font-size"] floatValue]]
-             };
+    return @"点击右下方按钮添加开启订阅";
 }
 
 - (NSString *)buttonTitleForState:(NSUInteger)state
 {
-    return @"";
-//    return @"探索RSS世界";
+    return @"推荐订阅源";
 }
 
-- (NSString *)titleForEmptyDescription
+- (void)didTapButton:(UIButton *)button
 {
-    return @"点击下方按钮添加开启订阅";
+    if (self.actionBlock) {
+        self.actionBlock();
+    }
 }
 
-- (NSDictionary *)attributesForEmptyDescription
+- (UIImage *)image
 {
-    NSDictionary* d = [ClassyKitLoader values];
-    return @{
-             NSFontAttributeName: [UIFont fontWithName:d[@"$main-font"] size:[d[@"$sub-font-size"] floatValue]]
-             };
+    return [UIImage imageNamed:@"nodata"];
 }
 
-- (NSDictionary *)buttonTitleAttributesForState:(NSUInteger)state
+- (CGFloat)verticalOffsetForEmptyDataSet:(UIScrollView *)scrollView
 {
-    NSDictionary* d = [ClassyKitLoader values];
-    return @{
-             NSFontAttributeName: [UIFont fontWithName:d[@"$main-font"] size:[d[@"$main-font-size"] floatValue]]
-             };
+    return - 100;
 }
+
 
 @end

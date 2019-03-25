@@ -11,11 +11,13 @@
 	<key>$main-tint-color</key>
 	<string>#F5A623</string>
 	<key>$main-separator-color</key>
-	<string>#191919</string>
+	<string>#121212</string>
 	<key>$main-bg-color</key>
-	<string>#000000</string>
+	<string>#070707</string>
 	<key>$sub-bg-color</key>
 	<string>#373737</string>
+	<key>$indicatorStyle</key>
+	<string>2</string>
 	<key>$bar-tint-color</key>
 	<string>#090909</string>
 	<key>$title-font</key>

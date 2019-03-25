@@ -37,6 +37,7 @@
 @property (nonatomic, assign) RRReadMode mode;
 @property (nonatomic, assign) BOOL updating;
 @property (nonatomic, weak) UIRefreshControl* refresher;
+@property (nonatomic, assign) BOOL hasDatas;
 @end
 
 @implementation RRFeedListPresenter
@@ -54,6 +55,8 @@
     [[NSUserDefaults standardUserDefaults] synchronize];
     
     [[NSNotificationCenter defaultCenter] postNotificationName:@"RRCasNeedReload" object:nil];
+    
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"RRWebNeedReload" object:nil];
     
     [[(UIViewController*)self.view navigationController] setNeedsStatusBarAppearanceUpdate];
 }
@@ -93,13 +96,22 @@
 {
     self = [super init];
     if (self) {
-        self.title = @"Reader Special";
+        self.title = @"Reader Prime";
         self.needUpdate = YES;
         self.needUpdateFeed = NO;
         self.mode = [[NSUserDefaults standardUserDefaults] integerForKey:@"kRRReadMode"];
+        
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(needUpdateData) name:@"RRMainListNeedUpdate" object:nil];
+        
+//        [[NSNotificationCenter defaultCenter] addObserverForName:UIAccessibilityPageScrolledNotification object:self queue:[NSOperationQueue mainQueue] usingBlock:^(NSNotification * _Nonnull note) {
+//            NSLog(@"%s",__func__);
+//        }];
+        
     }
     return self;
 }
+
+
 
 - (void)needUpdateData
 {
@@ -131,16 +143,14 @@
 {
     [self.complexInput mvp_cleanAll];
     
-    {
-        RRFeedInfoListOtherModel* m = [[RRFeedInfoListOtherModel alloc] init];
-        m.title = @"阅读规则";
-        m.canEdit = NO;
-        m.type = RRFeedInfoListOtherModelTypeTitle;
-        [self.readStyleInputer mvp_addModel:m];
-    }
+    RRFeedInfoListOtherModel* mTitle = [[RRFeedInfoListOtherModel alloc] init];
+    mTitle.title = @"阅读规则";
+    mTitle.canEdit = NO;
+    mTitle.type = RRFeedInfoListOtherModelTypeTitle;
+    [self.readStyleInputer mvp_addModel:mTitle];
     
     {
-        RRFeedInfoListOtherModel* mUnread = GetRRFeedInfoListOtherModel(@"未读订阅",@"favicon_2",@"三日内的未读文章",@"unread");
+        RRFeedInfoListOtherModel* mUnread = GetRRFeedInfoListOtherModel(@"未读订阅",@"favicon",@"三日内的未读文章",@"unread");
         mUnread.canRefresh = YES;
         mUnread.canEdit = NO;
         mUnread.readStyle = ({
@@ -154,7 +164,10 @@
         NSNumber* count = [[RPDataManager sharedManager] getCount:@"EntityFeedArticle" predicate:[mUnread.readStyle predicate] key:nil value:nil sort:nil asc:YES];
         mUnread.count = [count intValue];
         
-        [self.readStyleInputer mvp_addModel:mUnread];
+        if ([count integerValue] != 0) {
+            [self.readStyleInputer mvp_addModel:mUnread];
+        }
+        
         
         {
             RRFeedInfoListOtherModel* mLater = GetRRFeedInfoListOtherModel(@"稍后阅读",@"favicon_4",@"想看还没有看的文章",@"readlater");
@@ -214,27 +227,44 @@
         }
     }
     
+    if ([self.readStyleInputer mvp_count] == 1) {
+        [self.readStyleInputer mvp_deleteModel:mTitle];
+    }
+    
     {
         RRFeedInfoListOtherModel* m = [[RRFeedInfoListOtherModel alloc] init];
         m.title = @"订阅源";
         m.canEdit = NO;
         m.type = RRFeedInfoListOtherModelTypeTitle;
-        [self.readStyleInputer mvp_addModel:m];
+    
+    
+        NSArray* a = [[RPDataManager sharedManager] getAll:@"EntityFeedInfo" predicate:nil key:nil value:nil sort:@"sort" asc:YES];
+        if (a.count>0) {
+            [self.readStyleInputer mvp_addModel:m];
+        }
+        [a enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+            RRFeedInfoListModel* m = [[RRFeedInfoListModel alloc] init];
+            [m loadFromFeed:obj];
+            m.feed = obj;
+            m.canEdit = YES;
+            [self.inputer mvp_addModel:m];
+        }];
+       
     }
     
-    
-    NSArray* a = [[RPDataManager sharedManager] getAll:@"EntityFeedInfo" predicate:nil key:nil value:nil sort:@"sort" asc:YES];
-    
-    [a enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
-        RRFeedInfoListModel* m = [[RRFeedInfoListModel alloc] init];
-        [m loadFromFeed:obj];
-        m.feed = obj;
-        m.canEdit = YES;
-        [self.inputer mvp_addModel:m];
-    }];
-    
+    self.hasDatas = YES;
+    if([self.complexInput mvp_count]==0)
+    {
+        self.hasDatas = NO;
+        [self.view mvp_runAction:NSSelectorFromString(@"reloadEmpty")];
+    }
     
     self.needUpdate = NO;
+}
+
+- (NSNumber*)hasData
+{
+    return @(self.hasDatas);
 }
 
 - (void)openSetting
@@ -257,7 +287,13 @@
 
 - (void)dealloc
 {
+//    [[NSNotificationCenter defaultCenter] removeObserver:self name:UIAccessibilityPageScrolledNotification object:nil];
+    
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"RRMainListNeedUpdate" object:nil];
+    
     [[RPDataNotificationCenter defaultCenter] unregistEntityChange:@"EntityFeedInfo" observer:self];
+    
+    [[RPDataNotificationCenter defaultCenter] unregistEntityChange:@"EntityFeedArticle" observer:self];
 }
 
 - (void)refreshData:(UIRefreshControl*)sender
@@ -308,18 +344,24 @@
         });
     }  finishBlock:^(NSUInteger all, NSUInteger error, NSUInteger article) {
         dispatch_async(dispatch_get_main_queue(), ^{
+        
+            
             weakSelf.updating = NO;
-            weakSelf.title = @"Reader Special";
+            weakSelf.title = @"Reader Prime";
             if (article == 0) {
+                UIAccessibilityPostNotification(UIAccessibilityAnnouncementNotification, @"更新结束，没有更新的订阅");
 //                [PWToastView showText:@"没有更新的订阅"];
             }
             else {
                 [weakSelf loadData];
                 if (error == 0) {
-                    [PWToastView showText:[NSString stringWithFormat:@"更新了%ld个订阅源，共计%ld篇订阅",all,article]];
+                    NSString* tip = [NSString stringWithFormat:@"更新了%ld个订阅源，共计%ld篇订阅",all,article];
+                    [PWToastView showText:tip];
+                    UIAccessibilityPostNotification(UIAccessibilityAnnouncementNotification, [NSString stringWithFormat:@"更新了%ld篇订阅",article]);
                 }
                 else {
                     [PWToastView showText:[NSString stringWithFormat:@"更新了%ld个订阅源，共计%ld篇订阅，%ld个源更新失败",all,article,error]];
+                    UIAccessibilityPostNotification(UIAccessibilityAnnouncementNotification, [NSString stringWithFormat:@"更新了%ld篇订阅",article]);
                 }
             }
         });

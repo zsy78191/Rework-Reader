@@ -100,7 +100,7 @@
             if (m.length != 0) {
                 [m appendString:@" && "];
             }
-            [m appendString:@"readed = true"];
+            [m appendString:@"readed = true and lastread != null"];
         }
         if (self.liked) {
             if (m.length != 0) {

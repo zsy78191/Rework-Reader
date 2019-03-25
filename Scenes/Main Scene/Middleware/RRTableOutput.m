@@ -40,6 +40,11 @@
     return YES;
 }
 
+- (Class)tableviewClass
+{
+    return NSClassFromString(@"RRTableView");
+}
+
 //- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 //{
 //    id model = [self.inputer mvp_modelAtIndexPath:indexPath];
@@ -78,13 +83,13 @@
             RRFeedInfoListModel* m = model;
             __weak typeof(self) weakSelf = self;
             
-            CGRect r = [tableView rectForRowAtIndexPath:indexPath];
-            r = [tableView convertRect:r toView:nil];
-            r.origin.x += 0.9 * r.size.width;
-            r.origin.y += 0.5 * r.size.height;
-            r.size.width = 0;
-            r.size.height = 0;
-            [RRFeedAction delFeed:m.feed view:(id)self.presenter.view rect:r arrow:UIPopoverArrowDirectionRight finish:^{
+//            CGRect r = [tableView rectForRowAtIndexPath:indexPath];
+//            r = [tableView convertRect:r toView:nil];
+//            r.origin.x += 0.9 * r.size.width;
+//            r.origin.y += 0.5 * r.size.height;
+//            r.size.width = 0;
+//            r.size.height = 0;
+            [RRFeedAction delFeed:m.feed view:(id)self.presenter.view item:nil arrow:UIPopoverArrowDirectionRight finish:^{
                  [(id)weakSelf.presenter loadData];
             }];
         }

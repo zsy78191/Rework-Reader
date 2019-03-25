@@ -25,6 +25,9 @@
 @import oc_util;
 @import DateTools;
 #import "RRListView.h"
+#import "RRSafariViewController.h"
+
+#import "RRExtraViewController.h"
 
 @interface RRListPresenter ()
 {
@@ -42,10 +45,22 @@
 
 @property (nonatomic, strong) NSMutableArray* hashTable;
 @property (nonatomic, assign) NSUInteger currentIdx;
+@property (nonatomic, assign) BOOL refreshing;
 
+@property (nonatomic, assign) BOOL isTrait;
 @end
 
 @implementation RRListPresenter
+
+- (void)trait
+{
+    self.isTrait = YES;
+}
+
+- (void)notTrait
+{
+    self.isTrait = NO;
+}
 
 - (NSMutableArray *)hashTable
 {
@@ -111,6 +126,8 @@
 
 - (void)mvp_initFromModel:(MVPInitModel *)model
 {
+    self.refreshing = NO;
+    
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateHashData) name:UIApplicationDidBecomeActiveNotification object:nil];
     
     id m = model.userInfo[@"model"];
@@ -143,7 +160,7 @@
     });
   
     __weak typeof(self) weakSelf = self;
-    [RRFeedAction delFeed:self.infoModel.feed view:(id)self.view rect:r arrow:UIPopoverArrowDirectionUp finish:^{
+    [RRFeedAction delFeed:self.infoModel.feed view:(id)self.view item:sender arrow:UIPopoverArrowDirectionUp finish:^{
         [(id)weakSelf.view mvp_popViewController:nil];
     }];
 }
@@ -204,15 +221,23 @@
 
 - (void)refreshData:(UIRefreshControl*)sender
 {
+    if (self.refreshing) {
+        return;
+    }
+    self.refreshing = YES;
+    
     __weak typeof(self) weakSelf = self;
     [self updateFeedData:^(NSInteger x) {
+        weakSelf.refreshing = NO;
         dispatch_async(dispatch_get_main_queue(), ^{
             //                [P]
             if (x == 0) {
                 [PWToastView showText:@"没有更新的订阅了"];
+                UIAccessibilityPostNotification(UIAccessibilityAnnouncementNotification, @"更新结束，没有更新的订阅");
             }
             else {
                 [PWToastView showText:[NSString stringWithFormat:@"更新了%ld篇订阅",x]];
+                UIAccessibilityPostNotification(UIAccessibilityAnnouncementNotification, [NSString stringWithFormat:@"更新了%ld篇订阅",x]);
             }
             [sender endRefreshing];
             [weakSelf updateHashData];
@@ -313,13 +338,38 @@
         vc = [self loadArticle:model];
     }
     if (vc) {
-        if ([vc isKindOfClass:[SFSafariViewController class]]) {
-            [self.view mvp_presentViewController:vc animated:YES completion:^{
-                
-            }];
+//        if ([UIDevice currentDevice].iPad() && self.isTrait) {
+//            UIViewController* v = (id)self.view;
+//
+//        }
+        UIViewController* v = (id)self.view;
+        BOOL isTrait = [[NSUserDefaults standardUserDefaults] boolForKey:@"RRSplit"];
+        
+//        NSLog(@"%@",v.splitViewController.viewControllers);
+        if (v.splitViewController && !isTrait) {
+            
+            RRExtraViewController* n = [[RRExtraViewController alloc] initWithRootViewController:vc];
+            n.handleTrait = YES;
+            if ([vc isKindOfClass:[SFSafariViewController class]]) {
+//                [n setNavigationBarHidden:YES animated:NO];
+//                [n setToolbarHidden:YES];
+                NSArray* vcArray = @[v.navigationController,vc];
+                 [v.splitViewController setViewControllers:vcArray];
+            }
+            else {
+                NSArray* vcArray = @[v.navigationController,n];
+                [v.splitViewController setViewControllers:vcArray];
+            }
         }
         else {
-            [self.view mvp_pushViewController:vc];
+            if ([vc isKindOfClass:[SFSafariViewController class]]) {
+                [self.view mvp_presentViewController:vc animated:YES completion:^{
+                    
+                }];
+            }
+            else {
+                [self.view mvp_pushViewController:vc];
+            }
         }
     }
 }
@@ -356,7 +406,7 @@
             
             SFSafariViewControllerConfiguration* c = [[SFSafariViewControllerConfiguration alloc] init];
             c.entersReaderIfAvailable = YES;
-            SFSafariViewController* s = [[SFSafariViewController alloc] initWithURL:u configuration:c];
+            RRSafariViewController* s = [[RRSafariViewController alloc] initWithURL:u configuration:c];
 //            [self.view mvp_presentViewController:s animated:YES completion:^{
 //            }];
             return s;
@@ -519,6 +569,10 @@
         })
         .show((id)self.view);
     })
+    .action(@"复制订阅源URL", ^(UIAlertAction * _Nonnull action, UIAlertController * _Nonnull alert) {
+        [[UIPasteboard generalPasteboard] setURL:feed.url];
+        [self.view hudSuccess:@"复制成功"];
+    })
     .action(usetll?@"关闭缓存期内更新":@"开启缓存期内更新", ^(UIAlertAction * _Nonnull action, UIAlertController * _Nonnull alert) {
         [weakSelf changeFeedValue:@(!usetll) forKey:@"usettl" void:^(NSError *e) {
         }];
@@ -535,7 +589,8 @@
     });
     
     if ([UIDevice currentDevice].iPad()) {
-        [[self view] showAsProver:a view:[(UIViewController*)self.view view] rect:r arrow:UIPopoverArrowDirectionUp];
+//        [[self view] showAsProver:a view:[(UIViewController*)self.view view] rect:r arrow:UIPopoverArrowDirectionUp];
+        [[self view] showAsProver:a view:[(UIViewController*)[self view] view] item:sender arrow:UIPopoverArrowDirectionDown];
     }
     else {
         a.show((id)self.view);

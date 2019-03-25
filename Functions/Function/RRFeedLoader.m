@@ -30,7 +30,7 @@
 
 @implementation RRFeedLoader
 
-- (void)setQyalityLevel:(NSQualityOfService)service
+- (void)setQualityLevel:(NSQualityOfService)service
 {
     [self.quene setQualityOfService:service];
     [self.netQuene setQualityOfService:service];
@@ -43,7 +43,7 @@
     dispatch_once(&onceToken, ^{
         _shared_loader_g = [[RRFeedLoader alloc] init];
 //        _shared_loader_g.useMainQuene = NO;
-        [_shared_loader_g setQyalityLevel:NSQualityOfServiceBackground];
+        [_shared_loader_g setQualityLevel:NSQualityOfServiceBackground];
     });
     return _shared_loader_g;
 }
@@ -169,24 +169,24 @@
     [operation cancel];
 }
 
-- (NSDateFormatter *)shrotDateFormatter
+- (NSDateFormatter *)shortDateFormatter
 {
-    if (!_shrotDateFormatter) {
-        _shrotDateFormatter = [[NSDateFormatter alloc] init];
-        [_shrotDateFormatter setDateStyle:NSDateFormatterShortStyle];
-        [_shrotDateFormatter setTimeStyle:NSDateFormatterNoStyle];
+    if (!_shortDateFormatter) {
+        _shortDateFormatter = [[NSDateFormatter alloc] init];
+        [_shortDateFormatter setDateStyle:NSDateFormatterShortStyle];
+        [_shortDateFormatter setTimeStyle:NSDateFormatterNoStyle];
     }
-    return _shrotDateFormatter;
+    return _shortDateFormatter;
 }
 
-- (NSDateFormatter *)shrotDateAndTimeFormatter
+- (NSDateFormatter *)shortDateAndTimeFormatter
 {
-    if (!_shrotDateAndTimeFormatter) {
-        _shrotDateAndTimeFormatter = [[NSDateFormatter alloc] init];
-        [_shrotDateAndTimeFormatter setDateStyle:NSDateFormatterShortStyle];
-        [_shrotDateAndTimeFormatter setTimeStyle:NSDateFormatterShortStyle];
+    if (!_shortDateAndTimeFormatter) {
+        _shortDateAndTimeFormatter = [[NSDateFormatter alloc] init];
+        [_shortDateAndTimeFormatter setDateStyle:NSDateFormatterShortStyle];
+        [_shortDateAndTimeFormatter setTimeStyle:NSDateFormatterShortStyle];
     }
-    return _shrotDateAndTimeFormatter;
+    return _shortDateAndTimeFormatter;
 }
 
 - (UIViewController *)feedItem:(NSString *)url errorBlock:(void (^)(NSError * _Nonnull))errblock cancelBlock:(void (^)(void))cancelBlock finishBlock:(void (^)(void))finishblock

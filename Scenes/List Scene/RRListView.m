@@ -11,6 +11,7 @@
 #import "RRFeedInfoListOtherModel.h"
 #import "RRListEmpty.h"
 @import ui_base;
+@import ReactiveObjC;
 
 @interface RRListView () <UIViewControllerPreviewingDelegate>
 {
@@ -141,6 +142,7 @@
             });
         }];
         
+//        [[output tableview] indicatorStyle]
         
         [[output actionsArrays] addObject:MVPCellActionModel.m(^(__kindof MVPCellActionModel * _Nonnull m) {
             m.title = @"已读";
@@ -159,9 +161,25 @@
             m.title = @"收藏";
             m.action = @"markAsFavourite:";
         })];
+        
+        __weak UITableView* t = output.tableview;
+        [[output.tableview rac_signalForSelector:@selector(accessibilityScroll:)] subscribeNext:^(RACTuple * _Nullable x) {
+            if ([x[0] integerValue] == UIAccessibilityScrollDirectionUp) {
+                if ([t contentOffset].y <= 0) {
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        [weakSelf.presenter mvp_runAction:@"refreshData:" value:t.refreshControl];
+                    });
+                }
+            }
+        }];
     }];
 //    [o mvp_registerNib:[UINib nibWithNibName:@"RRFeedArticleCell2" bundle:[NSBundle mainBundle]] forCellReuseIdentifier:@"articleCell"];
    
+}
+
+- (Class)tableviewClass
+{
+    return NSClassFromString(@"RRTableView");
 }
 
 //- (void)reloadData
@@ -202,5 +220,6 @@
     id vc = [self.presenter mvp_valueWithSelectorName:@"viewControllerAtIndexPath:" sender:path];
     return vc;
 }
+
 
 @end

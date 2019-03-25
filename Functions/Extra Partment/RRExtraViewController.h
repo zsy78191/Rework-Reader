@@ -11,7 +11,7 @@
 NS_ASSUME_NONNULL_BEGIN
 
 @interface RRExtraViewController : UINavigationController
-
+@property (nonatomic, assign) BOOL handleTrait;
 @end
 
 NS_ASSUME_NONNULL_END

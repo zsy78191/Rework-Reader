@@ -13,7 +13,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface RRFeedLoader : NSObject
 
-- (void)setQyalityLevel:(NSQualityOfService)service;
+- (void)setQualityLevel:(NSQualityOfService)service;
 
 + (instancetype)sharedLoader;
 
@@ -38,8 +38,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (void)cancel:(FMFeedParserOperation*)operation;
 
-@property (nonatomic, strong) NSDateFormatter* shrotDateFormatter;
-@property (nonatomic, strong) NSDateFormatter* shrotDateAndTimeFormatter;
+@property (nonatomic, strong) NSDateFormatter* shortDateFormatter;
+@property (nonatomic, strong) NSDateFormatter* shortDateAndTimeFormatter;
 
 - (__kindof UIViewController*)feedItem:(NSString*)url
                             errorBlock:(void(^)(NSError* error))errblock

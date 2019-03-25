@@ -7,7 +7,7 @@
 //
 
 #import "RRWebStyleModel.h"
-
+@import ui_base;
 NSString* const kWebFontSize = @"kWebFontSize";
 NSString* const kWebTitleFontSize = @"kWebTitleFontSize";
 NSString* const kWebLineHeight = @"kWebLineHeight";
@@ -43,7 +43,12 @@ NSString* const kWebFont = @"kWebFont";
 
 + (void)setupDefalut
 {
-    [[NSUserDefaults standardUserDefaults] registerDefaults:@{kWebFontSize:@(18),kWebTitleFontSize:@(24),kWebLineHeight:@(1.8),kWebAlign:@"left",kWebFont:@"PingFangSC-Light"}];
+    if ([UIDevice currentDevice].iPad()) {
+        [[NSUserDefaults standardUserDefaults] registerDefaults:@{kWebFontSize:@(24),kWebTitleFontSize:@(30),kWebLineHeight:@(1.8),kWebAlign:@"left",kWebFont:@"PingFangSC-Light"}];
+    }
+    else {
+        [[NSUserDefaults standardUserDefaults] registerDefaults:@{kWebFontSize:@(18),kWebTitleFontSize:@(24),kWebLineHeight:@(1.8),kWebAlign:@"left",kWebFont:@"PingFangSC-Light"}];
+    }
 }
 
 @end

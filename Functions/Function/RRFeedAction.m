@@ -261,7 +261,7 @@
     return [MVCKeyValue getFloatforKey:key];
 }
 
-+ (void)delFeed:(EntityFeedInfo*)info view:(nonnull UIViewController *)view rect:(CGRect)rect arrow:(UIPopoverArrowDirection)arrow finish:(nonnull void (^)(void))finishBlock
++ (void)delFeed:(EntityFeedInfo*)info view:(nonnull UIViewController *)view item:(id)sender arrow:(UIPopoverArrowDirection)arrow finish:(nonnull void (^)(void))finishBlock
 {
     NSSet* s = [info.articles filteredSetUsingPredicate:[NSPredicate predicateWithFormat:@"liked = YES"]];
     NSString* m = [NSString stringWithFormat:@"共有%ld篇文章",info.articles.count];
@@ -270,7 +270,11 @@
     }
     
     UIAlertController* alert =
-    UI_ActionSheet()
+    UI_ActionSheet();
+    if (!sender) {
+        alert = UI_Alert();
+    }
+    alert
     .titled([NSString stringWithFormat:@"确认删除「%@」?",info.title])
     .descripted(m)
     .cancel(@"取消", ^(UIAlertAction * _Nonnull action) {
@@ -281,12 +285,19 @@
     });
     
     if ([UIDevice currentDevice].iPad()) {
-        [view showAsProver:alert view:view.view rect:rect arrow:arrow];
+        if (sender) {
+              [view showAsProver:alert view:[view view] item:sender arrow:arrow];
+        }
+        else {
+            alert.show(view);
+        }
     }
     else {
         alert.show(view);
     }
 }
+
+
 
 + (void)delFeedInfo:(EntityFeedInfo*)info view:(UIViewController*)view  finish:(void (^)(void))finishBlock;
 {

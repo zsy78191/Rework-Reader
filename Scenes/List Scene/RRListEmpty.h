@@ -7,14 +7,14 @@
 //
 
 @import mvc_base;
-
+#import "RRBaseEmpty.h"
 NS_ASSUME_NONNULL_BEGIN
 
-@interface RRListEmpty : MVPEmptyMiddleware
+@interface RRListEmpty : RRBaseEmpty
 {
     
 }
-@property (nonatomic, strong) void (^actionBlock)(void);
+ 
 @end
 
 NS_ASSUME_NONNULL_END

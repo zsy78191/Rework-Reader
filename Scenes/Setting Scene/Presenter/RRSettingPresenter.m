@@ -17,8 +17,13 @@
 @import UserNotifications;
 #import "OPMLDocument.h"
 @import Classy;
+#import "RRDataBackuper.h"
+#import "ApplePurchaseDelegate.h"
+#import "AppleAPIHelper.h"
+#import "PWToastView.h"
+@import YYKit;
 
-@interface RRSettingPresenter () <UIDocumentPickerDelegate,MVPPresenterProtocol_private>
+@interface RRSettingPresenter () <UIDocumentPickerDelegate,MVPPresenterProtocol_private,SKStoreProductViewControllerDelegate>
 {
     
 }
@@ -29,6 +34,10 @@
 @property (nonatomic, weak) RRSetting* badgeSetting;
 @property (nonatomic, weak) FMFeedParserOperation* currentOperation;
 @property (nonatomic, strong) NSString* settingFileName;
+@property (nonatomic, strong) RRDataBackuper* backuper;
+
+@property (nonatomic, strong) RRSetting* donateSetting;
+@property (nonatomic, strong) void (^ purchasedBlock)(SKPaymentTransaction* t);
 @end
 
 @implementation RRSettingPresenter
@@ -61,12 +70,39 @@
 
 - (void)mvp_initFromModel:(MVPInitModel *)model
 {
+    NSLog(@"paied %@",@([self isPaied]));
+    
+    
     NSString* setting = [model.queryProperties valueForKey:@"setting"];
     if (setting) {
         self.settingFileName = setting;
     }
     else {
         self.settingFileName = @"ModelTypeSetting";
+        [[ApplePurchaseDelegate sharedOne].products enumerateObjectsUsingBlock:^(SKProduct * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+            NSLog(@"%@",obj);
+//            NSString* title = obj.localizedTitle?obj.localizedTitle:NSLocalizedString(@"赞助开发者", nil);
+//            NSString* cost = [NSNumberFormatter localizedStringFromNumber:obj.price numberStyle:NSNumberFormatterCurrencyStyle];
+            NSNumberFormatter* f = [[NSNumberFormatter alloc] init];
+            [f setLocale:obj.priceLocale];
+            [f setNumberStyle:NSNumberFormatterCurrencyPluralStyle];
+            //        [f setCurrencyCode:obj.priceLocale.currencyCode];
+//            NSLog(@"%@",[f stringFromNumber:obj.price]);
+            
+            RRSetting* setting = [[RRSetting alloc] init];
+            setting.title = obj.localizedTitle;
+            if([self isPaied])
+            {
+                setting.value = @"已赞助";
+            }
+            else {
+                setting.value = [f stringFromNumber:obj.price];
+            }
+            setting.action = @"donate";
+            setting.type = @(RRSettingTypeBase);
+            self.donateSetting = setting;
+            [self.inputer mvp_addModel:setting];
+        }];
     }
     NSString* title = [model.queryProperties valueForKey:@"title"];
     if (title) {
@@ -190,6 +226,12 @@
 - (void)openAbout
 {
     id vc = [MVPRouter viewForURL:@"rr://web" withUserInfo:@{@"name":@"什么是RSS.md"}];
+    [[self view] mvp_pushViewController:vc];
+}
+
+- (void)openSourceList
+{
+    id vc = [MVPRouter viewForURL:@"rr://web" withUserInfo:@{@"name":@"开源代码.md"}];
     [[self view] mvp_pushViewController:vc];
 }
 
@@ -340,6 +382,12 @@
     [[self view] mvp_pushViewController:vc];
 }
 
+- (void)openiCloud:(RRSetting*)set
+{
+    id vc = [MVPRouter viewForURL:[NSString stringWithFormat:@"rr://setting?setting=%@&title=%@",set.value,set.title] withUserInfo:nil];
+    [[self view] mvp_pushViewController:vc];
+}
+
 - (void)documentPicker:(UIDocumentPickerViewController *)controller didPickDocumentsAtURLs:(NSArray<NSURL *> *)urls
 {
     //    NSLog(@"%@",urls);
@@ -356,8 +404,246 @@
             }
         });
     }];
-    
+}
+
+- (RRDataBackuper *)backuper
+{
+    if (!_backuper) {
+        _backuper = [[RRDataBackuper alloc] init];
+    }
+    return _backuper;
 }
  
+
+- (void)rewriteiCloud:(id)sender
+{
+    if (!self.backuper.iCloudURL) {
+        [self.view hudInfo:@"iCloud功能没有开启"];
+        return;
+    }
+    __weak typeof(self) weakSelf = self;
+    [self.backuper backupToiCloud:^(BOOL x) {
+//        NSLog(@"%s %@",__func__,@(x));
+        dispatch_async(dispatch_get_main_queue(), ^{
+            if (x) {
+                [[weakSelf view] hudSuccess:@"备份成功"];
+            }
+            else {
+                [[weakSelf view] hudSuccess:@"备份失败"];
+            }
+            [weakSelf.view mvp_reloadData];
+        });
+    }];
+}
+
+- (void)rewriteLocal:(id)sender
+{
+    if (!self.backuper.iCloudURL) {
+        [self.view hudInfo:@"iCloud功能没有开启"];
+        return;
+    }
+    NSArray* files = [self.backuper showiCloudFiles];
+    if (files.count > 1) {
+        __weak typeof(self) weakSelf = self;
+        [self.backuper recoverFromiCloud:^(BOOL x) {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                if (x) {
+                    [weakSelf.view hudSuccess:@"恢复成功"];
+                    [[NSNotificationCenter defaultCenter] postNotificationName:@"RRMainListNeedUpdate" object:nil];
+                }
+                else {
+                    [weakSelf.view hudFail:@"操作失败"];
+                }
+                [weakSelf.view mvp_reloadData];
+            });
+        }];
+    }
+    else {
+        [self.view hudInfo:@"没有数据可以恢复"];
+    }
+}
+
+- (void)syncFromiCloud:(id)sender
+{
+    if (!self.backuper.iCloudURL) {
+        [self.view hudInfo:@"iCloud功能没有开启"];
+        return;
+    }
+    __weak typeof(self) weakSelf = self;
+    [self.backuper downloadFromiCloud:^(BOOL x) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            if (x) {
+                [[weakSelf view] hudSuccess:@"操作成功"];
+            }
+            else {
+                [[weakSelf view] hudFail:@"操作失败"];
+            }
+            [weakSelf.view mvp_reloadData];
+        });
+    }];
+}
+
+- (NSString*)hasiCloudBackup
+{
+    NSArray* a = [self.backuper showiCloudFiles];
+    if (a.count > 1) {
+        if ([a containsObject:@"Model"]) {
+            return @"备份文件存在";
+        }
+    }
+    return @"本地没有备份文件";
+}
+
+- (void)test:(id)sender
+{
+    [self.backuper showiCloudFiles];
+}
+
+- (NSString*)localTime
+{
+    NSURL* local = [self.backuper localURL];
+    return [self dateWithURL:local];
+}
+
+- (NSString*)iCloudTime
+{
+    NSURL* iCloud = [self.backuper iCloudURL];
+    return [self dateWithURL:iCloud];
+}
+
+- (NSString*)dateWithURL:(NSURL*)url
+{
+    NSArray* a = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:[url path] error:nil];
+    if ([a containsObject:@"Model.sqlite"]) {
+//        NSURL* file = [url URLByAppendingPathComponent:@"Model.sqlite"];
+        NSURL* file = url;
+        NSDictionary *fileAttrs = [[NSFileManager defaultManager] attributesOfItemAtPath:[file path] error:nil];
+        //        NSLog(@"%@",fileAttrs);
+        //        return @" ";
+        if (fileAttrs) {
+            NSDate* date = fileAttrs[@"NSFileModificationDate"];
+            NSDateFormatter* f = [[NSDateFormatter alloc] init];
+            [f setTimeStyle:NSDateFormatterShortStyle];
+            [f setDateStyle:NSDateFormatterShortStyle];
+            return [f stringFromDate:date];
+        }
+        else {
+            return @"信息获取失败";
+        }
+    }
+    return @"没有文件";
+}
+
+- (void)dealloc
+{
+    NSLog(@"%s",__func__);
+}
+
+- (void)paied{
+    NSString* paied = [[NSUserDefaults standardUserDefaults] valueForKey:@"paied"];
+    if (!paied || paied.length == 0) {
+        NSUUID* u = [NSUUID UUID];
+        [[NSUserDefaults standardUserDefaults] setValue:u.UUIDString forKey:@"uuid"];
+        paied = [[u.UUIDString stringByAppendingString:[UIApplication sharedApplication].bundleID()] sha256String];
+        [[NSUserDefaults standardUserDefaults] setValue:paied forKey:@"paied"];
+        [[NSUserDefaults standardUserDefaults] synchronize];
+    }
+}
+
+- (BOOL)isPaied {
+    NSString* uuid = [[NSUserDefaults standardUserDefaults] valueForKey:@"uuid"];
+    NSString* paied1 = [[uuid stringByAppendingString:[UIApplication sharedApplication].bundleID()] sha256String];
+    NSString* paid = [[NSUserDefaults standardUserDefaults] valueForKey:@"paied"];
+    return paid && paied1 && [paid isEqualToString:paied1];
+}
+
+
+- (void (^)(SKPaymentTransaction *))purchasedBlock
+{
+    if (!_purchasedBlock) {
+        __weak typeof (self) weakSelf = self;
+        _purchasedBlock = ^ (SKPaymentTransaction * t) {
+            
+            switch (t.transactionState) {
+                case SKPaymentTransactionStateFailed:
+                {
+                    //                    [weakSelf snackMessage:@"购买或恢复失败"];
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        [weakSelf.view hudFail:NSLocalizedString(@"购买或恢复失败", nil)];
+                        
+                    });
+                    break;
+                }
+                case SKPaymentTransactionStateRestored:
+                {
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        [weakSelf.view hudSuccess:NSLocalizedString(@"恢复购买成功", nil)];
+                        [weakSelf paied];
+                    });
+                    
+                    break;
+                }
+                case SKPaymentTransactionStatePurchased:
+                {
+                    //                    [weakSelf snackMessage:];
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        [PWToastView showText:NSLocalizedString(@"赞助成功，谢谢支持", nil)];
+                        [weakSelf paied];
+                    });
+//                    [weakSelf paied];
+                    break;
+                }
+                default:
+                    break;
+            }
+        
+        };
+    }
+    return _purchasedBlock;
+}
+
+
+- (void)donate
+{
+    UI_Alert().titled(@"鼓励开发者")
+    .recommend([NSString stringWithFormat:@"向开发者赞助 %@",self.donateSetting.value], ^(UIAlertAction * _Nonnull action, UIAlertController * _Nonnull alert) {
+//        [AppleAPIHelper ]
+        SKProduct* p = [[ApplePurchaseDelegate sharedOne].products firstObject];
+        if (p) {
+            [[ApplePurchaseDelegate sharedOne] setPurchasedBlock:[self purchasedBlock]];
+            [AppleAPIHelper purchaseProduct:p];
+        }
+        [alert dismissViewControllerAnimated:YES completion:nil];
+    })
+    .action(@"恢复购买", ^(UIAlertAction * _Nonnull action, UIAlertController * _Nonnull alert) {
+        [[ApplePurchaseDelegate sharedOne] setPurchasedBlock:[self purchasedBlock]];
+        [AppleAPIHelper restoreProduct];
+    })
+    .action(@"加入QQ用户群", ^(UIAlertAction * _Nonnull action, UIAlertController * _Nonnull alert) {
+        [[UIPasteboard generalPasteboard] setString:@"819888483"];
+        [self.view hudSuccess:@"群号已复制"];
+    })
+    .cancel(@"取消", ^(UIAlertAction * _Nonnull action) {
+        
+    })
+    .show((id)self.view);
+}
+
+- (void)feedback
+{
+    
+}
+
+- (void)appstore
+{
+    [self.view hudWait:@"加载中"];
+    __weak typeof(self) weakSelf = self;
+    [AppleAPIHelper openAppStore:@"1454638098" vc:(id)[self view] complate:^(BOOL x) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [weakSelf.view hudDismiss];
+        });
+    }];
+}
+
 
 @end

@@ -23,6 +23,7 @@
 #import "RRPhotoBrowser.h"
 @import SDWebImage;
 #import "RRWebStyleModel.h"
+#import "RRSafariViewController.h"
 
 @interface RRWebView () <WKUIDelegate,WKNavigationDelegate,UIScrollViewDelegate,MWPhotoBrowserDelegate,WKScriptMessageHandler>
 {
@@ -101,7 +102,8 @@
 - (UIView *)upView
 {
     if (!_upView) {
-        _upView = [[UIView alloc] initWithFrame:CGRectMake(0, -50, self.view.frame.size.width, 80)];
+//TODO
+        _upView = [[UIView alloc] initWithFrame:CGRectMake(0, -70, self.view.frame.size.width, 80)];
 //        [_upView setBackgroundColor:[UIColor grayColor]];
         UILabel * label = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, 80)];
         [_upView addSubview:label];
@@ -168,14 +170,10 @@
         [c setDataDetectorTypes:WKDataDetectorTypeAll];
         [c setURLSchemeHandler:self.hander forURLScheme:@"innerhttp"];
         [c setURLSchemeHandler:self.hander forURLScheme:@"innerhttps"];
+        [c setURLSchemeHandler:self.hander forURLScheme:@"local"];
 //        [c setURLSchemeHandler:self.hander forURLScheme:@"innerhttps"];
-        [u addScriptMessageHandler:self name:@"getFontSize"];
-        
+      
         _webView = [[RRWKWebview alloc] initWithFrame:self.view.bounds configuration:c];
-        if (@available(iOS 11, *)) {
-            _webView.scrollView.contentInsetAdjustmentBehavior = UIScrollViewContentInsetAdjustmentNever;
-            _webView.scrollView.contentInset = UIEdgeInsetsMake(44, 0, 50, 0);
-        }
     }
     return _webView;
 }
@@ -302,7 +300,14 @@
     [super viewDidLoad];
 //    [self.view setBackgroundColor:[UIColor blackColor]];
     self.view.cas_styleClass = @"bgView";
+    
+//    [[self.webView.scrollView rac_signalForSelector:@selector(accessibilityScroll:)] subscribeNext:^(RACTuple * _Nullable x) {
+//        NSLog(@"%@",x);
+//    }];
+//
+
 }
+
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView
 {
@@ -380,6 +385,21 @@
     [super viewDidLayoutSubviews];
     [self.progressView setFrame:CGRectMake(0, self.navigationController.navigationBar.height+[UIApplication sharedApplication].statusBarFrame.size.height, self.view.frame.size.width, 2)];
     [self.webView setFrame:self.view.bounds];
+    
+    CGFloat toolHeight = [self.navigationController toolbar].frame.size.height + [UIApplication sharedApplication].statusBarFrame.size.height;
+    self.upView.frame = CGRectMake(0, -toolHeight, self.view.frame.size.width, 80);
+    [[self.upView subviews] enumerateObjectsUsingBlock:^(__kindof UIView * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+        [obj setFrame:self.upView.bounds];
+    }];
+    self.downView.frame = ({
+        CGRect r = self.downView.frame;
+        r.size.width = self.view.frame.size.width;
+        r;
+    });
+    [[self.downView subviews] enumerateObjectsUsingBlock:^(__kindof UIView * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+        [obj setFrame:self.downView.bounds];
+        
+    }];
 }
 
 - (void)setProgress:(CGFloat)progress
@@ -479,15 +499,17 @@
     self.loadFinished = NO;
     self.canDragPage = NO;
     
-
+    
     [self.view addSubview:self.webView];
     self.navigationItem.backBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"返回" style:UIBarButtonItemStylePlain target:nil action:nil];
     
     [[self view] addSubview:self.progressView];
+//    NSLog(@"%@",self.webView.scrollView);
+
+    self.webView.scrollView.delegate = self;
+    
     [self.webView.scrollView addSubview:self.upView];
     [self.webView.scrollView addSubview:self.downView];
-    
-    self.webView.scrollView.delegate = self;
     
     [self.view addSubview:self.statusCover];
 //    [self.progressView setProgress:0.5];
@@ -510,7 +532,6 @@
         DDLogWarn(@"文件%@不存在",filename);
         return;
     }
-    
     
 //    [self.navigationController setToolbarHidden:YES animated:NO];
 //    self.navigationController.toolbar.alpha = 0;
@@ -547,6 +568,8 @@
         string = [string stringByReplacingOccurrencesOfString:@"<#useMarkdown#>" withString:@"1"];
         
         string = [string stringByReplacingOccurrencesOfString:@"<#markdown#>" withString:mdString];
+        
+        string = [string stringByReplacingOccurrencesOfString:@"<#host#>" withString:@""];
         
         
         if ([self hasLatex:string]) {
@@ -590,6 +613,9 @@
 
 - (void)preloadData:(RRFeedArticleModel*)m feed:(MWFeedInfo*)feedInfo
 {
+    //FIXBUG 切换位移bug
+    [self.navigationController.navigationBar setAlpha:1];
+    
     self.title = @"";
     __weak typeof(self) weakSelf = self;
     [self.webView stopLoading];
@@ -607,6 +633,7 @@
         return;
     }
    
+  
 //    if(0){
 //        self.webView.alpha = 0;
 //    }
@@ -658,7 +685,7 @@
     
     NSDate* d = m.date;
     if(d){
-        string = [string stringByReplacingOccurrencesOfString:@"<#subtitle#>" withString:[NSString stringWithFormat:@"%@ · %@",![feedInfo isKindOfClass:[NSNull class]]?feedInfo.title:@"无订阅源",[[RRFeedLoader sharedLoader].shrotDateAndTimeFormatter stringFromDate:d]]];
+        string = [string stringByReplacingOccurrencesOfString:@"<#subtitle#>" withString:[NSString stringWithFormat:@"%@ · %@",![feedInfo isKindOfClass:[NSNull class]]?feedInfo.title:@"无订阅源",[[RRFeedLoader sharedLoader].shortDateAndTimeFormatter stringFromDate:d]]];
     }
     else{
         string = [string stringByReplacingOccurrencesOfString:@"<#subtitle#>" withString:[NSString stringWithFormat:@"%@",![feedInfo isKindOfClass:[NSNull class]]?feedInfo.title:@"无订阅源"]];
@@ -760,6 +787,42 @@
     [self.navigationController setToolbarHidden:NO animated:animated];
     [self configToolBar];
     [[[self navigationController] navigationBar] setPrefersLargeTitles:NO];
+    
+    
+    __weak typeof(self) weakSelf = self;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        if (@available(iOS 11, *)) {
+            weakSelf.webView.scrollView.contentInsetAdjustmentBehavior = UIScrollViewContentInsetAdjustmentNever;
+            CGFloat height = [UIApplication sharedApplication].statusBarFrame.size.height + weakSelf.navigationController.navigationBar.frame.size.height;
+            CGFloat toolHeight = [weakSelf.navigationController toolbar].frame.size.height;
+            weakSelf.webView.scrollView.contentInset = UIEdgeInsetsMake(height, 0, toolHeight, 0);
+        }
+        
+    });
+    
+    CGFloat toolHeight = [weakSelf.navigationController toolbar].frame.size.height + [UIApplication sharedApplication].statusBarFrame.size.height;
+    self.upView.frame = CGRectMake(0, -toolHeight, self.view.frame.size.width, 80);
+    [self.webView.configuration.userContentController addScriptMessageHandler:self name:@"getFontSize"];
+    
+    
+    [[NSNotificationCenter defaultCenter] addObserverForName:@"RRWebNeedReload" object:nil queue:[NSOperationQueue mainQueue] usingBlock:^(NSNotification * _Nonnull note) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [weakSelf loadData:self.currentArticle feed:self.currentFeed];
+        });
+    }];
+    
+//    NSLog(@"1 %@",self.navigationController.splitViewController);
+//    NSLog(@"2 %@",self.splitViewController);
+    if (self.navigationController.splitViewController) {
+        if ([self.navigationController.splitViewController.viewControllers firstObject] == self.navigationController) {
+            
+        }
+        else {
+            self.navigationItem.leftBarButtonItem = self.navigationController.splitViewController.displayModeButtonItem;
+            self.navigationItem.leftItemsSupplementBackButton = YES;
+        }
+    }
 }
 
 - (void)viewWillDisappear:(BOOL)animated
@@ -772,10 +835,12 @@
     
     [self.navigationController.navigationBar setAlpha:1];
     self.hideNaviBar = NO;
-    
+    [self.webView.configuration.userContentController removeScriptMessageHandlerForName:@"getFontSize"];
     [self recordReadProgress:^{
         
     }];
+    
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"RRWebNeedReload" object:nil];
 }
 
 - (void)cleanReadProgress
@@ -987,6 +1052,9 @@
 
 - (NSString*)cutString:(NSString*)str
 {
+    if ([UIDevice currentDevice].iPad()) {
+        return str;
+    }
     if (str.length < 24) {
         return str;
     }
@@ -995,6 +1063,14 @@
 
 - (void)webView:(WKWebView *)webView didFinishNavigation:(WKNavigation *)navigation
 {
+    __weak typeof(self) weakSelf = self;
+//    if (@available(iOS 11, *)) {
+//        weakSelf.webView.scrollView.contentInsetAdjustmentBehavior = UIScrollViewContentInsetAdjustmentNever;
+//        CGFloat height = [UIApplication sharedApplication].statusBarFrame.size.height + weakSelf.navigationController.navigationBar.frame.size.height;
+//        CGFloat toolHeight = [weakSelf.navigationController toolbar].frame.size.height;
+//        weakSelf.webView.scrollView.contentInset = UIEdgeInsetsMake(height, 0, toolHeight, 0);
+//    }
+    
     if (self.recordPostion > 0) {
         NSString* js = [NSString stringWithFormat:@"document.body.scrollTop = %@;",@(self.recordPostion)];
         [webView evaluateJavaScript:js completionHandler:^(id _Nullable x, NSError * _Nullable error) {
@@ -1010,55 +1086,55 @@
 //    if(0){
     
 //    }
-    
+//    __weak typeof(self) weakSelf = self;
     [webView evaluateJavaScript:@"document.title;" completionHandler:^(id _Nullable title, NSError * _Nullable error) {
-        self.title = title;
+        weakSelf.title = title;
     }];
     
 //    //NSLog(@"%f",webView.scrollView.contentSize.height);
     [webView evaluateJavaScript:@"document.body.scrollHeight" completionHandler:^(id _Nullable h, NSError * _Nullable error) {
 //        //NSLog(@"%@",h);
-        self.downView.frame = ({
-            CGRect r = self.downView.frame;
+        weakSelf.downView.frame = ({
+            CGRect r = weakSelf.downView.frame;
             r.origin.y = [h doubleValue];
             r;
         });
         
         // RRTODOIt:非订阅源打开情况，关闭上下翻文章的功能
-        if (!self.currentArticle || !self.currentFeed) {
+        if (!weakSelf.currentArticle || !weakSelf.currentFeed) {
             
         }
         else {
-            self.canDragPage = YES;
-            if (self.lastFeed && self.lastArticle) {
-                RRFeedArticleModel* m = self.lastArticle(self.currentArticle);
-                MWFeedInfo* feed = self.lastFeed(self.currentArticle);
+            weakSelf.canDragPage = YES;
+            if (weakSelf.lastFeed && weakSelf.lastArticle) {
+                RRFeedArticleModel* m = weakSelf.lastArticle(weakSelf.currentArticle);
+                MWFeedInfo* feed = weakSelf.lastFeed(weakSelf.currentArticle);
 //                //NSLog(@"1 %@ %@",m,feed);
                 if (m && feed) {
-                    [self setUpViewText:[NSString stringWithFormat:@"%@\n%@",[self cutString:m.title],feed.title]];
+                    [weakSelf setUpViewText:[NSString stringWithFormat:@"%@\n%@",[weakSelf cutString:m.title],feed.title]];
                     [RRFeedAction preloadImages:m.uuid];
                 }
                 else {
-                    [self setUpViewText:@"没有更多了"];
+                    [weakSelf setUpViewText:@"没有更多了"];
                 }
             }
             else {
-                [self setUpViewText:@""];
+                [weakSelf setUpViewText:@""];
             }
-            if (self.nextFeed && self.nextArticle) {
-                RRFeedArticleModel* m = self.nextArticle(self.currentArticle);
-                MWFeedInfo* feed = self.nextFeed(self.currentArticle);
+            if (weakSelf.nextFeed && weakSelf.nextArticle) {
+                RRFeedArticleModel* m = weakSelf.nextArticle(weakSelf.currentArticle);
+                MWFeedInfo* feed = weakSelf.nextFeed(weakSelf.currentArticle);
 //                //NSLog(@"2 %@ %@",m,feed);
                 if (m && feed) {
-                    [self setDownViewText:[NSString stringWithFormat:@"%@\n%@",[self cutString:m.title],feed.title]];
+                    [weakSelf setDownViewText:[NSString stringWithFormat:@"%@\n%@",[weakSelf cutString:m.title],feed.title]];
                     [RRFeedAction preloadImages:m.uuid];
                 }
                 else {
-                    [self setDownViewText:@"没有更多了"];
+                    [weakSelf setDownViewText:@"没有更多了"];
                 }
             }
             else {
-                [self setDownViewText:@""];
+                [weakSelf setDownViewText:@""];
             }
         }
     }];
@@ -1067,10 +1143,11 @@
 
 - (void)resetDownView
 {
+    __weak typeof(self) weakSelf = self;
     [self.webView evaluateJavaScript:@"document.body.scrollHeight" completionHandler:^(id _Nullable h, NSError * _Nullable error) {
         dispatch_async(dispatch_get_main_queue(), ^{
-            self.downView.frame = ({
-                CGRect r = self.downView.frame;
+            weakSelf.downView.frame = ({
+                CGRect r = weakSelf.downView.frame;
                 r.origin.y = [h doubleValue];
                 r;
             });
@@ -1094,13 +1171,14 @@
 - (void)openURLWithSafari:(NSString*)url
 {
     if ([url hasPrefix:@"http"]) {
+        __weak typeof(self) weakSelf = self;
         NSURLSessionConfiguration* c = [NSURLSessionConfiguration defaultSessionConfiguration];
         NSURLSession* s = [NSURLSession sessionWithConfiguration:c];
         NSURLSessionDataTask* d = [s dataTaskWithURL:[NSURL URLWithString:url] completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
             if ([response.MIMEType rangeOfString:@"xml"].location != NSNotFound || [response.MIMEType rangeOfString:@"rss"].location != NSNotFound || [response.MIMEType rangeOfString:@"atom"].location != NSNotFound ) {
-                [self loadFeed:url];
+                [weakSelf loadFeed:url];
 //                self.openedFeed = YES;
-                [self mvp_dismissViewControllerAnimated:YES completion:^{
+                [weakSelf mvp_dismissViewControllerAnimated:YES completion:^{
                     
                 }];
             }
@@ -1112,7 +1190,7 @@
     }
 
     if ([url hasPrefix:@"http"]) {
-        SFSafariViewController* ss = [[SFSafariViewController alloc] initWithURL:[NSURL URLWithString:url]];
+        RRSafariViewController* ss = [[RRSafariViewController alloc] initWithURL:[NSURL URLWithString:url]];
         [self mvp_presentViewController:ss animated:YES completion:nil];
     }
     else {
@@ -1127,9 +1205,30 @@
 
 - (void)openURL:(NSString*)url
 {
+    if ([url hasPrefix:@"innerweb"]) {
+        url = [url substringFromIndex:8];
+        id vc = [MVPRouter viewForURL:@"rr://web" withUserInfo:@{@"name":url,@"sub":@(1)}];
+//        TODOFIX
+        [self mvp_pushViewController:vc];
+        return;
+    }
     if ([url hasPrefix:@"inner"]) {
         url = [url substringFromIndex:5];
-        id vc = [MVPRouter viewForURL:@"rr://web" withUserInfo:@{@"name":url,@"sub":@(1)}];
+//        id vc = [MVPRouter viewForURL:@"rr://web" withUserInfo:@{@"name":url,@"sub":@(1)}];
+//        [self mvp_pushViewController:vc];
+        //TODOFIX
+ 
+        id vc = [[RRFeedLoader sharedLoader] feedItem:url errorBlock:^(NSError * _Nonnull error) {
+            
+        } cancelBlock:^{
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [self hudDismiss];
+            });
+        } finishBlock:^{
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [self hudDismiss];
+            });
+        }];
         [self mvp_pushViewController:vc];
         return;
     }
@@ -1149,6 +1248,11 @@
 
 - (BOOL)navigationShouldPopOnBackButton
 {
+    BOOL isTrait = [[NSUserDefaults standardUserDefaults] boolForKey:@"RRSplit"];
+    if (self.splitViewController && !isTrait) {
+        NSLog(@"123123");
+    }
+    
     if (self.webView.backForwardList.backItem) {
         [self.webView goBack];
 //        [self addCloseBtn];
@@ -1184,7 +1288,8 @@
 
 - (void)dealloc
 {
-    //NSLog(@"%s",__func__);
+
+    NSLog(@"%s",__func__);
 }
 
 - (void)loadFeed:(NSString*)url

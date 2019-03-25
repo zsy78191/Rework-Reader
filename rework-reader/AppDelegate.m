@@ -28,8 +28,12 @@
 #import "RRWebStyleModel.h"
 #import "RRImageRender.h"
 #import "RRReadMode.h"
+#import "RRSplitViewController.h"
+#import "AppleAPIHelper.h"
+#import "ApplePurchaseDelegate.h"
 
-@interface AppDelegate () <SDWebImageManagerDelegate>
+
+@interface AppDelegate () <SDWebImageManagerDelegate,UISplitViewControllerDelegate>
 {
     
 }
@@ -90,6 +94,10 @@
 //    [DDLog addLogger:fileLogger];
     
     [[RRImageRender sharedRender] preloadFilters];
+    
+    NSString* string = [[UIApplication sharedApplication].bundleID() stringByAppendingString:@".donate6"];
+    [AppleAPIHelper testForStore:[ApplePurchaseDelegate sharedOne] products:[NSSet setWithObject:string]];
+    
 }
 
 - (void)loadFonts
@@ -103,6 +111,72 @@
     
 //    [RPFontLoader testShowAllFonts];
 }
+
+- (UIViewController *)splitViewController:(UISplitViewController *)splitViewController separateSecondaryViewControllerFromPrimaryViewController:(UIViewController *)primaryViewController
+{
+//    NSLog(@"%@",[splitViewController viewControllers]);
+//    NSLog(@"%@",primaryViewController);
+    
+    if ([primaryViewController isKindOfClass:[RRExtraViewController class]]) {
+        RRExtraViewController* r = (RRExtraViewController*)primaryViewController;
+        id vc = [r topViewController];
+        if ([vc isKindOfClass:NSClassFromString(@"RRWebView")]) {
+            id pop = [r popViewControllerAnimated:NO];
+            id v = [self initialVCWith:pop];
+            return v;
+        }
+        else if([vc isKindOfClass:NSClassFromString(@"SFSafariViewController")])
+        {
+            return vc;
+        }
+    }
+    id nv2 = [self initialVC];
+    return nv2;
+}
+
+- (BOOL)splitViewController:(UISplitViewController *)splitViewController collapseSecondaryViewController:(UIViewController *)secondaryViewController ontoPrimaryViewController:(UIViewController *)primaryViewController NS_AVAILABLE_IOS(8_0);
+{
+//    NSLog(@"%@",secondaryViewController);
+//    NSLog(@"%@",primaryViewController);
+    return NO;
+}
+
+- (nullable UIViewController *)primaryViewControllerForCollapsingSplitViewController:(UISplitViewController *)splitViewController NS_AVAILABLE_IOS(8_0);
+{
+    NSArray* vcs = [splitViewController viewControllers];
+    if(vcs.count < 2)
+    {
+        return nil;
+    }
+    RRExtraViewController* ext1 = [vcs firstObject];
+//    ext1.handleTrait = YES;
+    id ext2 = [vcs lastObject];
+    if([ext2 isKindOfClass:NSClassFromString(@"SFSafariViewController")])
+    {
+        [[ext1 navigationBar] setPrefersLargeTitles:NO];
+        return nil;
+    }
+    return ext1;
+}
+
+
+
+
+
+//- (BOOL)splitViewController:(UISplitViewController *)splitViewController collapseSecondaryViewController:(UIViewController *)secondaryViewController ontoPrimaryViewController:(UIViewController *)primaryViewController NS_AVAILABLE_IOS(8_0);
+//{
+//    if([secondaryViewController isKindOfClass:NSClassFromString(@"SFSafariViewController")])
+//    {
+//        return NO;
+//    }
+//    return YES;
+//}
+
+//-  (UIViewController *)primaryViewControllerForExpandingSplitViewController:(UISplitViewController *)splitViewController
+//{
+//    return [[splitViewController viewControllers] lastObject];
+//}
+
 
 - (NSURL *)applicationDocumentsDirectory {
     return [[[NSFileManager defaultManager] URLsForDirectory:NSDocumentDirectory
@@ -150,7 +224,7 @@
         __block BOOL cpresult = YES;
         [a enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
             NSURL* f = [r URLByAppendingPathComponent:obj];
-            NSLog(@"%@\n%@",f,d);
+//            NSLog(@"%@\n%@",f,d);
             NSError* e;
             NSURL* to = [d URLByAppendingPathComponent:obj];
             if ([[NSFileManager defaultManager] fileExistsAtPath:[to path]]) {
@@ -210,15 +284,10 @@
 
 - (void)loadPage
 {
-//    [[NSUserDefaults standardUserDefaults] setValue:url forKey:@"lastUrl"];
-//    [[NSUserDefaults standardUserDefaults] setValue:userInfo forKey:@"lastInfo"];
-//    id url = [[NSUserDefaults standardUserDefaults] valueForKey:@"lastUrl"];
-//    id info = [[NSUserDefaults standardUserDefaults] valueForKey:@"lastInfo"];
-//    info = [NSKeyedUnarchiver unarchiveTopLevelObjectWithData:info error:nil];
-//
+ 
     id vc = [MVPRouter viewForURL:@"rr://feedlist" withUserInfo:nil];
     RRExtraViewController* nv = [[RRExtraViewController alloc] initWithRootViewController:vc];
-    
+    nv.handleTrait = NO;
     
     if ([[NSUserDefaults standardUserDefaults] boolForKey:@"openUnread"]) {
         
@@ -241,21 +310,59 @@
         id v2 = [MVPRouter viewForURL:@"rr://list" withUserInfo:@{@"model":mUnread}];
         [nv pushViewController:v2 animated:NO];
     }
-//    if (url) {
-//        id vc2 = [MVPRouter viewForURL:url withUserInfo:info];
-//        [nv pushViewController:vc2 animated:YES];
-//    }
-    
+
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
-    self.window.rootViewController = nv;
+    
+    if([UIDevice currentDevice].iPad())
+    {
+        RRFeedInfoListOtherModel* mUnread = GetRRFeedInfoListOtherModel(@"未读订阅",@"favicon",@"三日内的未读文章",@"unread");
+        mUnread.canRefresh = YES;
+        mUnread.canEdit = NO;
+        mUnread.readStyle = ({
+            RRReadStyle* s = [[RRReadStyle alloc] init];
+            s.onlyUnread = YES;
+            s.daylimit = 3;
+            s.liked = NO;
+            s;
+        });
+        
+        id nv2 = [self initialVC];
+        RRSplitViewController* split = [[RRSplitViewController alloc] init];
+        [split setViewControllers:@[nv,nv2]];
+        split.delegate = self;
+        split.preferredDisplayMode = UISplitViewControllerDisplayModeAllVisible;
+        //设置左侧主视图Master Controller的显示模式，现在是一直显示。如果设置为横屏显示竖屏不显示，还可以再设置一下相关的手势属性，如presentsWithGesture
+//        split.maximumPrimaryColumnWidth = 128.0f;
+        //调整左侧主视图Master Controller的最大显示宽度
+        self.window.rootViewController = split;
+    }
+    else {
+        self.window.rootViewController = nv;
+    }
+    
     [self.window makeKeyAndVisible];
+}
+
+- (id)initialVC
+{
+    id v2 = [MVPRouter viewForURL:@"rr://web" withUserInfo:@{@"name":@"http://www.orzer.club",@"isSub":@(NO)}];
+    RRExtraViewController* nv2 = [[RRExtraViewController alloc] initWithRootViewController:v2];
+    nv2.handleTrait = YES;
+    return nv2;
+}
+
+- (id)initialVCWith:(id)vc
+{
+    RRExtraViewController* nv2 = [[RRExtraViewController alloc] initWithRootViewController:vc];
+    nv2.handleTrait = YES;
+    return nv2;
 }
 
 #pragma mark - lifecircle
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     
-    [[SDWebImageManager sharedManager] setDelegate:self];
+//    [[SDWebImageManager sharedManager] setDelegate:self];
     
 //    [MagicalRecord isICloudEnabled]
 //    if ([MagicalRecord isICloudEnabled]) {
@@ -291,6 +398,12 @@
     // 配置background fetch
     [[UIApplication sharedApplication] setMinimumBackgroundFetchInterval:UIApplicationBackgroundFetchIntervalMinimum];
     //NSLog(@"%@",launchOptions);
+    
+    int r = arc4random() % 4;
+    if (r == 2) {
+        [AppleAPIHelper review];
+    }
+    
     
     return YES;
 }
@@ -415,6 +528,7 @@
 
 - (void)applicationWillTerminate:(UIApplication *)application {
     // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
+     [AppleAPIHelper endTestForStore:[ApplePurchaseDelegate sharedOne]];
 }
 
 - (BOOL)kBackgroundFetchNoti

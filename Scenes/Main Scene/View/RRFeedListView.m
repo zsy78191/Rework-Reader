@@ -10,6 +10,8 @@
 @import ui_util;
 #import "RREmpty.h"
 #import "RRReadMode.h"
+@import ReactiveObjC;
+@import DZNEmptyDataSet;
 
 @interface RRFeedListView () <UIViewControllerPreviewingDelegate>
 
@@ -33,10 +35,24 @@
     
 }
 
+- (void)reloadEmpty
+{
+    dispatch_async(dispatch_get_main_queue(), ^{
+       BOOL hasData = [[self.presenter mvp_valueWithSelectorName:@"hasData"] boolValue];
+        if (!hasData) {
+            [[[self navigationController] navigationBar] setPrefersLargeTitles:YES];
+            MVPTableViewOutput* o = (id)self.outputer;
+            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+                [o.tableview reloadEmptyDataSet];
+            });
+        }
+    });
+}
+
 - (void)mvp_configMiddleware
 {
     [super mvp_configMiddleware];
-    
+ 
 //    MVPTableViewOutput* o = self.outputer;
     __weak typeof(self) weakSelf = self;
     [self.outputer setRegistBlock:^(MVPTableViewOutput* output) {
@@ -44,10 +60,33 @@
         [output registNibCell:@"RRFeedInfoListCell" withIdentifier:@"feedCell"];
         [output registNibCell:@"RRTitleCell" withIdentifier:@"titleCell"];
         [output mvp_bindTableRefreshActionName:@"refreshData:"];
+        
+//        __weak typeof(self) weakSelf = self;
+        __weak UITableView* t = output.tableview;
+        [[output.tableview rac_signalForSelector:@selector(accessibilityScroll:)] subscribeNext:^(RACTuple * _Nullable x) {
+            if ([x[0] integerValue] == UIAccessibilityScrollDirectionUp) {
+                if ([t contentOffset].y <= 0) {
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        [weakSelf.presenter mvp_runAction:@"refreshData:" value:t.refreshControl];
+                    });
+                }
+            }
+        }];
+        
+//        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+//            [output.tableview reloadEmptyDataSet];
+//        });
+//        [output.tableview reloadEmptyDataSet];
+        RREmpty* e = [[RREmpty alloc] init];
+        weakSelf.empty = e;
+        [e setActionBlock:^{
+//            [output.tableview reloadEmptyDataSet];
+            [weakSelf.presenter mvp_runAction:@"recommand"];
+        }];
     }];
 //    [o mvp_registerNib:[UINib nibWithNibName:@"RRFeedInfoListCell" bundle:[NSBundle mainBundle]] forCellReuseIdentifier:@"feedCell"];
 //    [o mvp_registerNib:[UINib nibWithNibName:@"RRTitleCell" bundle:[NSBundle mainBundle]] forCellReuseIdentifier:@"titleCell"];
-    self.empty = [[RREmpty alloc] init];
+    
     
 //    [o mvp_bindTableRefreshActionName:@"refreshData:"];
 }
@@ -128,17 +167,23 @@
 {
     [super viewWillAppear:animated];
     [self.navigationController setToolbarHidden:NO animated:animated];
-    
+
     if ([self.presenter respondsToSelector:@selector(viewWillAppear:)]) {
         [(id)self.presenter viewWillAppear:animated];
     }
+    
+//    MVPTableViewOutput* o  = (id)self.outputer;
+//    [o.tableview reloadEmptyDataSet];
+    
 //    [self.navigationController.navigationBar setPrefersLargeTitles:NO];
+    [self reloadEmpty];
 }
 
 - (void)viewWillDisappear:(BOOL)animated
 {
     [super viewWillDisappear:animated];
 //    [self.navigationController.navigationBar setPrefersLargeTitles:YES];
+    
 }
 
 - (void)previewingContext:(id<UIViewControllerPreviewing>)previewingContext commitViewController:(UIViewController *)viewControllerToCommit

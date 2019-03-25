@@ -7,10 +7,10 @@
 //
 
 @import mvc_base;
-
+#import "RRBaseEmpty.h"
 NS_ASSUME_NONNULL_BEGIN
 
-@interface RREmpty : MVPEmptyMiddleware
+@interface RREmpty : RRBaseEmpty
 
 @end
 

@@ -33,9 +33,28 @@
    
 //    //NSLog(@"-- %@",urlString);
 //    __block NSData *data = nil;
+    if ([urlString hasPrefix:@"local"]) {
+        
+//        NSLog(@"%@",urlString);
+        NSString* name = [urlString substringFromIndex:8];
+//        NSLog(@"%@",name);
+      
+        UIImage* i  = [UIImage imageNamed:name];
+        UIImage* t = [UIImage imageWithCGImage:i.CGImage scale:2 orientation:UIImageOrientationUp];
+        [[SDImageCache sharedImageCache] storeImage:t forKey:urlString completion:^{
+            
+        }];
+        NSData* data = UIImagePNGRepresentation(t);
+        NSString* mtype = @"application/x-img";
+        if (urlSchemeTask) {
+            NSURLResponse *response = [[NSURLResponse alloc] initWithURL:urlSchemeTask.request.URL MIMEType:mtype expectedContentLength:data.length textEncodingName:nil];
+            [urlSchemeTask didReceiveResponse:response];
+            [urlSchemeTask didReceiveData:data];
+            [urlSchemeTask didFinish];
+        }
+        return;
+    }
     
-//    UIImage* i = [[[SDWebImageManager sharedManager] imageCache] imageFromMemoryCacheForKey:[urlString substringFromIndex:5]];
-//    //NSLog(@"d %@",urlString);
     NSURL* url = [NSURL URLWithString:[urlString substringFromIndex:5]];
     [[SDWebImageManager sharedManager] loadImageWithURL:url options:SDWebImageHighPriority progress:^(NSInteger receivedSize, NSInteger expectedSize, NSURL * _Nullable targetURL) {
         

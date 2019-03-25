@@ -7,10 +7,10 @@
 //
 
 #import <UIKit/UIKit.h>
-
+@import mvc_base;
 NS_ASSUME_NONNULL_BEGIN
 
-@interface RRSettingCell : UITableViewCell
+@interface RRSettingCell : MVPContentCell
 @property (weak, nonatomic) IBOutlet UILabel *titleLabel;
 @property (weak, nonatomic) IBOutlet UILabel *subLabel;
 

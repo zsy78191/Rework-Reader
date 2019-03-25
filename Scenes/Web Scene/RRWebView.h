@@ -13,7 +13,7 @@
 NS_ASSUME_NONNULL_BEGIN
 
 @interface RRWebView : MVPView <RRProvideDataProtocol>
-@property (nonatomic, strong) RRWKWebview *webView;
+@property (nonatomic, strong, nullable) RRWKWebview *webView;
 
 
 // for test

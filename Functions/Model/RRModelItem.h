@@ -14,6 +14,7 @@ typedef enum : NSUInteger {
     RRSettingTypeTitle,
     RRSettingTypeSwitch,
     RRSettingTypeSubSetting,
+    RRSettingTypeDymaticValue,
 } RRSettingType;
 
 NS_ASSUME_NONNULL_BEGIN

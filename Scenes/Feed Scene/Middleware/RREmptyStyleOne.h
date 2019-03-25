@@ -7,10 +7,10 @@
 //
 
 @import mvc_base;
-
+#import "RRBaseEmpty.h"
 NS_ASSUME_NONNULL_BEGIN
 
-@interface RREmptyStyleOne : MVPEmptyMiddleware
+@interface RREmptyStyleOne : RRBaseEmpty
 @property (nonatomic, assign) BOOL shouldDisplay;
 - (void)reload;
 @property (nonatomic, strong) void(^action)(void);

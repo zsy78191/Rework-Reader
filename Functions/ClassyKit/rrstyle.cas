@@ -7,6 +7,13 @@ UIButton {
     }
 }
 
+DZNEmptyDataSetView > ^UIButton {
+    title-text-attributes: @{
+        font: $main-font $main-font-size
+        foreground-color $main-tint-color
+    }
+}
+
 ^UITableViewCell > ^UIView > ^UISwitch {
     onTintColor $main-tint-color
 }
@@ -123,5 +130,7 @@ UIView.SeparaterView
 }
 
 
-
+^ UIScrollView {
+    indicatorStyle $indicatorStyle
+}
 
