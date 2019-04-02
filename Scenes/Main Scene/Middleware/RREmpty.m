@@ -8,7 +8,7 @@
 
 #import "RREmpty.h"
 #import "ClassyKitLoader.h"
-
+@import ui_base;
 @implementation RREmpty
 
 - (NSString *)titleForEmptyTitle
@@ -28,15 +28,31 @@
     }
 }
 
+//- (NSDictionary *)buttonTitleAttributesForState:(NSUInteger)state
+//{
+//    NSDictionary* style = [[NSUserDefaults standardUserDefaults] valueForKey:@"style"];
+//    return @{
+//             NSForegroundColorAttributeName:UIColor.hex(style[@"$main-tint-color"])
+//             };
+//}
+
 - (UIImage *)image
 {
     return [UIImage imageNamed:@"nodata"];
 }
 
-- (CGFloat)verticalOffsetForEmptyDataSet:(UIScrollView *)scrollView
+//- (CGFloat)verticalOffsetForEmptyDataSet:(UIScrollView *)scrollView
+//{
+////    return - 100;
+//}
+
+- (BOOL)emptyDataSetShouldAllowScroll:(UIScrollView *)scrollView
 {
-    return - 100;
+    return YES;
 }
 
+//- (void)emptyDataSetDidAppear:(UIScrollView *)scrollView;{
+//    [scrollView setContentOffset:CGPointMake(0, self.top) animated:YES];
+//}
 
 @end

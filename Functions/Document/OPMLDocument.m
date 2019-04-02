@@ -59,6 +59,17 @@
     return _content;
 }
 
+- (void)addOutlineWithText:(NSString *)text title:(NSString *)title type:(NSString *)type xmlUrl:(NSString *)xmlUrl htmlUrl:(NSString *)htmlUrl
+{
+    OPMLOutline* o = [[OPMLOutline alloc] init];
+    o.text = text;
+    o.title = title;
+    o.type = type;
+    o.xmlUrl = xmlUrl;
+    o.htmlUrl = htmlUrl;
+    [self.outlines addObject:o];
+}
+
 - (BOOL)loadFromContents:(id)contents ofType:(NSString *)typeName error:(NSError * _Nullable __autoreleasing *)outError
 {
     NSString* s = [[NSString alloc] initWithData:contents encoding:NSUTF8StringEncoding];
@@ -78,7 +89,7 @@
         }
         DDXMLElement* bodyElement = [root elementForName:@"body"];
         NSArray* temp = [self outlineWithNode:bodyElement];
-        self.outlines = [temp mutableCopy];
+        [self.outlines addObjectsFromArray:temp];
     }
     return YES;
 }
@@ -88,19 +99,51 @@
     NSMutableArray* array = [[NSMutableArray alloc] init];
     NSArray* temp = [element elementsForName:@"outline"];
     [temp enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
-        
-//        NSArray* t = [self outlineWithNode:obj];
         OPMLOutline* outline = [[OPMLOutline alloc] initWithElement:obj];
         [array addObject:outline];
-//        if (t && t.count > 0) {
-//            [array addObject:t];
-//        }
     }];
     return [array copy];
 }
 
+- (NSMutableArray<OPMLOutline *> *)outlines
+{
+    if (!_outlines) {
+        _outlines = [[NSMutableArray alloc] init];
+    }
+    return _outlines;
+}
+
 - (id)contentsForType:(NSString *)typeName error:(NSError * _Nullable __autoreleasing *)outError
 {
+    [self.content setString:@"<?xml version=\"1.0\" encoding=\"UTF-8\"?><opml version=\"1.0\"></opml>"];
+//    NSLog(@"%@",typeName);
+    self.xmlDocument = [[DDXMLDocument alloc] initWithXMLString:self.content options:DDXMLDocumentXMLKind error:outError];
+//    NSLog(@"%@",self.xmlDocument);
+//    NSLog(@"%@",[self.xmlDocument rootElement]);
+    DDXMLElement* root = [self.xmlDocument rootElement];
+    DDXMLElement* headNode = [DDXMLElement elementWithName:@"head"];
+    DDXMLElement* titleNode = [DDXMLElement elementWithName:@"title" stringValue:@"RSS Reader Prime Export"];
+    [headNode insertChild:titleNode atIndex:0];
+    [root insertChild:headNode atIndex:0];
+    
+    DDXMLElement* bodyNode = [DDXMLElement elementWithName:@"body"];
+    
+    [self.outlines enumerateObjectsUsingBlock:^(OPMLOutline * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+       
+        DDXMLElement* outlineNode = [DDXMLElement elementWithName:@"outline"];
+        [outlineNode addAttributeWithName:@"text" stringValue:obj.text];
+        [outlineNode addAttributeWithName:@"title" stringValue:obj.title];
+        [outlineNode addAttributeWithName:@"type" stringValue:obj.type];
+        [outlineNode addAttributeWithName:@"xmlUrl" stringValue:obj.xmlUrl];
+        [outlineNode addAttributeWithName:@"htmlUrl" stringValue:obj.htmlUrl];
+        [bodyNode addChild:outlineNode];
+        
+    }];
+    
+    
+    [root addChild:bodyNode];
+    [self.content setString:@""];
+    [self.content appendString:self.xmlDocument.XMLString];
     return [self.content dataUsingEncoding:NSUTF8StringEncoding];
 }
 
@@ -109,6 +152,7 @@
     NSLog(@"%@",error);
     
 }
+
 
 - (void)finishedHandlingError:(NSError *)error recovered:(BOOL)recovered
 {

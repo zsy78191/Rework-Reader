@@ -15,7 +15,7 @@
 - (NSURL*)iCloudURL
 {
     NSString* s = [NSString stringWithFormat:@"iCloud.%@",[UIApplication sharedApplication].bundleID()];
-    NSLog(@"%s %@",__func__,s);
+//    NSLog(@"%s %@",__func__,s);
     NSFileManager *filemgr = [NSFileManager defaultManager];
     return [[filemgr URLForUbiquityContainerIdentifier:s] URLByAppendingPathComponent:@"Documents"];
 }
@@ -28,7 +28,7 @@
         if (u) {
             if (![[NSFileManager defaultManager] fileExistsAtPath:[u path]]) {
                 NSError* e;
-                [[NSFileManager defaultManager] createDirectoryAtURL:u withIntermediateDirectories:NO attributes:nil error:&e];
+                [[NSFileManager defaultManager] createDirectoryAtURL:u withIntermediateDirectories:YES attributes:nil error:&e];
                 if (e) {
                     NSLog(@"%s %@",__func__,e);
                 }
@@ -46,6 +46,21 @@
 //        NSLog(@"%@",obj);
     }];
     return b;
+}
+
+- (BOOL)ensureFileDownloaded
+{
+    NSURL* icloud_url = [self iCloudURL];
+    NSArray* a = [self showiCloudFiles];
+    __block BOOL result = YES;
+    [a enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+        NSError* e;
+        result = result &&  [[NSFileManager defaultManager] startDownloadingUbiquitousItemAtURL:[icloud_url URLByAppendingPathComponent:obj] error:&e];
+        if (e) {
+            NSLog(@"%@",e);
+        }
+    }];
+    return result;
 }
 
 - (void)recoverFromiCloud:(void (^)(BOOL))finish
@@ -74,6 +89,10 @@
                 {
                 }
             }];
+//            NSManagedObjectModel *model = [NSManagedObjectModel MR_newManagedObjectModelNamed:@"Model.momd"];
+//            [NSManagedObjectModel MR_setDefaultManagedObjectModel:model];
+//            [MagicalRecord setShouldAutoCreateManagedObjectModel:NO];
+//            [MagicalRecord setupAutoMigratingCoreDataStack];
             [MagicalRecord setupCoreDataStackWithAutoMigratingSqliteStoreNamed:@"Model"];
             if (finish) {
                 finish(YES);
@@ -121,7 +140,7 @@
                 BOOL copy = [[NSFileManager defaultManager] copyItemAtURL:url1 toURL:url2 error:&error];
                 s = s && copy;
                 if (copy) {
-
+                    NSLog(@"COPY {%@} TO {%@}",url1,url2);
                 }
                 else
                 {

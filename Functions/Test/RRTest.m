@@ -14,6 +14,7 @@
 #import "RPDataManager.h"
 #import "RRCoreDataModel.h"
 @import SDWebImage;
+#import "OPMLDocument.h"
 
 @implementation RRTest
 
@@ -124,6 +125,19 @@
     [[SDImageCache sharedImageCache] clearDiskOnCompletion:^{
         NSLog(@"1");
     }];
+}
+
+- (void)exportOPML
+{
+    NSURL* u = [[UIApplication sharedApplication].doucumentDictionary() URLByAppendingPathComponent:@"export.opml"];
+    OPMLDocument* d = [[OPMLDocument alloc] initWithFileURL:u];
+    [d addOutlineWithText:@"1" title:@"2" type:@"rss" xmlUrl:@"123" htmlUrl:@"321"];
+    [d saveToURL:u forSaveOperation:UIDocumentSaveForCreating completionHandler:^(BOOL success) {
+        
+        UIActivityViewController* a = [[UIActivityViewController alloc] initWithActivityItems:@[u] applicationActivities:nil];
+        
+    }];
+    
 }
 
 @end

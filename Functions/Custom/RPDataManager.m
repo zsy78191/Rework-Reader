@@ -50,6 +50,16 @@
     return operation;
 }
 
+- (id)insertClasses:(NSString*)className
+              models:(NSArray*)models
+               keys:(NSArray *)keys
+             finish:(void (^ _Nullable)(__kindof NSManagedObject * _Nonnull, NSError * _Nonnull))finish;
+{
+    
+    return nil;
+}
+
+
 - (id)insertClass:(NSString *)className
                        model:(id)model
                         keys:(NSArray *)keys
@@ -57,6 +67,19 @@
                       finish:(void (^ _Nullable)(__kindof NSManagedObject * _Nonnull, NSError * _Nonnull))finish
 {
     RPCoreDataInsertOperation* o = [self insertOperationClass:className model:model queryKey:nil queryValue:nil keysAndValues:nil keys:keys modify:modifyValue finish:finish];
+    [o start];
+    return o.result;
+}
+
+- (id)insertClass:(NSString *)className
+            model:(id)model
+             keys:(NSArray *)keys
+           context:(nullable NSManagedObjectContext *)contenxt
+           modify:(nullable id  _Nonnull (^)(id _Nonnull, id _Nonnull))modifyValue
+           finish:(void (^ _Nullable)(__kindof NSManagedObject * _Nonnull, NSError * _Nonnull))finish
+{
+    RPCoreDataInsertOperation* o = [self insertOperationClass:className model:model queryKey:nil queryValue:nil keysAndValues:nil keys:keys modify:modifyValue finish:finish];
+    o.context = contenxt;
     [o start];
     return o.result;
 }

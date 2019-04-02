@@ -92,4 +92,21 @@
 }
 
 
++ (void)setIconname:(nullable NSString *)name {
+    
+    UIApplication *app = [UIApplication sharedApplication];
+    //判断系统是否支持切换icon
+    if ([app supportsAlternateIcons]) {
+        //切换icon
+        [app setAlternateIconName:name completionHandler:^(NSError * _Nullable error) {
+            if (error) {
+                NSLog(@"error==> %@",error.localizedDescription);
+            }else{
+                NSLog(@"done!!!");
+            }
+        }];
+    }
+}
+
+
 @end

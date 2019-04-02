@@ -48,9 +48,67 @@
 @property (nonatomic, assign) BOOL refreshing;
 
 @property (nonatomic, assign) BOOL isTrait;
+
+
+@property (nonatomic, assign) double t1OffesetY;
+@property (nonatomic, assign) double t2OffesetY;
+@property (nonatomic, assign) double t3OffesetY;
+
 @end
 
 @implementation RRListPresenter
+
+- (void)setInitailOffset:(NSNumber*)y
+{
+    self.t1OffesetY = self.t2OffesetY = self.t3OffesetY = [y doubleValue];
+}
+
+- (NSNumber*)currentOffset
+{
+    switch (self.currentIdx) {
+        case 0:
+        {
+            return @(self.t1OffesetY);
+            break;
+        }
+        case 1:
+        {
+            return @(self.t2OffesetY);
+            break;
+        }
+        case 2:
+        {
+            return @(self.t3OffesetY);
+            break;
+        }
+        default:
+            break;
+    }
+    return @(self.t1OffesetY);
+}
+
+- (void)newOffset:(NSNumber*)offsetY
+{
+    switch (self.currentIdx) {
+        case 0:
+        {
+            self.t1OffesetY = [offsetY doubleValue];
+            break;
+        }
+        case 1:
+        {
+            self.t2OffesetY = [offsetY doubleValue];
+            break;
+        }
+        case 2:
+        {
+            self.t3OffesetY = [offsetY doubleValue];
+            break;
+        }
+        default:
+            break;
+    }
+}
 
 - (void)trait
 {
@@ -601,7 +659,7 @@
 - (void)changeType:(UISegmentedControl*)sender
 {
 //    NSLog(@"%@",sender);
-    
+    self.currentIdx = sender.selectedSegmentIndex;
     switch (sender.selectedSegmentIndex) {
         case 0:
         {
@@ -651,7 +709,6 @@
 - (void)markAllAsReaded
 {
     NSPredicate* p = [self.inputerCoreData.style predicate];
-//    [[RPDataManager sharedManager] upd]
     [[RPDataManager sharedManager] updateDatas:@"EntityFeedArticle" predicate:p modify:^(EntityFeedArticle*  _Nonnull obj) {
         obj.readed = YES;
     } finish:^(NSArray * _Nonnull results, NSError * _Nonnull e) {

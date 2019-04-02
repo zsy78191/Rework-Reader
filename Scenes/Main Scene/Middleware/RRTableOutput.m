@@ -101,5 +101,21 @@
     
 }
 
+- (void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate
+{
+    if (!decelerate) {
+        if (self.newOffsetBlock) {
+            self.newOffsetBlock(scrollView.contentOffset.y);
+        }
+    }
+}
+
+
+- (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView
+{
+    if (self.newOffsetBlock) {
+        self.newOffsetBlock(scrollView.contentOffset.y);
+    }
+}
 
 @end

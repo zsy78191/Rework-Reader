@@ -12,6 +12,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface RPCoreDataInsertOperation : NSOperation
 
+@property (nonatomic, strong) NSManagedObjectContext* context;
+
 @property (nonatomic, strong) Class insertClass;
 
 @property (nonatomic, strong) id (^ modifyValue)(id key,id value);

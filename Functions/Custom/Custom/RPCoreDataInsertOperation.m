@@ -21,9 +21,10 @@
     }
     
     Class a = self.insertClass;
+    BOOL needSave = !self.context;
     
     if (self.predicate) {
-        NSManagedObjectContext* c = [NSManagedObjectContext MR_rootSavingContext];
+        NSManagedObjectContext* c = self.context?self.context:[NSManagedObjectContext MR_rootSavingContext];
         NSArray* aaa = [(id)a MR_findAllWithPredicate:self.predicate inContext:c];
         [aaa enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
             if (self.modify) {
@@ -31,7 +32,9 @@
             }
         }];
         NSError* e;
-        [c save:&e];
+        if (needSave) {
+            [c save:&e];
+        }
         if (self.finishesBlock) {
             self.finishesBlock(aaa, e);
         }
@@ -39,10 +42,13 @@
     }
     
     if (self.models) {
-        NSManagedObjectContext* c = [NSManagedObjectContext MR_rootSavingContext];
+        NSManagedObjectContext* c = self.context?self.context:[NSManagedObjectContext MR_rootSavingContext];
         NSMutableArray* aa = [NSMutableArray arrayWithCapacity:10];
         [self.models enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL * _Nonnull stop) {
             NSManagedObject* ca = [(id)a MR_findFirstByAttribute:self.queryKey withValue:[obj valueForKey:self.queryKey] inContext:c];
+            if (!ca) {
+                ca = [obj MR_inContext:c];
+            }
             if (ca) {
                 [self.saveKeys enumerateObjectsUsingBlock:^(NSString * _Nonnull obj2, NSUInteger idx, BOOL * _Nonnull stop) {
                     [ca setValue:[obj valueForKey:obj2] forKey:obj2];
@@ -51,7 +57,9 @@
             [aa addObject:ca];
         }];
         NSError* e;
-        [c save:&e];
+        if (needSave) {
+            [c save:&e];
+        }
  
         self.results = [aa copy];
         
@@ -61,7 +69,7 @@
         return;
     }
 
-    NSManagedObjectContext* context = [NSManagedObjectContext MR_rootSavingContext];
+    NSManagedObjectContext* context = self.context?self.context:[NSManagedObjectContext MR_rootSavingContext];
     BOOL addNew = YES;
     __kindof NSManagedObject* cd = nil;
     if (self.queryKey) {
@@ -138,6 +146,11 @@
         if ([p containsObject:@"uuid"]) {
             [cd setValue:[[NSUUID UUID] UUIDString] forKey:@"uuid"];
         }
+        
+        if ([p containsObject:@"uniqueIdentifier"]) {
+            NSString* i = [NSProcessInfo processInfo].globallyUniqueString;
+            [cd setValue:i forKey:@"uniqueIdentifier"];
+        }
     }
     
     if (self.modifyValue) {
@@ -147,7 +160,9 @@
     }
     
     NSError* e;
-    [context save:&e];
+    if (needSave) {
+        [context save:&e];
+    }
     
     if (!e && addNew) {
         if ([[self.keysAndValues allKeys] containsObject:@"sort"]) {

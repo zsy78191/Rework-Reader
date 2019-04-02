@@ -35,7 +35,7 @@
 {
     RRAddModel* m = RRAddModel.model(@"订阅源URL", @"", @"url", RRAddModelTypeInput);
     m.placeholder = @"请输入订阅源URL";
-    NSString* t = [[UIPasteboard generalPasteboard] string];
+    NSString* t = [[[UIPasteboard generalPasteboard] string] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
     if (t && [t hasPrefix:@"http"]) {
         m.value = t;
     }

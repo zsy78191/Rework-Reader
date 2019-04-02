@@ -214,6 +214,11 @@
     self.articleLiked = NO;
 }
 
+- (void)acBack
+{
+    [self.view mvp_popViewController:nil];
+}
+
 - (void)openActionText:(UIBarButtonItem*)sender
 {
     UIViewController* vc = [MVPRouter viewForURL:@"rr://websetting" withUserInfo:@{@"model":self.webStyle}];

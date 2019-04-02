@@ -73,7 +73,15 @@
             "type": 1
         },
         {
-            "title": "iCloud备份",
+            "title": "导出OPML文件",
+            "value": null,
+            "action": "exportOPML:",
+            "switchkey": null,
+            "select": null,
+            "type": 1
+        },
+        {
+            "title": "iCloud手动备份",
             "value": "iCloud",
             "action": "openiCloud:",
             "switchkey": null,
@@ -93,7 +101,7 @@
             "value": "开启后，更新订阅会收到系统通知",
             "action": "changeNoti:",
             "switchkey": "kBackgroundFetchNoti",
-            "select": null,
+            "select": "notiSetting",
             "type": 3
         },
         {
@@ -101,7 +109,23 @@
             "value": "开启后，图标上会显示新订阅个数",
             "action": "changeNotiBadge:",
             "switchkey": "kBackgroundFetchNotiBadge",
-            "select": null,
+            "select": "badgeSetting",
+            "type": 3
+        },
+        {
+            "title": "应用开启默认进入「未读订阅」",
+            "value": "存在未读订阅时生效",
+            "action": "changeEnterUnread:",
+            "switchkey": "kEnterUnread",
+            "select": "enterUnreadSetting",
+            "type": 3
+        },
+        {
+            "title": "隐藏文章详情页工具栏返回按钮",
+            "value": "可从屏幕左侧滑动返回",
+            "action": "changeToolBack:",
+            "switchkey": "kToolBackBtn",
+            "select": "toolBackSetting",
             "type": 3
         }
     ]

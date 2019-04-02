@@ -12,6 +12,7 @@
 #import "RRReadMode.h"
 @import ReactiveObjC;
 @import DZNEmptyDataSet;
+#import "RRTableOutput.h"
 
 @interface RRFeedListView () <UIViewControllerPreviewingDelegate>
 
@@ -52,6 +53,14 @@
 - (void)mvp_configMiddleware
 {
     [super mvp_configMiddleware];
+    
+    [self.presenter mvp_bindBlock:^(RRFeedListView* view, id value) {
+        MVPTableViewOutput* output = (id)view.outputer;
+        dispatch_async(dispatch_get_main_queue(), ^{
+            double height = [UIApplication sharedApplication].statusBarFrame.size.height + view.navigationController.navigationBar.frame.size.height;
+            [[output tableview] setContentOffset:CGPointMake(0, [value doubleValue]-height) animated:NO];
+        });
+    } keypath:@"offsetY"];
  
 //    MVPTableViewOutput* o = self.outputer;
     __weak typeof(self) weakSelf = self;
@@ -73,6 +82,7 @@
             }
         }];
         
+     
 //        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
 //            [output.tableview reloadEmptyDataSet];
 //        });
@@ -83,6 +93,13 @@
 //            [output.tableview reloadEmptyDataSet];
             [weakSelf.presenter mvp_runAction:@"recommand"];
         }];
+    }];
+  
+    RRTableOutput* output = (id)self.outputer;
+    
+    [output setNewOffsetBlock:^(CGFloat offsetY) {
+         double height = [UIApplication sharedApplication].statusBarFrame.size.height + weakSelf.navigationController.navigationBar.frame.size.height;
+        [[weakSelf presenter] mvp_runAction:@"updateOffsetY:" value:@(offsetY+height)];
     }];
 //    [o mvp_registerNib:[UINib nibWithNibName:@"RRFeedInfoListCell" bundle:[NSBundle mainBundle]] forCellReuseIdentifier:@"feedCell"];
 //    [o mvp_registerNib:[UINib nibWithNibName:@"RRTitleCell" bundle:[NSBundle mainBundle]] forCellReuseIdentifier:@"titleCell"];
@@ -176,7 +193,7 @@
 //    [o.tableview reloadEmptyDataSet];
     
 //    [self.navigationController.navigationBar setPrefersLargeTitles:NO];
-    [self reloadEmpty];
+//    [self reloadEmpty];
 }
 
 - (void)viewWillDisappear:(BOOL)animated

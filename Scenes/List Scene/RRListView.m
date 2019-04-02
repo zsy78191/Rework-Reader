@@ -12,6 +12,8 @@
 #import "RRListEmpty.h"
 @import ui_base;
 @import ReactiveObjC;
+#import "RRTableOutput.h"
+@import DZNEmptyDataSet;
 
 @interface RRListView () <UIViewControllerPreviewingDelegate>
 {
@@ -92,6 +94,11 @@
     if ([self.presenter respondsToSelector:@selector(viewDidAppear:)]) {
         [(id)self.presenter viewDidAppear:animated];
     }
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        double heigt = self.navigationController.navigationBar.frame.size.height + [UIApplication sharedApplication].statusBarFrame.size.height;
+        [[self presenter] mvp_runAction:@"setInitailOffset:" value:@(-heigt)];
+    });
 }
 
 - (Class)mvp_presenterClass
@@ -99,11 +106,29 @@
     return NSClassFromString(@"RRListPresenter");
 }
 
+- (void)mvp_reloadData
+{
+    MVPTableViewOutput* outputer = (id)self.outputer;
+    double heigt = self.navigationController.navigationBar.frame.size.height + [UIApplication sharedApplication].statusBarFrame.size.height;
+    double contentY = [[self.presenter mvp_valueWithSelectorName:@"currentOffset"] doubleValue];
+    
+    dispatch_async(dispatch_get_main_queue(), ^{
+//        NSLog(@"cc %@",@([[outputer inputer] mvp_count]));
+        if ([[outputer inputer] mvp_count] == 0) {
+            [[outputer tableview] setContentOffset:CGPointMake(0, contentY-heigt) animated:NO];
+        }
+        
+        [super mvp_reloadData];
+    });
+}
+
 - (void)mvp_bindData
 {
     [self.presenter mvp_bindBlock:^(id view, id value) {
         [(id)view setTitle:value];
     } keypath:@"title"];
+    
+    
     
 //    UIBarButtonItem* item = [self mvp_buttonItemWithActionName:@"showAchieve" title:@"显示归档文章"];
 //    self.toolbarItems = @[item];
@@ -172,15 +197,25 @@
                 }
             }
         }];
+        
+        RRTableOutput* o = (id)output;
+        [o setNewOffsetBlock:^(CGFloat offsetY) {
+            double heigt = self.navigationController.navigationBar.frame.size.height + [UIApplication sharedApplication].statusBarFrame.size.height;
+            NSLog(@"-- @(%@)",@(offsetY+heigt));
+            
+            [[weakSelf presenter] mvp_runAction:@"newOffset:" value:@(offsetY+heigt)];
+        }];
     }];
 //    [o mvp_registerNib:[UINib nibWithNibName:@"RRFeedArticleCell2" bundle:[NSBundle mainBundle]] forCellReuseIdentifier:@"articleCell"];
    
 }
 
-- (Class)tableviewClass
+- (Class)mvp_outputerClass
 {
-    return NSClassFromString(@"RRTableView");
+    return NSClassFromString(@"RRTableOutput");
 }
+
+
 
 //- (void)reloadData
 //{

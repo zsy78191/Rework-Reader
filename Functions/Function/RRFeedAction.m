@@ -16,6 +16,7 @@
 @import SDWebImage;
 @import RegexKitLite;
 @import Fork_MWFeedParser;
+@import MagicalRecord;
 
 @implementation RRFeedAction
 
@@ -48,16 +49,16 @@
 
 + (void)_insert:(id)obj keys:(NSArray*)k feed:(EntityFeedInfo*)info
 {
-    
-    [[RPDataManager sharedManager] insertClass:@"EntityFeedArticle" model:obj keys:k modify:^id _Nonnull(id  _Nonnull key, id  _Nonnull value) {
+    NSManagedObjectContext* c = [NSManagedObjectContext MR_rootSavingContext];
+    [[RPDataManager sharedManager] insertClass:@"EntityFeedArticle" model:obj keys:k context:c modify:^id _Nonnull(id  _Nonnull key, id  _Nonnull value) {
         if ([key isEqualToString:@"date"] || [key isEqualToString:@"updateTime"]) {
-//            //NSLog(@"-- %@ %@ %@",key,value,[obj valueForKey:key]);
             return [obj valueForKey:key];
         }
         
         if ([key isEqualToString:@"enclosures"]) {
             if (value) {
-                return [NSJSONSerialization dataWithJSONObject:value options:kNilOptions error:nil];
+                NSData* d =  [NSJSONSerialization dataWithJSONObject:value options:kNilOptions error:nil];
+                return [[NSString alloc] initWithData:d encoding:NSUTF8StringEncoding];
             }
             return nil;
         }
@@ -74,9 +75,7 @@
         }
         return value;
     } finish:^(__kindof NSManagedObject * _Nonnull obj, NSError * _Nonnull e) {
-//        //NSLog(@"save %@ %@",obj,e);
         
-//        [RRFeedAction preloadEntityImages:obj];
     }];
 }
 
@@ -129,24 +128,27 @@
 
 + (void)insertArticle:(NSArray*)article withFeed:(EntityFeedInfo*)info finish:(void (^)(NSUInteger))finish
 {
-    __block NSUInteger c = 0;
-    [article enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
-        NSMutableArray* ps = [[obj ob_propertys] mutableCopy];
-        [ps removeObject:@"feedEntity"];
-        
-//        //NSLog(@"%@",obj);
-        NSUInteger i = [[self class] exist:obj feed:info];
-        if (i == 0) {
-            c++;
-//            //NSLog(@"%@",[obj valueForKey:@"updated"]);
-            
-            [[self class] _insert:obj keys:ps feed:info];
+    NSManagedObjectContext* rc = [NSManagedObjectContext MR_rootSavingContext];
+    [rc performBlockAndWait:^{
+        __block NSUInteger c = 0;
+        [article enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+            NSMutableArray* ps = [[obj ob_propertys] mutableCopy];
+            [ps removeObject:@"feedEntity"];
+            NSUInteger i = [RRFeedAction exist:obj feed:info];
+            if (i == 0) {
+                c++;
+                [RRFeedAction _insert:obj keys:ps feed:info];
+            }
+        }];
+        if (finish) {
+            NSError*e;
+            [rc save:&e];
+            if (e) {
+                NSLog(@"%@",e);
+            }
+            finish(c);
         }
     }];
-    
-    if (finish) {
-        finish(c);
-    }
     //NSLog(@"一共增加%ld篇文章",c);
 }
 

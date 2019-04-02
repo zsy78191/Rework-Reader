@@ -24,6 +24,9 @@
 @import DateTools;
 #import "RRExtraViewController.h"
 @import ui_base;
+@import oc_util;
+
+NSString* const kOffsetMainList = @"kOffsetMainList";
 
 @interface RRFeedListPresenter() <UIPopoverPresentationControllerDelegate>
 {
@@ -38,9 +41,15 @@
 @property (nonatomic, assign) BOOL updating;
 @property (nonatomic, weak) UIRefreshControl* refresher;
 @property (nonatomic, assign) BOOL hasDatas;
+@property (nonatomic, assign) double offsetY;
+@property (nonatomic, assign) BOOL firstEnter;
+
 @end
 
 @implementation RRFeedListPresenter
+
+
+
 
 - (void)switchReadMode
 {
@@ -96,17 +105,14 @@
 {
     self = [super init];
     if (self) {
+        self.firstEnter = YES;
         self.title = @"Reader Prime";
         self.needUpdate = YES;
         self.needUpdateFeed = NO;
         self.mode = [[NSUserDefaults standardUserDefaults] integerForKey:@"kRRReadMode"];
         
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(needUpdateData) name:@"RRMainListNeedUpdate" object:nil];
-        
-//        [[NSNotificationCenter defaultCenter] addObserverForName:UIAccessibilityPageScrolledNotification object:self queue:[NSOperationQueue mainQueue] usingBlock:^(NSNotification * _Nonnull note) {
-//            NSLog(@"%s",__func__);
-//        }];
-        
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(loadDataMain) name:@"RRMainListUpdate" object:nil];
     }
     return self;
 }
@@ -128,6 +134,15 @@
         self.needUpdateFeed = NO;
         [self refreshData:nil];
     }
+    
+    self.offsetY = [MVCKeyValue getFloatforKey:kOffsetMainList];
+    //    self.offsetY = 100;
+    NSLog(@"main offset %@",@(self.offsetY));
+}
+
+- (void)updateOffsetY:(NSNumber*)offsetY
+{
+    [MVCKeyValue setFloat:[offsetY doubleValue] forKey:kOffsetMainList];
 }
 
 - (void)mvp_initFromModel:(MVPInitModel *)model
@@ -137,10 +152,32 @@
     [[RPDataNotificationCenter defaultCenter] registEntityChange:@"EntityFeedInfo" observer:self sel:@selector(needUpdateData)];
     
     [[RPDataNotificationCenter defaultCenter] registEntityChange:@"EntityFeedArticle" observer:self sel:@selector(needUpdateData)];
+    
+    
+}
+
+- (void)removeAll
+{
+    [self.complexInput mvp_cleanAll];
+}
+
+- (void)loadDataMain
+{
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [self removeAll];
+        [self loadData];
+    });
 }
 
 - (void)loadData
 {
+    NSArray* a = [[RPDataManager sharedManager] getAll:@"EntityFeedInfo" predicate:nil key:nil value:nil sort:@"sort" asc:YES];
+    if (a.count == 0 && self.firstEnter) {
+        self.firstEnter = NO;
+        return;
+    }
+    self.firstEnter = NO;
+    
     [self.complexInput mvp_cleanAll];
     
     RRFeedInfoListOtherModel* mTitle = [[RRFeedInfoListOtherModel alloc] init];
@@ -237,8 +274,6 @@
         m.canEdit = NO;
         m.type = RRFeedInfoListOtherModelTypeTitle;
     
-    
-        NSArray* a = [[RPDataManager sharedManager] getAll:@"EntityFeedInfo" predicate:nil key:nil value:nil sort:@"sort" asc:YES];
         if (a.count>0) {
             [self.readStyleInputer mvp_addModel:m];
         }
@@ -290,6 +325,9 @@
 //    [[NSNotificationCenter defaultCenter] removeObserver:self name:UIAccessibilityPageScrolledNotification object:nil];
     
     [[NSNotificationCenter defaultCenter] removeObserver:self name:@"RRMainListNeedUpdate" object:nil];
+    
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"RRMainListUpdate" object:nil];
+    
     
     [[RPDataNotificationCenter defaultCenter] unregistEntityChange:@"EntityFeedInfo" observer:self];
     

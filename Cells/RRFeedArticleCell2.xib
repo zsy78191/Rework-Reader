@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="14460.31" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="14490.70" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
     <device id="retina4_7" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14460.20"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14490.49"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -86,10 +86,9 @@
                     <constraint firstItem="14P-1d-oQl" firstAttribute="leading" secondItem="44v-b7-fRq" secondAttribute="leadingMargin" constant="4" id="2dg-n7-ptw"/>
                     <constraint firstAttribute="bottom" secondItem="sHx-Dm-ccm" secondAttribute="bottom" constant="18" id="82T-nP-y4a"/>
                     <constraint firstItem="0N0-t1-tML" firstAttribute="leading" secondItem="21B-YO-o4R" secondAttribute="trailing" constant="8" id="9fZ-xy-lcS"/>
-                    <constraint firstItem="APn-n8-ame" firstAttribute="firstBaseline" secondItem="0N0-t1-tML" secondAttribute="firstBaseline" id="9i9-6o-gpK"/>
                     <constraint firstItem="21B-YO-o4R" firstAttribute="leading" secondItem="44v-b7-fRq" secondAttribute="leadingMargin" constant="4" id="BmC-hu-Bgy"/>
                     <constraint firstAttribute="bottom" secondItem="o0J-9m-OQp" secondAttribute="bottom" id="CvV-yk-HrC"/>
-                    <constraint firstItem="APn-n8-ame" firstAttribute="baseline" secondItem="0N0-t1-tML" secondAttribute="baseline" id="FVd-9x-gVC"/>
+                    <constraint firstItem="APn-n8-ame" firstAttribute="centerY" secondItem="0N0-t1-tML" secondAttribute="centerY" id="E3D-IQ-BFv"/>
                     <constraint firstItem="APn-n8-ame" firstAttribute="leading" secondItem="9oE-dH-727" secondAttribute="trailing" constant="8" id="SVu-b6-Jit"/>
                     <constraint firstItem="14P-1d-oQl" firstAttribute="top" secondItem="21B-YO-o4R" secondAttribute="bottom" constant="12" id="YKi-bh-JOL"/>
                     <constraint firstItem="APn-n8-ame" firstAttribute="trailing" secondItem="44v-b7-fRq" secondAttribute="trailingMargin" constant="-4" id="adT-d1-qbz"/>
@@ -97,7 +96,7 @@
                     <constraint firstItem="14P-1d-oQl" firstAttribute="trailing" secondItem="44v-b7-fRq" secondAttribute="trailingMargin" constant="-4" id="hgH-oI-cUj"/>
                     <constraint firstItem="9oE-dH-727" firstAttribute="centerY" secondItem="APn-n8-ame" secondAttribute="centerY" id="pUX-AI-b7G"/>
                     <constraint firstItem="sHx-Dm-ccm" firstAttribute="trailing" secondItem="44v-b7-fRq" secondAttribute="trailingMargin" constant="-4" id="qEO-aa-jLF"/>
-                    <constraint firstItem="21B-YO-o4R" firstAttribute="top" secondItem="44v-b7-fRq" secondAttribute="top" constant="18" id="ssJ-Vp-NrG"/>
+                    <constraint firstItem="21B-YO-o4R" firstAttribute="top" secondItem="44v-b7-fRq" secondAttribute="top" priority="999" constant="18" id="ssJ-Vp-NrG"/>
                     <constraint firstAttribute="trailing" secondItem="o0J-9m-OQp" secondAttribute="trailing" id="tCa-n8-fo2"/>
                     <constraint firstItem="sHx-Dm-ccm" firstAttribute="leading" secondItem="44v-b7-fRq" secondAttribute="leadingMargin" constant="4" id="tN9-kU-JEa"/>
                     <constraint firstItem="o0J-9m-OQp" firstAttribute="leading" secondItem="44v-b7-fRq" secondAttribute="leading" id="wwq-I2-USD"/>

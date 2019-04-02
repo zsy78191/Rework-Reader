@@ -15,6 +15,14 @@
             "switchkey": null,
             "select": ["苹方细体","苹方标准体","思源宋体细体"],
             "type": 1
+        },
+        {
+            "title": "应用图标",
+            "value": null,
+            "action": "openIconSet:",
+            "switchkey": null,
+            "select": ["默认图标","黑底绿标","白底黑标(纯黑)","白底黑标(渐变)"],
+            "type": 1
         }
     ]
 }

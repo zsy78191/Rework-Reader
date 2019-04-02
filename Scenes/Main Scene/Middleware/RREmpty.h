@@ -11,7 +11,10 @@
 NS_ASSUME_NONNULL_BEGIN
 
 @interface RREmpty : RRBaseEmpty
-
+{
+    
+}
+@property (nonatomic, assign) double top;
 @end
 
 NS_ASSUME_NONNULL_END

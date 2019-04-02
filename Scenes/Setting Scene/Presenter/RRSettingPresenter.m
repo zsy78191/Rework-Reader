@@ -22,6 +22,8 @@
 #import "AppleAPIHelper.h"
 #import "PWToastView.h"
 @import YYKit;
+#import "RPDataManager.h"
+#import "RRCoreDataModel.h"
 
 @interface RRSettingPresenter () <UIDocumentPickerDelegate,MVPPresenterProtocol_private,SKStoreProductViewControllerDelegate>
 {
@@ -32,12 +34,17 @@
 @property (nonatomic, assign) BOOL feeding;
 @property (nonatomic, weak) RRSetting* notiSetting;
 @property (nonatomic, weak) RRSetting* badgeSetting;
+@property (nonatomic, weak) RRSetting* enterUnreadSetting;
+@property (nonatomic, weak) RRSetting* iCloudSetting;
+@property (nonatomic, weak) RRSetting* toolBackSetting;
 @property (nonatomic, weak) FMFeedParserOperation* currentOperation;
 @property (nonatomic, strong) NSString* settingFileName;
 @property (nonatomic, strong) RRDataBackuper* backuper;
 
 @property (nonatomic, strong) RRSetting* donateSetting;
 @property (nonatomic, strong) void (^ purchasedBlock)(SKPaymentTransaction* t);
+
+@property (nonatomic, assign) BOOL exporting;
 @end
 
 @implementation RRSettingPresenter
@@ -113,16 +120,24 @@
     }
     __weak typeof(self) weakSelf = self;
     [[self.item setting] enumerateObjectsUsingBlock:^(RRSetting * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
-        if ([[obj switchkey] isEqualToString:@"kBackgroundFetchNoti"]) {
-            weakSelf.notiSetting = obj;
+        if ([obj.type integerValue] == RRSettingTypeSwitch) {
+//            if ([[obj switchkey] isEqualToString:@"kBackgroundFetchNoti"]) {
+//                weakSelf.notiSetting = obj;
+//            }
+//            else if([[obj switchkey] isEqualToString:@"kBackgroundFetchNotiBadge"])
+//            {
+//                weakSelf.badgeSetting = obj;
+//            }
+//            else if([[obj switchkey] isEqualToString:@"kEnterUnread"])
+//            {
+//                weakSelf.enterUnreadSetting = obj;
+//            }
+            [weakSelf setValue:obj forKey:obj.select];
+            if ([obj switchkey]) {
+                obj.switchValue = [[NSUserDefaults standardUserDefaults] valueForKey:obj.switchkey];
+            }
         }
-        else if([[obj switchkey] isEqualToString:@"kBackgroundFetchNotiBadge"])
-        {
-            weakSelf.badgeSetting = obj;
-        }
-        if ([obj switchkey]) {
-            obj.switchValue = [[NSUserDefaults standardUserDefaults] valueForKey:obj.switchkey];
-        }
+        
         if ([[obj title] isEqualToString:@"版本"]) {
             [obj setValue:[NSString stringWithFormat:@"%@ (build %@)",[UIApplication sharedApplication].version(),[UIApplication sharedApplication].buildVersion()]];
         }
@@ -149,12 +164,17 @@
 - (void)mvp_action_selectItemAtIndexPath:(NSIndexPath *)path
 {
     RRSetting* s = [self.inputer mvp_modelAtIndexPath:path];
-    if (s.select) {
+    if ([s.type integerValue] == RRSettingTypeOnlyTitle && s.select) {
         [self showSelect:s];
     }
     else if (s.action) {
         if ([s.type integerValue] != RRSettingTypeSubSetting) {
-            [self mvp_runAction:s.action];
+            if ([s.action hasSuffix:@":"]) {
+                [self mvp_runAction:s.action value:path];
+            }
+            else {
+                [self mvp_runAction:s.action];
+            }
         }
         else {
             [self mvp_runAction:s.action value:s];
@@ -320,6 +340,9 @@
 
 - (void)changeNoti:(UISwitch*)sender
 {
+    if (![sender isKindOfClass:[UISwitch class]]) {
+        return;
+    }
     //    //NSLog(@"%@",sender);
     if (sender.on == NO) {
         [[NSUserDefaults standardUserDefaults] setBool:NO forKey:self.notiSetting.switchkey];
@@ -362,10 +385,40 @@
 
 - (void)changeNotiBadge:(UISwitch*)sender
 {
+    if (![sender isKindOfClass:[UISwitch class]]) {
+        return;
+    }
     [[NSUserDefaults standardUserDefaults] setBool:[sender isOn] forKey:self.badgeSetting.switchkey];
     [[NSUserDefaults standardUserDefaults] synchronize];
 }
 
+- (void)changeEnterUnread:(UISwitch*)sender
+{
+    if (![sender isKindOfClass:[UISwitch class]]) {
+        return;
+    }
+    [[NSUserDefaults standardUserDefaults] setBool:[sender isOn] forKey:self.enterUnreadSetting.switchkey];
+    [[NSUserDefaults standardUserDefaults] synchronize];
+}
+
+- (void)changeiCloud:(UISwitch*)sender
+{
+    if (![sender isKindOfClass:[UISwitch class]]) {
+        return;
+    }
+    [[NSUserDefaults standardUserDefaults] setBool:[sender isOn] forKey:self.iCloudSetting.switchkey];
+    [[NSUserDefaults standardUserDefaults] synchronize];
+}
+
+- (void)changeToolBack:(UISwitch*)sender
+{
+    if (![sender isKindOfClass:[UISwitch class]]) {
+        return;
+    }
+    
+    [[NSUserDefaults standardUserDefaults] setBool:[sender isOn] forKey:self.toolBackSetting.switchkey];
+    [[NSUserDefaults standardUserDefaults] synchronize];
+}
 
 - (void)openOPML
 {
@@ -488,10 +541,10 @@
     NSArray* a = [self.backuper showiCloudFiles];
     if (a.count > 1) {
         if ([a containsObject:@"Model"]) {
-            return @"备份文件存在";
+            return @"已同步";
         }
     }
-    return @"本地没有备份文件";
+    return @"未同步";
 }
 
 - (void)test:(id)sender
@@ -514,7 +567,7 @@
 - (NSString*)dateWithURL:(NSURL*)url
 {
     NSArray* a = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:[url path] error:nil];
-    if ([a containsObject:@"Model.sqlite"]) {
+    if ([a containsObject:@"Model"]) {
 //        NSURL* file = [url URLByAppendingPathComponent:@"Model.sqlite"];
         NSURL* file = url;
         NSDictionary *fileAttrs = [[NSFileManager defaultManager] attributesOfItemAtPath:[file path] error:nil];
@@ -531,7 +584,7 @@
             return @"信息获取失败";
         }
     }
-    return @"没有文件";
+    return @"";
 }
 
 - (void)dealloc
@@ -643,6 +696,75 @@
             [weakSelf.view hudDismiss];
         });
     }];
+}
+
+
+- (void)exportOPML:(NSIndexPath*)path
+{
+    if (self.exporting) {
+        return;
+    }
+    self.exporting = YES;
+    NSDateFormatter* f = [[NSDateFormatter alloc] init];
+    [f setDateFormat:@"yy-MM-dd"];
+    NSURL* u = [[UIApplication sharedApplication].doucumentDictionary() URLByAppendingPathComponent:[NSString stringWithFormat:@"reader-export-%@.opml",[f stringFromDate:[NSDate date]]]];
+    OPMLDocument* d = [[OPMLDocument alloc] initWithFileURL:u];
+//    [d addOutlineWithTitle:@"1" title:@"2" type:@"rss" xmlUrl:@"123" htmlUrl:@"321"];
+    NSArray* a = [[RPDataManager sharedManager] getAll:@"EntityFeedInfo" predicate:nil key:nil value:nil sort:@"sort" asc:YES];
+    if (a.count == 0) {
+        self.exporting = NO;
+        [self.view hudInfo:@"没有可以导出的订阅源"];
+        return;
+    }
+    else {
+        [self.view hudWait:@"处理中"];
+    }
+    
+    [a enumerateObjectsUsingBlock:^(EntityFeedInfo*  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+        [d addOutlineWithText:obj.summary title:obj.title type:@"rss" xmlUrl:[[obj url] absoluteString] htmlUrl:[obj link]];
+    }];
+    
+    
+    MVPTableViewOutput* o = [(id)self.view valueForKey:@"outputer"];
+    UITableViewCell* cell = [[o tableview] cellForRowAtIndexPath:path];
+    CGRect r = [[o tableview] convertRect:cell.frame toView:[(id)[self view] view]];
+    
+    
+    __weak typeof(self) weakSelf = self;
+    [d saveToURL:u forSaveOperation:UIDocumentSaveForCreating completionHandler:^(BOOL success) {
+        
+        dispatch_async(dispatch_get_main_queue(), ^{
+           
+            UIActivityViewController* a = [[UIActivityViewController alloc] initWithActivityItems:@[u] applicationActivities:nil];
+            
+            if([UIDevice currentDevice].iPad())
+            {
+                a.modalPresentationStyle = UIModalPresentationPopover;
+                a.popoverPresentationController.sourceRect = r;
+                a.popoverPresentationController.sourceView = [(id)[weakSelf view] view];
+                a.popoverPresentationController.permittedArrowDirections = UIPopoverArrowDirectionLeft;
+            }
+            
+            [[weakSelf view] mvp_presentViewController:a animated:YES completion:^{
+                [weakSelf.view hudDismiss];
+                weakSelf.exporting = NO;
+            }];
+            
+            
+        });
+    }];
+    
+}
+
+- (void)openIconSet:(NSString*)title
+{
+    NSDictionary* iconDict = @{
+                                   @"黑底绿标":@"icon1",
+                                   @"白底黑标(纯黑)":@"icon2",
+                                   @"白底黑标(渐变)":@"icon3",
+                                   };
+        
+    [AppleAPIHelper setIconname:iconDict[title]];
 }
 
 

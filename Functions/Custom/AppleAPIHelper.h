@@ -30,6 +30,7 @@ NS_ASSUME_NONNULL_BEGIN
 + (void)purchaseProduct:(SKProduct*)product;
 
 + (void)restoreProduct;
++ (void)setIconname:(nullable NSString *)name;
 
 @end
 

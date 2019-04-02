@@ -808,7 +808,7 @@
     
     [[NSNotificationCenter defaultCenter] addObserverForName:@"RRWebNeedReload" object:nil queue:[NSOperationQueue mainQueue] usingBlock:^(NSNotification * _Nonnull note) {
         dispatch_async(dispatch_get_main_queue(), ^{
-            [weakSelf loadData:self.currentArticle feed:self.currentFeed];
+            [weakSelf loadData:weakSelf.currentArticle feed:weakSelf.currentFeed];
         });
     }];
     
@@ -935,6 +935,14 @@
 - (void)reloadItems
 {
     NSMutableArray* items = [NSMutableArray array];
+    BOOL hide = [[NSUserDefaults standardUserDefaults] boolForKey:@"kToolBackBtn"];
+    if (!hide) {
+        UIBarButtonItem* favItem = [self mvp_buttonItemWithActionName:@"acBack" title:@"返回"];
+        favItem.image = [UIImage imageNamed:@"icon_zuo"];
+        [items addObject:favItem];
+        [items addObject:[self fixedItem]];
+    }
+
     [items addObjectsFromArray:[self likedItem]];
     if (items.count>0) {
         [items insertObject:[self fixedItem] atIndex:0];
@@ -1250,7 +1258,7 @@
 {
     BOOL isTrait = [[NSUserDefaults standardUserDefaults] boolForKey:@"RRSplit"];
     if (self.splitViewController && !isTrait) {
-        NSLog(@"123123");
+//        NSLog(@"123123");
     }
     
     if (self.webView.backForwardList.backItem) {
@@ -1288,7 +1296,6 @@
 
 - (void)dealloc
 {
-
     NSLog(@"%s",__func__);
 }
 

@@ -34,6 +34,9 @@ target 'rework-reader' do
   
   #xml解析
   pod 'KissXML'
+  
+  #iCloud同步
+  pod 'Ensembles'
 
   # Pods for rework-reader
 

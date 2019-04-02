@@ -18,31 +18,37 @@ NS_ASSUME_NONNULL_BEGIN
 + (instancetype)sharedManager;
 
 - (id)insertClass:(NSString*)className
-                               model:(id)model
-                                keys:(NSArray*)keys
-                              modify:(id (^ _Nullable)(id key,id value))modifyValue
-                              finish:(void (^ _Nullable)(__kindof NSManagedObject* obj, NSError* e))finish;
-
+            model:(id)model
+             keys:(NSArray*)keys
+           modify:(id (^ _Nullable)(id key,id value))modifyValue
+           finish:(void (^ _Nullable)(__kindof NSManagedObject* obj, NSError* e))finish;
 
 - (id)insertClass:(NSString*)className
-                       keysAndValues:(NSDictionary*)dict
-                              modify:(id (^ _Nullable)(id key,id value))modifyValue
-                              finish:(void (^ _Nullable)(__kindof NSManagedObject* obj, NSError* e))finish;
+            model:(id)model
+             keys:(NSArray*)keys
+          context:(nullable NSManagedObjectContext*)contenxt
+           modify:(id (^ _Nullable)(id key,id value))modifyValue
+           finish:(void (^ _Nullable)(__kindof NSManagedObject* obj, NSError* e))finish;
+
+- (id)insertClass:(NSString*)className
+    keysAndValues:(NSDictionary*)dict
+           modify:(id (^ _Nullable)(id key,id value))modifyValue
+           finish:(void (^ _Nullable)(__kindof NSManagedObject* obj, NSError* e))finish;
 
 - (id)updateClass:(NSString*)className
-                            queryKey:(NSString*)key
-                          queryValue:(id)value
-                       keysAndValues:(NSDictionary*)dict
-                              modify:(id (^ _Nullable)(id key,id value))modifyValue
-                              finish:(void (^ _Nullable)(__kindof NSManagedObject* obj, NSError* e))finish;
+         queryKey:(NSString*)key
+       queryValue:(id)value
+    keysAndValues:(NSDictionary*)dict
+           modify:(id (^ _Nullable)(id key,id value))modifyValue
+           finish:(void (^ _Nullable)(__kindof NSManagedObject* obj, NSError* e))finish;
 
 - (id)updateClass:(NSString*)className
-                               model:(id)model
-                            queryKey:(NSString*)key
-                          queryValue:(id)value
-                                keys:(NSArray*)keys
-                              modify:(id (^ _Nullable)(id key,id value))modifyValue
-                              finish:(void (^ _Nullable)(__kindof NSManagedObject* obj, NSError* e))finish;
+            model:(id)model
+         queryKey:(NSString*)key
+       queryValue:(id)value
+             keys:(NSArray*)keys
+           modify:(id (^ _Nullable)(id key,id value))modifyValue
+           finish:(void (^ _Nullable)(__kindof NSManagedObject* obj, NSError* e))finish;
 
 - (id)udpateDatas:(NSString*)className
            models:(NSArray*)models
@@ -71,11 +77,11 @@ NS_ASSUME_NONNULL_BEGIN
          asc:(BOOL)asc;
 
 - (id)getCount:(NSString*)className
-   predicate:(NSPredicate* _Nullable )p
-         key:(NSString* _Nullable )key
-       value:(id _Nullable)value
-        sort:(NSString* _Nullable )sort
-         asc:(BOOL)asc;
+     predicate:(NSPredicate* _Nullable )p
+           key:(NSString* _Nullable )key
+         value:(id _Nullable)value
+          sort:(NSString* _Nullable )sort
+           asc:(BOOL)asc;
 
 - (void)delData:(NSString*)className
       predicate:(NSPredicate* _Nullable)predicate
@@ -94,7 +100,7 @@ NS_ASSUME_NONNULL_BEGIN
                               getKeys:(NSArray*)keys getModel:(BOOL)model;
 
 - (NSDictionary*)dictionaryWithModels:(id)models
-                              getWithoutKeys:(NSArray*)keys getModel:(BOOL)model;
+                       getWithoutKeys:(NSArray*)keys getModel:(BOOL)model;
 
 - (NSArray*)arrayWithModels:(id)models getKeys:(NSArray*)keys;
 - (NSArray*)arrayWithModels:(id)models getWithoutKeys:(NSArray*)keys;

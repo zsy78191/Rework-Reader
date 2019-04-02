@@ -68,6 +68,8 @@
             default:
                 break;
         }
+        
+        [self.inputField becomeFirstResponder];
     }
 }
 

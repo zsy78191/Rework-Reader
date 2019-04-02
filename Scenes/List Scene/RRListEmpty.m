@@ -34,13 +34,13 @@
 
 - (BOOL)emptyDataSetShouldAllowScroll:(UIScrollView *)scrollView
 {
-    return NO;
+    return YES;
 }
-
-- (CGFloat)verticalOffsetForEmptyDataSet:(UIScrollView *)scrollView
-{
-    return - 100;
-}
+//
+//- (CGFloat)verticalOffsetForEmptyDataSet:(UIScrollView *)scrollView
+//{
+//    return - 100;
+//}
 
 
 

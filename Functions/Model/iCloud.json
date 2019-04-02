@@ -1,15 +1,7 @@
 {
     "setting": [
         {
-            "title": "从iCloud同步数据",
-            "value": "hasiCloudBackup",
-            "action": "syncFromiCloud:",
-            "switchkey": null,
-            "select": null,
-            "type": 5
-        },
-        {
-            "title": "覆盖本地数据",
+            "title": "从iCloud覆盖本地数据",
             "value": "localTime",
             "action": "rewriteLocal:",
             "switchkey": null,
@@ -17,7 +9,7 @@
             "type": 5
         },
         {
-            "title": "覆盖iCloud数据",
+            "title": "从本地覆盖iCloud数据",
             "value": "iCloudTime",
             "action": "rewriteiCloud:",
             "switchkey": null,

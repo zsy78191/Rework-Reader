@@ -44,10 +44,10 @@ NSString* const kWebFont = @"kWebFont";
 + (void)setupDefalut
 {
     if ([UIDevice currentDevice].iPad()) {
-        [[NSUserDefaults standardUserDefaults] registerDefaults:@{kWebFontSize:@(24),kWebTitleFontSize:@(30),kWebLineHeight:@(1.8),kWebAlign:@"left",kWebFont:@"PingFangSC-Light"}];
+        [[NSUserDefaults standardUserDefaults] registerDefaults:@{kWebFontSize:@(24),kWebTitleFontSize:@(30),kWebLineHeight:@(1.8),kWebAlign:@"left",kWebFont:@"PingFangSC-Light",@"kiCloudSetting":@(NO)}];
     }
     else {
-        [[NSUserDefaults standardUserDefaults] registerDefaults:@{kWebFontSize:@(18),kWebTitleFontSize:@(24),kWebLineHeight:@(1.8),kWebAlign:@"left",kWebFont:@"PingFangSC-Light"}];
+        [[NSUserDefaults standardUserDefaults] registerDefaults:@{kWebFontSize:@(18),kWebTitleFontSize:@(24),kWebLineHeight:@(1.8),kWebAlign:@"left",kWebFont:@"PingFangSC-Light",@"kiCloudSetting":@(NO)}];
     }
 }
 
