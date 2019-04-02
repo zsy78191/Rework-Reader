@@ -35,7 +35,7 @@
 {
     RRAddModel* m = RRAddModel.model(@"订阅源URL", @"", @"url", RRAddModelTypeInput);
     m.placeholder = @"请输入订阅源URL";
-    NSString* t = [[UIPasteboard generalPasteboard] string];
+    NSString* t = [[[UIPasteboard generalPasteboard] string] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
     if (t && [t hasPrefix:@"http"]) {
         m.value = t;
     }
@@ -80,12 +80,16 @@
     switch (path.section*10 + path.row) {
         case 2: {
             NSString* x = self.inputModel.value;
+            if ([x hasPrefix:@"inner"]) {
+                x = [x substringFromIndex:5];
+            }
             if (![x hasPrefix:@"http://"] && ![x hasPrefix:@"https://"]) {
                 [(UIViewController*)self.view hudInfo:@"订阅源URL无效"];
                 return;
             }
-            NSString * e = [x._urlEncodeString stringByReplacingOccurrencesOfString:@"%3A" withString:@":"];
+//            NSString * e = [x._urlEncodeString stringByReplacingOccurrencesOfString:@"%3A" withString:@":"];
 //            //NSLog(@"%@",e);
+            NSString* e = [x stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLFragmentAllowedCharacterSet]];
             
             if (x.length != e.length) {
                 x = e;

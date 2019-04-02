@@ -7,7 +7,11 @@
 //
 
 #import <XCTest/XCTest.h>
-
+#import "RRWebView.h"
+#import "RPDataManager.h"
+#import "RRCoreDataModel.h"
+#import "RRFeedArticleModel.h"
+@import Fork_MWFeedParser;
 @interface rework_readerTests : XCTestCase
 
 @end
@@ -29,8 +33,18 @@
 
 - (void)testPerformanceExample {
     // This is an example of a performance test case.
+    RRWebView* v = [[RRWebView alloc] initWithUserInfo:@{}];
+    NSArray* a = [[RPDataManager sharedManager] getAll:@"EntityFeedArticle" predicate:nil key:nil value:nil sort:@"sort" asc:YES];
+    
+    
+    MWFeedInfo* info = [[MWFeedInfo alloc] init];
+    info.title = @"";
+
     [self measureBlock:^{
-        // Put the code you want to measure the time of here.
+        [a enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+            RRFeedArticleModel* m = [[RRFeedArticleModel alloc] initWithEntity:obj];
+            [v loadData:m feed:info];
+        }];
     }];
 }
 

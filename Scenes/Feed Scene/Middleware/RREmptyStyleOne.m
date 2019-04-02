@@ -41,7 +41,7 @@
 
 - (UIImage *)image
 {
-    return [UIImage imageNamed:@"error"];
+    return [UIImage imageNamed:@"nodata"];
 }
 
 - (NSString *)buttonTitleForState:(NSUInteger)state
@@ -55,5 +55,7 @@
         self.action();
     }
 }
+
+
 
 @end

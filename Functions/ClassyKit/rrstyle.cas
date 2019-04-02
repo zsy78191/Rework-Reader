@@ -1,0 +1,136 @@
+
+@import "style.cas";
+
+UIButton {
+    title-text-attributes: @{
+        font: $main-font $main-font-size
+    }
+}
+
+DZNEmptyDataSetView > ^UIButton {
+    title-text-attributes: @{
+        font: $main-font $main-font-size
+        foreground-color $main-tint-color
+    }
+}
+
+^UITableViewCell > ^UIView > ^UISwitch {
+    onTintColor $main-tint-color
+}
+
+^UITableViewCell > ^UIView > ^UILabel.MainLabel {
+    font $main-font $main-font-size
+    text-color $main-text-color
+}
+
+^UITableViewCell > ^UIView > ^UILabel.MainLabelReaded {
+    font $main-font $main-font-size
+    text-color $main-text-color-readed
+}
+
+^UITableViewCell > ^UIView > UITextField.Input {
+    font $main-font $main-font-size
+    text-color $main-tint-color
+    tint-color $main-tint-color
+}
+
+^UITableViewCell > ^UIView > UILabel.BtnLabel{
+    font $main-font $main-font-size
+    text-color $main-tint-color
+}
+
+
+^UITableViewCell > ^UIView > UILabel.SubLabel {
+    font $main-font $sub-font-size
+    text-color $main-tint-color
+}
+
+^UITableViewCell > ^UIView > UILabel.DateLabel {
+    font $num-font 14
+    text-color $sub-text-color
+}
+
+^UITableViewCell > ^UIView > UILabel.NumLabel {
+    font $main-font $main-font-size
+    text-color $sub-text-color
+}
+
+^UITableViewCell > ^UIView > ^UIImageView {
+    tintColor $main-tint-color
+}
+
+^UITableViewCell > ^UIView > UILabel.TitleLabel
+{
+    font $main-font $main-font-size
+    text-color $sub-text-color
+}
+
+
+^UITableViewCell {
+    tint-color $main-tint-color
+}
+
+^UITableViewCell > ^UIView.TitleContentView {
+    backgroundColor $bar-tint-color
+}
+
+UIProgressView {
+    progressTintColor $main-tint-color
+}
+
+UILabel.TipLabel {
+    font $main-font 14
+    text-color $sub-text-color
+}
+
+^UIView.bgView
+{
+    backgroundColor $main-bg-color
+}
+UIView.statuCover {
+    backgroundColor $bar-tint-color
+}
+
+
+UILabel.ArticleSubLabel{
+    font $main-font 14
+    text-color $sub-text-color
+}
+
+UILabel.ToastLabel{
+    font $main-font $main-font-size
+    text-color white
+}
+
+
+UIToolbar.PhotoToolBar{
+    barTintColor black
+    tintColor white
+}
+
+UIView.SeparaterView
+{
+    backgroundColor $main-separator-color
+}
+
+
+^UITableViewCell > ^UIView > ^UILabel.F1 {
+    font PingFangSC-Light $main-font-size
+    text-color $main-text-color
+}
+
+^UITableViewCell > ^UIView > ^UILabel.F2 {
+    font PingFangSC-Regular $main-font-size
+    text-color $main-text-color
+}
+
+^UITableViewCell > ^UIView > ^UILabel.F3 {
+    font SourceHanSerifCN-Light $main-font-size
+    text-color $main-text-color
+}
+
+
+^ UIScrollView {
+    indicatorStyle $indicatorStyle
+}
+

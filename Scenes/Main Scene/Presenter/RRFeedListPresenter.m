@@ -20,9 +20,15 @@
 #import "RPDataManager.h"
 #import "RRFeedArticleModel.h"
 #import "PWToastView.h"
+#import "RRReadMode.h"
 @import DateTools;
+#import "RRExtraViewController.h"
+@import ui_base;
+@import oc_util;
 
-@interface RRFeedListPresenter()
+NSString* const kOffsetMainList = @"kOffsetMainList";
+
+@interface RRFeedListPresenter() <UIPopoverPresentationControllerDelegate>
 {
     
 }
@@ -30,9 +36,39 @@
 @property (nonatomic, strong) RRFeedInputer* inputer;
 @property (nonatomic, strong) RRFeedReaderStyleInputer* readStyleInputer;
 @property (nonatomic, assign) BOOL needUpdate;
+@property (nonatomic, assign) BOOL needUpdateFeed;
+@property (nonatomic, assign) RRReadMode mode;
+@property (nonatomic, assign) BOOL updating;
+@property (nonatomic, weak) UIRefreshControl* refresher;
+@property (nonatomic, assign) BOOL hasDatas;
+@property (nonatomic, assign) double offsetY;
+@property (nonatomic, assign) BOOL firstEnter;
+
 @end
 
 @implementation RRFeedListPresenter
+
+
+
+
+- (void)switchReadMode
+{
+    if (self.mode == RRReadModeDark) {
+        self.mode = RRReadModeLight;
+    }
+    else if(self.mode == RRReadModeLight)
+    {
+        self.mode = RRReadModeDark;
+    }
+    [[NSUserDefaults standardUserDefaults] setInteger:self.mode forKey:@"kRRReadMode"];
+    [[NSUserDefaults standardUserDefaults] synchronize];
+    
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"RRCasNeedReload" object:nil];
+    
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"RRWebNeedReload" object:nil];
+    
+    [[(UIViewController*)self.view navigationController] setNeedsStatusBarAppearanceUpdate];
+}
 
 - (RRFeedInputer *)inputer
 {
@@ -69,11 +105,19 @@
 {
     self = [super init];
     if (self) {
-        self.title = @"Reader Special";
+        self.firstEnter = YES;
+        self.title = @"Reader Prime";
         self.needUpdate = YES;
+        self.needUpdateFeed = NO;
+        self.mode = [[NSUserDefaults standardUserDefaults] integerForKey:@"kRRReadMode"];
+        
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(needUpdateData) name:@"RRMainListNeedUpdate" object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(loadDataMain) name:@"RRMainListUpdate" object:nil];
     }
     return self;
 }
+
+
 
 - (void)needUpdateData
 {
@@ -85,29 +129,65 @@
     if (self.needUpdate) {
         [self loadData];
     }
+    
+    if (self.needUpdateFeed) {
+        self.needUpdateFeed = NO;
+        [self refreshData:nil];
+    }
+    
+    self.offsetY = [MVCKeyValue getFloatforKey:kOffsetMainList];
+    //    self.offsetY = 100;
+    NSLog(@"main offset %@",@(self.offsetY));
+}
+
+- (void)updateOffsetY:(NSNumber*)offsetY
+{
+    [MVCKeyValue setFloat:[offsetY doubleValue] forKey:kOffsetMainList];
 }
 
 - (void)mvp_initFromModel:(MVPInitModel *)model
 {
+    self.needUpdateFeed = YES;
+    
     [[RPDataNotificationCenter defaultCenter] registEntityChange:@"EntityFeedInfo" observer:self sel:@selector(needUpdateData)];
     
     [[RPDataNotificationCenter defaultCenter] registEntityChange:@"EntityFeedArticle" observer:self sel:@selector(needUpdateData)];
+    
+    
+}
+
+- (void)removeAll
+{
+    [self.complexInput mvp_cleanAll];
+}
+
+- (void)loadDataMain
+{
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [self removeAll];
+        [self loadData];
+    });
 }
 
 - (void)loadData
 {
+    NSArray* a = [[RPDataManager sharedManager] getAll:@"EntityFeedInfo" predicate:nil key:nil value:nil sort:@"sort" asc:YES];
+    if (a.count == 0 && self.firstEnter) {
+        self.firstEnter = NO;
+        return;
+    }
+    self.firstEnter = NO;
+    
     [self.complexInput mvp_cleanAll];
     
-    {
-        RRFeedInfoListOtherModel* m = [[RRFeedInfoListOtherModel alloc] init];
-        m.title = @"阅读规则";
-        m.canEdit = NO;
-        m.type = RRFeedInfoListOtherModelTypeTitle;
-        [self.readStyleInputer mvp_addModel:m];
-    }
+    RRFeedInfoListOtherModel* mTitle = [[RRFeedInfoListOtherModel alloc] init];
+    mTitle.title = @"阅读规则";
+    mTitle.canEdit = NO;
+    mTitle.type = RRFeedInfoListOtherModelTypeTitle;
+    [self.readStyleInputer mvp_addModel:mTitle];
     
     {
-        RRFeedInfoListOtherModel* mUnread = GetRRFeedInfoListOtherModel(@"未读订阅",@"favicon_2",@"三日内的未读文章",@"unread");
+        RRFeedInfoListOtherModel* mUnread = GetRRFeedInfoListOtherModel(@"未读订阅",@"favicon",@"三日内的未读文章",@"unread");
         mUnread.canRefresh = YES;
         mUnread.canEdit = NO;
         mUnread.readStyle = ({
@@ -121,7 +201,30 @@
         NSNumber* count = [[RPDataManager sharedManager] getCount:@"EntityFeedArticle" predicate:[mUnread.readStyle predicate] key:nil value:nil sort:nil asc:YES];
         mUnread.count = [count intValue];
         
-        [self.readStyleInputer mvp_addModel:mUnread];
+        if ([count integerValue] != 0) {
+            [self.readStyleInputer mvp_addModel:mUnread];
+        }
+        
+        
+        {
+            RRFeedInfoListOtherModel* mLater = GetRRFeedInfoListOtherModel(@"稍后阅读",@"favicon_4",@"想看还没有看的文章",@"readlater");
+            mLater.canRefresh = NO;
+            mLater.canEdit = NO;
+            mLater.readStyle = ({
+                RRReadStyle* s = [[RRReadStyle alloc] init];
+//                s.onlyReaded = YES;
+//                s.countlimit = 20;
+                s.readlater = YES;
+                s;
+            });
+            
+            NSNumber* count3 = [[RPDataManager sharedManager] getCount:@"EntityFeedArticle" predicate:[mLater.readStyle predicate] key:nil value:nil sort:nil asc:YES];
+            mLater.count = [count3 integerValue];
+            
+            if ([count3 integerValue] > 0) {
+                [self.readStyleInputer mvp_addModel:mLater];
+            }
+        }
         
         RRFeedInfoListOtherModel* mFavourite = GetRRFeedInfoListOtherModel(@"收藏",@"favicon_1",@"收藏的文章",@"favourite");
         mFavourite.canRefresh = NO;
@@ -135,14 +238,14 @@
         });
         
         NSNumber* count2 = [[RPDataManager sharedManager] getCount:@"EntityFeedArticle" predicate:[mFavourite.readStyle predicate] key:nil value:nil sort:nil asc:YES];
-        mFavourite.count = [count2 intValue];
+        mFavourite.count = [count2 integerValue];
         
         if ([count2 integerValue] > 0) {
             [self.readStyleInputer mvp_addModel:mFavourite];
         }
         
         {
-            RRFeedInfoListOtherModel* mLast = GetRRFeedInfoListOtherModel(@"最近阅读",@"favicon_3",@"近期阅读的文章",@"last");
+            RRFeedInfoListOtherModel* mLast = GetRRFeedInfoListOtherModel(@"最近阅读",@"favicon_3",@"近期阅读的20篇文章",@"last");
             mLast.canRefresh = NO;
             mLast.canEdit = NO;
             mLast.readStyle = ({
@@ -153,7 +256,7 @@
             });
             
             NSNumber* count3 = [[RPDataManager sharedManager] getCount:@"EntityFeedArticle" predicate:[mLast.readStyle predicate] key:nil value:nil sort:nil asc:YES];
-            mLast.count = [count3 intValue] > mLast.readStyle.countlimit ? mLast.readStyle.countlimit : [count3 intValue];
+            mLast.count = [count3 integerValue] > mLast.readStyle.countlimit ? mLast.readStyle.countlimit : [count3 integerValue];
             
             if ([count3 integerValue] > 0) {
                 [self.readStyleInputer mvp_addModel:mLast];
@@ -161,27 +264,42 @@
         }
     }
     
+    if ([self.readStyleInputer mvp_count] == 1) {
+        [self.readStyleInputer mvp_deleteModel:mTitle];
+    }
+    
     {
         RRFeedInfoListOtherModel* m = [[RRFeedInfoListOtherModel alloc] init];
         m.title = @"订阅源";
         m.canEdit = NO;
         m.type = RRFeedInfoListOtherModelTypeTitle;
-        [self.readStyleInputer mvp_addModel:m];
+    
+        if (a.count>0) {
+            [self.readStyleInputer mvp_addModel:m];
+        }
+        [a enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+            RRFeedInfoListModel* m = [[RRFeedInfoListModel alloc] init];
+            [m loadFromFeed:obj];
+            m.feed = obj;
+            m.canEdit = YES;
+            [self.inputer mvp_addModel:m];
+        }];
+       
     }
     
-    
-    NSArray* a = [[RPDataManager sharedManager] getAll:@"EntityFeedInfo" predicate:nil key:nil value:nil sort:@"sort" asc:YES];
-    
-    [a enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
-        RRFeedInfoListModel* m = [[RRFeedInfoListModel alloc] init];
-        [m loadFromFeed:obj];
-        m.feed = obj;
-        m.canEdit = YES;
-        [self.inputer mvp_addModel:m];
-    }];
-    
+    self.hasDatas = YES;
+    if([self.complexInput mvp_count]==0)
+    {
+        self.hasDatas = NO;
+        [self.view mvp_runAction:NSSelectorFromString(@"reloadEmpty")];
+    }
     
     self.needUpdate = NO;
+}
+
+- (NSNumber*)hasData
+{
+    return @(self.hasDatas);
 }
 
 - (void)openSetting
@@ -204,11 +322,26 @@
 
 - (void)dealloc
 {
+//    [[NSNotificationCenter defaultCenter] removeObserver:self name:UIAccessibilityPageScrolledNotification object:nil];
+    
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"RRMainListNeedUpdate" object:nil];
+    
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"RRMainListUpdate" object:nil];
+    
+    
     [[RPDataNotificationCenter defaultCenter] unregistEntityChange:@"EntityFeedInfo" observer:self];
+    
+    [[RPDataNotificationCenter defaultCenter] unregistEntityChange:@"EntityFeedArticle" observer:self];
 }
 
 - (void)refreshData:(UIRefreshControl*)sender
 {
+    self.refresher = sender;
+    if (self.updating) {
+        return;
+    }
+    self.updating = YES;
+    
     NSArray* all = self.inputer.allModels;
     
     // RRTODO:这部分也需要拆分，目前已经有三个地方用到了
@@ -219,7 +352,7 @@
         if (lastU != 0) {
             NSDate* d = [NSDate dateWithTimeIntervalSince1970:lastU];
             //NSLog(@"last %@ %@",d,@([d timeIntervalSinceDate:[NSDate date]]));
-            if ([d timeIntervalSinceDate:[NSDate date]] > - 10) {
+            if ([d timeIntervalSinceDate:[NSDate date]] > - 60) {
                 return NO;
             }
         }
@@ -236,11 +369,12 @@
     .map(^id _Nonnull(RRFeedInfoListModel*  _Nonnull x) {
         return [x.url absoluteString];
     });
+  
     
     __weak typeof(self) weakSelf = self;
     [[RRFeedLoader sharedLoader] refresh:all endRefreshBlock:^{
         dispatch_async(dispatch_get_main_queue(), ^{
-             [sender endRefreshing];
+             [weakSelf.refresher endRefreshing];
         });
     } progress:^(NSUInteger current, NSUInteger all) {
         dispatch_async(dispatch_get_main_queue(), ^{
@@ -248,17 +382,24 @@
         });
     }  finishBlock:^(NSUInteger all, NSUInteger error, NSUInteger article) {
         dispatch_async(dispatch_get_main_queue(), ^{
-            weakSelf.title = @"Reader Special";
+        
+            
+            weakSelf.updating = NO;
+            weakSelf.title = @"Reader Prime";
             if (article == 0) {
-                [PWToastView showText:@"没有更新的订阅"];
+                UIAccessibilityPostNotification(UIAccessibilityAnnouncementNotification, @"更新结束，没有更新的订阅");
+//                [PWToastView showText:@"没有更新的订阅"];
             }
             else {
                 [weakSelf loadData];
                 if (error == 0) {
-                    [PWToastView showText:[NSString stringWithFormat:@"更新了%ld个订阅源，共计%ld篇订阅",all,article]];
+                    NSString* tip = [NSString stringWithFormat:@"更新了%ld个订阅源，共计%ld篇订阅",all,article];
+                    [PWToastView showText:tip];
+                    UIAccessibilityPostNotification(UIAccessibilityAnnouncementNotification, [NSString stringWithFormat:@"更新了%ld篇订阅",article]);
                 }
                 else {
                     [PWToastView showText:[NSString stringWithFormat:@"更新了%ld个订阅源，共计%ld篇订阅，%ld个源更新失败",all,article,error]];
+                    UIAccessibilityPostNotification(UIAccessibilityAnnouncementNotification, [NSString stringWithFormat:@"更新了%ld篇订阅",article]);
                 }
             }
         });
@@ -365,17 +506,28 @@
 
 - (void)mvp_action_selectItemAtIndexPath:(NSIndexPath *)path
 {
+    id vc = [self viewControllerAtIndexPath:path];
+    [self.view mvp_pushViewController:vc];
+}
+
+- (id)viewControllerAtIndexPath:(NSIndexPath*)path
+{
     id model = [self.complexInput mvp_modelAtIndexPath:path];
     if ([model isKindOfClass:[RRFeedInfoListModel class]]) {
         id vc = [MVPRouter viewForURL:@"rr://list" withUserInfo:@{@"model":model}];
-        [self.view mvp_pushViewController:vc];
+//        [self.view mvp_pushViewController:vc];
+        return vc;
     }
     else if([model isKindOfClass:[RRFeedInfoListOtherModel class]])
     {
-        id vc = [MVPRouter viewForURL:@"rr://list" withUserInfo:@{@"model":model}];
-        [self.view mvp_pushViewController:vc];
+        RRFeedInfoListOtherModel* m = model;
+        if (m.type == RRFeedInfoListOtherModelTypeItem) {
+            id vc = [MVPRouter viewForURL:@"rr://list" withUserInfo:@{@"model":model}];
+//            [self.view mvp_pushViewController:vc];
+            return vc;
+        }
     }
-   
+    return nil;
 }
 
 - (void)recommand
@@ -389,6 +541,52 @@
     id vc = [MVPRouter viewForURL:@"rr://web" withUserInfo:@{@"name":@"Test.md"}];
     [[self view] mvp_pushViewController:vc];
 }
+
+- (void)openActionText:(UIBarButtonItem*)sender
+{
+    __weak typeof(self) weakSelf = self;
+    NSBlockOperation* action1 = [NSBlockOperation blockOperationWithBlock:^{
+        [weakSelf addRSS];
+    }];
+    
+    NSBlockOperation* action2 = [NSBlockOperation blockOperationWithBlock:^{
+        [weakSelf recommand];
+    }];
+    
+    UIViewController* vc = [MVPRouter viewForURL:@"rr://websetting?p=RRMainPageAddPresenter" withUserInfo:@{@"action1":action1,@"action2":action2}];
+    RRExtraViewController* nv = [[RRExtraViewController alloc] initWithRootViewController:vc];
+    vc.preferredContentSize = CGSizeMake(160, 40);
+    [nv.view setBackgroundColor:[UIColor clearColor]];
+    nv.modalPresentationStyle = UIModalPresentationPopover;
+    nv.popoverPresentationController.barButtonItem = sender;
+    nv.popoverPresentationController.permittedArrowDirections = UIPopoverArrowDirectionDown;
+    nv.popoverPresentationController.delegate = self;
+    nv.popoverPresentationController.popoverLayoutMargins = UIEdgeInsetsMake(15,15,15,15);
+    NSDictionary* style = [[NSUserDefaults standardUserDefaults] valueForKey:@"style"];
+    nv.popoverPresentationController.backgroundColor = UIColor.hex(style[@"$bar-tint-color"]);
+    [(UIViewController*)self.view presentViewController:nv animated:YES completion:^{
+        
+    }];
+}
+
+
+#pragma mark --  实现代理方法
+//默认返回的是覆盖整个屏幕，需设置成UIModalPresentationNone。
+-(UIModalPresentationStyle)adaptivePresentationStyleForPresentationController:(UIPresentationController *)controller{
+    return UIModalPresentationNone;
+}
+
+//点击蒙版是否消失，默认为yes；
+
+-(BOOL)popoverPresentationControllerShouldDismissPopover:(UIPopoverPresentationController *)popoverPresentationController{
+    return YES;
+}
+
+//弹框消失时调用的方法
+-(void)popoverPresentationControllerDidDismissPopover:(UIPopoverPresentationController *)popoverPresentationController{
+    //NSLog(@"弹框已经消失");
+}
+
 
 
 @end

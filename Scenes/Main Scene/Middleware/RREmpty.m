@@ -8,48 +8,51 @@
 
 #import "RREmpty.h"
 #import "ClassyKitLoader.h"
-
+@import ui_base;
 @implementation RREmpty
 
 - (NSString *)titleForEmptyTitle
 {
-    return @"空空如也";
-}
-
-- (NSDictionary *)attributesForEmptyTitle
-{
-//    //NSLog(@"%@",[ClassyKitLoader values]);
-    NSDictionary* d = [ClassyKitLoader values];
-    return @{
-             NSFontAttributeName: [UIFont fontWithName:d[@"$main-font"] size:[d[@"$main-font-size"] floatValue]]
-             };
+    return @"点击右下方按钮添加开启订阅";
 }
 
 - (NSString *)buttonTitleForState:(NSUInteger)state
 {
-    return @"";
-//    return @"探索RSS世界";
+    return @"推荐订阅源";
 }
 
-- (NSString *)titleForEmptyDescription
+- (void)didTapButton:(UIButton *)button
 {
-    return @"点击下方按钮添加开启订阅";
+    if (self.actionBlock) {
+        self.actionBlock();
+    }
 }
 
-- (NSDictionary *)attributesForEmptyDescription
+//- (NSDictionary *)buttonTitleAttributesForState:(NSUInteger)state
+//{
+//    NSDictionary* style = [[NSUserDefaults standardUserDefaults] valueForKey:@"style"];
+//    return @{
+//             NSForegroundColorAttributeName:UIColor.hex(style[@"$main-tint-color"])
+//             };
+//}
+
+- (UIImage *)image
 {
-    NSDictionary* d = [ClassyKitLoader values];
-    return @{
-             NSFontAttributeName: [UIFont fontWithName:d[@"$main-font"] size:[d[@"$sub-font-size"] floatValue]]
-             };
+    return [UIImage imageNamed:@"nodata"];
 }
 
-- (NSDictionary *)buttonTitleAttributesForState:(NSUInteger)state
+//- (CGFloat)verticalOffsetForEmptyDataSet:(UIScrollView *)scrollView
+//{
+////    return - 100;
+//}
+
+- (BOOL)emptyDataSetShouldAllowScroll:(UIScrollView *)scrollView
 {
-    NSDictionary* d = [ClassyKitLoader values];
-    return @{
-             NSFontAttributeName: [UIFont fontWithName:d[@"$main-font"] size:[d[@"$main-font-size"] floatValue]]
-             };
+    return YES;
 }
+
+//- (void)emptyDataSetDidAppear:(UIScrollView *)scrollView;{
+//    [scrollView setContentOffset:CGPointMake(0, self.top) animated:YES];
+//}
 
 @end

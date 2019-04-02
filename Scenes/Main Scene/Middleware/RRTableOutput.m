@@ -11,7 +11,8 @@
 #import "RRFeedAction.h"
 #import "RRFeedInfoListModel.h"
 #import "RRFeedInfoListOtherModel.h"
-@interface RRTableOutput () 
+#import "RRFeedInputer.h"
+@interface RRTableOutput ()  <UITableViewDelegate>
 {
     
 }
@@ -39,6 +40,29 @@
     return YES;
 }
 
+- (Class)tableviewClass
+{
+    return NSClassFromString(@"RRTableView");
+}
+
+//- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
+//{
+//    id model = [self.inputer mvp_modelAtIndexPath:indexPath];
+//    if ([model isKindOfClass:[RRFeedInfoListModel class]]) {
+//        //        RRFeedInfoListModel* m = model;
+//        return 60;
+//    }
+//    else if([model isKindOfClass:[RRFeedInfoListOtherModel class]])
+//    {
+//        RRFeedInfoListOtherModel* m = model;
+//        if (m.type == RRFeedInfoListOtherModelTypeTitle) {
+//            return 40;
+//        }
+//        return 60;
+//    }
+//    return 0;
+//}
+
 
 - (NSIndexPath *)tableView:(UITableView *)tableView targetIndexPathForMoveFromRowAtIndexPath:(NSIndexPath *)sourceIndexPath toProposedIndexPath:(NSIndexPath *)proposedDestinationIndexPath
 {
@@ -59,13 +83,13 @@
             RRFeedInfoListModel* m = model;
             __weak typeof(self) weakSelf = self;
             
-            CGRect r = [tableView rectForRowAtIndexPath:indexPath];
-            r = [tableView convertRect:r toView:nil];
-            r.origin.x += 0.9 * r.size.width;
-            r.origin.y += 0.5 * r.size.height;
-            r.size.width = 0;
-            r.size.height = 0;
-            [RRFeedAction delFeed:m.feed view:(id)self.presenter.view rect:r arrow:UIPopoverArrowDirectionRight finish:^{
+//            CGRect r = [tableView rectForRowAtIndexPath:indexPath];
+//            r = [tableView convertRect:r toView:nil];
+//            r.origin.x += 0.9 * r.size.width;
+//            r.origin.y += 0.5 * r.size.height;
+//            r.size.width = 0;
+//            r.size.height = 0;
+            [RRFeedAction delFeed:m.feed view:(id)self.presenter.view item:nil arrow:UIPopoverArrowDirectionRight finish:^{
                  [(id)weakSelf.presenter loadData];
             }];
         }
@@ -77,5 +101,21 @@
     
 }
 
+- (void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate
+{
+    if (!decelerate) {
+        if (self.newOffsetBlock) {
+            self.newOffsetBlock(scrollView.contentOffset.y);
+        }
+    }
+}
+
+
+- (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView
+{
+    if (self.newOffsetBlock) {
+        self.newOffsetBlock(scrollView.contentOffset.y);
+    }
+}
 
 @end

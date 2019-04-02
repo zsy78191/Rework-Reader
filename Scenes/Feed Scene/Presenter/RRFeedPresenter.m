@@ -21,6 +21,8 @@
 @import oc_base;
 #import "RRFeedAction.h"
 @import RegexKitLite;
+#import "AppleAPIHelper.h"
+#import "RRExtraViewController.h"
 
 @interface RRFeedPresenter ()
 {
@@ -127,7 +129,7 @@
         
         if (info.pubDate || info.lastBuildDate) {
             NSDate* d = info.pubDate ? info.pubDate : info.lastBuildDate;
-            RRFeedInfoModel* m = model(@"更新时间",@"updateDate",[NSString stringWithFormat:@"%@ · %@",[d timeAgoSinceNow],[[RRFeedLoader sharedLoader].shrotDateFormatter stringFromDate:d]]);
+            RRFeedInfoModel* m = model(@"更新时间",@"updateDate",[NSString stringWithFormat:@"%@ · %@",[d timeAgoSinceNow],[[RRFeedLoader sharedLoader].shortDateFormatter stringFromDate:d]]);
             [self.inputer mvp_addModel:m];
             m.origin_value = d;
         }
@@ -197,7 +199,7 @@
         self.allImgs += imgs.count;
         [self.inputer mvp_addModel:m];
         
-        if (m.date || m.updated) {
+        if (m.date || m.updateTime) {
             NSDate* up = m.date;
             if ([self.lastedArticleDate timeIntervalSinceDate:up] < 0) {
                 self.lastedArticleDate = up;
@@ -344,7 +346,19 @@
             return [weakSelf next:current];
         }];
     }
-    [self.view mvp_pushViewController:web];
+    
+    UIViewController* v = (id)self.view;
+    BOOL isTrait = [[NSUserDefaults standardUserDefaults] boolForKey:@"RRSplit"];
+    if (v.splitViewController && !isTrait) {
+        RRExtraViewController* n = [[RRExtraViewController alloc] initWithRootViewController:web];
+        n.handleTrait = YES;
+        NSArray* vcArray = @[v.navigationController,n];
+        [v.splitViewController setViewControllers:vcArray];
+    }
+    else
+    {
+        [self.view mvp_pushViewController:web];
+    }
 }
 
 - (void)unfeedit:(id)sender
@@ -368,7 +382,7 @@
     r.origin.y -= r.size.height;
     r.size.width = 0;
     r.size.height = 0;
-    [RRFeedAction delFeed:x view:(id)self.view  rect:r arrow:UIPopoverArrowDirectionDown finish:^{
+    [RRFeedAction delFeed:x view:(id)self.view  item:sender arrow:UIPopoverArrowDirectionDown finish:^{
          weakSelf.cancelFeed = NO;
     }];
 }
@@ -404,6 +418,7 @@
             [(UIViewController*)self.view hudSuccess:@"订阅成功"];
             [self.view mvp_popViewController:nil];
             sender.enabled = YES;
+            [AppleAPIHelper review];
         });
     }];
 }

@@ -17,6 +17,7 @@
 {
     
 }
+@property (nonatomic, strong) NSString* title;
 @property (nonatomic, strong) RRWebSettingInputer* inputer;
 @property (nonatomic, weak) RRWebStyleModel* style;
 @end
@@ -38,6 +39,8 @@
 
 - (void)mvp_initFromModel:(MVPInitModel *)model
 {
+    self.title = @"阅读设置";
+    
     [self.inputer mvp_addModel:({
         RRIconSettingModel* m = [[RRIconSettingModel alloc] init];
         m.title = @"文字大小";

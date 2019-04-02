@@ -26,6 +26,7 @@
 @property (nonatomic, strong) MWFeedInfo* info;
 
 @property (nonatomic, assign) BOOL articleLiked;
+@property (nonatomic, assign) BOOL articleReadLaterd;
 @property (nonatomic, strong) RRWebStyleModel* webStyle;
 @end
 
@@ -38,6 +39,7 @@
     self.model = m;
     self.info = feedInfo;
     self.articleLiked = self.model.liked;
+    self.articleReadLaterd = self.model.readlater;
 //    self.hasModel = self.model!=nil;
     self.webStyle = [RRWebStyleModel currentStyle];
     
@@ -54,6 +56,7 @@
     self.model = m;
     self.info = feedInfo;
     self.articleLiked = self.model.liked;
+    self.articleReadLaterd = self.model.readlater;
     id view = self.view;
     if ([view conformsToProtocol:@protocol(RRProvideDataProtocol)]) {
         [view loadData:m feed:feedInfo];
@@ -63,10 +66,7 @@
 - (void)openAction:(id)sender
 {
     if (self.model) {
-
         UIActivityViewController* v = [[UIActivityViewController alloc] initWithActivityItems:@[[NSURL URLWithString:self.model.link]] applicationActivities:nil];
-        
-        
         if ([UIDevice currentDevice].iPad()) {
             UIPopoverPresentationController* p = v.popoverPresentationController;
 //            [p setSourceRect:r];
@@ -87,11 +87,11 @@
     else {
         
     }
-    
 }
 
 - (void)openAction2:(id)sender
 {
+    __weak typeof(self) weakSelf = self;
     UIBarButtonItem* i = sender;
     CGRect r =({
         CGRect r = [[i valueForKeyPath:@"view.superview.frame"] CGRectValue];
@@ -103,7 +103,7 @@
     UIAlertController* a = UI_ActionSheet()
     .titled(@"更多操作")
     .action(@"全文HTML输出", ^(UIAlertAction * _Nonnull action, UIAlertController * _Nonnull alert) {
-        [self outputHTML];
+        [weakSelf outputHTML];
     })
     .cancel(@"取消", ^(UIAlertAction * _Nonnull action) {
         
@@ -126,6 +126,7 @@
 
 - (void)outputHTML
 {
+    __weak typeof(self) weakSelf = self;
     [[self webView] evaluateJavaScript:@"document.getElementsByTagName('html')[0].innerHTML;" completionHandler:^(NSString* _Nullable all, NSError * _Nullable error) {
         NSURL* u = [[UIApplication sharedApplication].doucumentDictionary() URLByAppendingPathComponent:@"output_temp.html"];
         NSError* e;
@@ -134,7 +135,7 @@
             NSArray* items = @[u];
             NSArray* activies = @[];
             UIActivityViewController* a = [[UIActivityViewController alloc] initWithActivityItems:items applicationActivities:activies];
-            [self.view mvp_presentViewController:a animated:YES completion:^{
+            [weakSelf.view mvp_presentViewController:a animated:YES completion:^{
                 
             }];
         }
@@ -143,7 +144,6 @@
 
 - (void)favIt
 {
-//    //NSLog(@"%d",self.model.liked);
     __weak typeof(self) weakSelf = self;
     [RRFeedAction likeArticle:YES withUUID:self.model.uuid block:^(NSError * _Nonnull e) {
         dispatch_async(dispatch_get_main_queue(), ^{
@@ -155,8 +155,41 @@
             }
         });
     }];
-    
     self.articleLiked = YES;
+}
+
+- (void)readLater
+{
+    __weak typeof(self) weakSelf = self;
+    [RRFeedAction readLaterArticle:YES withUUID:self.model.uuid block:^(NSError * _Nonnull e) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            if (e) {
+                [(id)weakSelf.view hudFail:@"操作失败"];
+            }
+            else {
+                weakSelf.articleReadLaterd = YES;
+                [(id)weakSelf.view hudSuccess:@"加入稍后阅读"];
+            }
+        });
+    }];
+//    self.articleReadLaterd = YES;
+}
+
+- (void)cancelReadLater
+{
+    __weak typeof(self) weakSelf = self;
+    [RRFeedAction readLaterArticle:NO withUUID:self.model.uuid block:^(NSError * _Nonnull e) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            if (e) {
+                [(id)weakSelf.view hudFail:@"操作失败"];
+            }
+            else {
+                weakSelf.articleReadLaterd = NO;
+//                [(id)weakSelf.view hudSuccess:@"加入稍后阅读"];
+            }
+        });
+    }];
+//    self.articleReadLaterd = NO;
 }
 
 - (void)testf
@@ -181,27 +214,24 @@
     self.articleLiked = NO;
 }
 
+- (void)acBack
+{
+    [self.view mvp_popViewController:nil];
+}
+
 - (void)openActionText:(UIBarButtonItem*)sender
 {
-//    UIAlertController;
     UIViewController* vc = [MVPRouter viewForURL:@"rr://websetting" withUserInfo:@{@"model":self.webStyle}];
     RRExtraViewController* nv = [[RRExtraViewController alloc] initWithRootViewController:vc];
-//    nv.setNavibarClear = YES;
     vc.preferredContentSize = CGSizeMake(200, 300);
     [nv.view setBackgroundColor:[UIColor clearColor]];
-//    [vc.view setBackgroundColor:[UIColor clearColor]];
-//    nv.view.cas_styleClass = @"CleanBackground";
-//    vc.view.cas_styleClass = @"CleanBackground";
-    
     nv.modalPresentationStyle = UIModalPresentationPopover;
     nv.popoverPresentationController.barButtonItem = sender;
     nv.popoverPresentationController.permittedArrowDirections = UIPopoverArrowDirectionUp;
     nv.popoverPresentationController.delegate = self;
-    vc.popoverPresentationController.popoverLayoutMargins = UIEdgeInsetsMake(15,15,15,15);
-//    [(UIViewController*)self.view showViewController:vc sender:nil];
-    
-//    [(UIViewController*)self.view setModalPresentationStyle:UIModalPresentationPopover];
-//    //NSLog(@"-- %@",vc.popoverPresentationController);
+    nv.popoverPresentationController.popoverLayoutMargins = UIEdgeInsetsMake(15,15,15,15);
+    NSDictionary* style = [[NSUserDefaults standardUserDefaults] valueForKey:@"style"];
+    nv.popoverPresentationController.backgroundColor = UIColor.hex(style[@"$bar-tint-color"]);
     [(UIViewController*)self.view presentViewController:nv animated:YES completion:^{
         
     }];
@@ -224,6 +254,11 @@
     
     //NSLog(@"弹框已经消失");
     
+}
+
+- (void)dealloc
+{
+    NSLog(@"%s",__func__);
 }
 
 @end

@@ -11,6 +11,7 @@
 #import "RPDataManager.h"
 #import "RRCoreDataModel.h"
 #import "RRFeedInfoListModel.h"
+#import "RRFeedInfoListOtherModel.h"
 @import oc_string;
 
 @implementation RRFeedInputer
@@ -22,8 +23,10 @@
 
 - (void)mvp_moveModelFromIndexPath:(NSIndexPath *)path1 toPath:(NSIndexPath *)path2
 {
-    [super mvp_moveModelFromIndexPath:path1 toPath:path2];
-    [self recordSort];
+    if (path1.section == path2.section) {
+        [super mvp_moveModelFromIndexPath:path1 toPath:path2];
+        [self recordSort];
+    }
 }
 
 - (void)recordSort
@@ -36,5 +39,6 @@
     
     [[RPDataManager sharedManager] udpateDatas:@"EntityFeedInfo" models:all queryKey:@"uuid" saveKeys:@[@"sort"] modify:nil finish:nil];
 }
+
 
 @end

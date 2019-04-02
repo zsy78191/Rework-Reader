@@ -1,0 +1,20 @@
+{
+    "setting": [
+        {
+            "title": "从iCloud覆盖本地数据",
+            "value": "localTime",
+            "action": "rewriteLocal:",
+            "switchkey": null,
+            "select": null,
+            "type": 5
+        },
+        {
+            "title": "从本地覆盖iCloud数据",
+            "value": "iCloudTime",
+            "action": "rewriteiCloud:",
+            "switchkey": null,
+            "select": null,
+            "type": 5
+        },
+    ]
+}

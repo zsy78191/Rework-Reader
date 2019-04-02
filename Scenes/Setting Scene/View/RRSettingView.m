@@ -8,11 +8,20 @@
 
 #import "RRSettingView.h"
 
-@interface RRSettingView ()
+@import StoreKit;
+@interface RRSettingView () <SKStoreProductViewControllerDelegate>
 
 @end
 
 @implementation RRSettingView
+
+
+- (void)productViewControllerDidFinish:(SKStoreProductViewController *)viewController
+{
+    [viewController dismissViewControllerAnimated:YES completion:^{
+        
+    }];
+}
 
 - (void)viewDidLoad {
     [super viewDidLoad];
@@ -29,6 +38,7 @@
   
 }
 
+
 - (void)mvp_configMiddleware
 {
     [super mvp_configMiddleware];
@@ -37,10 +47,16 @@
         view.title = value;
     } keypath:@"title"];
     
-    MVPTableViewOutput* outputer = self.outputer;
-    [outputer mvp_registerNib:[UINib nibWithNibName:@"RRSettingCell" bundle:[NSBundle mainBundle]] forCellReuseIdentifier:@"settingBaseCell"];
-    [outputer mvp_registerNib:[UINib nibWithNibName:@"RRTitleCell" bundle:[NSBundle mainBundle]] forCellReuseIdentifier:@"titleCell"];
-    [outputer mvp_registerNib:[UINib nibWithNibName:@"RRSwitchCell" bundle:[NSBundle mainBundle]] forCellReuseIdentifier:@"switchCell"];
+//    MVPTableViewOutput* outputer = self.outputer;
+    [self.outputer setRegistBlock:^(MVPTableViewOutput* output) {
+        [output registNibCell:@"RRSettingCell" withIdentifier:@"settingBaseCell"];
+        [output registNibCell:@"RRTitleCell" withIdentifier:@"titleCell"];
+        [output registNibCell:@"RRSwitchCell" withIdentifier:@"switchCell"];
+    }];
+    
+//    [outputer mvp_registerNib:[UINib nibWithNibName:@"RRSettingCell" bundle:[NSBundle mainBundle]] forCellReuseIdentifier:@"settingBaseCell"];
+//    [outputer mvp_registerNib:[UINib nibWithNibName:@"RRTitleCell" bundle:[NSBundle mainBundle]] forCellReuseIdentifier:@"titleCell"];
+//    [outputer mvp_registerNib:[UINib nibWithNibName:@"RRSwitchCell" bundle:[NSBundle mainBundle]] forCellReuseIdentifier:@"switchCell"];
 }
 
 - (void)viewWillAppear:(BOOL)animated

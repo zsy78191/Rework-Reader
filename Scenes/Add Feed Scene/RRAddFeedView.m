@@ -45,11 +45,18 @@
 - (void)mvp_configMiddleware
 {
     [super mvp_configMiddleware];
-    MVPTableViewOutput* outputer = self.outputer;
-    [outputer mvp_registerNib:[UINib nibWithNibName:@"RRAddInputCell" bundle:[NSBundle mainBundle]] forCellReuseIdentifier:@"inputCell"];
-    [outputer mvp_registerNib:[UINib nibWithNibName:@"RRSwitchCell" bundle:[NSBundle mainBundle]] forCellReuseIdentifier:@"switchCell"];
-    [outputer mvp_registerNib:[UINib nibWithNibName:@"RRBtnCell" bundle:[NSBundle mainBundle]] forCellReuseIdentifier:@"buttonCell"];
-    [outputer mvp_registerNib:[UINib nibWithNibName:@"RRTitleCell" bundle:[NSBundle mainBundle]] forCellReuseIdentifier:@"titleCell"];
+//    MVPTableViewOutput* outputer = self.outputer;
+    
+    [self.outputer setRegistBlock:^(id output) {
+        [output registNibCell:@"RRAddInputCell" withIdentifier:@"inputCell"];
+        [output registNibCell:@"RRSwitchCell" withIdentifier:@"switchCell"];
+        [output registNibCell:@"RRBtnCell" withIdentifier:@"buttonCell"];
+        [output registNibCell:@"RRTitleCell" withIdentifier:@"titleCell"];
+    }];
+//    [outputer mvp_registerNib:[UINib nibWithNibName:@"RRAddInputCell" bundle:[NSBundle mainBundle]] forCellReuseIdentifier:@"inputCell"];
+//    [outputer mvp_registerNib:[UINib nibWithNibName:@"RRSwitchCell" bundle:[NSBundle mainBundle]] forCellReuseIdentifier:@"switchCell"];
+//    [outputer mvp_registerNib:[UINib nibWithNibName:@"RRBtnCell" bundle:[NSBundle mainBundle]] forCellReuseIdentifier:@"buttonCell"];
+//    [outputer mvp_registerNib:[UINib nibWithNibName:@"RRTitleCell" bundle:[NSBundle mainBundle]] forCellReuseIdentifier:@"titleCell"];
 }
 
 /*

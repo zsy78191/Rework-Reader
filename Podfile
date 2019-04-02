@@ -31,6 +31,12 @@ target 'rework-reader' do
   
   #img
   pod 'SDWebImage', '~> 4.4.6'
+  
+  #xml解析
+  pod 'KissXML'
+  
+  #iCloud同步
+  pod 'Ensembles'
 
   # Pods for rework-reader
 

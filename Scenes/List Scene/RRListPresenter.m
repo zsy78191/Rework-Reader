@@ -24,6 +24,10 @@
 @import oc_string;
 @import oc_util;
 @import DateTools;
+#import "RRListView.h"
+#import "RRSafariViewController.h"
+
+#import "RRExtraViewController.h"
 
 @interface RRListPresenter ()
 {
@@ -40,10 +44,81 @@
 @property (nonatomic, strong) RRListInputer* inputerCoreData;
 
 @property (nonatomic, strong) NSMutableArray* hashTable;
+@property (nonatomic, assign) NSUInteger currentIdx;
+@property (nonatomic, assign) BOOL refreshing;
+
+@property (nonatomic, assign) BOOL isTrait;
+
+
+@property (nonatomic, assign) double t1OffesetY;
+@property (nonatomic, assign) double t2OffesetY;
+@property (nonatomic, assign) double t3OffesetY;
 
 @end
 
 @implementation RRListPresenter
+
+- (void)setInitailOffset:(NSNumber*)y
+{
+    self.t1OffesetY = self.t2OffesetY = self.t3OffesetY = [y doubleValue];
+}
+
+- (NSNumber*)currentOffset
+{
+    switch (self.currentIdx) {
+        case 0:
+        {
+            return @(self.t1OffesetY);
+            break;
+        }
+        case 1:
+        {
+            return @(self.t2OffesetY);
+            break;
+        }
+        case 2:
+        {
+            return @(self.t3OffesetY);
+            break;
+        }
+        default:
+            break;
+    }
+    return @(self.t1OffesetY);
+}
+
+- (void)newOffset:(NSNumber*)offsetY
+{
+    switch (self.currentIdx) {
+        case 0:
+        {
+            self.t1OffesetY = [offsetY doubleValue];
+            break;
+        }
+        case 1:
+        {
+            self.t2OffesetY = [offsetY doubleValue];
+            break;
+        }
+        case 2:
+        {
+            self.t3OffesetY = [offsetY doubleValue];
+            break;
+        }
+        default:
+            break;
+    }
+}
+
+- (void)trait
+{
+    self.isTrait = YES;
+}
+
+- (void)notTrait
+{
+    self.isTrait = NO;
+}
 
 - (NSMutableArray *)hashTable
 {
@@ -66,8 +141,19 @@
 
 - (void)updateHashData
 {
-    [self.hashTable removeAllObjects];
-    [self.hashTable addObjectsFromArray:self.inputerCoreData.allModels];
+    
+    // BUGFIXED
+    
+    NSArray* a = self.inputerCoreData.allModels;
+    a = a.reverse.filter(^BOOL(id  _Nonnull x) {
+        return [self.hashTable indexOfObject:x] == NSNotFound;
+    });
+    [a enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+        [self.hashTable insertObject:obj atIndex:0];
+    }];
+    
+//    [self.hashTable removeAllObjects];
+//    [self.hashTable addObjectsFromArray:self.inputerCoreData.allModels];
 }
 
 - (RRFeedInfoInputer *)inputer
@@ -98,6 +184,8 @@
 
 - (void)mvp_initFromModel:(MVPInitModel *)model
 {
+    self.refreshing = NO;
+    
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateHashData) name:UIApplicationDidBecomeActiveNotification object:nil];
     
     id m = model.userInfo[@"model"];
@@ -130,7 +218,7 @@
     });
   
     __weak typeof(self) weakSelf = self;
-    [RRFeedAction delFeed:self.infoModel.feed view:(id)self.view rect:r arrow:UIPopoverArrowDirectionUp finish:^{
+    [RRFeedAction delFeed:self.infoModel.feed view:(id)self.view item:sender arrow:UIPopoverArrowDirectionUp finish:^{
         [(id)weakSelf.view mvp_popViewController:nil];
     }];
 }
@@ -153,8 +241,6 @@
         [self delFeedInfo:self.infoModel.feed];
     })
     .show((id)self.view);
-    
-    
 }
 
 - (void)delFeedInfo:(EntityFeedInfo*)info
@@ -193,15 +279,23 @@
 
 - (void)refreshData:(UIRefreshControl*)sender
 {
+    if (self.refreshing) {
+        return;
+    }
+    self.refreshing = YES;
+    
     __weak typeof(self) weakSelf = self;
     [self updateFeedData:^(NSInteger x) {
+        weakSelf.refreshing = NO;
         dispatch_async(dispatch_get_main_queue(), ^{
             //                [P]
             if (x == 0) {
                 [PWToastView showText:@"没有更新的订阅了"];
+                UIAccessibilityPostNotification(UIAccessibilityAnnouncementNotification, @"更新结束，没有更新的订阅");
             }
             else {
                 [PWToastView showText:[NSString stringWithFormat:@"更新了%ld篇订阅",x]];
+                UIAccessibilityPostNotification(UIAccessibilityAnnouncementNotification, [NSString stringWithFormat:@"更新了%ld篇订阅",x]);
             }
             [sender endRefreshing];
             [weakSelf updateHashData];
@@ -215,25 +309,19 @@
     if (self.infoModel) {
         __block NSMutableArray* temp = [[NSMutableArray alloc] init];
         [[RRFeedLoader sharedLoader] loadFeed:[self.infoModel.feed.url absoluteString] infoBlock:^(MWFeedInfo * _Nonnull info) {
-            
         } itemBlock:^(MWFeedItem * _Nonnull item) {
             //NSLog(@"%@",item.title);
-            
             // AllReadyTODO:新增文章
             RRFeedArticleModel* m = [[RRFeedArticleModel alloc] initWithItem:item];
             [temp addObject:m];
-            
         } errorBlock:^(NSError * _Nonnull error) {
             
         } finishBlock:^{
-            
             [RRFeedAction insertArticle:temp withFeed:self.infoModel.feed finish:^(NSUInteger x) {
                 if (finished) {
                     finished(x);
                 }
             }];
-            
-            
         } needUpdateIcon:NO];
     }
     else if(self.styleModel)
@@ -288,29 +376,69 @@
 }
 
 
+- (UIViewController*)viewControllerAtIndexPath:(NSIndexPath*)path
+{
+    id model = [[self inputerCoreData] mvp_modelAtIndexPath:path];
+    return [self loadArticle:model];
+}
+
 - (void)mvp_action_selectItemAtIndexPath:(NSIndexPath *)path
 {
     id model = [[self inputerCoreData] mvp_modelAtIndexPath:path];
+    id vc = nil;
     if ([model isKindOfClass:[RRFeedArticleModel class]]) {
-        [self loadArticle:model];
+        vc = [self loadArticle:model];
     }
     else if([model isKindOfClass:[EntityFeedArticle class]])
     {
 //        RRFeedArticleModel* mm = [[RRFeedArticleModel alloc] initWithEntity:model];
 //        mm.feedEntity = [(EntityFeedArticle*)model feed];
-        [self loadArticle:model];
+        vc = [self loadArticle:model];
+    }
+    if (vc) {
+//        if ([UIDevice currentDevice].iPad() && self.isTrait) {
+//            UIViewController* v = (id)self.view;
+//
+//        }
+        UIViewController* v = (id)self.view;
+        BOOL isTrait = [[NSUserDefaults standardUserDefaults] boolForKey:@"RRSplit"];
+        
+//        NSLog(@"%@",v.splitViewController.viewControllers);
+        if (v.splitViewController && !isTrait) {
+            
+            RRExtraViewController* n = [[RRExtraViewController alloc] initWithRootViewController:vc];
+            n.handleTrait = YES;
+            if ([vc isKindOfClass:[SFSafariViewController class]]) {
+//                [n setNavigationBarHidden:YES animated:NO];
+//                [n setToolbarHidden:YES];
+                NSArray* vcArray = @[v.navigationController,vc];
+                 [v.splitViewController setViewControllers:vcArray];
+            }
+            else {
+                NSArray* vcArray = @[v.navigationController,n];
+                [v.splitViewController setViewControllers:vcArray];
+            }
+        }
+        else {
+            if ([vc isKindOfClass:[SFSafariViewController class]]) {
+                [self.view mvp_presentViewController:vc animated:YES completion:^{
+                    
+                }];
+            }
+            else {
+                [self.view mvp_pushViewController:vc];
+            }
+        }
     }
 }
 
-- (void)loadArticle:(id)model
+- (UIViewController*)loadArticle:(id)model
 {
     id feed = nil;
  
     if ([model isKindOfClass:[RRFeedArticleModel class]]) {
         feed = [model feedEntity];
         RRFeedArticleModel* m = model;
-
-        
     }
     else if([model isKindOfClass:[EntityFeedArticle class]])
     {
@@ -319,7 +447,7 @@
         EntityFeedArticle* a = model;
 
         if (i.usesafari) {
-            
+
             [RRFeedAction readArticle:a.uuid];
             
             NSString* link = a.link;
@@ -331,15 +459,15 @@
             
             if (!u) {
                 [[self view] hudFail:@"链接不可用"];
-                return;
+                return nil;
             }
             
             SFSafariViewControllerConfiguration* c = [[SFSafariViewControllerConfiguration alloc] init];
             c.entersReaderIfAvailable = YES;
-            SFSafariViewController* s = [[SFSafariViewController alloc] initWithURL:u configuration:c];
-            [self.view mvp_presentViewController:s animated:YES completion:^{
-            }];
-            return;
+            RRSafariViewController* s = [[RRSafariViewController alloc] initWithURL:u configuration:c];
+//            [self.view mvp_presentViewController:s animated:YES completion:^{
+//            }];
+            return s;
         }
     }
     
@@ -364,7 +492,8 @@
             return [weakSelf next:current];
         }];
     }
-    [self.view mvp_pushViewController:web];
+//    [self.view mvp_pushViewController:web];
+    return web;
 }
 
 
@@ -400,9 +529,9 @@
 //    NSArray* all = [self.inputerCoreData allModels];
 //    NSArray* all = [self.hashTable allObjects];
     NSArray* all = self.hashTable;
-    NSInteger x = [all indexOfObject:current];
+    NSUInteger x = [all indexOfObject:current];
     //    //NSLog(@"%@ %ld" ,current,x);
-    if (x == 0) {
+    if (x == 0 || x == NSNotFound) {
         return nil;
     }
     NSInteger lastidx = x-1;
@@ -420,7 +549,7 @@
     NSArray* all = self.hashTable;
     NSInteger x = [all indexOfObject:current];
     //    //NSLog(@"%@ %ld" ,current,x);
-    if (x == all.count - 1) {
+    if (x == all.count - 1 || x == NSNotFound) {
         return nil;
     }
     NSInteger lastidx = x+1;
@@ -459,6 +588,10 @@
 
 - (void)configit:(id)sender
 {
+//    [[self.inputerCoreData allModels] enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+//        NSLog(@"%@",[obj valueForKey:@"date"]);
+//    }];
+    
     EntityFeedInfo* feed = self.infoModel.feed;
     BOOL usetll = feed.usettl;
     BOOL useauto = feed.useautoupdate;
@@ -494,35 +627,119 @@
         })
         .show((id)self.view);
     })
+    .action(@"复制订阅源URL", ^(UIAlertAction * _Nonnull action, UIAlertController * _Nonnull alert) {
+        [[UIPasteboard generalPasteboard] setURL:feed.url];
+        [self.view hudSuccess:@"复制成功"];
+    })
     .action(usetll?@"关闭缓存期内更新":@"开启缓存期内更新", ^(UIAlertAction * _Nonnull action, UIAlertController * _Nonnull alert) {
-        
         [weakSelf changeFeedValue:@(!usetll) forKey:@"usettl" void:^(NSError *e) {
-            
         }];
     })
     .action(useauto?@"关闭自动更新文章":@"开启自动更新文章", ^(UIAlertAction * _Nonnull action, UIAlertController * _Nonnull alert) {
-        
         [weakSelf changeFeedValue:@(!useauto) forKey:@"useautoupdate" void:^(NSError *e) {
-            
         }];
     })
     .action(usesafari?@"关闭直接阅读原文":@"开启直接阅读原文", ^(UIAlertAction * _Nonnull action, UIAlertController * _Nonnull alert) {
         [weakSelf changeFeedValue:@(!usesafari) forKey:@"usesafari" void:^(NSError *e) {
-            
         }];
     })
     .cancel(@"取消", ^(UIAlertAction * _Nonnull action) {
-        
     });
     
     if ([UIDevice currentDevice].iPad()) {
-        [[self view] showAsProver:a view:[(UIViewController*)self.view view] rect:r arrow:UIPopoverArrowDirectionUp];
+//        [[self view] showAsProver:a view:[(UIViewController*)self.view view] rect:r arrow:UIPopoverArrowDirectionUp];
+        [[self view] showAsProver:a view:[(UIViewController*)[self view] view] item:sender arrow:UIPopoverArrowDirectionDown];
     }
     else {
         a.show((id)self.view);
     }
-    
-    
+}
+
+
+- (void)changeType:(UISegmentedControl*)sender
+{
+//    NSLog(@"%@",sender);
+    self.currentIdx = sender.selectedSegmentIndex;
+    switch (sender.selectedSegmentIndex) {
+        case 0:
+        {
+            self.inputerCoreData.style.onlyUnread = YES;
+            self.inputerCoreData.style.onlyReaded = NO;
+            self.inputerCoreData.style.liked = NO;
+            break;
+        }
+        case 1:
+        {
+            self.inputerCoreData.style.onlyUnread = NO;
+            self.inputerCoreData.style.onlyReaded = YES;
+            self.inputerCoreData.style.liked = NO;
+            break;
+        }
+        case 2:
+        {
+            self.inputerCoreData.style.onlyUnread = NO;
+            self.inputerCoreData.style.onlyReaded = NO;
+            self.inputerCoreData.style.liked = YES;
+            break;
+        }
+        default:
+            break;
+    }
+    [self.inputerCoreData rebuildFetch];
+//    [(id)self.view reloadData];
+    [self updateHashData];
+    [self.view mvp_reloadData];
+}
+
+- (void)maskAllReaded:(id)sender
+{
+    __weak typeof(self) weakSelf = self;
+    UI_Alert()
+    .titled(@"全部标记已读")
+    .recommend(@"已读", ^(UIAlertAction * _Nonnull action, UIAlertController * _Nonnull alert) {
+//        [[weakSelf.inputerCoreData allModels] enumerateObjectsUsingBlock:^(EntityFeedArticle*  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+//            [RRFeedAction readArticle:obj.uuid onlyMark:YES];
+//        }];
+        [self markAllAsReaded];
+    })
+    .cancel(@"取消", nil)
+    .show((id)self.view);
+}
+
+- (void)markAllAsReaded
+{
+    NSPredicate* p = [self.inputerCoreData.style predicate];
+    [[RPDataManager sharedManager] updateDatas:@"EntityFeedArticle" predicate:p modify:^(EntityFeedArticle*  _Nonnull obj) {
+        obj.readed = YES;
+    } finish:^(NSArray * _Nonnull results, NSError * _Nonnull e) {
+        NSLog(@"%@",e);
+    }];
+}
+
+- (void)markAsReaded:(NSIndexPath*)path
+{
+    EntityFeedArticle* model = [self.inputerCoreData mvp_modelAtIndexPath:path];
+    [RRFeedAction readArticle:model.uuid onlyMark:YES];
+}
+
+- (void)markAsReadLater:(NSIndexPath*)path
+{
+    EntityFeedArticle* model = [self.inputerCoreData mvp_modelAtIndexPath:path];
+    [RRFeedAction readLaterArticle:!model.readlater withUUID:model.uuid block:^(NSError * _Nonnull e) {
+        if (!e) {
+             [RRFeedAction readArticle:model.uuid onlyMark:YES];
+        }
+    }];
+}
+
+- (void)markAsFavourite:(NSIndexPath*)path
+{
+    EntityFeedArticle* model = [self.inputerCoreData mvp_modelAtIndexPath:path];
+    [RRFeedAction likeArticle:!model.liked withUUID:model.uuid block:^(NSError * _Nonnull e) {
+        if (!e) {
+            [RRFeedAction readArticle:model.uuid onlyMark:YES];
+        }
+    }];
 }
 
 

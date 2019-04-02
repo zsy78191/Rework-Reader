@@ -1,0 +1,40 @@
+<!DOCTYPE html><html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no">
+    <title><#title#></title>
+<#latex#>
+<#mardownjs#>
+<style>
+    html,body{
+        --main-tint-color: <#main-tint-color#>;
+        --bg-color: <#bgColor#>;
+        --sub-bg-color: <#sub-bg-color#>;
+        --main-color: <#main-color#>;
+        --sub-color: <#sub-color#>;
+    }
+</style>
+<link rel="stylesheet" href="style1.css" type="text/css" />
+<style> @media print{ .hljs{overflow: visible; word-wrap: break-word !important;} }</style>
+</head>
+
+<body>
+    <div id="markdown-body" class="markdown-body">
+        <div onclick="window.open('<#url#>');">
+            <h1>
+                <#title#>
+            </h1>
+            <p class="article_time"><#subtitle#><span class="btn_origin">阅读原文</span></p>
+                </div>
+ <#html#>
+</div></body>
+<script>
+    var host = "<#host#>";
+    if(<#useMarkdown#>)
+    {
+        <#markdownhtml#>
+    }
+</script>
+<script type="text/javascript" src="action.js"></script>
+<#highlight#>
+</html>
