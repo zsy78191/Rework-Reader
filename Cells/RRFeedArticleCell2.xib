@@ -102,6 +102,10 @@
                     <constraint firstItem="o0J-9m-OQp" firstAttribute="leading" secondItem="44v-b7-fRq" secondAttribute="leading" id="wwq-I2-USD"/>
                 </constraints>
             </tableViewCellContentView>
+            <accessibility key="accessibilityConfiguration">
+                <accessibilityTraits key="traits" header="YES"/>
+                <bool key="isElement" value="YES"/>
+            </accessibility>
             <viewLayoutGuide key="safeArea" id="poN-iW-93y"/>
             <connections>
                 <outlet property="dateLabel" destination="APn-n8-ame" id="kZg-ny-Lbe"/>

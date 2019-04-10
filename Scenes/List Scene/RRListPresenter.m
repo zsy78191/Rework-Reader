@@ -129,21 +129,25 @@
 }
 
 
-- (void)viewWillAppear:(BOOL)animated
-{
-    
-}
+//- (void)viewDidDisappear:(BOOL)animated
+//{
+//    [self reloadHashData];
+//}
 
 - (void)viewDidAppear:(BOOL)animated
 {
-    [self updateHashData];
+    [self reloadHashData];
+}
+
+- (void)reloadHashData
+{
+    [self.hashTable removeAllObjects];
+    [self.hashTable addObjectsFromArray:self.inputerCoreData.allModels];
 }
 
 - (void)updateHashData
 {
-    
     // BUGFIXED
-    
     NSArray* a = self.inputerCoreData.allModels;
     a = a.reverse.filter(^BOOL(id  _Nonnull x) {
         return [self.hashTable indexOfObject:x] == NSNotFound;
@@ -209,14 +213,14 @@
 
 - (void)deleteIt:(id)sender
 {
-    UIBarButtonItem* i = sender;
-    CGRect r =({
-        CGRect r = [[i valueForKeyPath:@"view.superview.frame"] CGRectValue];
-        r.origin.x -= r.size.width/4;
-        r.origin.y += r.size.height/2;
-        r;
-    });
-  
+//    UIBarButtonItem* i = sender;
+//    CGRect r =({
+//        CGRect r = [[i valueForKeyPath:@"view.superview.frame"] CGRectValue];
+//        r.origin.x -= r.size.width/4;
+//        r.origin.y += r.size.height/2;
+//        r;
+//    });
+//
     __weak typeof(self) weakSelf = self;
     [RRFeedAction delFeed:self.infoModel.feed view:(id)self.view item:sender arrow:UIPopoverArrowDirectionUp finish:^{
         [(id)weakSelf.view mvp_popViewController:nil];
@@ -384,6 +388,11 @@
 
 - (void)mvp_action_selectItemAtIndexPath:(NSIndexPath *)path
 {
+    UIViewController* c = (id)self.view;
+    if (c.editing) {
+        return;
+    }
+    
     id model = [[self inputerCoreData] mvp_modelAtIndexPath:path];
     id vc = nil;
     if ([model isKindOfClass:[RRFeedArticleModel class]]) {
@@ -438,7 +447,7 @@
  
     if ([model isKindOfClass:[RRFeedArticleModel class]]) {
         feed = [model feedEntity];
-        RRFeedArticleModel* m = model;
+//        RRFeedArticleModel* m = model;
     }
     else if([model isKindOfClass:[EntityFeedArticle class]])
     {
@@ -597,13 +606,13 @@
     BOOL useauto = feed.useautoupdate;
     BOOL usesafari = feed.usesafari;
     
-    UIBarButtonItem* i = sender;
-    CGRect r =({
-        CGRect r = [[i valueForKeyPath:@"view.superview.frame"] CGRectValue];
-        r.origin.x -= r.size.width/4;
-        r.origin.y += r.size.height/2;
-        r;
-    });
+//    UIBarButtonItem* i = sender;
+//    CGRect r =({
+//        CGRect r = [[i valueForKeyPath:@"view.superview.frame"] CGRectValue];
+//        r.origin.x -= r.size.width/4;
+//        r.origin.y += r.size.height/2;
+//        r;
+//    });
     
     __weak typeof(self) weakSelf = self;
     UIAlertController* a = UI_ActionSheet()
@@ -642,6 +651,9 @@
     .action(usesafari?@"关闭直接阅读原文":@"开启直接阅读原文", ^(UIAlertAction * _Nonnull action, UIAlertController * _Nonnull alert) {
         [weakSelf changeFeedValue:@(!usesafari) forKey:@"usesafari" void:^(NSError *e) {
         }];
+    })
+    .action(@"删除订阅源", ^(UIAlertAction * _Nonnull action, UIAlertController * _Nonnull alert) {
+        [weakSelf deleteIt2:sender];
     })
     .cancel(@"取消", ^(UIAlertAction * _Nonnull action) {
     });
@@ -687,13 +699,13 @@
     }
     [self.inputerCoreData rebuildFetch];
 //    [(id)self.view reloadData];
-    [self updateHashData];
+    [self reloadHashData];
     [self.view mvp_reloadData];
 }
 
 - (void)maskAllReaded:(id)sender
 {
-    __weak typeof(self) weakSelf = self;
+//    __weak typeof(self) weakSelf = self;
     UI_Alert()
     .titled(@"全部标记已读")
     .recommend(@"已读", ^(UIAlertAction * _Nonnull action, UIAlertController * _Nonnull alert) {

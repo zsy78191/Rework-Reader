@@ -47,9 +47,8 @@
     }];
 }
 
-+ (void)_insert:(id)obj keys:(NSArray*)k feed:(EntityFeedInfo*)info
++ (void)_insert:(id)obj keys:(NSArray*)k feed:(EntityFeedInfo*)info context:(NSManagedObjectContext*)c
 {
-    NSManagedObjectContext* c = [NSManagedObjectContext MR_rootSavingContext];
     [[RPDataManager sharedManager] insertClass:@"EntityFeedArticle" model:obj keys:k context:c modify:^id _Nonnull(id  _Nonnull key, id  _Nonnull value) {
         if ([key isEqualToString:@"date"] || [key isEqualToString:@"updateTime"]) {
             return [obj valueForKey:key];
@@ -98,13 +97,14 @@
 
 + (void)preloadImages:(NSString *)uuid
 {
+    return;
     EntityFeedArticle* a = [[RPDataManager sharedManager] getFirst:@"EntityFeedArticle" predicate:nil key:@"uuid" value:uuid sort:nil asc:YES];
     [[self class] preloadEntityImages:a];
 }
 
 + (void)preloadEntityImages:(EntityFeedArticle *)article
 {
-  
+    return;
     NSString* temp = article.content.length>30?article.content:article.summary;
     NSArray* imgs = [temp componentsMatchedByRegex:@"(?<=<img).*?(?=\\>)"];
     [imgs enumerateObjectsUsingBlock:^(NSString*  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
@@ -128,8 +128,7 @@
 
 + (void)insertArticle:(NSArray*)article withFeed:(EntityFeedInfo*)info finish:(void (^)(NSUInteger))finish
 {
-    NSManagedObjectContext* rc = [NSManagedObjectContext MR_rootSavingContext];
-    [rc performBlockAndWait:^{
+    [MagicalRecord saveWithBlockAndWait:^(NSManagedObjectContext * _Nonnull localContext) {
         __block NSUInteger c = 0;
         [article enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
             NSMutableArray* ps = [[obj ob_propertys] mutableCopy];
@@ -137,15 +136,15 @@
             NSUInteger i = [RRFeedAction exist:obj feed:info];
             if (i == 0) {
                 c++;
-                [RRFeedAction _insert:obj keys:ps feed:info];
+                [RRFeedAction _insert:obj keys:ps feed:info context:localContext];
             }
         }];
         if (finish) {
-            NSError*e;
-            [rc save:&e];
-            if (e) {
-                NSLog(@"%@",e);
-            }
+//            NSError*e;
+//            [rc save:&e];
+//            if (e) {
+//                NSLog(@"%@",e);
+//            }
             finish(c);
         }
     }];
@@ -208,23 +207,22 @@
 
 + (void)insertArticle:(NSArray*)article finish:(void (^)(NSUInteger))finish
 {
-    __block NSUInteger c = 0;
-    [article enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
-        NSMutableArray* ps = [[obj ob_propertys] mutableCopy];
-        id info = [obj valueForKey:@"feedEntity"];
-        [ps removeObject:@"feedEntity"];
-        
-//        //NSLog(@"%@",obj);
-        NSUInteger i = [[self class] exist:obj feed:info];
-        if (i == 0) {
-            c++;
-            [[self class] _insert:obj keys:ps feed:info];
+    [MagicalRecord saveWithBlockAndWait:^(NSManagedObjectContext * _Nonnull localContext) {
+        __block NSUInteger c = 0;
+        [article enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+            NSMutableArray* ps = [[obj ob_propertys] mutableCopy];
+            id info = [obj valueForKey:@"feedEntity"];
+            [ps removeObject:@"feedEntity"];
+            NSUInteger i = [RRFeedAction exist:obj feed:info];
+            if (i == 0) {
+                c++;
+                [RRFeedAction _insert:obj keys:ps feed:info context:localContext];
+            }
+        }];
+        if (finish) {
+            finish(c);
         }
     }];
-    
-    if (finish) {
-        finish(c);
-    }
     //NSLog(@"一共增加%ld篇文章",c);
 }
 

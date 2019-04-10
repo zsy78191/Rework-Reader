@@ -16,6 +16,7 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    self.restorationIdentifier = @"RRSplitViewController";
     // Do any additional setup after loading the view.
 }
 

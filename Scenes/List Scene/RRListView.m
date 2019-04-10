@@ -26,6 +26,7 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
+     self.restorationIdentifier = @"RRListRestoreView";
 }
 
 - (void)mvp_initFromModel:(MVPInitModel *)model
@@ -35,10 +36,13 @@
         return;
     }
     if ([m isKindOfClass:[RRFeedInfoListModel class]]) {
-        RRFeedInfoListModel* mm = m;
+//        RRFeedInfoListModel* mm = m;
         
-        UIBarButtonItem* item = [self mvp_buttonItemWithSystem:UIBarButtonSystemItemTrash actionName:@"deleteIt:" title:@"删除"];
+        UIBarButtonItem* item = [self mvp_buttonItemWithActionName:@"maskAllReaded:" title:@"全部已读"];
         self.navigationItem.rightBarButtonItems = @[item];
+        
+//        UIBarButtonItem* item = [self mvp_buttonItemWithSystem:UIBarButtonSystemItemTrash actionName:@"deleteIt:" title:@"删除"];
+//        self.navigationItem.rightBarButtonItems = @[item];
         
 //        MVPTableViewOutput* o = self.outputer;
         [self.outputer setRegistBlock:^(id output) {
@@ -54,7 +58,9 @@
             UIBarButtonItem* item = [self mvp_buttonItemWithActionName:@"maskAllReaded:" title:@"全部已读"];
             self.navigationItem.rightBarButtonItems = @[item];
         }
-        
+        else {
+//            self.navigationItem.rightBarButtonItem = self.editButtonItem;
+        }
         if (mm.canRefresh) {
 //            MVPTableViewOutput* o = self.outputer;
             [self.outputer setRegistBlock:^(id output) {
@@ -80,12 +86,19 @@
         [(id)self.presenter viewWillAppear:animated];
     }
     [[self navigationController] setToolbarHidden:!self.showToolBar animated:animated];
+//    NSLog(@"%s",__func__);
 }
 
 - (void)viewWillDisappear:(BOOL)animated
 {
     [super viewWillDisappear:animated];
-//    [self.navigationController setToolbarHidden:NO animated:animated];
+//    NSLog(@"%s",__func__);
+}
+
+- (void)viewDidDisappear:(BOOL)animated
+{
+    [super viewDidDisappear:animated];
+//    NSLog(@"%s",__func__);
 }
 
 - (void)viewDidAppear:(BOOL)animated
@@ -94,6 +107,7 @@
     if ([self.presenter respondsToSelector:@selector(viewDidAppear:)]) {
         [(id)self.presenter viewDidAppear:animated];
     }
+//    NSLog(@"%s",__func__);
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
         double heigt = self.navigationController.navigationBar.frame.size.height + [UIApplication sharedApplication].statusBarFrame.size.height;
@@ -145,9 +159,13 @@
     self.toolbarItems = @[t2,i,t,item2];
 }
 
+
+
 - (void)mvp_configMiddleware
 {
     [super mvp_configMiddleware];
+    
+//    [self mvp_bindSelector:@selector(viewDidDisappear:)];
 
     RRListEmpty* empty = [[RRListEmpty alloc] init];
     self.empty = empty;
@@ -155,6 +173,9 @@
    
 //    MVPTableViewOutput* o = self.outputer;
     [self.outputer setRegistBlock:^(MVPTableViewOutput* output) {
+     
+       
+        output.canMove = NO;
         [output registNibCell:@"RRFeedArticleCell2" withIdentifier:@"articleCell"];
         [weakSelf registerForPreviewingWithDelegate:weakSelf sourceView:output.tableview];
         [empty setActionBlock:^{
@@ -187,6 +208,34 @@
             m.action = @"markAsFavourite:";
         })];
         
+        [output setActionArraysBeforeUseBlock:^NSMutableArray * _Nonnull(NSMutableArray * _Nonnull actionsArrays, EntityFeedArticle*  _Nonnull model) {
+            if (model.readed) {
+//                [actionsArrays removeAllObjects];
+                return [@[] mutableCopy];
+            }
+            return actionsArrays;
+        }];
+        
+        [output setLeadActionsArraysBeforeUseBlock:^NSMutableArray * _Nonnull(NSMutableArray * _Nonnull actionsArrays, EntityFeedArticle*  _Nonnull model) {
+            if (model.readlater) {
+                MVPCellActionModel* m1 = actionsArrays.firstObject;
+                m1.title = @"取消\n稍后阅读";
+            }
+            else {
+                MVPCellActionModel* m1 = actionsArrays.firstObject;
+                m1.title = @"稍后阅读";
+            }
+            if (model.liked) {
+                MVPCellActionModel* m2 = actionsArrays.lastObject;
+                m2.title = @"取消\n收藏";
+            }
+            else{
+                MVPCellActionModel* m2 = actionsArrays.lastObject;
+                m2.title = @"收藏";
+            }
+            return actionsArrays;
+        }];
+        
         __weak UITableView* t = output.tableview;
         [[output.tableview rac_signalForSelector:@selector(accessibilityScroll:)] subscribeNext:^(RACTuple * _Nullable x) {
             if ([x[0] integerValue] == UIAccessibilityScrollDirectionUp) {
@@ -199,8 +248,9 @@
         }];
         
         RRTableOutput* o = (id)output;
+        o.canMutiSelect = YES;
         [o setNewOffsetBlock:^(CGFloat offsetY) {
-            double heigt = self.navigationController.navigationBar.frame.size.height + [UIApplication sharedApplication].statusBarFrame.size.height;
+            double heigt = weakSelf.navigationController.navigationBar.frame.size.height + [UIApplication sharedApplication].statusBarFrame.size.height;
             NSLog(@"-- @(%@)",@(offsetY+heigt));
             
             [[weakSelf presenter] mvp_runAction:@"newOffset:" value:@(offsetY+heigt)];

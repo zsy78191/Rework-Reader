@@ -18,6 +18,7 @@
 @property (nonatomic, strong) NSString* title;
 @property (nonatomic, strong) NSBlockOperation* o1;
 @property (nonatomic, strong) NSBlockOperation* o2;
+@property (nonatomic, strong) NSBlockOperation* o3;
 @end
 
 @implementation RRMainPageAddPresenter
@@ -34,12 +35,19 @@
     
     [self.inputer mvp_addModel:({
         RRIconSettingModel* m = [[RRIconSettingModel alloc] init];
-        m.title = @"添加推荐源";
+        m.title = @"添加推荐订阅源";
+        m;
+    })];
+    
+    [self.inputer mvp_addModel:({
+        RRIconSettingModel* m = [[RRIconSettingModel alloc] init];
+        m.title = @"添加网友推荐源";
         m;
     })];
     
     self.o1 = model.userInfo[@"action1"];
     self.o2 = model.userInfo[@"action2"];
+    self.o3 = model.userInfo[@"action3"];
 }
 
 - (RRWebSettingInputer *)inputer
@@ -72,6 +80,13 @@
 //                [self recommand];
                 if (self.o2) {
                     [self.o2 start];
+                }
+                break;
+            }
+            case 2:
+            {
+                if (self.o3) {
+                    [self.o3 start];
                 }
                 break;
             }

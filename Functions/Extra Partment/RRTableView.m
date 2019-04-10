@@ -18,6 +18,15 @@
 }
 */
 
+- (instancetype)initWithFrame:(CGRect)frame style:(UITableViewStyle)style
+{
+    self = [super initWithFrame:frame style:style];
+    if (self) {
+//        self.accessibilityTraits = UIAccessibilityTraitHeader;
+    }
+    return self;
+}
+
 - (BOOL)accessibilityScroll:(UIAccessibilityScrollDirection)direction
 {
     return [super accessibilityScroll:direction];

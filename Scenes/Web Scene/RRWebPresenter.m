@@ -66,6 +66,7 @@
 - (void)openAction:(id)sender
 {
     if (self.model) {
+//        NSLog(@"%@",self.model.link);
         UIActivityViewController* v = [[UIActivityViewController alloc] initWithActivityItems:@[[NSURL URLWithString:self.model.link]] applicationActivities:nil];
         if ([UIDevice currentDevice].iPad()) {
             UIPopoverPresentationController* p = v.popoverPresentationController;

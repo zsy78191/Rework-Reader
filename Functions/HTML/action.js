@@ -92,7 +92,7 @@ for(var i = 0 ; i < imgs.length ; i ++ )
             change = false;
         }
         if(change){
-            img.src = "inner" + img.src;
+//            img.src = "inner" + img.src;
         }
     }
     else {

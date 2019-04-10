@@ -24,6 +24,7 @@
 @import YYKit;
 #import "RPDataManager.h"
 #import "RRCoreDataModel.h"
+@import DateTools;
 
 @interface RRSettingPresenter () <UIDocumentPickerDelegate,MVPPresenterProtocol_private,SKStoreProductViewControllerDelegate>
 {
@@ -266,9 +267,6 @@
     id vc = [MVPRouter viewForURL:@"rr://web" withUserInfo:@{@"name":@"Reader 版本.md"}];
     [[self view] mvp_pushViewController:vc];
 }
-
-
-
 
 - (void)feedOffical
 {
@@ -567,22 +565,25 @@
 - (NSString*)dateWithURL:(NSURL*)url
 {
     NSArray* a = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:[url path] error:nil];
+   
     if ([a containsObject:@"Model"]) {
 //        NSURL* file = [url URLByAppendingPathComponent:@"Model.sqlite"];
-        NSURL* file = url;
-        NSDictionary *fileAttrs = [[NSFileManager defaultManager] attributesOfItemAtPath:[file path] error:nil];
-        //        NSLog(@"%@",fileAttrs);
-        //        return @" ";
-        if (fileAttrs) {
-            NSDate* date = fileAttrs[@"NSFileModificationDate"];
-            NSDateFormatter* f = [[NSDateFormatter alloc] init];
-            [f setTimeStyle:NSDateFormatterShortStyle];
-            [f setDateStyle:NSDateFormatterShortStyle];
-            return [f stringFromDate:date];
-        }
-        else {
-            return @"信息获取失败";
-        }
+        
+//        NSURL* file = url;
+
+        __block NSDate* lastDate = [NSDate dateWithTimeIntervalSince1970:0];
+        [a enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+            NSString* p = [[url URLByAppendingPathComponent:obj] path];
+            NSDictionary *fileAttrs = [[NSFileManager defaultManager] attributesOfItemAtPath:p error:nil];
+            if (fileAttrs) {
+                NSDate* date = fileAttrs[@"NSFileModificationDate"];
+                if ([lastDate timeIntervalSinceDate:date] < 0) {
+                    lastDate = date;
+                }
+            }
+        }];
+ 
+        return [@"更新于" stringByAppendingString:[lastDate timeAgoSinceNow]];
     }
     return @"";
 }
@@ -676,6 +677,11 @@
         [[UIPasteboard generalPasteboard] setString:@"819888483"];
         [self.view hudSuccess:@"群号已复制"];
     })
+    .action(@"加入Telegram用户群", ^(UIAlertAction * _Nonnull action,
+                                UIAlertController * _Nonnull alert) {
+        id vc = [MVPRouter viewForURL:@"rr://web" withUserInfo:@{@"name":@"http://t.me/meiyiumingzi"}];
+        [[self view] mvp_pushViewController:vc];
+    })
     .cancel(@"取消", ^(UIAlertAction * _Nonnull action) {
         
     })
@@ -767,5 +773,18 @@
     [AppleAPIHelper setIconname:iconDict[title]];
 }
 
+
+- (void)feedback:(NSString*)str
+{
+    if ([str isEqualToString:@"QQ群"]) {
+        [[UIPasteboard generalPasteboard] setString:@"819888483"];
+        [self.view hudSuccess:@"群号已复制"];
+    }
+    else if([str isEqualToString:@"Telegram群"])
+    {
+        id vc = [MVPRouter viewForURL:@"rr://web" withUserInfo:@{@"name":@"http://t.me/meiyiumingzi"}];
+        [[self view] mvp_pushViewController:vc];
+    }
+}
 
 @end

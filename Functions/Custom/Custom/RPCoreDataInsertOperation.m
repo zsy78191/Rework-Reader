@@ -93,6 +93,9 @@
         if (value) {
             [p removeObject:obj];
 //            //NSLog(@"--) %@ %@",value,obj);
+            if ([value isKindOfClass:[NSManagedObject class]]) {
+                value = [value MR_inContext:context];
+            }
             [cd setValue:value forKey:obj];
         }
        

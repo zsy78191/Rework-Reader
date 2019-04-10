@@ -43,13 +43,21 @@ NSString* const kOffsetMainList = @"kOffsetMainList";
 @property (nonatomic, assign) BOOL hasDatas;
 @property (nonatomic, assign) double offsetY;
 @property (nonatomic, assign) BOOL firstEnter;
+@property (nonatomic, strong) NSArray* selectArray;
+@property (nonatomic, assign) BOOL selectMoreThanOne;
+
+@property (nonatomic, strong) RRFeedInfoListOtherModel* unreadModel;
 
 @end
 
 @implementation RRFeedListPresenter
 
 
-
+- (void)updateSelections:(NSArray*)indexPaths
+{
+    self.selectArray = indexPaths;
+    self.selectMoreThanOne = self.selectArray.count > 0;
+}
 
 - (void)switchReadMode
 {
@@ -169,6 +177,13 @@ NSString* const kOffsetMainList = @"kOffsetMainList";
     });
 }
 
+- (NSInteger)unreadCount
+{
+    NSNumber* count = [[RPDataManager sharedManager] getCount:@"EntityFeedArticle" predicate:[self.unreadModel.readStyle predicate] key:nil value:nil sort:nil asc:YES];
+
+    return [count integerValue];
+}
+
 - (void)loadData
 {
     NSArray* a = [[RPDataManager sharedManager] getAll:@"EntityFeedInfo" predicate:nil key:nil value:nil sort:@"sort" asc:YES];
@@ -197,11 +212,10 @@ NSString* const kOffsetMainList = @"kOffsetMainList";
             s.liked = NO;
             s;
         });
+        self.unreadModel = mUnread;
+        mUnread.count = [self unreadCount];
         
-        NSNumber* count = [[RPDataManager sharedManager] getCount:@"EntityFeedArticle" predicate:[mUnread.readStyle predicate] key:nil value:nil sort:nil asc:YES];
-        mUnread.count = [count intValue];
-        
-        if ([count integerValue] != 0) {
+        if (mUnread.count != 0) {
             [self.readStyleInputer mvp_addModel:mUnread];
         }
         
@@ -316,7 +330,7 @@ NSString* const kOffsetMainList = @"kOffsetMainList";
 
 - (void)addHub
 {
-    NSArray* d = [[RPDataManager sharedManager] getAll:@"EntityFeedInfo"  predicate:nil key:nil value:nil sort:nil asc:YES];
+//    NSArray* d = [[RPDataManager sharedManager] getAll:@"EntityFeedInfo"  predicate:nil key:nil value:nil sort:nil asc:YES];
     //NSLog(@"%@",d);
 }
 
@@ -391,7 +405,7 @@ NSString* const kOffsetMainList = @"kOffsetMainList";
 //                [PWToastView showText:@"没有更新的订阅"];
             }
             else {
-                [weakSelf loadData];
+                [weakSelf loadDataMain];
                 if (error == 0) {
                     NSString* tip = [NSString stringWithFormat:@"更新了%ld个订阅源，共计%ld篇订阅",all,article];
                     [PWToastView showText:tip];
@@ -538,7 +552,7 @@ NSString* const kOffsetMainList = @"kOffsetMainList";
 
 - (void)recommand2
 {
-    id vc = [MVPRouter viewForURL:@"rr://web" withUserInfo:@{@"name":@"Test.md"}];
+    id vc = [MVPRouter viewForURL:@"rr://web" withUserInfo:@{@"name":@"网友推荐源.md"}];
     [[self view] mvp_pushViewController:vc];
 }
 
@@ -553,9 +567,13 @@ NSString* const kOffsetMainList = @"kOffsetMainList";
         [weakSelf recommand];
     }];
     
-    UIViewController* vc = [MVPRouter viewForURL:@"rr://websetting?p=RRMainPageAddPresenter" withUserInfo:@{@"action1":action1,@"action2":action2}];
+    NSBlockOperation* action3 = [NSBlockOperation blockOperationWithBlock:^{
+        [weakSelf recommand2];
+    }];
+    
+    UIViewController* vc = [MVPRouter viewForURL:@"rr://websetting?p=RRMainPageAddPresenter" withUserInfo:@{@"action1":action1,@"action2":action2,@"action3":action3}];
     RRExtraViewController* nv = [[RRExtraViewController alloc] initWithRootViewController:vc];
-    vc.preferredContentSize = CGSizeMake(160, 40);
+    vc.preferredContentSize = CGSizeMake(200, 60);
     [nv.view setBackgroundColor:[UIColor clearColor]];
     nv.modalPresentationStyle = UIModalPresentationPopover;
     nv.popoverPresentationController.barButtonItem = sender;
@@ -587,6 +605,104 @@ NSString* const kOffsetMainList = @"kOffsetMainList";
     //NSLog(@"弹框已经消失");
 }
 
+- (void)cleanAll
+{
+    __weak typeof(self) weakSelf = self;
+    if (self.selectArray.count == 0) {
+        NSPredicate* p = [NSPredicate predicateWithFormat:@"readed = false"];
+        [[RPDataManager sharedManager] updateDatas:@"EntityFeedArticle" predicate:p modify:^(EntityFeedArticle*  _Nonnull obj) {
+            obj.readed = YES;
+        } finish:^(NSArray * _Nonnull results, NSError * _Nonnull e) {
+            NSLog(@"%@",e);
+            if (!e) {
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    [weakSelf.view hudSuccess:@"全部标记成功"];
+                    [weakSelf updateSelections:@[]];
+                    NSInteger c = [self unreadCount];
+                    if (c == 0) {
+                        if ([self.readStyleInputer mvp_indexPathWithModel:self.unreadModel]) {
+                            [self.readStyleInputer mvp_deleteModel:self.unreadModel];
+                        }
+                        
+                    }
+                    [[weakSelf view] mvp_reloadData];
+                });
+            }
+            else {
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    [weakSelf.view hudFail:@"标记失败"];
+                });
+            }
+        }];
+    }
+    else {
+        [self.selectArray enumerateObjectsUsingBlock:^(NSIndexPath*  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+            EntityFeedInfo* i = [self.complexInput mvp_modelAtIndexPath:obj];
+//            NSLog(@"%@",i);
+            NSPredicate* p = [NSPredicate predicateWithFormat:@"feed.uuid = %@",i.uuid];
+            [[RPDataManager sharedManager] updateDatas:@"EntityFeedArticle" predicate:p modify:^(EntityFeedArticle*  _Nonnull obj) {
+                obj.readed = YES;
+            } finish:^(NSArray * _Nonnull results, NSError * _Nonnull e) {
+                NSLog(@"%@",e);
+                if (!e) {
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        [weakSelf.view hudSuccess:@"标记成功"];
+                        [weakSelf updateSelections:@[]];
+                        NSInteger c = [weakSelf unreadCount];
+                        if (c == 0) {
+                            if ([weakSelf.readStyleInputer mvp_indexPathWithModel:weakSelf.unreadModel]) {
+                                [weakSelf.readStyleInputer mvp_deleteModel:weakSelf.unreadModel];
+                            }
+                        }
+                        [[weakSelf view] mvp_reloadData];
+                    });
+                }
+                else {
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        [weakSelf.view hudFail:@"标记失败"];
+                    });
+                }
+            }];
+            
+        }];
+    }
+}
 
+- (void)makeItDelete:(id)sender
+{
+//    NSLog(@"%@",sender);
+    __weak typeof(self) weakSelf = self;
+    RRFeedInfoListModel* m = (id)[self.complexInput mvp_modelAtIndexPath:sender];
+    [RRFeedAction delFeed:m.feed view:(id)self.view item:nil arrow:UIPopoverArrowDirectionRight finish:^{
+        [weakSelf loadData];
+    }];
+}
+
+- (void)makeItRead:(id)sender
+{
+//    NSLog(@"%@",sender);
+    __weak typeof(self) weakSelf = self;
+    RRFeedInfoListModel* m = (id)[self.complexInput mvp_modelAtIndexPath:sender];
+    NSPredicate* p = [NSPredicate predicateWithFormat:@"feed.uuid = %@",m.feed.uuid];
+    [[RPDataManager sharedManager] updateDatas:@"EntityFeedArticle" predicate:p modify:^(EntityFeedArticle*  _Nonnull obj) {
+        obj.readed = YES;
+    } finish:^(NSArray * _Nonnull results, NSError * _Nonnull e) {
+        if (!e) {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [weakSelf updateSelections:@[]];
+                NSInteger c = [weakSelf unreadCount];
+                weakSelf.unreadModel.count = c;
+                if (c == 0) {
+                    if ([weakSelf.readStyleInputer mvp_indexPathWithModel:weakSelf.unreadModel]) {
+                        [weakSelf.readStyleInputer mvp_deleteModel:weakSelf.unreadModel];
+                    }
+                }
+                [[weakSelf view] mvp_reloadData];
+            });
+        }
+        else {
+        }
+    }];
+}
 
 @end

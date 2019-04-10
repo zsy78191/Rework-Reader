@@ -116,6 +116,8 @@
 - (void)applicationWillResignActive:(UIApplication *)application {
     // Sent when the application is about to move from active to inactive state. This can occur for certain types of temporary interruptions (such as an incoming phone call or SMS message) or when the user quits the application and it begins the transition to the background state.
     // Use this method to pause ongoing tasks, disable timers, and invalidate graphics rendering callbacks. Games should use this method to pause the game.
+    
+    [[SDWebImageManager sharedManager].imageCache clearMemory];
 }
 
 
@@ -124,18 +126,18 @@
     // If your application supports background execution, this method is called instead of applicationWillTerminate: when the user quits.
     [application setApplicationIconBadgeNumber:0];
     
-    UIBackgroundTaskIdentifier identifier = [[UIApplication sharedApplication] beginBackgroundTaskWithExpirationHandler:NULL];
-    [[NSManagedObjectContext MR_defaultContext] MR_saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
-        [self syncWithCompletion:^{
-            [[UIApplication sharedApplication] endBackgroundTask:identifier];
-        }];
-    }];
+//    UIBackgroundTaskIdentifier identifier = [[UIApplication sharedApplication] beginBackgroundTaskWithExpirationHandler:NULL];
+//    [[NSManagedObjectContext MR_defaultContext] MR_saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
+//        [self syncWithCompletion:^{
+//            [[UIApplication sharedApplication] endBackgroundTask:identifier];
+//        }];
+//    }];
 }
 
 
 - (void)applicationWillEnterForeground:(UIApplication *)application {
     // Called as part of the transition from the background to the active state; here you can undo many of the changes made on entering the background.
-    [self syncWithCompletion:NULL];
+//    [self syncWithCompletion:NULL];
 }
 
 
@@ -159,90 +161,19 @@
     return [[NSUserDefaults standardUserDefaults] boolForKey:@"kBackgroundFetchNotiBadge"];
 }
 
-- (void)localSaveOccurred:(NSNotification *)notif
-{
-    NSLog(@"iCloud - %s",__func__);
-    [self syncWithCompletion:NULL];
-}
-
-- (void)cloudDataDidDownload:(NSNotification *)notif
-{
-    NSLog(@"iCloud - %s",__func__);
-    [self syncWithCompletion:NULL];
-}
-
-- (void)persistentStoreEnsemble:(CDEPersistentStoreEnsemble *)ensemble didSaveMergeChangesWithNotification:(NSNotification *)notification
-{
-    NSManagedObjectContext *rootContext = [NSManagedObjectContext MR_rootSavingContext];
-    [rootContext performBlockAndWait:^{
-        [rootContext mergeChangesFromContextDidSaveNotification:notification];
-    }];
-    
-    NSManagedObjectContext *mainContext = [NSManagedObjectContext MR_defaultContext];
-    [mainContext performBlockAndWait:^{
-        [mainContext mergeChangesFromContextDidSaveNotification:notification];
-    }];
-}
-
-- (NSArray *)persistentStoreEnsemble:(CDEPersistentStoreEnsemble *)ensemble globalIdentifiersForManagedObjects:(NSArray *)objects
-{
-    return [objects valueForKeyPath:@"uniqueIdentifier"];
-}
-
 - (void)loadCoreData
 {
     [MagicalRecord setupCoreDataStackWithAutoMigratingSqliteStoreNamed:@"Model"];
 }
 
-- (void)loadCoreDataE
+- (BOOL)application:(UIApplication *)application shouldRestoreApplicationState:(NSCoder *)coder
 {
-    NSManagedObjectModel *model = [NSManagedObjectModel MR_newManagedObjectModelNamed:@"Model.momd"];
-    [NSManagedObjectModel MR_setDefaultManagedObjectModel:model];
-
-    // Setup Core Data Stack
-    [MagicalRecord setShouldAutoCreateManagedObjectModel:NO];
-    [MagicalRecord setupAutoMigratingCoreDataStack];
+    return YES;
 }
 
-
-- (void)loadEnsemble
+- (BOOL)application:(UIApplication *)application shouldSaveApplicationState:(NSCoder *)coder
 {
-    NSURL *url = [NSPersistentStore MR_urlForStoreName:[MagicalRecord defaultStoreName]];
-    NSLog(@"%@",url);
-    NSURL *modelURL = [[NSBundle mainBundle] URLForResource:@"Model" withExtension:@"momd"];
-    cloudFileSystem = [[CDEICloudFileSystem alloc] initWithUbiquityContainerIdentifier:nil];
-    ensemble = [[CDEPersistentStoreEnsemble alloc] initWithEnsembleIdentifier:@"XXX" persistentStoreURL:url managedObjectModelURL:modelURL cloudFileSystem:cloudFileSystem];
-    ensemble.delegate = self;
-    
-    // Listen for local saves, and trigger merges
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(localSaveOccurred:) name:CDEMonitoredManagedObjectContextDidSaveNotification object:nil];
-    
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(cloudDataDidDownload:) name:CDEICloudFileSystemDidDownloadFilesNotification object:nil];
-    
-    [self syncWithCompletion:NULL];
+    return YES;
 }
-
-
-- (void)syncWithCompletion:(void(^)(void))completion
-{
-    if (ensemble.isMerging) return;
-    
-    if (!ensemble.isLeeched) {
-        [ensemble leechPersistentStoreWithCompletion:^(NSError *error) {
-            if (error) NSLog(@"Error in leech: %@", error);
-            [[NSNotificationCenter defaultCenter] postNotificationName:@"RRMainListUpdate" object:nil];
-            if (completion) completion();
-        }];
-    }
-    else {
-        NSLog(@"Merge it");
-        [ensemble mergeWithCompletion:^(NSError *error) {
-            if (error) NSLog(@"Error in merge: %@", error);
-            [[NSNotificationCenter defaultCenter] postNotificationName:@"RRMainListUpdate" object:nil];
-            if (completion) completion();
-        }];
-    }
-}
-
 
 @end

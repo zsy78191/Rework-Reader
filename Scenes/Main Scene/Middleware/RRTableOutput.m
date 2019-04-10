@@ -40,6 +40,14 @@
     return YES;
 }
 
+- (UITableViewCellEditingStyle)tableView:(UITableView *)tableView editingStyleForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    if (self.canMutiSelect) {
+        return UITableViewCellEditingStyleDelete|UITableViewCellEditingStyleInsert;
+    }
+    return UITableViewCellEditingStyleDelete;
+}
+
 - (Class)tableviewClass
 {
     return NSClassFromString(@"RRTableView");
@@ -72,6 +80,35 @@
     return proposedDestinationIndexPath;
 }
 
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    if (!self.canMutiSelect || !tableView.editing) {
+        [tableView deselectRowAtIndexPath:indexPath animated:YES];
+        if ([self.presenter respondsToSelector:@selector(mvp_action_selectItemAtIndexPath:)]) {
+            [self.presenter mvp_action_selectItemAtIndexPath:indexPath];
+        }
+    }
+    else {
+        if([self.presenter respondsToSelector:NSSelectorFromString(@"updateSelections:")])
+        {
+            [self.presenter mvp_runAction:@"updateSelections:" value:[tableView indexPathsForSelectedRows]];
+        }
+    }
+}
+
+- (void)tableView:(UITableView *)tableView didDeselectRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    if (!self.canMutiSelect || !tableView.editing) {
+        
+    }
+    else {
+        if([self.presenter respondsToSelector:NSSelectorFromString(@"updateSelections:")])
+        {
+            [self.presenter mvp_runAction:@"updateSelections:" value:[tableView indexPathsForSelectedRows]];
+        }
+    }
+}
+
 - (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath
 {
     if (editingStyle == UITableViewCellEditingStyleDelete) {
@@ -82,13 +119,6 @@
             
             RRFeedInfoListModel* m = model;
             __weak typeof(self) weakSelf = self;
-            
-//            CGRect r = [tableView rectForRowAtIndexPath:indexPath];
-//            r = [tableView convertRect:r toView:nil];
-//            r.origin.x += 0.9 * r.size.width;
-//            r.origin.y += 0.5 * r.size.height;
-//            r.size.width = 0;
-//            r.size.height = 0;
             [RRFeedAction delFeed:m.feed view:(id)self.presenter.view item:nil arrow:UIPopoverArrowDirectionRight finish:^{
                  [(id)weakSelf.presenter loadData];
             }];
