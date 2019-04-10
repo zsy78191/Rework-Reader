@@ -33,6 +33,7 @@
    
 //    //NSLog(@"-- %@",urlString);
 //    __block NSData *data = nil;
+    __weak typeof(self) weakSelf = self;
     if ([urlString hasPrefix:@"local"]) {
         
 //        NSLog(@"%@",urlString);
@@ -56,26 +57,14 @@
     }
     
     NSURL* url = [NSURL URLWithString:[urlString substringFromIndex:5]];
-    [[SDWebImageManager sharedManager] loadImageWithURL:url options:SDWebImageHighPriority progress:^(NSInteger receivedSize, NSInteger expectedSize, NSURL * _Nullable targetURL) {
-        
-    } completed:^(UIImage * _Nullable image, NSData * _Nullable data, NSError * _Nullable error, SDImageCacheType cacheType, BOOL finished, NSURL * _Nullable imageURL) {
-//        //NSLog(@"%@",image);
-        // FIXBUG: urltask结束了
-        if (self.table.count > 0) {
-            //            NSLog(@"%@",self.table);
-            if ([self.table containsObject:urlSchemeTask]) {
+    UIImage* image = [[SDWebImageManager sharedManager].imageCache imageFromCacheForKey:[url absoluteString]];
+    if (image) {
+        if (weakSelf.table.count > 0) {
+            if ([weakSelf.table containsObject:urlSchemeTask]) {
                 return;
             }
         }
         
-        
-        if (error) {
-            //NSLog(@"%@",error);
-            [urlSchemeTask didFailWithError:error];
-            return;
-        }
-        
-//        data = UIImageJPEGRepresentation(image, 1);
         NSString* mtype = @"application/x-img";
         switch ([image sd_imageFormat]) {
             case SDImageFormatGIF:
@@ -107,12 +96,7 @@
                 break;
         }
         
-        if (!data && image) {
-//            //NSLog(@"没有图");
-            data = [image sd_imageData];
-        }
-        
-     
+        NSData* data = [image sd_imageData];
         
         if (urlSchemeTask) {
             NSURLResponse *response = [[NSURLResponse alloc] initWithURL:urlSchemeTask.request.URL MIMEType:mtype expectedContentLength:data.length textEncodingName:nil];
@@ -120,7 +104,68 @@
             [urlSchemeTask didReceiveData:data];
             [urlSchemeTask didFinish];
         }
-    }];
+    }
+    else {
+        [[SDWebImageManager sharedManager] loadImageWithURL:url options:SDWebImageHighPriority progress:^(NSInteger receivedSize, NSInteger expectedSize, NSURL * _Nullable targetURL) {
+        } completed:^(UIImage * _Nullable image, NSData * _Nullable data, NSError * _Nullable error, SDImageCacheType cacheType, BOOL finished, NSURL * _Nullable imageURL) {
+            
+            if (weakSelf.table.count > 0) {
+                if ([weakSelf.table containsObject:urlSchemeTask]) {
+                    return;
+                }
+            }
+            
+            if (error) {
+                //NSLog(@"%@",error);
+                [urlSchemeTask didFailWithError:error];
+                return;
+            }
+            //        data = UIImageJPEGRepresentation(image, 1);
+            NSString* mtype = @"application/x-img";
+            switch ([image sd_imageFormat]) {
+                case SDImageFormatGIF:
+                {
+                    mtype = @"image/gif";
+                    break;
+                }
+                case SDImageFormatPNG:
+                {
+                    mtype = @"image/png";
+                    break;
+                }
+                case SDImageFormatJPEG:
+                {
+                    mtype = @"image/jpeg";
+                    break;
+                }
+                case SDImageFormatWebP:
+                {
+                    mtype = @"application/x-img";
+                    break;
+                }
+                case SDImageFormatUndefined:
+                {
+                    mtype = @"text/xml";
+                    break;
+                }
+                default:
+                    break;
+            }
+            
+            if (!data && image) {
+                //            //NSLog(@"没有图");
+                data = [image sd_imageData];
+            }
+            
+            if (urlSchemeTask) {
+                NSURLResponse *response = [[NSURLResponse alloc] initWithURL:urlSchemeTask.request.URL MIMEType:mtype expectedContentLength:data.length textEncodingName:nil];
+                [urlSchemeTask didReceiveResponse:response];
+                [urlSchemeTask didReceiveData:data];
+                [urlSchemeTask didFinish];
+            }
+        }];
+    }
+   
 }
 
 - (void)t

@@ -165,22 +165,14 @@
             [(id)self.presenter loadFinish];
         }
         [self hudDismiss];
-        
-        
-        RREmptyStyleOne* e = (RREmptyStyleOne*)self.empty;
-        e.shouldDisplay = YES;
-        
-        
-//        id exist_value = [self.presenter mvp_valueWithSelectorName:@"isFeedExist"];
-//        //NSLog(@"%@",exist_value);
-        
-        //Fixed bug
-//        self.feedBarItem.enabled = YES;
-
     });
-    
     self.isLoading = NO;
-    
+}
+
+- (void)showEmpty
+{
+    RREmptyStyleOne* e = (RREmptyStyleOne*)self.empty;
+    e.shouldDisplay = YES;
 }
 
 

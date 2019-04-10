@@ -20,7 +20,7 @@
                 return @"titleCell";
                 break;
             case RRFeedInfoListOtherModelTypeItem:
-                return @"feedCell";
+                return @"styleCell";
                 break;
             default:
                 break;

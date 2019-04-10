@@ -92,6 +92,10 @@
     
     [MMKV setLogLevel:MMKVLogNone];
     
+//    [[[SDWebImageManager sharedManager] imageCache] setMaxMemoryCountLimit:50];
+//    [[[SDWebImageManager sharedManager] imageCache] setMaxMemoryCost:1024*1024*30];
+    
+//    [[SDWebImageManager sharedManager] imageDownloader];
 }
 
 - (void)loadRouter

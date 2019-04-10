@@ -33,6 +33,14 @@
             "type": 1
         },
         {
+            "title": "问题反馈",
+            "value": "",
+            "action": "feedback:",
+            "switchkey": null,
+            "select": ["QQ群","Telegram群"],
+            "type": 1
+        },
+        {
             "title": "在AppStore给我一条好评",
             "value": null,
             "action": "appstore",

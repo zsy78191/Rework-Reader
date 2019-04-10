@@ -23,12 +23,14 @@
     // Initialization code
     self.i1.image = [UIImage new];
     self.i2.image = [UIImage new];
+    
+    self.selectionStyle = UITableViewCellSelectionStyleDefault;
 
 }
 
 - (void)setSelected:(BOOL)selected animated:(BOOL)animated {
     [super setSelected:selected animated:animated];
-
+//    NSLog(@"%@",@(selected));
     // Configure the view for the selected state
 }
 

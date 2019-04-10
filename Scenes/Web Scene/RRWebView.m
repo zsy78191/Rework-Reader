@@ -52,6 +52,7 @@
 @property (nonatomic, assign) CGFloat recordPostion;
 
 @property (nonatomic, strong) NSMutableArray* showImage;
+@property (nonatomic, strong) NSMutableArray* tumblrImage;
 
 @property (nonatomic, assign) BOOL prepareLoadLast;
 @property (nonatomic, assign) BOOL prepareLoadNext;
@@ -183,6 +184,12 @@
     
 }
 
+- (void)didReceiveMemoryWarning
+{
+    [super didReceiveMemoryWarning];
+    
+}
+
 - (void)webView:(WKWebView *)webView runJavaScriptTextInputPanelWithPrompt:(NSString *)prompt defaultText:(nullable NSString *)defaultText initiatedByFrame:(WKFrameInfo *)frame completionHandler:(void (^)(NSString * _Nullable result))completionHandler {
     
     //NSLog(@"prompt %@",prompt);
@@ -210,8 +217,6 @@
 
 - (void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate
 {
-//    //NSLog(@"- %f %f" ,scrollView.contentOffset.y,scrollView.contentSize.height-scrollView.frame.size.height);
-    
     if (scrollView.contentOffset.y < - 130) {
         [self loadLast];
     }
@@ -220,7 +225,6 @@
     {
         [self loadNext];
     }
-    
 }
 
 - (void)loadLast
@@ -276,10 +280,7 @@
     [weakSelf.view addSubview:fakeCover];
     
     [weakSelf preloadData:weakSelf.nextArticle(weakSelf.currentArticle) feed:weakSelf.nextFeed(weakSelf.currentArticle)];
-    
-    //    [[self.webView scrollView] setContentOffset:CGPointMake(-64, 0)];
-    //    [self loadData:self.currentArticle feed:self.currentFeed];
-    //    self.webView.transform = CGAffineTransformMakeTranslation(0, 100);
+
     [UIView animateWithDuration:0.4 animations:^{
         //        [fakeCover setAlpha:0];
         fakeCover.transform = CGAffineTransformMakeTranslation(0, -fakeCover.frame.size.height);
@@ -298,14 +299,19 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-//    [self.view setBackgroundColor:[UIColor blackColor]];
-    self.view.cas_styleClass = @"bgView";
     
-//    [[self.webView.scrollView rac_signalForSelector:@selector(accessibilityScroll:)] subscribeNext:^(RACTuple * _Nullable x) {
-//        NSLog(@"%@",x);
-//    }];
-//
+    self.view.cas_styleClass = @"bgView";
+    self.restorationIdentifier = @"RRWebRestoreView";
+}
 
+- (void)encodeRestorableStateWithCoder:(NSCoder *)coder
+{
+    [super encodeRestorableStateWithCoder:coder];
+}
+
+- (void)decodeRestorableStateWithCoder:(NSCoder *)coder
+{
+    [super decodeRestorableStateWithCoder:coder];
 }
 
 
@@ -490,7 +496,6 @@
         [view resetDownView];
     } keypath:@"webStyle.font"];
     
-    
     [[[self navigationController] navigationBar] setPrefersLargeTitles:NO];
     
     self.prepareLoadLast = NO;
@@ -507,9 +512,10 @@
 //    NSLog(@"%@",self.webView.scrollView);
 
     self.webView.scrollView.delegate = self;
-    
     [self.webView.scrollView addSubview:self.upView];
     [self.webView.scrollView addSubview:self.downView];
+    [self.webView.scrollView setDirectionalLockEnabled:YES];
+    [self.webView.scrollView setAlwaysBounceHorizontal:NO];
     
     [self.view addSubview:self.statusCover];
 //    [self.progressView setProgress:0.5];
@@ -560,7 +566,7 @@
             string = [self removeHighlight:string];
         }
         
-        NSDictionary* style = [[NSUserDefaults standardUserDefaults] valueForKey:@"style"];
+//        NSDictionary* style = [[NSUserDefaults standardUserDefaults] valueForKey:@"style"];
         string = [self preloadSystemCSSStyle:string];
  
         string = [string stringByReplacingOccurrencesOfString:@"<#title#>" withString:[filename stringByDeletingPathExtension]];
@@ -633,7 +639,8 @@
         return;
     }
    
-  
+    [self.webView stopLoading];
+    [[SDWebImageManager sharedManager].imageCache clearMemory];
 //    if(0){
 //        self.webView.alpha = 0;
 //    }
@@ -905,8 +912,6 @@
     
      UIBarButtonItem* rb = [self mvp_buttonItemWithSystem:UIBarButtonSystemItemAction actionName:@"openAction:" title:@"更多操作"];
 
-    
-    
     UIBarButtonItem* test = [self mvp_buttonItemWithActionName:@"testf" title:@"测试"];
     [test setTarget:self];
     [test setAction:@selector(likedItem)];
@@ -936,7 +941,8 @@
 {
     NSMutableArray* items = [NSMutableArray array];
     BOOL hide = [[NSUserDefaults standardUserDefaults] boolForKey:@"kToolBackBtn"];
-    if (!hide) {
+    BOOL isSplited =  [[NSUserDefaults standardUserDefaults] boolForKey:@"RRSplit"];
+    if (!hide && (![UIDevice currentDevice].iPad() || isSplited)) {
         UIBarButtonItem* favItem = [self mvp_buttonItemWithActionName:@"acBack" title:@"返回"];
         favItem.image = [UIImage imageNamed:@"icon_zuo"];
         [items addObject:favItem];
@@ -950,7 +956,7 @@
     }
     [items addObjectsFromArray:[self readerLaterItem]];
     [items addObjectsFromArray:[self barItems]];
-    self.toolbarItems = items;
+    [self setToolbarItems:items animated:NO];
 }
 
 - (NSArray*)readerLaterItem
@@ -1184,11 +1190,12 @@
         NSURLSession* s = [NSURLSession sessionWithConfiguration:c];
         NSURLSessionDataTask* d = [s dataTaskWithURL:[NSURL URLWithString:url] completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
             if ([response.MIMEType rangeOfString:@"xml"].location != NSNotFound || [response.MIMEType rangeOfString:@"rss"].location != NSNotFound || [response.MIMEType rangeOfString:@"atom"].location != NSNotFound ) {
-                [weakSelf loadFeed:url];
-//                self.openedFeed = YES;
-                [weakSelf mvp_dismissViewControllerAnimated:YES completion:^{
-                    
-                }];
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    [weakSelf loadFeed:url];
+                    [weakSelf mvp_dismissViewControllerAnimated:YES completion:^{
+                        
+                    }];
+                });
             }
             else {
                 
@@ -1354,6 +1361,14 @@
     return _showImage;
 }
 
+- (NSMutableArray *)tumblrImage
+{
+    if (!_tumblrImage) {
+        _tumblrImage = [[NSMutableArray alloc] init];
+    }
+    return _tumblrImage;
+}
+
 - (void)showImage:(NSArray*)imgs index:(NSUInteger)idx
 {
     //    //NSLog(@"%@",imgs);
@@ -1362,14 +1377,20 @@
     }
     
     [self.showImage removeAllObjects];
-    
+    [self.tumblrImage removeAllObjects];
     
     NSArray* temp =
     imgs.filter(^BOOL(id  _Nonnull x) {
         return [x isKindOfClass:[NSString class]];
     });
     
+    [self.tumblrImage addObjectsFromArray:temp.map(^id _Nonnull(NSString* url) {
+//        url = [@"thumb" stringByAppendingString:url];
+        return [MWPhoto photoWithURL:[NSURL URLWithString:url]];
+    })];
+    
     [self.showImage addObjectsFromArray:temp.map(^id _Nonnull(NSString* url) {
+        NSLog(@"%@",url);
         return [MWPhoto photoWithURL:[NSURL URLWithString:url]];
     })];
     
@@ -1425,8 +1446,8 @@
 
 - (id<MWPhoto>)photoBrowser:(MWPhotoBrowser *)photoBrowser thumbPhotoAtIndex:(NSUInteger)index
 {
-    if (index < self.showImage.count) {
-        return [self.showImage objectAtIndex:index];
+    if (index < self.tumblrImage.count) {
+        return [self.tumblrImage objectAtIndex:index];
     }
     return nil;
 }

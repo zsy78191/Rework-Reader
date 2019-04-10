@@ -67,7 +67,7 @@
 		D47717E621ED90D00050DF14 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = D47717E521ED90D00050DF14 /* main.m */; };
 		D47717F021ED90D00050DF14 /* rework_readerTests.m in Sources */ = {isa = PBXBuildFile; fileRef = D47717EF21ED90D00050DF14 /* rework_readerTests.m */; };
 		D47A3957223172EB006251A6 /* SourceHanSerifCN-Light.otf in Resources */ = {isa = PBXBuildFile; fileRef = D47A7A242219112F00F13194 /* SourceHanSerifCN-Light.otf */; };
-		D47A3959223421A6006251A6 /* Test.md in Resources */ = {isa = PBXBuildFile; fileRef = D47A3958223421A6006251A6 /* Test.md */; };
+		D47A3959223421A6006251A6 /* 网友推荐源.md in Resources */ = {isa = PBXBuildFile; fileRef = D47A3958223421A6006251A6 /* 网友推荐源.md */; };
 		D47A395F223620F9006251A6 /* RREmptyStyleOne.m in Sources */ = {isa = PBXBuildFile; fileRef = D47A395E223620F9006251A6 /* RREmptyStyleOne.m */; };
 		D47A396322363ABE006251A6 /* Model.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = D47A396122363ABE006251A6 /* Model.xcdatamodeld */; };
 		D47A39672236D69A006251A6 /* RRFeedArticleCell2.xib in Resources */ = {isa = PBXBuildFile; fileRef = D47A39662236D69A006251A6 /* RRFeedArticleCell2.xib */; };
@@ -148,6 +148,8 @@
 		D4E0F9052213B38D00902540 /* RRFeedInputer.m in Sources */ = {isa = PBXBuildFile; fileRef = D4E0F9042213B38D00902540 /* RRFeedInputer.m */; };
 		D4E0F9092213C47400902540 /* templete.html in Resources */ = {isa = PBXBuildFile; fileRef = D4E0F9082213C47400902540 /* templete.html */; };
 		D4E0F9102213CA3E00902540 /* RRWebPresenter.m in Sources */ = {isa = PBXBuildFile; fileRef = D4E0F90F2213CA3E00902540 /* RRWebPresenter.m */; };
+		D4EECA812255C40A00491966 /* RRFeedInfoListCell2.xib in Resources */ = {isa = PBXBuildFile; fileRef = D4EECA802255C40A00491966 /* RRFeedInfoListCell2.xib */; };
+		D4EECA8322562FF200491966 /* 6@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = D4EECA8222562FF200491966 /* 6@2x.png */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -270,7 +272,7 @@
 		D47717EB21ED90D00050DF14 /* rework-readerTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "rework-readerTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		D47717EF21ED90D00050DF14 /* rework_readerTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = rework_readerTests.m; sourceTree = "<group>"; };
 		D47717F121ED90D00050DF14 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		D47A3958223421A6006251A6 /* Test.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = Test.md; sourceTree = "<group>"; };
+		D47A3958223421A6006251A6 /* 网友推荐源.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = "网友推荐源.md"; sourceTree = "<group>"; };
 		D47A395D223620F9006251A6 /* RREmptyStyleOne.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RREmptyStyleOne.h; sourceTree = "<group>"; };
 		D47A395E223620F9006251A6 /* RREmptyStyleOne.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RREmptyStyleOne.m; sourceTree = "<group>"; };
 		D47A396222363ABE006251A6 /* Model.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Model.xcdatamodel; sourceTree = "<group>"; };
@@ -404,6 +406,8 @@
 		D4E0F9082213C47400902540 /* templete.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = templete.html; sourceTree = "<group>"; };
 		D4E0F90E2213CA3E00902540 /* RRWebPresenter.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RRWebPresenter.h; sourceTree = "<group>"; };
 		D4E0F90F2213CA3E00902540 /* RRWebPresenter.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RRWebPresenter.m; sourceTree = "<group>"; tabWidth = 4; wrapsLines = 1; };
+		D4EECA802255C40A00491966 /* RRFeedInfoListCell2.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = RRFeedInfoListCell2.xib; sourceTree = "<group>"; };
+		D4EECA8222562FF200491966 /* 6@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "6@2x.png"; sourceTree = "<group>"; };
 		EB6D75552F8F0F296456EE76 /* Pods-rework-reader.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-rework-reader.release.xcconfig"; path = "Pods/Target Support Files/Pods-rework-reader/Pods-rework-reader.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -734,6 +738,7 @@
 				D42F55DF221E4EE500321A21 /* RRFeedInfoListCell.h */,
 				D42F55E0221E4EE500321A21 /* RRFeedInfoListCell.m */,
 				D42F55E1221E4EE500321A21 /* RRFeedInfoListCell.xib */,
+				D4EECA802255C40A00491966 /* RRFeedInfoListCell2.xib */,
 				D440CFE022154DB0003B7203 /* RRFeedInfoCell.h */,
 				D440CFE122154DB0003B7203 /* RRFeedInfoCell.m */,
 				D440CFE222154DB0003B7203 /* RRFeedInfoCell.xib */,
@@ -1003,6 +1008,7 @@
 		D4E0F9062213C46200902540 /* HTML */ = {
 			isa = PBXGroup;
 			children = (
+				D4EECA8222562FF200491966 /* 6@2x.png */,
 				D4B538B7224FB110002F8333 /* icon3.png */,
 				D4B538B3224FB021002F8333 /* icon2.png */,
 				D4B53891224F942C002F8333 /* icon0.png */,
@@ -1032,7 +1038,7 @@
 				D47A7A27221A9E9D00F13194 /* Reader SP说明书.md */,
 				D4B903882246885900341584 /* 开源代码.md */,
 				D473F2A5222817F000DF3C6D /* Reader 版本.md */,
-				D47A3958223421A6006251A6 /* Test.md */,
+				D47A3958223421A6006251A6 /* 网友推荐源.md */,
 			);
 			path = Help;
 			sourceTree = "<group>";
@@ -1196,6 +1202,7 @@
 				D4E0F8FE22116AA400902540 /* RRSettingCell.xib in Resources */,
 				D484562E2213E38300202401 /* marked.js in Resources */,
 				D4AC4DE32217BF120028D342 /* RRAddInputCell.xib in Resources */,
+				D4EECA812255C40A00491966 /* RRFeedInfoListCell2.xib in Resources */,
 				D47717E321ED90D00050DF14 /* LaunchScreen.storyboard in Resources */,
 				D4AC4DD02216B49B0028D342 /* RRSwitchCell.xib in Resources */,
 				D42F55D1221D1D8800321A21 /* latex.js in Resources */,
@@ -1205,7 +1212,7 @@
 				D4AC4DEC2217CF290028D342 /* RRBtnCell.xib in Resources */,
 				D49941BC21FDB6910041B998 /* rrstyle.cas in Resources */,
 				D418CDE422311B2E004F5706 /* RRIconSettingCell.xib in Resources */,
-				D47A3959223421A6006251A6 /* Test.md in Resources */,
+				D47A3959223421A6006251A6 /* 网友推荐源.md in Resources */,
 				D440E1C721FF03DC0087B228 /* ModelTypeSetting.json in Resources */,
 				D48456302213E6D200202401 /* 什么是RSS.md in Resources */,
 				D49941C621FE241C0041B998 /* style.plist in Resources */,
@@ -1217,6 +1224,7 @@
 				D47717DE21ED90CF0050DF14 /* Main.storyboard in Resources */,
 				D42F55E3221E4EE500321A21 /* RRFeedInfoListCell.xib in Resources */,
 				D499418B21FC9AB10041B998 /* style.cas in Resources */,
+				D4EECA8322562FF200491966 /* 6@2x.png in Resources */,
 				D440CFF82216529F003B7203 /* RRTitleCell.xib in Resources */,
 				D4B538B8224FB111002F8333 /* icon3.png in Resources */,
 			);

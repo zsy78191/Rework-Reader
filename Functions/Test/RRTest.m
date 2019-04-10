@@ -39,17 +39,17 @@
         // 语言种类判断
         NLLanguageRecognizer * r = [[NLLanguageRecognizer alloc] init];
         [r processString:@"困死了去睡觉了"];
-        NLLanguage l = r.dominantLanguage;
+//        NLLanguage l = r.dominantLanguage;
         //NSLog(@"%@",l);
-        NSDictionary* d = [r languageHypothesesWithMaximum:2];
+//        NSDictionary* d = [r languageHypothesesWithMaximum:2];
         //NSLog(@"%@",d);
         
         // 分词
         NLTokenizer* tokenizer = [[NLTokenizer alloc] initWithUnit:NLTokenUnitWord];
         NSString* str = @"我困死了，我要去睡觉了";
-        NSRange range = NSMakeRange(0, str.length);
+//        NSRange range = NSMakeRange(0, str.length);
         tokenizer.string = str;
-        NSArray* allWords = [tokenizer tokensForRange:range];
+//        NSArray* allWords = [tokenizer tokensForRange:range];
         //NSLog(@"%@",allWords);
         
         // 文本标签
@@ -114,7 +114,7 @@
 
 - (void)font_test
 {
-    NSString* path = [[NSBundle mainBundle] pathForResource:@"SourceHanSerifCN-Light" ofType:@"otf"];
+//    NSString* path = [[NSBundle mainBundle] pathForResource:@"SourceHanSerifCN-Light" ofType:@"otf"];
     //NSLog(@"%@",path);
     //NSLog(@"%@",@([[NSFileManager defaultManager] fileExistsAtPath:path]));
     
@@ -134,7 +134,7 @@
     [d addOutlineWithText:@"1" title:@"2" type:@"rss" xmlUrl:@"123" htmlUrl:@"321"];
     [d saveToURL:u forSaveOperation:UIDocumentSaveForCreating completionHandler:^(BOOL success) {
         
-        UIActivityViewController* a = [[UIActivityViewController alloc] initWithActivityItems:@[u] applicationActivities:nil];
+//        UIActivityViewController* a = [[UIActivityViewController alloc] initWithActivityItems:@[u] applicationActivities:nil];
         
     }];
     

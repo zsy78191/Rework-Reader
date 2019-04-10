@@ -51,6 +51,8 @@ NS_ASSUME_NONNULL_BEGIN
                            finishBlock:(void(^)(void))finishblock;
 - (void)canncelCurrentFeed;
 
+- (void)findItem:(NSString *)url result:(void(^)(BOOL,NSString*))result;
+
 
 - (void)refresh:(NSArray*)origin endRefreshBlock:(void (^)(void))endBlock finishBlock:(void (^)(NSUInteger all,NSUInteger error, NSUInteger article))finishBlock;
 - (void)refresh:(NSArray*)origin endRefreshBlock:(void (^)(void))endBlock progress:(void(^ _Nullable)(NSUInteger current,NSUInteger all))progressblock finishBlock:(void (^)(NSUInteger all,NSUInteger error, NSUInteger article))finishBlock;

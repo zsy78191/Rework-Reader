@@ -18,6 +18,7 @@
 
 - (NSString *)mvp_identifierForModel:(id<MVPModelProtocol>)model
 {
+//    NSLog(@"%@",model);
     return @"feedCell";
 }
 

@@ -14,6 +14,7 @@
 - (void)awakeFromNib {
     [super awakeFromNib];
     // Initialization code
+//    [self setAccessibilityTraits:UIAccessibilityTraitHeader];
 }
 
 - (void)setSelected:(BOOL)selected animated:(BOOL)animated {

@@ -16,6 +16,7 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    self.restorationIdentifier = @"RRExtraViewController";
     // Do any additional setup after loading the view.
     [self.navigationBar setValue:@(YES) forKeyPath:@"hidesShadow"];
 //    [self.tabBarController.tabBar setValue:@(YES) forKeyPath:@"hidesShadow"];
