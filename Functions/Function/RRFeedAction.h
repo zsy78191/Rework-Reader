@@ -36,6 +36,7 @@ NS_ASSUME_NONNULL_BEGIN
 + (void)preloadImages:(NSString*)uuid;
 + (void)preloadEntityImages:(EntityFeedArticle*)article;
 
++ (void)showCookie;
 @end
 
 NS_ASSUME_NONNULL_END

@@ -140,6 +140,7 @@
 		D4B903802245E93C00341584 /* ApplePurchaseDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = D4B9037E2245E93B00341584 /* ApplePurchaseDelegate.m */; };
 		D4B903872245EAC400341584 /* AppleAPIHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = D4B903852245EAC400341584 /* AppleAPIHelper.m */; };
 		D4B903892246885900341584 /* 开源代码.md in Resources */ = {isa = PBXBuildFile; fileRef = D4B903882246885900341584 /* 开源代码.md */; };
+		D4CD6624225DF1CD005EA2B9 /* ActionTest.m in Sources */ = {isa = PBXBuildFile; fileRef = D4CD6623225DF1CD005EA2B9 /* ActionTest.m */; };
 		D4E0F8EB2211486100902540 /* RPSettingInputer.m in Sources */ = {isa = PBXBuildFile; fileRef = D4E0F8EA2211486100902540 /* RPSettingInputer.m */; };
 		D4E0F8F9221149F000902540 /* RPFontLoader.m in Sources */ = {isa = PBXBuildFile; fileRef = D4E0F8F8221149F000902540 /* RPFontLoader.m */; };
 		D4E0F8FD22116AA400902540 /* RRSettingCell.m in Sources */ = {isa = PBXBuildFile; fileRef = D4E0F8FB22116AA400902540 /* RRSettingCell.m */; };
@@ -392,6 +393,8 @@
 		D4B903852245EAC400341584 /* AppleAPIHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AppleAPIHelper.m; sourceTree = "<group>"; };
 		D4B903862245EAC400341584 /* AppleAPIHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AppleAPIHelper.h; sourceTree = "<group>"; };
 		D4B903882246885900341584 /* 开源代码.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = "开源代码.md"; sourceTree = "<group>"; };
+		D4CD6622225DF1CD005EA2B9 /* ActionTest.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ActionTest.h; sourceTree = "<group>"; };
+		D4CD6623225DF1CD005EA2B9 /* ActionTest.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ActionTest.m; sourceTree = "<group>"; };
 		D4E0F8E92211486100902540 /* RPSettingInputer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RPSettingInputer.h; sourceTree = "<group>"; };
 		D4E0F8EA2211486100902540 /* RPSettingInputer.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RPSettingInputer.m; sourceTree = "<group>"; };
 		D4E0F8F7221149F000902540 /* RPFontLoader.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RPFontLoader.h; sourceTree = "<group>"; };
@@ -884,6 +887,8 @@
 			children = (
 				D49941C821FEA6BB0041B998 /* RRTest.h */,
 				D49941C921FEA6BB0041B998 /* RRTest.m */,
+				D4CD6622225DF1CD005EA2B9 /* ActionTest.h */,
+				D4CD6623225DF1CD005EA2B9 /* ActionTest.m */,
 			);
 			path = Test;
 			sourceTree = "<group>";
@@ -1418,6 +1423,7 @@
 				D49941C221FE1AC00041B998 /* RRExtraViewController.m in Sources */,
 				D4AC4DEB2217CF290028D342 /* RRBtnCell.m in Sources */,
 				D418CDEB22311D45004F5706 /* RRIconSettingModel.m in Sources */,
+				D4CD6624225DF1CD005EA2B9 /* ActionTest.m in Sources */,
 				D4E0F8EB2211486100902540 /* RPSettingInputer.m in Sources */,
 				D473F28E2223E77D00DF3C6D /* RRFeedAction.m in Sources */,
 				D49941B021FC9B0E0041B998 /* RPCoreDataGetOperation.m in Sources */,

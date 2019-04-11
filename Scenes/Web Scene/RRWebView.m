@@ -173,7 +173,7 @@
         [c setURLSchemeHandler:self.hander forURLScheme:@"innerhttps"];
         [c setURLSchemeHandler:self.hander forURLScheme:@"local"];
 //        [c setURLSchemeHandler:self.hander forURLScheme:@"innerhttps"];
-      
+        
         _webView = [[RRWKWebview alloc] initWithFrame:self.view.bounds configuration:c];
     }
     return _webView;
