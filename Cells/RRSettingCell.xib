@@ -49,10 +49,6 @@
                     <constraint firstAttribute="bottom" secondItem="UMs-Af-x5d" secondAttribute="bottom" constant="16" id="osH-nT-fBD"/>
                 </constraints>
             </tableViewCellContentView>
-            <accessibility key="accessibilityConfiguration">
-                <accessibilityTraits key="traits" header="YES"/>
-                <bool key="isElement" value="YES"/>
-            </accessibility>
             <viewLayoutGuide key="safeArea" id="aW0-zy-SZf"/>
             <connections>
                 <outlet property="subLabel" destination="iMj-B6-Nav" id="uYA-Us-E4C"/>

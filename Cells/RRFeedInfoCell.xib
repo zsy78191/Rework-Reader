@@ -54,10 +54,6 @@
                     <constraint firstItem="ILz-EG-nyf" firstAttribute="leading" secondItem="d48-cC-FLc" secondAttribute="trailing" constant="8" id="khi-1a-sVt"/>
                 </constraints>
             </tableViewCellContentView>
-            <accessibility key="accessibilityConfiguration">
-                <accessibilityTraits key="traits" header="YES"/>
-                <bool key="isElement" value="YES"/>
-            </accessibility>
             <viewLayoutGuide key="safeArea" id="aW0-zy-SZf"/>
             <connections>
                 <outlet property="titleLabel" destination="d48-cC-FLc" id="gSG-10-sj6"/>

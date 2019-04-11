@@ -14,15 +14,30 @@
 @import DZNEmptyDataSet;
 #import "RRTableOutput.h"
 @import ui_base;
+@import Classy;
+@import IQKeyboardManager;
 
-@interface RRFeedListView () <UIViewControllerPreviewingDelegate>
+@interface RRFeedListView () <UIViewControllerPreviewingDelegate,UISearchBarDelegate>
 {
 }
 @property (nonatomic, strong) UIBarButtonItem* blackBtn;
 @property (nonatomic, strong) UIBarButtonItem* cleanAllBtn;
+@property (nonatomic, strong) UISearchController* svc;
 @end
 
 @implementation RRFeedListView
+
+- (UISearchController *)svc
+{
+    if (!_svc) {
+        UITableViewController* t = [[UITableViewController alloc] initWithStyle:UITableViewStylePlain];
+        _svc = [[UISearchController alloc] initWithSearchResultsController:t];
+        _svc.obscuresBackgroundDuringPresentation = YES;
+        _svc.dimsBackgroundDuringPresentation = YES;
+        _svc.hidesNavigationBarDuringPresentation = NO;
+    }
+    return _svc;
+}
 
 - (void)viewDidLoad {
     [super viewDidLoad];
@@ -123,6 +138,15 @@
 //            [output.tableview reloadEmptyDataSet];
 //        });
 //        [output.tableview reloadEmptyDataSet];
+  
+//        UISearchBar * bar = weakSelf.svc.searchBar;
+        UISearchBar* bar =  [[UISearchBar alloc] initWithFrame:CGRectMake(0, 0, weakSelf.view.frame.size.width, 50)];
+        bar.cas_styleClass = @"sbar";
+        bar.delegate = weakSelf;
+        
+        [bar setSearchBarStyle:UISearchBarStyleMinimal];
+        [output.tableview setTableHeaderView:bar];
+        
         RREmpty* e = [[RREmpty alloc] init];
         weakSelf.empty = e;
         [e setActionBlock:^{
@@ -136,6 +160,12 @@
     [output setNewOffsetBlock:^(CGFloat offsetY) {
          double height = [UIApplication sharedApplication].statusBarFrame.size.height + weakSelf.navigationController.navigationBar.frame.size.height;
         [[weakSelf presenter] mvp_runAction:@"updateOffsetY:" value:@(offsetY+height)];
+    }];
+    
+    [output setStartScroll:^{
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [[weakSelf view] endEditing:YES];
+        });
     }];
 //    [o mvp_registerNib:[UINib nibWithNibName:@"RRFeedInfoListCell" bundle:[NSBundle mainBundle]] forCellReuseIdentifier:@"feedCell"];
 //    [o mvp_registerNib:[UINib nibWithNibName:@"RRTitleCell" bundle:[NSBundle mainBundle]] forCellReuseIdentifier:@"titleCell"];
@@ -207,11 +237,11 @@
     self.navigationItem.leftBarButtonItem = bSetting;
     
 //    UIBarButtonItem* bSearch = [self mvp_buttonItemWithSystem:UIBarButtonSystemItemSearch actionName:@"openSearch" title:@"搜索"];
-    self.navigationItem.rightBarButtonItem = self.editButtonItem;
+    self.navigationItem.rightBarButtonItems = @[self.editButtonItem];
     
     [self.presenter mvp_bindBlock:^(RRFeedListView* view, id value) {
         dispatch_async(dispatch_get_main_queue(), ^{
-            view.navigationItem.rightBarButtonItem.enabled = ![value boolValue];
+            view.editButtonItem.enabled = ![value boolValue];
         });
     } keypath:@"updating"];
     
@@ -258,6 +288,7 @@
     if ([self.presenter respondsToSelector:@selector(viewWillAppear:)]) {
         [(id)self.presenter viewWillAppear:animated];
     }
+//    [[IQKeyboardManager sharedManager] setEnable:YES];
     
 //    MVPTableViewOutput* o  = (id)self.outputer;
 //    [o.tableview reloadEmptyDataSet];
@@ -299,5 +330,13 @@
     // Pass the selected object to the new view controller.
 }
 */
+
+- (void)searchBarSearchButtonClicked:(UISearchBar *)searchBar
+{
+    [searchBar resignFirstResponder];
+    if (searchBar.text.length>0) {
+        [self.presenter mvp_runAction:@"openSearch:" value:searchBar.text];
+    }
+}
 
 @end

@@ -8,6 +8,7 @@
 
 #import "RRReadStyle.h"
 @import DateTools;
+@import oc_string;
 @implementation RRReadStyle
 
 - (void)setFeed:(EntityFeedInfo *)feed
@@ -28,6 +29,7 @@
         self.onlyUnread = style.unread;
         self.liked = style.liked;
         self.countlimit = style.countLimit;
+        self.keyword = style.keyword;
     }
     return self;
 }
@@ -61,6 +63,21 @@
 
 - (NSPredicate *)predicate
 {
+    if (self.keyword) {
+        NSString* pre = [self.keyword stringByReplacingOccurrencesOfString:@" " withString:@","];
+        NSArray* all = [pre componentsSeparatedByString:@","];
+        all = all.map(^id _Nonnull(id  _Nonnull x) {
+           
+            NSString * q = [NSString stringWithFormat:@"title like[c] '*%@*' or summary like[c] '*%@*' or content like[c] '*%@*'",x,x,x];
+            NSPredicate* p = [NSPredicate predicateWithFormat:q];
+            return p;
+        });
+//        NSLog(@"%@ %@",p,self.keyword);
+        
+        NSCompoundPredicate* c = [[NSCompoundPredicate alloc] initWithType:NSAndPredicateType subpredicates:all];
+        return c;
+    }
+    
     if (self.feed) {
         if (self.onlyUnread) {
             return [NSPredicate predicateWithFormat:@"feed = %@ and readed = false",self.feed];

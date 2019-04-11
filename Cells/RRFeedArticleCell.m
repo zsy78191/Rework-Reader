@@ -111,43 +111,56 @@
             self.feedLabel.text = @"无订阅源";
         }
         
-//        //NSLog(@"%@ %@",@(m.liked),m.lastread);
+        [self configUnreadAndLiked:m];
         
-        if (m.liked) {
-            self.i1.image = [UIImage imageNamed:@"icon_i3"];
-        }
-        else {
-            self.i1.image = [UIImage new];
-        }
-        if (!m.readed) {
-           
-            if (m.liked) {
-                [self.i2 setImage:[UIImage imageNamed:@"icon_i2"]];
-            }
-            else {
-                [self.i1 setImage:[UIImage imageNamed:@"icon_i2"]];
-            }
-            
-        }
-        else {
-            
-            if (m.liked) {
-                [self.i2 setImage:[UIImage new]];
-            }
-            else {
-                [self.i1 setImage:[UIImage new]];
-            }
-        }
-        if (!m.lastread) {
-            self.titleLabel.cas_styleClass = @"MainLabel";
-        }
-        else {
-            self.titleLabel.cas_styleClass = @"MainLabelReaded";
-        }
+        [self mvp_bindModel:model withProperties:@[@"liked",@"readed"]];
         
         if (self.detialLabel) {
             self.detialLabel.text = temp;
         }
+    }
+    
+}
+
+- (void)mvp_value:(id)value updateForKeypath:(NSString *)keypath
+{
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [self configUnreadAndLiked:[self valueForKey:@"model"]];
+    });
+}
+
+- (void)configUnreadAndLiked:(EntityFeedArticle*)m
+{
+    if (m.liked) {
+        self.i1.image = [UIImage imageNamed:@"icon_i3"];
+    }
+    else {
+        self.i1.image = [UIImage new];
+    }
+    
+    if (!m.readed) {
+        if (m.liked) {
+            [self.i2 setImage:[UIImage imageNamed:@"icon_i2"]];
+        }
+        else {
+            [self.i1 setImage:[UIImage imageNamed:@"icon_i2"]];
+        }
+        
+    }
+    else {
+        
+        if (m.liked) {
+            [self.i2 setImage:[UIImage new]];
+        }
+        else {
+            [self.i1 setImage:[UIImage new]];
+        }
+    }
+    if (!m.lastread) {
+        self.titleLabel.cas_styleClass = @"MainLabel";
+    }
+    else {
+        self.titleLabel.cas_styleClass = @"MainLabelReaded";
     }
     
 }

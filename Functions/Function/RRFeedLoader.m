@@ -191,6 +191,7 @@
     return _shortDateAndTimeFormatter;
 }
 
+
 - (UIViewController *)feedItem:(NSString *)url errorBlock:(void (^)(NSError * _Nonnull))errblock cancelBlock:(void (^)(void))cancelBlock finishBlock:(void (^)(void))finishblock
 {
     if (self.isFeeding) {
@@ -258,65 +259,6 @@
         [self.currentOperation cancel];
         self.isFeeding = NO;
     }
-}
-
-- (void)findItem:(NSString *)url result:(void(^)(BOOL,NSString*))result
-{
-    NSURLSession* s = [NSURLSession sessionWithConfiguration:[NSURLSessionConfiguration defaultSessionConfiguration]];
-    NSURLSessionTask* t = [s dataTaskWithURL:[NSURL URLWithString:url] completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
-        
-           if ([response.MIMEType rangeOfString:@"xml"].location != NSNotFound || [response.MIMEType rangeOfString:@"rss"].location != NSNotFound || [response.MIMEType rangeOfString:@"atom"].location != NSNotFound) {
-               if (result) {
-                   result(YES,nil);
-               }
-           }
-           else
-           {
-               NSString* s = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
-//               NSLog(@"%@",s);
-               NSArray* all = [s componentsMatchedByRegex:@"<link.*?>"];
-//               NSLog(@"%@",all);
-               all = all.filter(^BOOL(NSString*  _Nonnull x) {
-                   BOOL ok = [x componentsMatchedByRegex:@"type=\"application/atom\\+xml\""].count > 0 || [x componentsMatchedByRegex:@"type=\"application/xml\""].count > 0 || [x componentsMatchedByRegex:@"type=\"application/rss\\+xml\""].count > 0;
-//                   NSLog(@"%@",@(ok));
-                   return ok;
-               }).map(^id _Nonnull(NSString*   _Nonnull x) {
-                   return [x componentsMatchedByRegex:@"(?<=href=\").*?(?=\")"].firstObject;
-               });
-//               NSLog(@"%@",all);
-               
-               if (all.count>0) {
-                   
-                   NSString* f = all.firstObject;
-                   if ([f hasPrefix:@"http"]) {
-                       if (result) {
-                           dispatch_async(dispatch_get_main_queue(), ^{
-                               result(NO,f);
-                           });
-                       }
-                   }
-                   else {
-                       NSURL* u = [NSURL URLWithString:url];
-                       NSString* f = all.firstObject;
-                       f = [NSString stringWithFormat:@"%@://%@%@",u.scheme,u.host,f];
-                       NSLog(@"%@",f);
-                       if (result) {
-                           dispatch_async(dispatch_get_main_queue(), ^{
-                               result(NO,f);
-                           });
-                       }
-                   }
-               }
-               else {
-                   if (result) {
-                       dispatch_async(dispatch_get_main_queue(), ^{
-                           result(NO,nil);
-                       });
-                   }
-               }
-           }
-    }];
-    [t resume];
 }
 
 - (void)refresh:(NSArray*)origin endRefreshBlock:(void (^)(void))endBlock finishBlock:(void (^)(NSUInteger all,NSUInteger error, NSUInteger article))finishBlock;

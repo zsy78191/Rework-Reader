@@ -58,10 +58,6 @@
                     <constraint firstItem="LlW-ox-jcA" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" constant="16" id="zaK-qB-zAL"/>
                 </constraints>
             </tableViewCellContentView>
-            <accessibility key="accessibilityConfiguration">
-                <accessibilityTraits key="traits" header="YES"/>
-                <bool key="isElement" value="YES"/>
-            </accessibility>
             <viewLayoutGuide key="safeArea" id="aW0-zy-SZf"/>
             <connections>
                 <outlet property="opener" destination="vP6-cR-2LE" id="Sho-9g-sxf"/>

@@ -104,10 +104,6 @@
                     <constraint firstAttribute="trailing" secondItem="zuS-aP-nVo" secondAttribute="trailing" id="t42-57-KiY"/>
                 </constraints>
             </tableViewCellContentView>
-            <accessibility key="accessibilityConfiguration">
-                <accessibilityTraits key="traits" header="YES"/>
-                <bool key="isElement" value="YES"/>
-            </accessibility>
             <viewLayoutGuide key="safeArea" id="aW0-zy-SZf"/>
             <connections>
                 <outlet property="dateLabel" destination="zaj-iT-6l1" id="RQb-ts-Pw0"/>

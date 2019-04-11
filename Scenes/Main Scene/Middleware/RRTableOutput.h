@@ -12,6 +12,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface RRTableOutput : MVPTableViewOutput
 
+@property (nonatomic, strong) void (^startScroll)(void);
 @property (nonatomic, strong) void (^newOffsetBlock)(CGFloat offsetY);
 @property (nonatomic, assign) BOOL canMutiSelect;
 

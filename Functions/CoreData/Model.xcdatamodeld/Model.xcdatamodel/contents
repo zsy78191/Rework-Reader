@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="14490.98" systemVersion="18D109" minimumToolsVersion="Automatic" sourceLanguage="Objective-C" userDefinedModelVersionIdentifier="version0">
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="14490.98" systemVersion="18E226" minimumToolsVersion="Automatic" sourceLanguage="Objective-C" userDefinedModelVersionIdentifier="version0">
     <entity name="EntityFeedArticle" representedClassName="EntityFeedArticle" syncable="YES" codeGenerationType="class">
         <attribute name="author" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="categories" optional="YES" attributeType="String" syncable="YES"/>
@@ -47,6 +47,7 @@
     <entity name="EntityFeedStyle" representedClassName="EntityFeedStyle" syncable="YES" codeGenerationType="class">
         <attribute name="countLimit" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
         <attribute name="dayLimit" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
+        <attribute name="keyword" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="liked" optional="YES" attributeType="Boolean" usesScalarValueType="YES" syncable="YES"/>
         <attribute name="sort" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
         <attribute name="title" optional="YES" attributeType="String" syncable="YES"/>
@@ -58,6 +59,6 @@
     <elements>
         <element name="EntityFeedArticle" positionX="-54" positionY="99" width="128" height="345"/>
         <element name="EntityFeedInfo" positionX="-63" positionY="-18" width="128" height="345"/>
-        <element name="EntityFeedStyle" positionX="-63" positionY="135" width="128" height="180"/>
+        <element name="EntityFeedStyle" positionX="-63" positionY="135" width="128" height="195"/>
     </elements>
 </model>

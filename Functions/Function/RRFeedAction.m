@@ -17,6 +17,7 @@
 @import RegexKitLite;
 @import Fork_MWFeedParser;
 @import MagicalRecord;
+@import WebKit;
 
 @implementation RRFeedAction
 
@@ -100,6 +101,21 @@
     return;
     EntityFeedArticle* a = [[RPDataManager sharedManager] getFirst:@"EntityFeedArticle" predicate:nil key:@"uuid" value:uuid sort:nil asc:YES];
     [[self class] preloadEntityImages:a];
+}
+
++ (void)showCookie
+{
+    WKWebsiteDataStore* store = [WKWebsiteDataStore defaultDataStore];
+    [store.httpCookieStore getAllCookies:^(NSArray<NSHTTPCookie *> *  _Nonnull a) {
+        [a enumerateObjectsUsingBlock:^(NSHTTPCookie * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+            NSLog(@"%@",obj);
+        }];
+    }];
+}
+
++ (void)pre
+{
+//    WKWebsiteDataStore* store = [WKWebsiteDataStore defaultDataStore];
 }
 
 + (void)preloadEntityImages:(EntityFeedArticle *)article

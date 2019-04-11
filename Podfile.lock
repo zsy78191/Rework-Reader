@@ -6,6 +6,9 @@ PODS:
   - CocoaLumberjack (3.5.2):
     - CocoaLumberjack/Core (= 3.5.2)
   - CocoaLumberjack/Core (3.5.2)
+  - cocore (1.1.3)
+  - coobjc (1.1.3):
+    - cocore (~> 1.1.3)
   - DACircularProgress (2.3.1)
   - DateTools (2.0.0)
   - DZNEmptyDataSet (1.8.1)
@@ -71,6 +74,7 @@ PODS:
 
 DEPENDENCIES:
   - CocoaLumberjack
+  - coobjc
   - DateTools
   - Ensembles
   - Fork-MWFeedParser
@@ -90,6 +94,8 @@ SPEC REPOS:
     - ChameleonFramework
     - Classy
     - CocoaLumberjack
+    - cocore
+    - coobjc
     - DACircularProgress
     - DateTools
     - DZNEmptyDataSet
@@ -121,6 +127,8 @@ SPEC CHECKSUMS:
   ChameleonFramework: d21a3cc247abfe5e37609a283a8238b03575cf64
   Classy: bbe2436d6872dfeda5eaa2a3c3d705a9c30b1709
   CocoaLumberjack: 118bf4a820efc641f79fa487b75ed928dccfae23
+  cocore: d3fb0baa83646887c054a8521a5671996cf98e97
+  coobjc: 3f2e1cbaa430e1372fe532acc4f9d797448db1a5
   DACircularProgress: 4dd437c0fc3da5161cb289e07ac449493d41db71
   DateTools: 933ac9c490f21f92127cf690ccd8c397e0126caf
   DZNEmptyDataSet: 9525833b9e68ac21c30253e1d3d7076cc828eaa7
@@ -148,6 +156,6 @@ SPEC CHECKSUMS:
   ui-util: 8f870cfb52b611516279bd0bf362ee2fac34d42d
   YYKit: 7cda43304a8dc3696c449041e2cb3107b4e236e7
 
-PODFILE CHECKSUM: c3510c9f92c62a50e33e85283f3e7087fc80f80e
+PODFILE CHECKSUM: fd08b3feab9e18201d263f2a39e9cc6521f6b514
 
 COCOAPODS: 1.6.0

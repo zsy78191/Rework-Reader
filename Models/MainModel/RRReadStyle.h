@@ -26,6 +26,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, assign) BOOL canEdit;
 @property (nonatomic, assign) BOOL readlater;
 @property (nonatomic, assign) NSInteger countlimit;
+@property (nonatomic, strong) NSString* keyword;
 
 - (NSPredicate*)predicate;
 - (NSArray<NSSortDescriptor*>*)sort;

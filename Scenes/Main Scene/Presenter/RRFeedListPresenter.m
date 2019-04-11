@@ -334,6 +334,24 @@ NSString* const kOffsetMainList = @"kOffsetMainList";
     //NSLog(@"%@",d);
 }
 
+- (void)openSearch:(NSString*)searchText
+{
+    RRFeedInfoListOtherModel* mUnread = GetRRFeedInfoListOtherModel([NSString stringWithFormat:@"搜索「%@」",searchText],@"favicon",@"三日内的未读文章",@"serach");
+    mUnread.canRefresh = NO;
+    mUnread.canEdit = NO;
+    mUnread.readStyle = ({
+        RRReadStyle* s = [[RRReadStyle alloc] init];
+        s.onlyUnread = NO;
+        s.daylimit = -1;
+        s.liked = NO;
+        s.keyword = searchText;
+        s;
+    });
+    
+    id vc = [MVPRouter viewForURL:@"rr://list" withUserInfo:@{@"model":mUnread}];
+    [self.view mvp_pushViewController:vc];
+}
+
 - (void)dealloc
 {
 //    [[NSNotificationCenter defaultCenter] removeObserver:self name:UIAccessibilityPageScrolledNotification object:nil];
