@@ -17,6 +17,9 @@ target 'rework-reader' do
   pod 'mvc-base'
 #  pod 'mvc-middleware', :podspec => '../../mvc/mvc-middleware/mvc-middleware.podspec'
 
+  #多线程
+  pod 'coobjc'
+
   #RSS解析库
   pod 'Fork-MWFeedParser'
   

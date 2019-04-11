@@ -8,7 +8,7 @@
 
 #import "AppDelegate+Ext.h"
 #import "RRDataBackuper.h"
-
+@import ui_base;
 @implementation AppDelegate (Ext)
 
 - (void)loadCas
@@ -36,6 +36,27 @@
         default:
             break;
     }
+    
+    NSDictionary* style = [[NSUserDefaults standardUserDefaults] valueForKey:@"style"];
+    
+    NSDictionary* d = @{
+                        NSFontAttributeName:[UIFont fontWithName:style[@"$main-font"] size:[style[@"$sub-font-size"] floatValue]],
+                        NSForegroundColorAttributeName:UIColor.hex(style[@"$main-text-color"])
+                        };
+    
+    NSAttributedString *attributedString = [[NSAttributedString alloc] initWithString:@"搜索" attributes:d];
+    
+    [[UITextField appearanceWhenContainedInInstancesOfClasses:@[[UISearchBar class]]] setAttributedPlaceholder:attributedString];
+    
+//    NSAttributedString *attributedString2 = [[NSAttributedString alloc] initWithString:@"123" attributes:d];
+    
+//    [[UITextField appearanceWhenContainedInInstancesOfClasses:@[[UISearchBar class]]] setAttributedText:attributedString2];
+    
+    UITextField* t = [UITextField appearanceWhenContainedInInstancesOfClasses:@[[UISearchBar class]]];
+//    [t setFont:[UIFont fontWithName:style[@"$main-font"] size:[style[@"$sub-font-size"] floatValue]]];
+//    [t setTextColor:UIColor.hex(style[@"$sub-text-color"])];
+    [t setDefaultTextAttributes:d];
+   
     
     //    dispatch_async(dispatch_get_main_queue(), ^{
     

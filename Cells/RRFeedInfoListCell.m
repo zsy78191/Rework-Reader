@@ -35,31 +35,6 @@
         self.titleLabel.text = m.title;
         if (m.icon) {
             [self.iconView sd_setImageWithURL:[NSURL URLWithString:m.icon] placeholderImage:[UIImage imageNamed:@"favicon"]];
-//            __weak typeof(self) weakSelf = self;
-//            NSString* key = m.icon;
-//            UIImage* image = [[SDImageCache sharedImageCache] imageFromCacheForKey:key];
-//            if (image) {
-//                [self.iconView setImage:image];
-//            }
-//            else {
-//                [[SDWebImageDownloader sharedDownloader] downloadImageWithURL:[NSURL URLWithString:key] options:SDWebImageDownloaderHighPriority progress:^(NSInteger receivedSize, NSInteger expectedSize, NSURL * _Nullable targetURL) {
-//
-//                } completed:^(UIImage * _Nullable image, NSData * _Nullable data, NSError * _Nullable error, BOOL finished) {
-//                    dispatch_async(dispatch_get_main_queue(), ^{
-//                        UIImage* i = [[RRImageRender sharedRender] imageApplyFilters:image];
-//                        [weakSelf.iconView setImage:i];
-//                        [[SDImageCache sharedImageCache] storeImage:i forKey:key completion:^{
-//                            NSLog(@"cached %@",key);
-//                        }];
-//                    });
-//                }];
-//            }
-//            [self.iconView sd_setImageWithURL:[NSURL URLWithString:m.icon] placeholderImage:[UIImage imageNamed:@"favicon"] options:kNilOptions completed:^(UIImage * _Nullable image, NSError * _Nullable error, SDImageCacheType cacheType, NSURL * _Nullable imageURL) {
-//                dispatch_async(dispatch_get_main_queue(), ^{
-//                    UIImage* i = [[RRImageRender sharedRender] imageApplyFilters:image];
-//                    [weakSelf.iconView setImage:i];
-//                });
-//            }];
         }
         else {
             [self.iconView setImage:[UIImage imageNamed:@"favicon"]];

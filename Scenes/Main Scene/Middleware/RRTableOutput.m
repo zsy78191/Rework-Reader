@@ -148,4 +148,11 @@
     }
 }
 
+
+- (void)scrollViewWillBeginDragging:(UIScrollView *)scrollView
+{
+    if (self.startScroll) {
+        self.startScroll();
+    }
+}
 @end

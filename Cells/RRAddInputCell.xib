@@ -51,10 +51,6 @@
                     <constraint firstAttribute="bottom" secondItem="3Y0-Hc-eBo" secondAttribute="bottom" constant="10.5" id="ugQ-q6-ZjW"/>
                 </constraints>
             </tableViewCellContentView>
-            <accessibility key="accessibilityConfiguration">
-                <accessibilityTraits key="traits" header="YES"/>
-                <bool key="isElement" value="YES"/>
-            </accessibility>
             <viewLayoutGuide key="safeArea" id="aW0-zy-SZf"/>
             <connections>
                 <outlet property="inputField" destination="3Y0-Hc-eBo" id="kWo-vT-Xeq"/>

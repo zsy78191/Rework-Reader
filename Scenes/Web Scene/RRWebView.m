@@ -514,9 +514,11 @@
     self.webView.scrollView.delegate = self;
     [self.webView.scrollView addSubview:self.upView];
     [self.webView.scrollView addSubview:self.downView];
-    [self.webView.scrollView setDirectionalLockEnabled:YES];
-    [self.webView.scrollView setAlwaysBounceHorizontal:NO];
+//    [self.webView.scrollView setDirectionalLockEnabled:YES];
+//    [self.webView.scrollView setAlwaysBounceHorizontal:NO];
     
+    [self.webView setUIDelegate:self];
+    [self.webView setNavigationDelegate:self];
     [self.view addSubview:self.statusCover];
 //    [self.progressView setProgress:0.5];
     
@@ -526,21 +528,24 @@
         [weakSelf setProgress:[x doubleValue]];
     }];
     
-    
     NSString* filename = model.userInfo[@"name"];
     if (!filename) {
         filename = @"";
     }
     RRFeedArticleModel* m = model.userInfo[@"model"];
     MWFeedInfo* feedInfo = model.userInfo[@"feed"];
+    
+    [self loadContent:filename model:m initial:model feed:feedInfo];
+}
+
+- (void)loadContent:(NSString*)filename model:(RRFeedArticleModel*)m initial:(MVPInitModel*)model feed:(MWFeedInfo*)feedInfo
+{
     NSURL * url = [[NSBundle mainBundle] URLForResource:[filename stringByDeletingPathExtension] withExtension:[filename pathExtension]];
     if (!m && ![filename hasPrefix:@"http"] && ![[NSFileManager defaultManager] fileExistsAtPath:[url path]]) {
         DDLogWarn(@"文件%@不存在",filename);
         return;
     }
     
-//    [self.navigationController setToolbarHidden:YES animated:NO];
-//    self.navigationController.toolbar.alpha = 0;
     self.showToolbar = NO;
     if ([filename hasPrefix:@"http"]) {
         self.originURL = filename;
@@ -548,7 +553,7 @@
         [self.webView loadRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:filename]]];
     }
     else if ([filename hasSuffix:@"html"]) {
-         [self.webView loadFileURL:url allowingReadAccessToURL:[[NSBundle mainBundle] bundleURL]];
+        [self.webView loadFileURL:url allowingReadAccessToURL:[[NSBundle mainBundle] bundleURL]];
     }
     else if([filename hasSuffix:@"md"])
     {
@@ -566,9 +571,9 @@
             string = [self removeHighlight:string];
         }
         
-//        NSDictionary* style = [[NSUserDefaults standardUserDefaults] valueForKey:@"style"];
+        //        NSDictionary* style = [[NSUserDefaults standardUserDefaults] valueForKey:@"style"];
         string = [self preloadSystemCSSStyle:string];
- 
+        
         string = [string stringByReplacingOccurrencesOfString:@"<#title#>" withString:[filename stringByDeletingPathExtension]];
         
         string = [string stringByReplacingOccurrencesOfString:@"<#useMarkdown#>" withString:@"1"];
@@ -590,7 +595,7 @@
         [self.webView loadHTMLString:string baseURL:[[NSBundle mainBundle] bundleURL]];
     }
     else {
-//        [self.navigationController setToolbarHidden:NO animated:NO];
+        //        [self.navigationController setToolbarHidden:NO animated:NO];
         [self preloadData:m feed:feedInfo];
         self.showToolbar = YES;
         
@@ -600,10 +605,6 @@
         self.navigationItem.rightBarButtonItem = rb;
         
     }
-    
-    [self.webView setUIDelegate:self];
-    [self.webView setNavigationDelegate:self];
-    
 }
 
 - (NSString*)preloadSystemCSSStyle:(NSString*)string

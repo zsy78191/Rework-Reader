@@ -94,10 +94,6 @@
                     <constraint firstItem="cGE-8f-DWq" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" id="vhB-jS-Jje"/>
                 </constraints>
             </tableViewCellContentView>
-            <accessibility key="accessibilityConfiguration">
-                <accessibilityTraits key="traits" header="YES"/>
-                <bool key="isElement" value="YES"/>
-            </accessibility>
             <viewLayoutGuide key="safeArea" id="aW0-zy-SZf"/>
             <connections>
                 <outlet property="countLabel" destination="wq3-Eh-KDd" id="JcO-pc-MKe"/>

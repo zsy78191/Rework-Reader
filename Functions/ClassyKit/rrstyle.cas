@@ -134,3 +134,7 @@ UIView.SeparaterView
     indicatorStyle $indicatorStyle
 }
 
+^UISearchBar.sbar {
+    barTintColor $main-text-color
+    tintColor $main-tint-color
+}

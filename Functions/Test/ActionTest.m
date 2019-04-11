@@ -12,7 +12,7 @@
 
 - (void)cookies
 {
-    [RRFeedAction pre];
+//    [RRFeedAction pre];
 }
 
 @end

@@ -10,6 +10,7 @@
 #import "RRAddInputer.h"
 #import "RRAddModel.h"
 #import "RRFeedLoader.h"
+#import "RRFeedFinder.h"
 @import ui_base;
 @import oc_string;
 @interface RRAddFeedPresenter ()
@@ -71,8 +72,6 @@
     return self.inputer;
 }
 
-
-
 - (void)mvp_action_selectItemAtIndexPath:(NSIndexPath *)path
 {
     [[(UIViewController*)self.view view] endEditing:YES];
@@ -101,7 +100,10 @@
                 x = e;
             }
             
-            [[RRFeedLoader sharedLoader] findItem:x result:^(BOOL isRSS, NSString * _Nonnull url) {
+//            RRFeedFinder* f = [[RRFeedFinder alloc] init];
+            [RRFeedFinder findItem:x result:^(BOOL isRSS, NSString * _Nonnull url) {
+//                NSLog(@"--- %@",url);
+                
                 if (isRSS) {
                     dispatch_async(dispatch_get_main_queue(), ^{
                         [weakself loadRSS:x];

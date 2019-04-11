@@ -66,6 +66,7 @@
 		D47717E321ED90D00050DF14 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = D47717E121ED90D00050DF14 /* LaunchScreen.storyboard */; };
 		D47717E621ED90D00050DF14 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = D47717E521ED90D00050DF14 /* main.m */; };
 		D47717F021ED90D00050DF14 /* rework_readerTests.m in Sources */ = {isa = PBXBuildFile; fileRef = D47717EF21ED90D00050DF14 /* rework_readerTests.m */; };
+		D479D1EC225F11E90057DAC5 /* RRFeedFinder.m in Sources */ = {isa = PBXBuildFile; fileRef = D479D1EB225F11E90057DAC5 /* RRFeedFinder.m */; };
 		D47A3957223172EB006251A6 /* SourceHanSerifCN-Light.otf in Resources */ = {isa = PBXBuildFile; fileRef = D47A7A242219112F00F13194 /* SourceHanSerifCN-Light.otf */; };
 		D47A3959223421A6006251A6 /* 网友推荐源.md in Resources */ = {isa = PBXBuildFile; fileRef = D47A3958223421A6006251A6 /* 网友推荐源.md */; };
 		D47A395F223620F9006251A6 /* RREmptyStyleOne.m in Sources */ = {isa = PBXBuildFile; fileRef = D47A395E223620F9006251A6 /* RREmptyStyleOne.m */; };
@@ -273,6 +274,8 @@
 		D47717EB21ED90D00050DF14 /* rework-readerTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "rework-readerTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		D47717EF21ED90D00050DF14 /* rework_readerTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = rework_readerTests.m; sourceTree = "<group>"; };
 		D47717F121ED90D00050DF14 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		D479D1EA225F11E90057DAC5 /* RRFeedFinder.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RRFeedFinder.h; sourceTree = "<group>"; };
+		D479D1EB225F11E90057DAC5 /* RRFeedFinder.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RRFeedFinder.m; sourceTree = "<group>"; };
 		D47A3958223421A6006251A6 /* 网友推荐源.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = "网友推荐源.md"; sourceTree = "<group>"; };
 		D47A395D223620F9006251A6 /* RREmptyStyleOne.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RREmptyStyleOne.h; sourceTree = "<group>"; };
 		D47A395E223620F9006251A6 /* RREmptyStyleOne.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RREmptyStyleOne.m; sourceTree = "<group>"; };
@@ -812,6 +815,8 @@
 				D440CFD42214218B003B7203 /* RRFeedLoader.m */,
 				D473F28C2223E77D00DF3C6D /* RRFeedAction.h */,
 				D473F28D2223E77D00DF3C6D /* RRFeedAction.m */,
+				D479D1EA225F11E90057DAC5 /* RRFeedFinder.h */,
+				D479D1EB225F11E90057DAC5 /* RRFeedFinder.m */,
 			);
 			path = Function;
 			sourceTree = "<group>";
@@ -1319,6 +1324,8 @@
 				"${BUILT_PRODUCTS_DIR}/SDWebImage/SDWebImage.framework",
 				"${BUILT_PRODUCTS_DIR}/SVProgressHUD/SVProgressHUD.framework",
 				"${BUILT_PRODUCTS_DIR}/YYKit/YYKit.framework",
+				"${BUILT_PRODUCTS_DIR}/cocore/cocore.framework",
+				"${BUILT_PRODUCTS_DIR}/coobjc/coobjc.framework",
 				"${BUILT_PRODUCTS_DIR}/mvc-base/mvc_base.framework",
 				"${BUILT_PRODUCTS_DIR}/oc-base/oc_base.framework",
 				"${BUILT_PRODUCTS_DIR}/oc-date/oc_date.framework",
@@ -1351,6 +1358,8 @@
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SDWebImage.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SVProgressHUD.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/YYKit.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/cocore.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/coobjc.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/mvc_base.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/oc_base.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/oc_date.framework",
@@ -1438,6 +1447,7 @@
 				D473F287221FCCE800DF3C6D /* RRListInputer.m in Sources */,
 				D49941AC21FC9B0E0041B998 /* RPDataManager.m in Sources */,
 				D47A396322363ABE006251A6 /* Model.xcdatamodeld in Sources */,
+				D479D1EC225F11E90057DAC5 /* RRFeedFinder.m in Sources */,
 				D418CDE322311B2E004F5706 /* RRIconSettingCell.m in Sources */,
 				D49941D521FEA7BB0041B998 /* RRFeedListPresenter.m in Sources */,
 				D4A72D192240D55A00AD6C75 /* RRMainPageAddPresenter.m in Sources */,
