@@ -9,10 +9,10 @@
 #import "AppDelegate.h"
 #import "AppDelegate+Ext.h"
 
-@interface AppDelegate () <SDWebImageManagerDelegate,UISplitViewControllerDelegate,CDEPersistentStoreEnsembleDelegate>
+@interface AppDelegate () <SDWebImageManagerDelegate,UISplitViewControllerDelegate>
 {
-    CDEPersistentStoreEnsemble *ensemble;
-    CDEICloudFileSystem *cloudFileSystem;
+//    CDEPersistentStoreEnsemble *ensemble;
+//    CDEICloudFileSystem *cloudFileSystem;
 }
 
 @end

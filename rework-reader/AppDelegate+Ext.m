@@ -22,15 +22,49 @@
 - (void)notiReloadCas
 {
     RRReadMode mode = [[NSUserDefaults standardUserDefaults] integerForKey:@"kRRReadMode"];
+    RRReadLightSubMode subMode = [[NSUserDefaults standardUserDefaults] integerForKey:@"kRRReadModeLight"];
+    RRReadDarkSubMode darkMode = [[NSUserDefaults standardUserDefaults] integerForKey:@"kRRReadModeDark"];
     switch (mode) {
         case RRReadModeDark:
         {
-            [ClassyKitLoader loadWithStyle:@"rrstyle" variables:@"style_dark"]; //加载cas文件
+            switch (darkMode) {
+                case RRReadDarkSubModeDefalut:
+                {
+                    [ClassyKitLoader loadWithStyle:@"rrstyle" variables:@"style_dark"];
+                    break;
+                }
+                case RRReadDarkSubModeGray:
+                {
+                    [ClassyKitLoader loadWithStyle:@"rrstyle" variables:@"style_dark_1"];
+                    break;
+                }
+                default:
+                    break;
+            }
+            
             break;
         }
         case RRReadModeLight:
         {
-            [ClassyKitLoader loadWithStyle:@"rrstyle" variables:@"style"]; //加载cas文件
+            switch (subMode) {
+                case RRReadLightSubModeDefalut:
+                {
+                    [ClassyKitLoader loadWithStyle:@"rrstyle" variables:@"style"];
+                    break;
+                }
+                case RRReadLightSubModeMice:
+                {
+                    [ClassyKitLoader loadWithStyle:@"rrstyle" variables:@"style_1"];
+                    break;
+                }
+                case RRReadLightSubModeSafariMice:
+                {
+                    [ClassyKitLoader loadWithStyle:@"rrstyle" variables:@"style_2"];
+                    break;
+                }
+                default:
+                    break;
+            }
             break;
         }
         default:
@@ -46,6 +80,10 @@
     
     NSAttributedString *attributedString = [[NSAttributedString alloc] initWithString:@"搜索" attributes:d];
     
+//    [[UISearchBar appearance] setBarStyle:UIBarStyleBlack];
+//    [[UIActivityIndicatorView appearance] setTintColor:UIColor.hex(style[@"$main-text-color"])];
+//    [[UIRefreshControl appearance] setTintColor:UIColor.hex(style[@"$main-text-color"])];
+    
     [[UITextField appearanceWhenContainedInInstancesOfClasses:@[[UISearchBar class]]] setAttributedPlaceholder:attributedString];
     
 //    NSAttributedString *attributedString2 = [[NSAttributedString alloc] initWithString:@"123" attributes:d];
@@ -56,7 +94,7 @@
 //    [t setFont:[UIFont fontWithName:style[@"$main-font"] size:[style[@"$sub-font-size"] floatValue]]];
 //    [t setTextColor:UIColor.hex(style[@"$sub-text-color"])];
     [t setDefaultTextAttributes:d];
-   
+//    [t setBackgroundColor:[UIColor redColor]];
     
     //    dispatch_async(dispatch_get_main_queue(), ^{
     

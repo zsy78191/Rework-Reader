@@ -50,6 +50,13 @@
 		D44EDCE6223A2A7900BC24CA /* RRMutiSelectCell.m in Sources */ = {isa = PBXBuildFile; fileRef = D44EDCE4223A2A7900BC24CA /* RRMutiSelectCell.m */; };
 		D44EDCE7223A2A7900BC24CA /* RRMutiSelectCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = D44EDCE5223A2A7900BC24CA /* RRMutiSelectCell.xib */; };
 		D44EDCEB223EAB1200BC24CA /* RRImageRender.m in Sources */ = {isa = PBXBuildFile; fileRef = D44EDCEA223EAB1200BC24CA /* RRImageRender.m */; };
+		D451E095226240A200674526 /* RRSettingPresenter+Swith.m in Sources */ = {isa = PBXBuildFile; fileRef = D451E094226240A200674526 /* RRSettingPresenter+Swith.m */; };
+		D451E097226245CE00674526 /* Day.json in Resources */ = {isa = PBXBuildFile; fileRef = D451E096226245CE00674526 /* Day.json */; };
+		D451E099226245EE00674526 /* Night.json in Resources */ = {isa = PBXBuildFile; fileRef = D451E098226245EE00674526 /* Night.json */; };
+		D451E09B22624AF700674526 /* style_1.plist in Resources */ = {isa = PBXBuildFile; fileRef = D451E09A22624AF700674526 /* style_1.plist */; };
+		D451E09E2262511A00674526 /* RRSettingPresenter+Theme.m in Sources */ = {isa = PBXBuildFile; fileRef = D451E09D2262511A00674526 /* RRSettingPresenter+Theme.m */; };
+		D451E0A0226258AF00674526 /* style_2.plist in Resources */ = {isa = PBXBuildFile; fileRef = D451E09F226258AF00674526 /* style_2.plist */; };
+		D451E0A222625E8100674526 /* style_dark_1.plist in Resources */ = {isa = PBXBuildFile; fileRef = D451E0A122625E8100674526 /* style_dark_1.plist */; };
 		D473F287221FCCE800DF3C6D /* RRListInputer.m in Sources */ = {isa = PBXBuildFile; fileRef = D473F286221FCCE800DF3C6D /* RRListInputer.m */; };
 		D473F28B221FE9BC00DF3C6D /* RRReadStyle.m in Sources */ = {isa = PBXBuildFile; fileRef = D473F28A221FE9BC00DF3C6D /* RRReadStyle.m */; };
 		D473F28E2223E77D00DF3C6D /* RRFeedAction.m in Sources */ = {isa = PBXBuildFile; fileRef = D473F28D2223E77D00DF3C6D /* RRFeedAction.m */; };
@@ -246,6 +253,15 @@
 		D44EDCE5223A2A7900BC24CA /* RRMutiSelectCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = RRMutiSelectCell.xib; sourceTree = "<group>"; };
 		D44EDCE9223EAB1200BC24CA /* RRImageRender.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RRImageRender.h; sourceTree = "<group>"; };
 		D44EDCEA223EAB1200BC24CA /* RRImageRender.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RRImageRender.m; sourceTree = "<group>"; };
+		D451E093226240A200674526 /* RRSettingPresenter+Swith.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "RRSettingPresenter+Swith.h"; sourceTree = "<group>"; };
+		D451E094226240A200674526 /* RRSettingPresenter+Swith.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "RRSettingPresenter+Swith.m"; sourceTree = "<group>"; };
+		D451E096226245CE00674526 /* Day.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = Day.json; sourceTree = "<group>"; };
+		D451E098226245EE00674526 /* Night.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = Night.json; sourceTree = "<group>"; };
+		D451E09A22624AF700674526 /* style_1.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = style_1.plist; sourceTree = "<group>"; };
+		D451E09C2262511A00674526 /* RRSettingPresenter+Theme.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "RRSettingPresenter+Theme.h"; sourceTree = "<group>"; };
+		D451E09D2262511A00674526 /* RRSettingPresenter+Theme.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "RRSettingPresenter+Theme.m"; sourceTree = "<group>"; };
+		D451E09F226258AF00674526 /* style_2.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = style_2.plist; sourceTree = "<group>"; };
+		D451E0A122625E8100674526 /* style_dark_1.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = style_dark_1.plist; sourceTree = "<group>"; };
 		D473F285221FCCE800DF3C6D /* RRListInputer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RRListInputer.h; sourceTree = "<group>"; };
 		D473F286221FCCE800DF3C6D /* RRListInputer.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RRListInputer.m; sourceTree = "<group>"; };
 		D473F289221FE9BC00DF3C6D /* RRReadStyle.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RRReadStyle.h; sourceTree = "<group>"; };
@@ -605,6 +621,10 @@
 			children = (
 				D440E1C321FEF8920087B228 /* RRSettingPresenter.h */,
 				D440E1C421FEF8920087B228 /* RRSettingPresenter.m */,
+				D451E09C2262511A00674526 /* RRSettingPresenter+Theme.h */,
+				D451E09D2262511A00674526 /* RRSettingPresenter+Theme.m */,
+				D451E093226240A200674526 /* RRSettingPresenter+Swith.h */,
+				D451E094226240A200674526 /* RRSettingPresenter+Swith.m */,
 				D418CDDD22311907004F5706 /* RRWebSettingPresenter.h */,
 				D418CDDE22311907004F5706 /* RRWebSettingPresenter.m */,
 				D4A72D172240D55A00AD6C75 /* RRMainPageAddPresenter.h */,
@@ -882,7 +902,10 @@
 			isa = PBXGroup;
 			children = (
 				D4A72D12223F894D00AD6C75 /* style_dark.plist */,
+				D451E0A122625E8100674526 /* style_dark_1.plist */,
 				D49941C521FE241C0041B998 /* style.plist */,
+				D451E09A22624AF700674526 /* style_1.plist */,
+				D451E09F226258AF00674526 /* style_2.plist */,
 			);
 			path = Defaults;
 			sourceTree = "<group>";
@@ -917,6 +940,8 @@
 				D440E1C621FF03DC0087B228 /* ModelTypeSetting.json */,
 				D440E1C821FF04030087B228 /* RRModelItem.h */,
 				D440E1C921FF04030087B228 /* RRModelItem.m */,
+				D451E096226245CE00674526 /* Day.json */,
+				D451E098226245EE00674526 /* Night.json */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -1192,12 +1217,15 @@
 			files = (
 				D47A7A28221A9E9D00F13194 /* Reader SP说明书.md in Resources */,
 				D4AC4DD72216F9E70028D342 /* 推荐订阅源.md in Resources */,
+				D451E09B22624AF700674526 /* style_1.plist in Resources */,
 				D47A39672236D69A006251A6 /* RRFeedArticleCell2.xib in Resources */,
 				D4B9037722456D0F00341584 /* 4@2x.png in Resources */,
 				D473F2C6222DE48B00DF3C6D /* action.js in Resources */,
 				D440CFF0221555E0003B7203 /* RRFeedArticleCell.xib in Resources */,
+				D451E0A0226258AF00674526 /* style_2.plist in Resources */,
 				D4B903752245685000341584 /* 3@2x.png in Resources */,
 				D4B538B4224FB021002F8333 /* icon2.png in Resources */,
+				D451E0A222625E8100674526 /* style_dark_1.plist in Resources */,
 				D473F29F22278B4900DF3C6D /* MWPhotoBrowser.bundle in Resources */,
 				D4B53890224F929E002F8333 /* icon1.png in Resources */,
 				D4A72D13223F894D00AD6C75 /* style_dark.plist in Resources */,
@@ -1220,6 +1248,7 @@
 				D44EDCE7223A2A7900BC24CA /* RRMutiSelectCell.xib in Resources */,
 				D47717E021ED90D00050DF14 /* Assets.xcassets in Resources */,
 				D4AC4DEC2217CF290028D342 /* RRBtnCell.xib in Resources */,
+				D451E097226245CE00674526 /* Day.json in Resources */,
 				D49941BC21FDB6910041B998 /* rrstyle.cas in Resources */,
 				D418CDE422311B2E004F5706 /* RRIconSettingCell.xib in Resources */,
 				D47A3959223421A6006251A6 /* 网友推荐源.md in Resources */,
@@ -1229,6 +1258,7 @@
 				D440CFE422154DB0003B7203 /* RRFeedInfoCell.xib in Resources */,
 				D4AC4DF8221821150028D342 /* h.js in Resources */,
 				D4E0F9092213C47400902540 /* templete.html in Resources */,
+				D451E099226245EE00674526 /* Night.json in Resources */,
 				D4B53892224F942C002F8333 /* icon0.png in Resources */,
 				D473F2902224F42800DF3C6D /* load.jpg in Resources */,
 				D47717DE21ED90CF0050DF14 /* Main.storyboard in Resources */,
@@ -1309,7 +1339,6 @@
 				"${BUILT_PRODUCTS_DIR}/DACircularProgress/DACircularProgress.framework",
 				"${BUILT_PRODUCTS_DIR}/DZNEmptyDataSet/DZNEmptyDataSet.framework",
 				"${BUILT_PRODUCTS_DIR}/DateTools/DateTools.framework",
-				"${BUILT_PRODUCTS_DIR}/Ensembles/Ensembles.framework",
 				"${BUILT_PRODUCTS_DIR}/Fork-MWFeedParser/Fork_MWFeedParser.framework",
 				"${BUILT_PRODUCTS_DIR}/Fork-MWPhotoBrowser/Fork_MWPhotoBrowser.framework",
 				"${BUILT_PRODUCTS_DIR}/IQKeyboardManager/IQKeyboardManager.framework",
@@ -1323,6 +1352,7 @@
 				"${BUILT_PRODUCTS_DIR}/RegexKitLite/RegexKitLite.framework",
 				"${BUILT_PRODUCTS_DIR}/SDWebImage/SDWebImage.framework",
 				"${BUILT_PRODUCTS_DIR}/SVProgressHUD/SVProgressHUD.framework",
+				"${BUILT_PRODUCTS_DIR}/TYSnapshotScroll/TYSnapshotScroll.framework",
 				"${BUILT_PRODUCTS_DIR}/YYKit/YYKit.framework",
 				"${BUILT_PRODUCTS_DIR}/cocore/cocore.framework",
 				"${BUILT_PRODUCTS_DIR}/coobjc/coobjc.framework",
@@ -1343,7 +1373,6 @@
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/DACircularProgress.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/DZNEmptyDataSet.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/DateTools.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Ensembles.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Fork_MWFeedParser.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Fork_MWPhotoBrowser.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/IQKeyboardManager.framework",
@@ -1357,6 +1386,7 @@
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/RegexKitLite.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SDWebImage.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SVProgressHUD.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/TYSnapshotScroll.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/YYKit.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/cocore.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/coobjc.framework",
@@ -1428,6 +1458,7 @@
 				D440E1C221FEF8840087B228 /* RRSettingView.m in Sources */,
 				D440CFF72216529F003B7203 /* RRTitleCell.m in Sources */,
 				D47A396A22394C1D006251A6 /* RRListEmpty.m in Sources */,
+				D451E095226240A200674526 /* RRSettingPresenter+Swith.m in Sources */,
 				D4AC4DF02217FBAA0028D342 /* RRWebView.m in Sources */,
 				D49941C221FE1AC00041B998 /* RRExtraViewController.m in Sources */,
 				D4AC4DEB2217CF290028D342 /* RRBtnCell.m in Sources */,
@@ -1479,6 +1510,7 @@
 				D42F55E7221E4F5C00321A21 /* RRFeedInfoListModel.m in Sources */,
 				D47717D821ED90CF0050DF14 /* AppDelegate.m in Sources */,
 				D4AABB6B2247775700F6F1FF /* RRSafariViewController.m in Sources */,
+				D451E09E2262511A00674526 /* RRSettingPresenter+Theme.m in Sources */,
 				D42F55E2221E4EE500321A21 /* RRFeedInfoListCell.m in Sources */,
 				D44EDCE6223A2A7900BC24CA /* RRMutiSelectCell.m in Sources */,
 				D440CFEB22154E60003B7203 /* RRFeedInfoModel.m in Sources */,

@@ -49,7 +49,7 @@
             "type": 1
         },
         {
-            "title": "UI交互",
+            "title": "UI设置",
             "value": null,
             "action": null,
             "switchkey": null,
@@ -65,7 +65,23 @@
             "type": 4
         },
         {
-            "title": "数据",
+            "title": "隐藏工具栏返回按钮",
+            "value": "可从屏幕左侧滑动返回",
+            "action": "changeToolBack:",
+            "switchkey": "kToolBackBtn",
+            "select": "toolBackSetting",
+            "type": 3
+        },
+        {
+            "title": "隐藏文章列表详情",
+            "value": "开启后列表页仅显示标题",
+            "action": "changeArticleDetial:",
+            "switchkey": "kHideArticleDetial",
+            "select": "articleDetialSetting",
+            "type": 3
+        },
+        {
+            "title": "数据管理",
             "value": null,
             "action": null,
             "switchkey": null,
@@ -91,13 +107,13 @@
         {
             "title": "iCloud手动备份",
             "value": "iCloud",
-            "action": "openiCloud:",
+            "action": "openUISetting:",
             "switchkey": null,
             "select": null,
             "type": 4
         },
         {
-            "title": "设置",
+            "title": "功能设置",
             "value": null,
             "action": null,
             "switchkey": null,
@@ -126,14 +142,6 @@
             "action": "changeEnterUnread:",
             "switchkey": "kEnterUnread",
             "select": "enterUnreadSetting",
-            "type": 3
-        },
-        {
-            "title": "隐藏文章详情页工具栏返回按钮",
-            "value": "可从屏幕左侧滑动返回",
-            "action": "changeToolBack:",
-            "switchkey": "kToolBackBtn",
-            "select": "toolBackSetting",
             "type": 3
         }
     ]

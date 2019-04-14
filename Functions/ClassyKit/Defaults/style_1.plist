@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>$iconColor</key>
+	<string>#000000</string>
+	<key>$main-text-color</key>
+	<string>#504F4D</string>
+	<key>$main-text-color-readed</key>
+	<string>#8B8985</string>
+	<key>$sub-text-color</key>
+	<string>#A09F9D</string>
+	<key>$main-tint-color</key>
+	<string>#BD10E0</string>
+	<key>$main-separator-color</key>
+	<string>#ECEAE4</string>
+	<key>$main-bg-color</key>
+	<string>#F3F1ED</string>
+	<key>$bar-tint-color</key>
+	<string>#E9E6E3</string>
+	<key>$title-font</key>
+	<string>PingFangSC-Light</string>
+	<key>$num-font</key>
+	<string>PingFangSC-Light</string>
+	<key>$main-font-size</key>
+	<string>21</string>
+	<key>$main-font</key>
+	<string>PingFangSC-Light</string>
+	<key>$sub-font-size</key>
+	<string>13</string>
+	<key>$sub-bg-color</key>
+	<string>#F3F1ED</string>
+	<key>$indicatorStyle</key>
+	<string>1</string>
+	<key>$large-title-font-size</key>
+	<string>34</string>
+</dict>
+</plist>

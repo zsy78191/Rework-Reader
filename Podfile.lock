@@ -12,9 +12,6 @@ PODS:
   - DACircularProgress (2.3.1)
   - DateTools (2.0.0)
   - DZNEmptyDataSet (1.8.1)
-  - Ensembles (1.8):
-    - Ensembles/Core (= 1.8)
-  - Ensembles/Core (1.8)
   - Fork-MWFeedParser (0.1.3)
   - Fork-MWPhotoBrowser (2.1.5.1):
     - DACircularProgress (~> 2.3)
@@ -57,6 +54,7 @@ PODS:
     - SDWebImage/Core (= 4.4.6)
   - SDWebImage/Core (4.4.6)
   - SVProgressHUD (2.2.5)
+  - TYSnapshotScroll (0.0.7)
   - ui-base (0.1.2):
     - ChameleonFramework
     - Classy
@@ -76,7 +74,6 @@ DEPENDENCIES:
   - CocoaLumberjack
   - coobjc
   - DateTools
-  - Ensembles
   - Fork-MWFeedParser
   - Fork-MWPhotoBrowser
   - KissXML
@@ -86,6 +83,7 @@ DEPENDENCIES:
   - oc-string
   - oc-util
   - SDWebImage (~> 4.4.6)
+  - TYSnapshotScroll
   - ui-base
   - ui-util
 
@@ -99,7 +97,6 @@ SPEC REPOS:
     - DACircularProgress
     - DateTools
     - DZNEmptyDataSet
-    - Ensembles
     - Fork-MWFeedParser
     - Fork-MWPhotoBrowser
     - IQKeyboardManager
@@ -119,6 +116,7 @@ SPEC REPOS:
     - RegexKitLite
     - SDWebImage
     - SVProgressHUD
+    - TYSnapshotScroll
     - ui-base
     - ui-util
     - YYKit
@@ -132,7 +130,6 @@ SPEC CHECKSUMS:
   DACircularProgress: 4dd437c0fc3da5161cb289e07ac449493d41db71
   DateTools: 933ac9c490f21f92127cf690ccd8c397e0126caf
   DZNEmptyDataSet: 9525833b9e68ac21c30253e1d3d7076cc828eaa7
-  Ensembles: 6f04632bf2aa35cc69f8ffbc259396afe2f0501e
   Fork-MWFeedParser: 24f73d022ce84b43f21ffe66c87370de64cb0cb9
   Fork-MWPhotoBrowser: 3b21e322968098b6e4cc99f17e50055a3719d823
   IQKeyboardManager: 964638372b4a61892cc74fdfa6fd26de8c9464a2
@@ -152,10 +149,11 @@ SPEC CHECKSUMS:
   RegexKitLite: c0e4c12e6e7de0769f3a3ed679f0f61604170661
   SDWebImage: 3f3f0c02f09798048c47a5ed0a13f17b063572d8
   SVProgressHUD: 1428aafac632c1f86f62aa4243ec12008d7a51d6
+  TYSnapshotScroll: 699a985c9d630f00b62b90bb3ba5ea9ccd03767a
   ui-base: 0babea0480a05031ec226e20b47f9698a919b822
   ui-util: 8f870cfb52b611516279bd0bf362ee2fac34d42d
   YYKit: 7cda43304a8dc3696c449041e2cb3107b4e236e7
 
-PODFILE CHECKSUM: fd08b3feab9e18201d263f2a39e9cc6521f6b514
+PODFILE CHECKSUM: a6c0358917fa11844f59bc316936293f01150ece
 
 COCOAPODS: 1.6.0

@@ -175,6 +175,21 @@ NSString *_Nullable RRModelItemToJSON(RRModelItem *modelItem, NSStringEncoding e
 {
     return [self dictionaryWithValuesForKeys:RRSetting.properties.allValues];
 }
+
+- (NSString *)icon
+{
+    return self.value;
+}
+
+- (NSString *)fontStyle
+{
+    return nil;
+}
+
+- (NSString*)subtitle
+{
+    return nil;
+}
 @end
 
 NS_ASSUME_NONNULL_END

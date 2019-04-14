@@ -145,7 +145,8 @@ NSString* const kOffsetMainList = @"kOffsetMainList";
     
     self.offsetY = [MVCKeyValue getFloatforKey:kOffsetMainList];
     //    self.offsetY = 100;
-    NSLog(@"main offset %@",@(self.offsetY));
+//    NSLog(@"main offset %@",@(self.offsetY));
+    self.mode = [[NSUserDefaults standardUserDefaults] integerForKey:@"kRRReadMode"];
 }
 
 - (void)updateOffsetY:(NSNumber*)offsetY

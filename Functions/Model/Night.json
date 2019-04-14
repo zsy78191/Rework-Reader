@@ -1,0 +1,21 @@
+
+{
+    "setting": [
+        {
+            "title": "默认主题",
+            "value": "theme0d",
+            "action": "setTheme0d",
+            "switchkey": null,
+            "select": null,
+            "type": 6
+        },
+        {
+            "title": "灰黑色",
+            "value": "theme1d",
+            "action": "setTheme1d",
+            "switchkey": null,
+            "select": null,
+            "type": 6
+        }
+    ]
+}

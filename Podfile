@@ -39,7 +39,11 @@ target 'rework-reader' do
   pod 'KissXML'
   
   #iCloud同步
-  pod 'Ensembles'
+#  pod 'Ensembles'
+
+  # 网页长图生成
+  pod 'TYSnapshotScroll'
+  
 
   # Pods for rework-reader
 

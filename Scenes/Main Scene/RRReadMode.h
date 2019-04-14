@@ -14,4 +14,15 @@ typedef enum : NSUInteger {
     RRReadModeDark,
 } RRReadMode;
 
+typedef enum : NSUInteger {
+    RRReadLightSubModeDefalut,
+    RRReadLightSubModeMice,
+    RRReadLightSubModeSafariMice,
+} RRReadLightSubMode;
+
+typedef enum : NSUInteger {
+    RRReadDarkSubModeDefalut,
+    RRReadDarkSubModeGray
+} RRReadDarkSubMode;
+
 #endif /* RRReadMode_h */

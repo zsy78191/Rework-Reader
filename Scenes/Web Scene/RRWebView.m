@@ -24,6 +24,8 @@
 @import SDWebImage;
 #import "RRWebStyleModel.h"
 #import "RRSafariViewController.h"
+@import oc_util;
+@import TYSnapshotScroll;
 
 @interface RRWebView () <WKUIDelegate,WKNavigationDelegate,UIScrollViewDelegate,MWPhotoBrowserDelegate,WKScriptMessageHandler>
 {
@@ -1451,6 +1453,70 @@
         return [self.tumblrImage objectAtIndex:index];
     }
     return nil;
+}
+
+- (void)exportPic
+{
+    GCDQuene* q = [GCDQuene queneWithName:@"MySpecialQuene"];
+    GCDQuene* m = [GCDQuene mainQueneInstance];
+    __weak typeof(self) weakSelf = self;
+    [self hudWait:@"处理中"];
+    [self.webView screenSnapshot:^(UIImage *snapShotImage) {
+        q.async(^{
+            NSData* d = UIImageJPEGRepresentation(snapShotImage, 1.0);
+            NSString* file = [[[UIApplication sharedApplication].doucumentDictionary() URLByAppendingPathComponent:@"export_img.jpg"] path];
+            BOOL result = [d writeToFile:file atomically:NO];
+            if (!result) {
+                m.async(^{
+                    [weakSelf hudFail:@"存储失败"];
+                });
+            }
+            else {
+                m.async(^{
+                    [weakSelf hudDismiss];
+                    NSDictionary* t = @{
+                                        @"file":file,
+                                        @"sender":weakSelf.toolbarItems.lastObject
+                                        };
+                    [weakSelf.presenter mvp_runAction:@"shareFile:" value:t];
+                });
+            }
+        });
+    }];
+}
+
+- (void)exportPDF
+{
+    GCDQuene* q = [GCDQuene queneWithName:@"MySpecialQuene"];
+    GCDQuene* m = [GCDQuene mainQueneInstance];
+    __weak typeof(self) weakSelf = self;
+//    [self hudWait:@"处理中"];
+    [self hudWait:@"处理中"];
+    m.async(^{
+        NSData* d = [self.webView PDFData];
+        q.async(^{
+            //异步操作
+            NSDateFormatter* f = [[NSDateFormatter alloc] init];
+            [f setDateFormat:@"yy-MM-dd_HH-mm-ss"];
+            NSString* file = [[[UIApplication sharedApplication].doucumentDictionary() URLByAppendingPathComponent:[NSString stringWithFormat:@"%@_%@.pdf",weakSelf.title,[f stringFromDate:[NSDate date]]]] path];
+            BOOL result = [d writeToFile:file atomically:NO];
+            if (!result) {
+                m.async(^{
+                    [weakSelf hudFail:@"存储失败"];
+                });
+            }
+            else {
+                m.async(^{
+                    [weakSelf hudDismiss];
+                    NSDictionary* t = @{
+                                        @"file":file,
+                                        @"sender":weakSelf.toolbarItems[weakSelf.toolbarItems.count-2]
+                                        };
+                    [weakSelf.presenter mvp_runAction:@"shareFile:" value:t];
+                });
+            }
+        });
+    });
 }
 
 

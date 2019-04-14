@@ -19,8 +19,8 @@
                 <rect key="frame" x="0.0" y="0.0" width="349" height="73.5"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
-                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="UMs-Af-x5d">
-                        <rect key="frame" x="16" y="26" width="50" height="21"/>
+                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="UMs-Af-x5d">
+                        <rect key="frame" x="16" y="16" width="267" height="41.5"/>
                         <fontDescription key="fontDescription" type="system" pointSize="17"/>
                         <nil key="textColor"/>
                         <nil key="highlightedColor"/>
@@ -28,8 +28,8 @@
                             <userDefinedRuntimeAttribute type="string" keyPath="cas_styleClass" value="MainLabel"/>
                         </userDefinedRuntimeAttributes>
                     </label>
-                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="Label" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="iMj-B6-Nav">
-                        <rect key="frame" x="283" y="26" width="50" height="21"/>
+                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="iMj-B6-Nav">
+                        <rect key="frame" x="291" y="26.5" width="42" height="21"/>
                         <constraints>
                             <constraint firstAttribute="height" constant="21" id="VQ0-e6-FL7"/>
                         </constraints>
@@ -43,6 +43,7 @@
                 </subviews>
                 <constraints>
                     <constraint firstAttribute="trailing" secondItem="iMj-B6-Nav" secondAttribute="trailing" constant="16" id="7u9-pm-pcI"/>
+                    <constraint firstItem="iMj-B6-Nav" firstAttribute="leading" secondItem="UMs-Af-x5d" secondAttribute="trailing" constant="8" id="93Q-mI-XRf"/>
                     <constraint firstItem="UMs-Af-x5d" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" constant="16" id="G3e-Gh-8aq"/>
                     <constraint firstItem="iMj-B6-Nav" firstAttribute="centerY" secondItem="H2p-sc-9uM" secondAttribute="centerY" id="K8C-Vk-lWR"/>
                     <constraint firstItem="UMs-Af-x5d" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" constant="16" id="aZ3-TI-t37"/>

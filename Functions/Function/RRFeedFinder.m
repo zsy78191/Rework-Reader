@@ -14,11 +14,11 @@
 + (void)findItem:(NSString *)url result:(void(^)(BOOL,NSString*))result
 {
 //    __weak typeof(self) weakSelf = self;
-    [self findItemFinal:url result:^(BOOL a, NSString * u) {
-        if (!a) {
-            [[self class] findItemOther:[url stringByAppendingPathComponent:@"rss"] result:^(BOOL b , NSString * i) {
-                if (!b) {
-                    [[self class] findItemOther:[url stringByAppendingPathComponent:@"feed"] result:result];
+    [RRFeedFinder findItemFinal:url result:^(BOOL a, NSString * u) {
+        if (!a && !u) {
+            [RRFeedFinder findItemOther:[url stringByAppendingPathComponent:@"rss"] result:^(BOOL b , NSString * i) {
+                if (!b && !i) {
+                    [RRFeedFinder findItemOther:[url stringByAppendingPathComponent:@"feed"] result:result];
                 }
                 else {
                     dispatch_async(dispatch_get_main_queue(), ^{

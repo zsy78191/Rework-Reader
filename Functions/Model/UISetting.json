@@ -1,6 +1,14 @@
 {
     "setting": [
         {
+            "title": "基本设置",
+            "value": null,
+            "action": null,
+            "switchkey": null,
+            "select": null,
+            "type": 2
+        },
+        {
             "title": "主色彩",
             "value": "",
             "action": "selectMainColor:",
@@ -23,6 +31,30 @@
             "switchkey": null,
             "select": ["默认图标","黑底绿标","白底黑标(纯黑)","白底黑标(渐变)"],
             "type": 1
-        }
+        },
+        {
+            "title": "主题",
+            "value": null,
+            "action": null,
+            "switchkey": null,
+            "select": null,
+            "type": 2
+        },
+        {
+            "title": "亮色主题",
+            "value": "Day",
+            "action": "openUISetting:",
+            "switchkey": null,
+            "select": null,
+            "type": 4
+        },
+        {
+            "title": "暗色主题",
+            "value": "Night",
+            "action": "openUISetting:",
+            "switchkey": null,
+            "select": null,
+            "type": 4
+        },
     ]
 }

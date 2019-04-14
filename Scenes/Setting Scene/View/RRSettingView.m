@@ -50,6 +50,7 @@
 //    MVPTableViewOutput* outputer = self.outputer;
     [self.outputer setRegistBlock:^(MVPTableViewOutput* output) {
         [output registNibCell:@"RRSettingCell" withIdentifier:@"settingBaseCell"];
+        [output registNibCell:@"RRIconSettingCell" withIdentifier:@"iconCell"];
         [output registNibCell:@"RRTitleCell" withIdentifier:@"titleCell"];
         [output registNibCell:@"RRSwitchCell" withIdentifier:@"switchCell"];
     }];

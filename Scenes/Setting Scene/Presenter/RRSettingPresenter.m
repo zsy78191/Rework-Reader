@@ -25,6 +25,8 @@
 #import "RPDataManager.h"
 #import "RRCoreDataModel.h"
 @import DateTools;
+#import "RRSettingPresenter+Swith.h"
+
 
 @interface RRSettingPresenter () <UIDocumentPickerDelegate,MVPPresenterProtocol_private,SKStoreProductViewControllerDelegate>
 {
@@ -33,11 +35,7 @@
 @property (nonatomic, strong) RRModelItem* item;
 @property (nonatomic, strong) RPSettingInputer* inputer;
 @property (nonatomic, assign) BOOL feeding;
-@property (nonatomic, weak) RRSetting* notiSetting;
-@property (nonatomic, weak) RRSetting* badgeSetting;
-@property (nonatomic, weak) RRSetting* enterUnreadSetting;
-@property (nonatomic, weak) RRSetting* iCloudSetting;
-@property (nonatomic, weak) RRSetting* toolBackSetting;
+
 @property (nonatomic, weak) FMFeedParserOperation* currentOperation;
 @property (nonatomic, strong) NSString* settingFileName;
 @property (nonatomic, strong) RRDataBackuper* backuper;
@@ -336,88 +334,6 @@
     });
 }
 
-- (void)changeNoti:(UISwitch*)sender
-{
-    if (![sender isKindOfClass:[UISwitch class]]) {
-        return;
-    }
-    //    //NSLog(@"%@",sender);
-    if (sender.on == NO) {
-        [[NSUserDefaults standardUserDefaults] setBool:NO forKey:self.notiSetting.switchkey];
-        [[NSUserDefaults standardUserDefaults] synchronize];
-        return;
-    }
-    
-    
-    __weak typeof(self) weakSelf = self;
-    [[UNUserNotificationCenter currentNotificationCenter] requestAuthorizationWithOptions:UNAuthorizationOptionAlert|UNAuthorizationOptionBadge|UNAuthorizationOptionSound completionHandler:^(BOOL granted, NSError * _Nullable error) {
-        
-        if (!granted) {
-            //            //NSLog(@"%@",weakSelf.badgeSetting);
-            weakSelf.notiSetting.switchValue = @(NO);
-            //            //NSLog(@"%@",self.badgeSetting.switchValue);
-            UI_Alert().
-            titled(@"请在系统「设置」中开启Reader的通知功能")
-            .recommend(@"前往「设置」", ^(UIAlertAction * _Nonnull action, UIAlertController * _Nonnull alert) {
-                NSURL *url = [NSURL URLWithString:UIApplicationOpenSettingsURLString];
-                if([[UIApplication sharedApplication] canOpenURL:url]) {
-                    NSURL*url =[NSURL URLWithString:UIApplicationOpenSettingsURLString];
-                    [[UIApplication sharedApplication] openURL:url options:@{} completionHandler:^(BOOL success) {
-                        
-                    }];
-                }
-            })
-            .cancel(@"取消", ^(UIAlertAction * _Nonnull action) {
-                
-            })
-            .show((id)weakSelf.view);
-            
-        }
-        else {
-            [[NSUserDefaults standardUserDefaults] setBool:YES forKey:weakSelf.notiSetting.switchkey];
-            [[NSUserDefaults standardUserDefaults] synchronize];
-        }
-    }];
-    
-}
-
-- (void)changeNotiBadge:(UISwitch*)sender
-{
-    if (![sender isKindOfClass:[UISwitch class]]) {
-        return;
-    }
-    [[NSUserDefaults standardUserDefaults] setBool:[sender isOn] forKey:self.badgeSetting.switchkey];
-    [[NSUserDefaults standardUserDefaults] synchronize];
-}
-
-- (void)changeEnterUnread:(UISwitch*)sender
-{
-    if (![sender isKindOfClass:[UISwitch class]]) {
-        return;
-    }
-    [[NSUserDefaults standardUserDefaults] setBool:[sender isOn] forKey:self.enterUnreadSetting.switchkey];
-    [[NSUserDefaults standardUserDefaults] synchronize];
-}
-
-- (void)changeiCloud:(UISwitch*)sender
-{
-    if (![sender isKindOfClass:[UISwitch class]]) {
-        return;
-    }
-    [[NSUserDefaults standardUserDefaults] setBool:[sender isOn] forKey:self.iCloudSetting.switchkey];
-    [[NSUserDefaults standardUserDefaults] synchronize];
-}
-
-- (void)changeToolBack:(UISwitch*)sender
-{
-    if (![sender isKindOfClass:[UISwitch class]]) {
-        return;
-    }
-    
-    [[NSUserDefaults standardUserDefaults] setBool:[sender isOn] forKey:self.toolBackSetting.switchkey];
-    [[NSUserDefaults standardUserDefaults] synchronize];
-}
-
 - (void)openOPML
 {
     UIDocumentPickerViewController* dvc = [[UIDocumentPickerViewController alloc] initWithDocumentTypes:@[@"public.xml"] inMode:UIDocumentPickerModeImport];
@@ -428,12 +344,6 @@
 }
 
 - (void)openUISetting:(RRSetting*)set
-{
-    id vc = [MVPRouter viewForURL:[NSString stringWithFormat:@"rr://setting?setting=%@&title=%@",set.value,set.title] withUserInfo:nil];
-    [[self view] mvp_pushViewController:vc];
-}
-
-- (void)openiCloud:(RRSetting*)set
 {
     id vc = [MVPRouter viewForURL:[NSString stringWithFormat:@"rr://setting?setting=%@&title=%@",set.value,set.title] withUserInfo:nil];
     [[self view] mvp_pushViewController:vc];

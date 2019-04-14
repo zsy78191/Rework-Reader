@@ -222,7 +222,7 @@
 //    });
 //
     __weak typeof(self) weakSelf = self;
-    [RRFeedAction delFeed:self.infoModel.feed view:(id)self.view item:sender arrow:UIPopoverArrowDirectionUp finish:^{
+    [RRFeedAction delFeed:self.infoModel.feed view:(id)self.view item:sender arrow:UIPopoverArrowDirectionDown finish:^{
         [(id)weakSelf.view mvp_popViewController:nil];
     }];
 }
@@ -653,7 +653,7 @@
         }];
     })
     .action(@"删除订阅源", ^(UIAlertAction * _Nonnull action, UIAlertController * _Nonnull alert) {
-        [weakSelf deleteIt2:sender];
+        [weakSelf deleteIt:sender];
     })
     .cancel(@"取消", ^(UIAlertAction * _Nonnull action) {
     });

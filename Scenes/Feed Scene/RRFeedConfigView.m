@@ -40,6 +40,7 @@
             return;
         }
         
+        NSLog(@"^^^^");
         [[view presenter] mvp_bindBlock:^(RRFeedConfigView* view2, id value2) {
             dispatch_async(dispatch_get_main_queue(), ^{
                 if ([value2 boolValue]) {
