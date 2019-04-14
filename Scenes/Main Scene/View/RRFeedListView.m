@@ -23,6 +23,7 @@
 @property (nonatomic, strong) UIBarButtonItem* blackBtn;
 @property (nonatomic, strong) UIBarButtonItem* cleanAllBtn;
 @property (nonatomic, strong) UISearchController* svc;
+@property (nonatomic, assign) BOOL afterLoaded;
 @end
 
 @implementation RRFeedListView
@@ -30,10 +31,10 @@
 - (UISearchController *)svc
 {
     if (!_svc) {
-        UITableViewController* t = [[UITableViewController alloc] initWithStyle:UITableViewStylePlain];
-        _svc = [[UISearchController alloc] initWithSearchResultsController:t];
-        _svc.obscuresBackgroundDuringPresentation = YES;
-        _svc.dimsBackgroundDuringPresentation = YES;
+//        UITableViewController* t = [[UITableViewController alloc] initWithStyle:UITableViewStylePlain];
+        _svc = [[UISearchController alloc] initWithSearchResultsController:nil];
+        _svc.obscuresBackgroundDuringPresentation = NO;
+        _svc.dimsBackgroundDuringPresentation = NO;
         _svc.hidesNavigationBarDuringPresentation = NO;
     }
     return _svc;
@@ -43,6 +44,12 @@
     [super viewDidLoad];
       self.restorationIdentifier = @"RRMainRestoreView";
     // Do any additional setup after loading the view.
+    self.afterLoaded = NO;
+    UISearchBar * bar = self.svc.searchBar;
+    self.navigationItem.searchController = self.svc;
+    bar.cas_styleClass = @"sbar";
+    bar.delegate = self;
+    [bar setSearchBarStyle:UISearchBarStyleMinimal];
 }
 
 - (Class)mvp_presenterClass
@@ -73,16 +80,28 @@
 {
     [super mvp_configMiddleware];
     
+    __block BOOL onLunach = YES;
+    __weak typeof(self) weakSelf = self;
     [self.presenter mvp_bindBlock:^(RRFeedListView* view, id value) {
+        
+        if (!weakSelf.afterLoaded) {
+            return;
+        }
+        NSLog(@"****");
+        if (onLunach) {
+            onLunach = NO;
+            return;
+        }
         MVPTableViewOutput* output = (id)view.outputer;
         dispatch_async(dispatch_get_main_queue(), ^{
+            NSLog(@"+++++");
             double height = [UIApplication sharedApplication].statusBarFrame.size.height + view.navigationController.navigationBar.frame.size.height;
             [[output tableview] setContentOffset:CGPointMake(0, [value doubleValue]-height) animated:NO];
         });
     } keypath:@"offsetY"];
  
 //    MVPTableViewOutput* o = self.outputer;
-    __weak typeof(self) weakSelf = self;
+//    __weak typeof(self) weakSelf = self;
     [self.outputer setRegistBlock:^(MVPTableViewOutput* output) {
         [weakSelf registerForPreviewingWithDelegate:weakSelf sourceView:output.tableview];
         [output registNibCell:@"RRFeedInfoListCell2" withIdentifier:@"styleCell"];
@@ -139,13 +158,8 @@
 //        });
 //        [output.tableview reloadEmptyDataSet];
   
-//        UISearchBar * bar = weakSelf.svc.searchBar;
-        UISearchBar* bar =  [[UISearchBar alloc] initWithFrame:CGRectMake(0, 0, weakSelf.view.frame.size.width, 50)];
-        bar.cas_styleClass = @"sbar";
-        bar.delegate = weakSelf;
-        
-        [bar setSearchBarStyle:UISearchBarStyleMinimal];
-        [output.tableview setTableHeaderView:bar];
+       
+//        [output.tableview setTableHeaderView:bar];
         
         RREmpty* e = [[RREmpty alloc] init];
         weakSelf.empty = e;
@@ -280,11 +294,18 @@
     }
 }
 
+- (void)viewDidAppear:(BOOL)animated
+{
+    [super viewDidAppear:animated];
+}
+
 - (void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
     [self.navigationController setToolbarHidden:NO animated:animated];
 
+    self.afterLoaded = YES;
+    
     if ([self.presenter respondsToSelector:@selector(viewWillAppear:)]) {
         [(id)self.presenter viewWillAppear:animated];
     }
@@ -337,6 +358,7 @@
     if (searchBar.text.length>0) {
         [self.presenter mvp_runAction:@"openSearch:" value:searchBar.text];
     }
+    [self.svc setActive:NO];
 }
 
 @end

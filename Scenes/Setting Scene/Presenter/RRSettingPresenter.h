@@ -9,10 +9,19 @@
 @import mvc_base;
 
 NS_ASSUME_NONNULL_BEGIN
+@class RRSetting;
 
 @interface RRSettingPresenter : MVPPresenter
 
 @property (nonatomic, strong) NSString* title;
+
+@property (nonatomic, weak) RRSetting* notiSetting;
+@property (nonatomic, weak) RRSetting* badgeSetting;
+@property (nonatomic, weak) RRSetting* enterUnreadSetting;
+@property (nonatomic, weak) RRSetting* iCloudSetting;
+@property (nonatomic, weak) RRSetting* toolBackSetting;
+@property (nonatomic, weak) RRSetting* articleDetialSetting;
+
 
 @end
 

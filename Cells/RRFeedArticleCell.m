@@ -116,10 +116,14 @@
         [self mvp_bindModel:model withProperties:@[@"liked",@"readed"]];
         
         if (self.detialLabel) {
-            self.detialLabel.text = temp;
+            if ([[NSUserDefaults standardUserDefaults] boolForKey:@"kHideArticleDetial"]) {
+                self.detialLabel.text = @"";
+            }
+            else {
+               self.detialLabel.text = temp;
+            }
         }
     }
-    
 }
 
 - (void)mvp_value:(id)value updateForKeypath:(NSString *)keypath

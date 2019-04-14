@@ -12,13 +12,26 @@
 
 - (NSString *)mvp_identifierForModel:(RRSetting*)model
 {
-    if ([model.type intValue] == RRSettingTypeTitle) {
-        return @"titleCell";
+    switch ([model.type intValue]) {
+        case RRSettingTypeTitle:
+        {
+            return @"titleCell";
+            break;
+        }
+        case RRSettingTypeSwitch:
+        {
+            return @"switchCell";
+            break;
+        }
+        case RRSettingTypeIcon:
+        {
+            return @"iconCell";
+            break;
+        }
+        default:
+            break;
     }
-    else if([model.type intValue] == RRSettingTypeSwitch)
-    {
-        return @"switchCell";
-    }
+    
     return @"settingBaseCell";
 }
 

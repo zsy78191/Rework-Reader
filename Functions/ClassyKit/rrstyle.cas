@@ -137,4 +137,14 @@ UIView.SeparaterView
 ^UISearchBar.sbar {
     barTintColor $main-text-color
     tintColor $main-tint-color
+    
+}
+
+^UIActivityIndicatorView{
+    tintColor $main-text-color
+}
+
+
+^UIRefreshControl{
+    tintColor $main-text-color
 }

@@ -15,6 +15,7 @@ typedef enum : NSUInteger {
     RRSettingTypeSwitch,
     RRSettingTypeSubSetting,
     RRSettingTypeDymaticValue,
+    RRSettingTypeIcon,
 } RRSettingType;
 
 NS_ASSUME_NONNULL_BEGIN
@@ -46,6 +47,8 @@ NSString    *_Nullable RRModelItemToJSON(RRModelItem *modelItem, NSStringEncodin
 @property (nonatomic, nullable, strong) NSNumber *type;
 @property (nonatomic, nullable, strong) NSNumber *switchValue;
 
+- (NSString*)icon;
+- (NSString*)fontStyle;
 @end
 
 NS_ASSUME_NONNULL_END

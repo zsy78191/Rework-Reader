@@ -61,7 +61,7 @@
     self.count = 0;
     self.allWords = 0;
     self.canceled = NO;
-    self.feedError = NO;
+    self.feedError = YES;
     self.finished = NO;
 //    self.cancelFeed = YES;
 }
@@ -73,7 +73,7 @@
 
 - (void)loadError:(NSError *)error
 {
-    self.feedError = YES;
+//    self.feedError = YES;
 }
 
 - (NSNumber*)canFeed
@@ -101,7 +101,7 @@
         MWFeedInfo* info = data;
         self.feedInfo = info;
         self.title = info.title;
-        
+        self.feedError = NO;
        
         id x = [[RPDataManager sharedManager] getFirst:@"EntityFeedInfo" predicate:nil key:@"url" value:self.feedInfo.url sort:@"sort" asc:YES];
         

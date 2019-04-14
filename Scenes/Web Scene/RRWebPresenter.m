@@ -63,61 +63,86 @@
     }
 }
 
-- (void)openAction:(id)sender
+- (void)activeShare:(id)data sender:(id)sender
+{
+    UIActivityViewController* v = [[UIActivityViewController alloc] initWithActivityItems:@[data] applicationActivities:nil];
+    if ([UIDevice currentDevice].iPad()) {
+        UIPopoverPresentationController* p = v.popoverPresentationController;
+        //            [p setSourceRect:r];
+        [p setBarButtonItem:sender];
+        //            //NSLog(@"%@",v.popoverPresentationController);
+        v.modalPresentationStyle = UIModalPresentationPopover;
+        [[self view] mvp_presentViewController:v animated:YES completion:^{
+            
+        }];
+    }
+    else
+    {
+        [self.view mvp_presentViewController:v animated:YES completion:^{
+            
+        }];
+    }
+}
+
+- (void)openAction2:(id)sender
 {
     if (self.model) {
 //        NSLog(@"%@",self.model.link);
-        UIActivityViewController* v = [[UIActivityViewController alloc] initWithActivityItems:@[[NSURL URLWithString:self.model.link]] applicationActivities:nil];
-        if ([UIDevice currentDevice].iPad()) {
-            UIPopoverPresentationController* p = v.popoverPresentationController;
-//            [p setSourceRect:r];
-            [p setBarButtonItem:sender];
-//            //NSLog(@"%@",v.popoverPresentationController);
-            v.modalPresentationStyle = UIModalPresentationPopover;
-            [[self view] mvp_presentViewController:v animated:YES completion:^{
-                
-            }];
-        }
-        else
-        {
-            [self.view mvp_presentViewController:v animated:YES completion:^{
-                
-            }];
-        }
+        [self activeShare:[NSURL URLWithString:self.model.link] sender:sender];
     }
     else {
         
     }
 }
 
-- (void)openAction2:(id)sender
+- (void)openAction:(id)sender
 {
     __weak typeof(self) weakSelf = self;
-    UIBarButtonItem* i = sender;
-    CGRect r =({
-        CGRect r = [[i valueForKeyPath:@"view.superview.frame"] CGRectValue];
-        r.origin.x -= r.size.width/4;
-        r.origin.y += r.size.height/2;
-        r;
-    });
+//    UIBarButtonItem* i = sender;
+ 
     
     UIAlertController* a = UI_ActionSheet()
     .titled(@"更多操作")
-    .action(@"全文HTML输出", ^(UIAlertAction * _Nonnull action, UIAlertController * _Nonnull alert) {
-        [weakSelf outputHTML];
+//    .action(@"全文HTML输出", ^(UIAlertAction * _Nonnull action, UIAlertController * _Nonnull alert) {
+//        [weakSelf outputHTML];
+//    })
+    .action(@"分享原文网址", ^(UIAlertAction * _Nonnull action, UIAlertController * _Nonnull alert) {
+        [weakSelf openAction2:sender];
+    })
+//    .action(@"导出长图", ^(UIAlertAction * _Nonnull action, UIAlertController * _Nonnull alert) {
+//        [weakSelf exportPic:sender];
+//    })
+    .action(@"导出PDF", ^(UIAlertAction * _Nonnull action, UIAlertController * _Nonnull alert) {
+        [weakSelf exportPDF:sender];
     })
     .cancel(@"取消", ^(UIAlertAction * _Nonnull action) {
         
     });
     
     if ([UIDevice currentDevice].iPad()) {
-        [self.view showAsProver:a view:[(id)self.view view] rect:r arrow:UIPopoverArrowDirectionUp];
+        [self.view showAsProver:a view:[(id)self.view view] item:sender arrow:UIPopoverArrowDirectionDown];
     }
     else
     {
         a.show((id)self.view);
     }
     
+}
+
+- (void)exportPic:(id)sender
+{
+    [self.view mvp_runAction:NSSelectorFromString(@"exportPic")];
+}
+
+- (void)exportPDF:(id)sender
+{
+    [self.view mvp_runAction:NSSelectorFromString(@"exportPDF")];
+}
+
+- (void)shareFile:(NSDictionary*)t
+{
+//    NSLog(@"%@",t[@"sender"]);
+    [self activeShare:[NSURL fileURLWithPath:t[@"file"]] sender:t[@"sender"]];
 }
 
 - (WKWebView*)webView
