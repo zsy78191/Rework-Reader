@@ -3,21 +3,21 @@ PODS:
     - ChameleonFramework/Default (= 2.1.0)
   - ChameleonFramework/Default (2.1.0)
   - Classy (1.0.0)
-  - CocoaLumberjack (3.5.2):
-    - CocoaLumberjack/Core (= 3.5.2)
-  - CocoaLumberjack/Core (3.5.2)
-  - cocore (1.1.3)
-  - coobjc (1.1.3):
-    - cocore (~> 1.1.3)
+  - CocoaLumberjack (3.5.3):
+    - CocoaLumberjack/Core (= 3.5.3)
+  - CocoaLumberjack/Core (3.5.3)
+  - cocore (1.2.0)
+  - coobjc (1.2.0):
+    - cocore (~> 1.2.0)
   - DACircularProgress (2.3.1)
   - DateTools (2.0.0)
   - DZNEmptyDataSet (1.8.1)
   - Fork-MWFeedParser (0.1.3)
-  - Fork-MWPhotoBrowser (2.1.5.1):
+  - Fork-MWPhotoBrowser (2.1.5.2):
     - DACircularProgress (~> 2.3)
     - MBProgressHUD (~> 0.9)
     - SDWebImage (~> 4.4.6)
-  - IQKeyboardManager (6.2.1)
+  - IQKeyboardManager (6.3.0)
   - KissXML (5.2.3)
   - MagicalRecord (2.3.2):
     - MagicalRecord/Core (= 2.3.2)
@@ -25,8 +25,8 @@ PODS:
   - Masonry (1.1.0)
   - MBProgressHUD (0.9.2)
   - MGJRouter (0.10.0)
-  - MMKV (1.0.18)
-  - mvc-base (0.3.7.2):
+  - MMKV (1.0.19)
+  - mvc-base (0.3.7.3):
     - DZNEmptyDataSet
     - MagicalRecord
     - Masonry
@@ -34,7 +34,7 @@ PODS:
     - oc-string
     - ReactiveObjC
     - ui-base
-  - oc-base (0.0.4):
+  - oc-base (0.0.5):
     - MagicalRecord
     - MGJRouter
     - ReactiveObjC
@@ -48,7 +48,7 @@ PODS:
   - oc-util (0.0.3):
     - MMKV
   - pop (1.0.12)
-  - ReactiveObjC (3.1.0)
+  - ReactiveObjC (3.1.1)
   - RegexKitLite (4.0)
   - SDWebImage (4.4.6):
     - SDWebImage/Core (= 4.4.6)
@@ -124,28 +124,28 @@ SPEC REPOS:
 SPEC CHECKSUMS:
   ChameleonFramework: d21a3cc247abfe5e37609a283a8238b03575cf64
   Classy: bbe2436d6872dfeda5eaa2a3c3d705a9c30b1709
-  CocoaLumberjack: 118bf4a820efc641f79fa487b75ed928dccfae23
-  cocore: d3fb0baa83646887c054a8521a5671996cf98e97
-  coobjc: 3f2e1cbaa430e1372fe532acc4f9d797448db1a5
+  CocoaLumberjack: 2f44e60eb91c176d471fdba43b9e3eae6a721947
+  cocore: cc9d76229458f286a632d9cecb63bd699bd3529d
+  coobjc: 090a460e32e90d0e820e64c31cf7b79dece51a7c
   DACircularProgress: 4dd437c0fc3da5161cb289e07ac449493d41db71
   DateTools: 933ac9c490f21f92127cf690ccd8c397e0126caf
   DZNEmptyDataSet: 9525833b9e68ac21c30253e1d3d7076cc828eaa7
   Fork-MWFeedParser: 24f73d022ce84b43f21ffe66c87370de64cb0cb9
-  Fork-MWPhotoBrowser: 3b21e322968098b6e4cc99f17e50055a3719d823
-  IQKeyboardManager: 964638372b4a61892cc74fdfa6fd26de8c9464a2
+  Fork-MWPhotoBrowser: 83f1adb61348075b73bced381ad8f3ae32d96ee5
+  IQKeyboardManager: 2ca9d64893247556f53523dcd8d78641f0ba7c23
   KissXML: 09f88ff8161fd058d67b70740b8b516687b52823
   MagicalRecord: 53bed74b4323b930992a725be713e53b37d19755
   Masonry: 678fab65091a9290e40e2832a55e7ab731aad201
   MBProgressHUD: 1569cf7ace17a8bac47aabfbb8580a49690386d1
   MGJRouter: 15d94541eb2cc81eff7d577337288feb7ae9575f
-  MMKV: 2dc8974641213da7ab069f9e94caa0fba7241f14
-  mvc-base: 42f763e53f7d5db710007616ba5d794d16383d08
-  oc-base: b0cc5eeae853acdf1b35d3f954ed8023fa37a74c
+  MMKV: d362c29ab6ad839a16fcdf9e5b454944ecce588b
+  mvc-base: c41c10aae39806d1f417ed4e6b7241594a97d17f
+  oc-base: 4d381ce4ce8d088c632ff1362f0f03595299efb7
   oc-date: d8601fcc9eeea98f9d84506b77ef508cf9057786
   oc-string: 79be9e8e4c80dd3e668690d3ac462e79a713489d
   oc-util: 8e423d4c1da426e4989b4f793468276f89fc0843
   pop: d582054913807fd11fd50bfe6a539d91c7e1a55a
-  ReactiveObjC: 2a38ea15335de4119d8b17caf1db1484f61db902
+  ReactiveObjC: 011caa393aa0383245f2dcf9bf02e86b80b36040
   RegexKitLite: c0e4c12e6e7de0769f3a3ed679f0f61604170661
   SDWebImage: 3f3f0c02f09798048c47a5ed0a13f17b063572d8
   SVProgressHUD: 1428aafac632c1f86f62aa4243ec12008d7a51d6

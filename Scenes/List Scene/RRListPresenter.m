@@ -26,7 +26,7 @@
 @import DateTools;
 #import "RRListView.h"
 #import "RRSafariViewController.h"
-
+@import MagicalRecord;
 #import "RRExtraViewController.h"
 
 @interface RRListPresenter ()
@@ -730,13 +730,19 @@
 
 - (void)markAsReaded:(NSIndexPath*)path
 {
-    EntityFeedArticle* model = [self.inputerCoreData mvp_modelAtIndexPath:path];
-    [RRFeedAction readArticle:model.uuid onlyMark:YES];
+    EntityFeedArticle* model = (id)[self.inputerCoreData mvp_modelAtIndexPath:path];
+//    [RRFeedAction readArticle:model.uuid onlyMark:YES];
+    [MagicalRecord saveWithBlock:^(NSManagedObjectContext * _Nonnull localContext) {
+        EntityFeedArticle* a = [model MR_inContext:localContext];
+        a.readed = YES;
+    } completion:^(BOOL contextDidSave, NSError * _Nullable error) {
+//        NSLog(@"save %@")
+    }];
 }
 
 - (void)markAsReadLater:(NSIndexPath*)path
 {
-    EntityFeedArticle* model = [self.inputerCoreData mvp_modelAtIndexPath:path];
+    EntityFeedArticle* model = (id)[self.inputerCoreData mvp_modelAtIndexPath:path];
     [RRFeedAction readLaterArticle:!model.readlater withUUID:model.uuid block:^(NSError * _Nonnull e) {
         if (!e) {
              [RRFeedAction readArticle:model.uuid onlyMark:YES];
@@ -746,7 +752,7 @@
 
 - (void)markAsFavourite:(NSIndexPath*)path
 {
-    EntityFeedArticle* model = [self.inputerCoreData mvp_modelAtIndexPath:path];
+    EntityFeedArticle* model = (id)[self.inputerCoreData mvp_modelAtIndexPath:path];
     [RRFeedAction likeArticle:!model.liked withUUID:model.uuid block:^(NSError * _Nonnull e) {
         if (!e) {
             [RRFeedAction readArticle:model.uuid onlyMark:YES];

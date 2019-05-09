@@ -57,6 +57,7 @@
 		D451E09E2262511A00674526 /* RRSettingPresenter+Theme.m in Sources */ = {isa = PBXBuildFile; fileRef = D451E09D2262511A00674526 /* RRSettingPresenter+Theme.m */; };
 		D451E0A0226258AF00674526 /* style_2.plist in Resources */ = {isa = PBXBuildFile; fileRef = D451E09F226258AF00674526 /* style_2.plist */; };
 		D451E0A222625E8100674526 /* style_dark_1.plist in Resources */ = {isa = PBXBuildFile; fileRef = D451E0A122625E8100674526 /* style_dark_1.plist */; };
+		D47302D32271977600B94788 /* RRListTableOutput.m in Sources */ = {isa = PBXBuildFile; fileRef = D47302D22271977600B94788 /* RRListTableOutput.m */; };
 		D473F287221FCCE800DF3C6D /* RRListInputer.m in Sources */ = {isa = PBXBuildFile; fileRef = D473F286221FCCE800DF3C6D /* RRListInputer.m */; };
 		D473F28B221FE9BC00DF3C6D /* RRReadStyle.m in Sources */ = {isa = PBXBuildFile; fileRef = D473F28A221FE9BC00DF3C6D /* RRReadStyle.m */; };
 		D473F28E2223E77D00DF3C6D /* RRFeedAction.m in Sources */ = {isa = PBXBuildFile; fileRef = D473F28D2223E77D00DF3C6D /* RRFeedAction.m */; };
@@ -86,6 +87,7 @@
 		D47A397B223A2453006251A6 /* RRImportInputer.m in Sources */ = {isa = PBXBuildFile; fileRef = D47A397A223A2453006251A6 /* RRImportInputer.m */; };
 		D47A397E223A289F006251A6 /* RRImportApper.m in Sources */ = {isa = PBXBuildFile; fileRef = D47A397D223A289F006251A6 /* RRImportApper.m */; };
 		D47A7A28221A9E9D00F13194 /* Reader SP说明书.md in Resources */ = {isa = PBXBuildFile; fileRef = D47A7A27221A9E9D00F13194 /* Reader SP说明书.md */; };
+		D47C8EE42282BF390062B60D /* RRFeedArticleCell3.xib in Resources */ = {isa = PBXBuildFile; fileRef = D47C8EE32282BF390062B60D /* RRFeedArticleCell3.xib */; };
 		D484562E2213E38300202401 /* marked.js in Resources */ = {isa = PBXBuildFile; fileRef = D484562D2213E38300202401 /* marked.js */; };
 		D48456302213E6D200202401 /* 什么是RSS.md in Resources */ = {isa = PBXBuildFile; fileRef = D484562F2213E6D200202401 /* 什么是RSS.md */; };
 		D48D736C2247A1FE00E79184 /* 5@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = D48D736B2247A1FE00E79184 /* 5@2x.png */; };
@@ -159,6 +161,7 @@
 		D4E0F9102213CA3E00902540 /* RRWebPresenter.m in Sources */ = {isa = PBXBuildFile; fileRef = D4E0F90F2213CA3E00902540 /* RRWebPresenter.m */; };
 		D4EECA812255C40A00491966 /* RRFeedInfoListCell2.xib in Resources */ = {isa = PBXBuildFile; fileRef = D4EECA802255C40A00491966 /* RRFeedInfoListCell2.xib */; };
 		D4EECA8322562FF200491966 /* 6@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = D4EECA8222562FF200491966 /* 6@2x.png */; };
+		D4F8553B2265855E006798C8 /* OttoFPSButton.m in Sources */ = {isa = PBXBuildFile; fileRef = D4F8553A2265855D006798C8 /* OttoFPSButton.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -262,6 +265,8 @@
 		D451E09D2262511A00674526 /* RRSettingPresenter+Theme.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "RRSettingPresenter+Theme.m"; sourceTree = "<group>"; };
 		D451E09F226258AF00674526 /* style_2.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = style_2.plist; sourceTree = "<group>"; };
 		D451E0A122625E8100674526 /* style_dark_1.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = style_dark_1.plist; sourceTree = "<group>"; };
+		D47302D12271977600B94788 /* RRListTableOutput.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RRListTableOutput.h; sourceTree = "<group>"; };
+		D47302D22271977600B94788 /* RRListTableOutput.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RRListTableOutput.m; sourceTree = "<group>"; };
 		D473F285221FCCE800DF3C6D /* RRListInputer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RRListInputer.h; sourceTree = "<group>"; };
 		D473F286221FCCE800DF3C6D /* RRListInputer.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RRListInputer.m; sourceTree = "<group>"; };
 		D473F289221FE9BC00DF3C6D /* RRReadStyle.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RRReadStyle.h; sourceTree = "<group>"; };
@@ -311,6 +316,7 @@
 		D47A397D223A289F006251A6 /* RRImportApper.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RRImportApper.m; sourceTree = "<group>"; };
 		D47A7A242219112F00F13194 /* SourceHanSerifCN-Light.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "SourceHanSerifCN-Light.otf"; sourceTree = "<group>"; };
 		D47A7A27221A9E9D00F13194 /* Reader SP说明书.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = "Reader SP说明书.md"; sourceTree = "<group>"; };
+		D47C8EE32282BF390062B60D /* RRFeedArticleCell3.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = RRFeedArticleCell3.xib; sourceTree = "<group>"; };
 		D484562D2213E38300202401 /* marked.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = marked.js; sourceTree = "<group>"; };
 		D484562F2213E6D200202401 /* 什么是RSS.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = "什么是RSS.md"; sourceTree = "<group>"; };
 		D48D736B2247A1FE00E79184 /* 5@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "5@2x.png"; sourceTree = "<group>"; };
@@ -430,6 +436,8 @@
 		D4E0F90F2213CA3E00902540 /* RRWebPresenter.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RRWebPresenter.m; sourceTree = "<group>"; tabWidth = 4; wrapsLines = 1; };
 		D4EECA802255C40A00491966 /* RRFeedInfoListCell2.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = RRFeedInfoListCell2.xib; sourceTree = "<group>"; };
 		D4EECA8222562FF200491966 /* 6@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "6@2x.png"; sourceTree = "<group>"; };
+		D4F855392265855D006798C8 /* OttoFPSButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OttoFPSButton.h; sourceTree = "<group>"; };
+		D4F8553A2265855D006798C8 /* OttoFPSButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OttoFPSButton.m; sourceTree = "<group>"; };
 		EB6D75552F8F0F296456EE76 /* Pods-rework-reader.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-rework-reader.release.xcconfig"; path = "Pods/Target Support Files/Pods-rework-reader/Pods-rework-reader.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -557,6 +565,8 @@
 				D47A396922394C1D006251A6 /* RRListEmpty.m */,
 				D4B9037822457B0E00341584 /* RRBaseEmpty.h */,
 				D4B9037922457B0E00341584 /* RRBaseEmpty.m */,
+				D47302D12271977600B94788 /* RRListTableOutput.h */,
+				D47302D22271977600B94788 /* RRListTableOutput.m */,
 			);
 			path = "List Scene";
 			sourceTree = "<group>";
@@ -721,6 +731,7 @@
 		D47A39642236C972006251A6 /* Functions */ = {
 			isa = PBXGroup;
 			children = (
+				D4F855382265855D006798C8 /* OttoFPSButton */,
 				D40BA88622436D460068D209 /* Custom */,
 				D47A396C2239FB90006251A6 /* Document */,
 				D499418521FC9AB10041B998 /* ClassyKit */,
@@ -772,6 +783,7 @@
 				D440CFED221555E0003B7203 /* RRFeedArticleCell.m */,
 				D440CFEE221555E0003B7203 /* RRFeedArticleCell.xib */,
 				D47A39662236D69A006251A6 /* RRFeedArticleCell2.xib */,
+				D47C8EE32282BF390062B60D /* RRFeedArticleCell3.xib */,
 				D440CFF42216529F003B7203 /* RRTitleCell.h */,
 				D440CFF52216529F003B7203 /* RRTitleCell.m */,
 				D440CFF62216529F003B7203 /* RRTitleCell.xib */,
@@ -1092,6 +1104,15 @@
 			path = "Web Scene";
 			sourceTree = "<group>";
 		};
+		D4F855382265855D006798C8 /* OttoFPSButton */ = {
+			isa = PBXGroup;
+			children = (
+				D4F855392265855D006798C8 /* OttoFPSButton.h */,
+				D4F8553A2265855D006798C8 /* OttoFPSButton.m */,
+			);
+			path = OttoFPSButton;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -1266,6 +1287,7 @@
 				D499418B21FC9AB10041B998 /* style.cas in Resources */,
 				D4EECA8322562FF200491966 /* 6@2x.png in Resources */,
 				D440CFF82216529F003B7203 /* RRTitleCell.xib in Resources */,
+				D47C8EE42282BF390062B60D /* RRFeedArticleCell3.xib in Resources */,
 				D4B538B8224FB111002F8333 /* icon3.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1434,6 +1456,7 @@
 				D440CFE722154DE0003B7203 /* RRFeedInfoInputer.m in Sources */,
 				D42F55F4221E7F1200321A21 /* RRListPresenter.m in Sources */,
 				D418CDDC2231135A004F5706 /* RRSettingApperance.m in Sources */,
+				D4F8553B2265855E006798C8 /* OttoFPSButton.m in Sources */,
 				D49941D221FEA7AE0041B998 /* RRFeedListView.m in Sources */,
 				D49941AE21FC9B0E0041B998 /* RPDataLocker.m in Sources */,
 				D473F29C2226902400DF3C6D /* RRPhotoBrowser.m in Sources */,
@@ -1506,6 +1529,7 @@
 				D4AC4DDA2216FAF30028D342 /* RRAddFeedPresenter.m in Sources */,
 				D440CFD52214218B003B7203 /* RRFeedLoader.m in Sources */,
 				D47A397B223A2453006251A6 /* RRImportInputer.m in Sources */,
+				D47302D32271977600B94788 /* RRListTableOutput.m in Sources */,
 				D4AC4DE72217C1160028D342 /* RRAddModel.m in Sources */,
 				D42F55E7221E4F5C00321A21 /* RRFeedInfoListModel.m in Sources */,
 				D47717D821ED90CF0050DF14 /* AppDelegate.m in Sources */,

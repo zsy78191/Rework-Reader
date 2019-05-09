@@ -106,4 +106,16 @@
     [[NSUserDefaults standardUserDefaults] synchronize];
 }
 
+
+- (void)changeAutoTheme:(UISwitch*)sender
+{
+    if (![sender isKindOfClass:[UISwitch class]]) {
+        return;
+    }
+    
+    [[NSUserDefaults standardUserDefaults] setBool:[sender isOn] forKey:self.autoThemeSetting.switchkey];
+    [[NSUserDefaults standardUserDefaults] synchronize];
+}
+
+
 @end

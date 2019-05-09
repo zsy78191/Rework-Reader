@@ -10,7 +10,7 @@
 #import "ClassyKitLoader.h"
 @import ui_base;
 
-@interface RRSafariViewController ()
+@interface RRSafariViewController () <SFSafariViewControllerDelegate>
 
 @end
 
@@ -27,6 +27,8 @@
     // Do any additional setup after loading the view.
     
 //    self.navigationItem.leftBarButtonItem.enabled = NO;
+    
+    self.delegate = self;
 }
 
 - (void)viewDidLayoutSubviews
@@ -71,7 +73,12 @@
         [[NSUserDefaults standardUserDefaults] setBool:NO forKey:@"RRSplit"];
     }
     [[NSUserDefaults standardUserDefaults] synchronize];
-    
+}
+
+- (void)safariViewControllerDidFinish:(SFSafariViewController *)controller
+{
+//    self.navigationItem.leftBarButtonItem = self.navigationController.splitViewController.displayModeButtonItem;
+//    self.navigationItem.leftItemsSupplementBackButton = YES;
 }
 
 @end

@@ -8,6 +8,7 @@
 
 #import "RRSettingPresenter+Theme.h"
 #import "RRReadMode.h"
+ 
 @implementation RRSettingPresenter (Theme)
 
 - (void)setTheme0
@@ -44,6 +45,7 @@
     [[NSUserDefaults standardUserDefaults] setInteger:RRReadDarkSubModeGray forKey:@"kRRReadModeDark"];
     [self resetTheme];
 }
+
 
 - (void)resetTheme
 {

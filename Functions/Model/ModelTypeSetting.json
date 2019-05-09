@@ -41,7 +41,7 @@
             "type": 1
         },
         {
-            "title": "在AppStore给我一条好评",
+            "title": "在AppStore反馈问题",
             "value": null,
             "action": "appstore",
             "switchkey": null,

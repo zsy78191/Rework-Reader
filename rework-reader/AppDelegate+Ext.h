@@ -46,7 +46,7 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)loadPage;
 - (void)updateFeedData:(void (^)(NSInteger x))finished;
 
-
+- (void)checkThemeWithScreenLight;
 @end
 
 NS_ASSUME_NONNULL_END
