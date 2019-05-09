@@ -19,8 +19,8 @@
                 <rect key="frame" x="0.0" y="0.0" width="320" height="143.5"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
-                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" text="Label" lineBreakMode="characterWrap" numberOfLines="0" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="14P-1d-oQl">
-                        <rect key="frame" x="20" y="48" width="280" height="41"/>
+                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" text="Label" lineBreakMode="clip" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="14P-1d-oQl">
+                        <rect key="frame" x="20" y="48" width="280" height="77.5"/>
                         <fontDescription key="fontDescription" type="system" pointSize="17"/>
                         <nil key="textColor"/>
                         <nil key="highlightedColor"/>
@@ -54,15 +54,6 @@
                             <userDefinedRuntimeAttribute type="string" keyPath="cas_styleClass" value="SeparaterView"/>
                         </userDefinedRuntimeAttributes>
                     </view>
-                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="justified" lineBreakMode="characterWrap" numberOfLines="3" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="sHx-Dm-ccm">
-                        <rect key="frame" x="20" y="91" width="280" height="40.5"/>
-                        <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                        <nil key="textColor"/>
-                        <nil key="highlightedColor"/>
-                        <userDefinedRuntimeAttributes>
-                            <userDefinedRuntimeAttribute type="string" keyPath="cas_styleClass" value="ArticleSubLabel"/>
-                        </userDefinedRuntimeAttributes>
-                    </label>
                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="252" text="Label" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="APn-n8-ame">
                         <rect key="frame" x="258" y="17" width="42" height="20.5"/>
                         <fontDescription key="fontDescription" type="system" pointSize="17"/>
@@ -81,32 +72,27 @@
                     </imageView>
                 </subviews>
                 <constraints>
-                    <constraint firstItem="sHx-Dm-ccm" firstAttribute="top" secondItem="14P-1d-oQl" secondAttribute="bottom" constant="2" id="1i9-B6-UXn"/>
                     <constraint firstItem="0N0-t1-tML" firstAttribute="centerY" secondItem="21B-YO-o4R" secondAttribute="centerY" id="2OX-fG-Jej"/>
                     <constraint firstItem="14P-1d-oQl" firstAttribute="leading" secondItem="44v-b7-fRq" secondAttribute="leadingMargin" constant="4" id="2dg-n7-ptw"/>
                     <constraint firstItem="APn-n8-ame" firstAttribute="leading" secondItem="0N0-t1-tML" secondAttribute="trailing" constant="36" id="3oB-Mu-BrX"/>
-                    <constraint firstItem="sHx-Dm-ccm" firstAttribute="height" secondItem="14P-1d-oQl" secondAttribute="height" priority="999" id="4hz-Ms-rh5"/>
-                    <constraint firstAttribute="bottom" secondItem="sHx-Dm-ccm" secondAttribute="bottom" constant="12" id="82T-nP-y4a"/>
                     <constraint firstItem="0N0-t1-tML" firstAttribute="leading" secondItem="21B-YO-o4R" secondAttribute="trailing" constant="8" id="9fZ-xy-lcS"/>
                     <constraint firstItem="21B-YO-o4R" firstAttribute="leading" secondItem="44v-b7-fRq" secondAttribute="leadingMargin" constant="4" id="BmC-hu-Bgy"/>
                     <constraint firstAttribute="bottom" secondItem="o0J-9m-OQp" secondAttribute="bottom" id="CvV-yk-HrC"/>
                     <constraint firstItem="APn-n8-ame" firstAttribute="centerY" secondItem="0N0-t1-tML" secondAttribute="centerY" id="E3D-IQ-BFv"/>
                     <constraint firstItem="14P-1d-oQl" firstAttribute="top" secondItem="21B-YO-o4R" secondAttribute="bottom" constant="12" id="YKi-bh-JOL"/>
                     <constraint firstItem="APn-n8-ame" firstAttribute="trailing" secondItem="44v-b7-fRq" secondAttribute="trailingMargin" constant="-4" id="adT-d1-qbz"/>
+                    <constraint firstAttribute="bottom" secondItem="14P-1d-oQl" secondAttribute="bottom" constant="18" id="evn-UE-TIf"/>
                     <constraint firstItem="9oE-dH-727" firstAttribute="leading" secondItem="0N0-t1-tML" secondAttribute="trailing" constant="8" id="g1g-Xl-JQp"/>
                     <constraint firstItem="14P-1d-oQl" firstAttribute="trailing" secondItem="44v-b7-fRq" secondAttribute="trailingMargin" constant="-4" id="hgH-oI-cUj"/>
                     <constraint firstItem="9oE-dH-727" firstAttribute="centerY" secondItem="APn-n8-ame" secondAttribute="centerY" id="pUX-AI-b7G"/>
-                    <constraint firstItem="sHx-Dm-ccm" firstAttribute="trailing" secondItem="44v-b7-fRq" secondAttribute="trailingMargin" constant="-4" id="qEO-aa-jLF"/>
                     <constraint firstItem="21B-YO-o4R" firstAttribute="top" secondItem="44v-b7-fRq" secondAttribute="top" priority="999" constant="18" id="ssJ-Vp-NrG"/>
                     <constraint firstAttribute="trailing" secondItem="o0J-9m-OQp" secondAttribute="trailing" id="tCa-n8-fo2"/>
-                    <constraint firstItem="sHx-Dm-ccm" firstAttribute="leading" secondItem="44v-b7-fRq" secondAttribute="leadingMargin" constant="4" id="tN9-kU-JEa"/>
                     <constraint firstItem="o0J-9m-OQp" firstAttribute="leading" secondItem="44v-b7-fRq" secondAttribute="leading" id="wwq-I2-USD"/>
                 </constraints>
             </tableViewCellContentView>
             <viewLayoutGuide key="safeArea" id="poN-iW-93y"/>
             <connections>
                 <outlet property="dateLabel" destination="APn-n8-ame" id="kZg-ny-Lbe"/>
-                <outlet property="detialLabel" destination="sHx-Dm-ccm" id="kQs-Ua-MWi"/>
                 <outlet property="feedLabel" destination="0N0-t1-tML" id="Rmd-EC-GoL"/>
                 <outlet property="i1" destination="9oE-dH-727" id="GGf-gE-VwS"/>
                 <outlet property="iconView" destination="21B-YO-o4R" id="PCN-lw-OpY"/>

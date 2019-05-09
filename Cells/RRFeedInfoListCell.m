@@ -11,6 +11,7 @@
 #import "RRFeedInfoListOtherModel.h"
 #import "RRCoreDataModel.h"
 #import "RRImageRender.h"
+@import Fork_MWFeedParser;
 
 @import SDWebImage;
 @implementation RRFeedInfoListCell
@@ -32,7 +33,7 @@
 {
     if ([model isKindOfClass:[RRFeedInfoListModel class]]) {
         RRFeedInfoListModel* m = model;
-        self.titleLabel.text = m.title;
+        self.titleLabel.text = [m.title stringByDecodingHTMLEntities];
         if (m.icon) {
             [self.iconView sd_setImageWithURL:[NSURL URLWithString:m.icon] placeholderImage:[UIImage imageNamed:@"favicon"]];
         }
@@ -51,14 +52,13 @@
     else if([model isKindOfClass:[RRFeedInfoListOtherModel class]])
     {
         RRFeedInfoListOtherModel* m = model;
-        self.titleLabel.text = m.title;
+        self.titleLabel.text = [m.title stringByDecodingHTMLEntities];
         if (m.icon) {
             [self.iconView setImage:[UIImage imageNamed:m.icon]];
         }
         self.subLabel.text = m.subtitle;
         self.countLabel.text = [NSString stringWithFormat:@"%ld",m.count];
     }
-    
 }
 
 @end

@@ -13,7 +13,7 @@
             "value": "",
             "action": "selectMainColor:",
             "switchkey": null,
-            "select": ["系统","紫色","黑色","橙色","青色"],
+            "select": ["系统","紫色","黑色","橙色","青色","马尔斯绿"],
             "type": 1
         },
         {
@@ -56,5 +56,13 @@
             "select": null,
             "type": 4
         },
+        {
+            "title": "根据屏幕亮度自动调整主题",
+            "value": "仅在程序唤醒时检查",
+            "action": "changeAutoTheme:",
+            "switchkey": "kAutoTheme",
+            "select": "autoThemeSetting",
+            "type": 3
+        }
     ]
 }

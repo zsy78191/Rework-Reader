@@ -95,7 +95,7 @@
     self.setCount(self.allFeedCount, self.finishCount);
 }
 
-- (void)import
+- (void)importOpml
 {
     NSArray* all = self.selectRows.map(^id _Nonnull(NSIndexPath*  _Nonnull x) {
         OPMLOutline* o = [self.inputer mvp_modelAtIndexPath:x];
@@ -108,14 +108,19 @@
     self.allFeedCount = allCount;
     self.finishCount = 0;
     self.hideHUD = NO;
-    
+
+//
     [self.view mvp_runAction:NSSelectorFromString(@"disableAllButton")];
     [self.view hudWait:@"加载中"];
-    
+//
     __weak typeof(self) weakSelf = self;
     __block NSUInteger successCount = 0;
+//
+//    return;
     __block void (^setCount)(NSUInteger all,NSUInteger finish) = ^(NSUInteger all,NSUInteger finish){
         dispatch_async(dispatch_get_main_queue(), ^{
+            
+//            NSLog(@"222222");
             weakSelf.allFeedCount = all;
             weakSelf.finishCount = finish;
 //             [weakSelf.view hudProgress:(float)finish/all];
@@ -134,13 +139,15 @@
 //    [[RRFeedLoader sharedLoader] setUseMainQuene:YES];
     NSArray* op = [[RRFeedLoader sharedLoader] reloadAll:all infoBlock:^(MWFeedInfo * _Nonnull info) {
 //        NSLog(@"%@",info);
+//        NSLog(@"33333");
         successCount++;
         [RRFeedAction insertFeedInfo:info finish:^{
             
         }];
     } itemBlock:^(MWFeedInfo * _Nonnull info, MWFeedItem * _Nonnull item) {
        
-    } errorBlock:^(NSError * _Nonnull error) {
+    } errorBlock:^(MWFeedInfo * _Nonnull info, NSError * _Nonnull error) {
+   
         NSLog(@"error");
         errorCount++;
     } finishBlock:^{

@@ -76,9 +76,9 @@
     if (isall) {
         all = [self mvp_buttonItemWithActionName:@"deselectAll" title:@"取消选择全部"];
     }
-    UIBarButtonItem* import = [self mvp_buttonItemWithActionName:@"import" title:[NSString stringWithFormat:@"导入(%@)",@(count)]];
+    UIBarButtonItem* import = [self mvp_buttonItemWithActionName:@"importOpml" title:[NSString stringWithFormat:@"导入(%@)",@(count)]];
     if (count == 0) {
-        import = [self mvp_buttonItemWithActionName:@"import" title:[NSString stringWithFormat:@"导入"]];
+        import = [self mvp_buttonItemWithActionName:@"importOpml" title:[NSString stringWithFormat:@"导入"]];
         import.enabled = NO;
     }
     UIBarButtonItem* fixable = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
@@ -95,16 +95,20 @@
 
 - (void)enableAllButton
 {
-    [self.toolbarItems enumerateObjectsUsingBlock:^(__kindof UIBarButtonItem * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
-        [obj setEnabled:YES];
-    }];
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [self.toolbarItems enumerateObjectsUsingBlock:^(__kindof UIBarButtonItem * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+            [obj setEnabled:YES];
+        }];
+    });
 }
 
 - (void)disableAllButton
 {
-    [self.toolbarItems enumerateObjectsUsingBlock:^(__kindof UIBarButtonItem * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
-        [obj setEnabled:NO];
-    }];
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [self.toolbarItems enumerateObjectsUsingBlock:^(__kindof UIBarButtonItem * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+            [obj setEnabled:NO];
+        }];
+    });
 }
 
 - (void)selectAll

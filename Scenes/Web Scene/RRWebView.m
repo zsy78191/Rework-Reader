@@ -42,6 +42,8 @@
 
 @property (nonatomic, assign) BOOL loadFinished;
 @property (nonatomic, assign) BOOL hideNaviBar;
+@property (nonatomic, assign) BOOL startDraging;
+@property (nonatomic, assign) CGPoint startOffset;
 
 @property (nonatomic, strong) UIView* statusCover;
 
@@ -106,7 +108,7 @@
 {
     if (!_upView) {
 //TODO
-        _upView = [[UIView alloc] initWithFrame:CGRectMake(0, -70, self.view.frame.size.width, 80)];
+        _upView = [[UIView alloc] initWithFrame:CGRectMake(0, -100, self.view.frame.size.width, 80)];
 //        [_upView setBackgroundColor:[UIColor grayColor]];
         UILabel * label = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, 80)];
         [_upView addSubview:label];
@@ -129,7 +131,7 @@
 - (UIView *)downView
 {
     if (!_downView) {
-        _downView = [[UIView alloc] initWithFrame:CGRectMake(0, self.webView.scrollView.contentSize.height, self.view.frame.size.width, 80)];
+        _downView = [[UIView alloc] initWithFrame:CGRectMake(0, self.webView.scrollView.contentSize.height + 50, self.view.frame.size.width, 80)];
         //        [_upView setBackgroundColor:[UIColor grayColor]];
         UILabel * label = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, 80)];
         [_downView addSubview:label];
@@ -217,18 +219,6 @@
     }
 }
 
-- (void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate
-{
-    if (scrollView.contentOffset.y < - 130) {
-        [self loadLast];
-    }
-    
-    if (scrollView.contentOffset.y - (scrollView.contentSize.height-scrollView.frame.size.height) > 130)
-    {
-        [self loadNext];
-    }
-}
-
 - (void)loadLast
 {
     if (!self.canDragPage) {
@@ -256,6 +246,7 @@
             //        self.webView.transform = CGAffineTransformIdentity;
         } completion:^(BOOL finished) {
             [fakeCover removeFromSuperview];
+            [weakSelf readedIt];
         }];
     }];
 }
@@ -289,13 +280,126 @@
         //        self.webView.transform = CGAffineTransformIdentity;
     } completion:^(BOOL finished) {
         [fakeCover removeFromSuperview];
+        [weakSelf readedIt];
     }];
 
 }
 
+
+- (void)scrollViewDidScroll:(UIScrollView *)scrollView
+{
+    if (self.startDraging) {
+        if (self.startOffset.y - scrollView.contentOffset.y > 60) {
+            if (self.hideNaviBar) {
+                self.hideNaviBar = NO;
+                [UIView animateWithDuration:0.24 animations:^{
+                    [self.navigationController.navigationBar setAlpha:1];
+                    [self.navigationController.toolbar setAlpha:1];
+                    if ( fabs(self.progressView.progress - 1) > 0.00001 ) {
+                        [self.progressView setAlpha:1];
+                    }
+                }];
+            }
+        }
+        if (self.startOffset.y - scrollView.contentOffset.y < -60) {
+            if (!self.hideNaviBar && (self.progressView.progress == 0 || self.progressView.progress == 1)) {
+                self.hideNaviBar = YES;
+                [UIView animateWithDuration:0.24 animations:^{
+                    [self.navigationController.navigationBar setAlpha:0];
+                    [self.navigationController.toolbar setAlpha:0];
+                    self.progressView.alpha = 0;
+                }];
+            }
+        }
+    }
+    
+    //    //NSLog(@"(2)%f %d",scrollView.contentOffset.y,self.loadFinished);
+//    if (scrollView.contentOffset.y > 0 && self.loadFinished) {
+//        if (!self.hideNaviBar && (self.progressView.progress == 0 || self.progressView.progress == 1)) {
+//            self.hideNaviBar = YES;
+//            [UIView animateWithDuration:0.24 animations:^{
+//                [self.navigationController.navigationBar setAlpha:0];
+//                [self.navigationController.toolbar setAlpha:0];
+//                self.progressView.alpha = 0;
+//            }];
+//        }
+//    }
+//    else if(scrollView.contentOffset.y < 50)
+//    {
+//        if (self.hideNaviBar) {
+//            self.hideNaviBar = NO;
+//            [UIView animateWithDuration:0.24 animations:^{
+//                [self.navigationController.navigationBar setAlpha:1];
+//                [self.navigationController.toolbar setAlpha:1];
+//                if ( fabs(self.progressView.progress - 1) > 0.00001 ) {
+//                    [self.progressView setAlpha:1];
+//                }
+//            }];
+//        }
+//    }
+    
+    if (scrollView.contentOffset.y < - 130) {
+        //        [self loadLast];
+        if (!self.prepareLoadLast) {
+            self.prepareLoadLast = YES;
+            //            UIImpactFeedbackGenerator* g;
+            if (scrollView.isDragging) {
+                [self.g impactOccurred];
+            }
+            
+        }
+    }
+    else {
+        if (self.prepareLoadLast) {
+            self.prepareLoadLast = NO;
+            if (scrollView.isDragging) {
+                [self.g impactOccurred];
+            }
+        }
+    }
+    
+    if (scrollView.contentOffset.y - (scrollView.contentSize.height-scrollView.frame.size.height) > 130)
+    {
+        //        [self loadNext];
+        if (!self.prepareLoadNext) {
+            self.prepareLoadNext = YES;
+            if (scrollView.isDragging) {
+                [self.g impactOccurred];
+            }
+        }
+    }
+    else {
+        if (self.prepareLoadNext) {
+            self.prepareLoadNext = NO;
+            if (scrollView.isDragging) {
+                [self.g impactOccurred];
+            }
+        }
+    }
+}
+
+
+
+- (void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate
+{
+    self.startDraging = NO;
+    
+    if (scrollView.contentOffset.y < - 130) {
+        [self loadLast];
+    }
+    
+    if (scrollView.contentOffset.y - (scrollView.contentSize.height-scrollView.frame.size.height) > 130)
+    {
+        [self loadNext];
+    }
+}
+
+
 - (void)scrollViewWillBeginDragging:(UIScrollView *)scrollView
 {
     self.loadFinished = YES;
+    self.startDraging = YES;
+    self.startOffset = scrollView.contentOffset;
 }
 
 - (void)viewDidLoad
@@ -316,71 +420,6 @@
     [super decodeRestorableStateWithCoder:coder];
 }
 
-
-- (void)scrollViewDidScroll:(UIScrollView *)scrollView
-{
-//    //NSLog(@"(2)%f %d",scrollView.contentOffset.y,self.loadFinished);
-    if (scrollView.contentOffset.y > 0 && self.loadFinished) {
-        if (!self.hideNaviBar && (self.progressView.progress == 0 || self.progressView.progress == 1)) {
-            self.hideNaviBar = YES;
-            [UIView animateWithDuration:0.24 animations:^{
-                [self.navigationController.navigationBar setAlpha:0];
-                self.progressView.alpha = 0;
-            }];
-        }
-    }
-    else if(scrollView.contentOffset.y < 50)
-    {
-        if (self.hideNaviBar) {
-            self.hideNaviBar = NO;
-            [UIView animateWithDuration:0.24 animations:^{
-                [self.navigationController.navigationBar setAlpha:1];
-                if ( fabs(self.progressView.progress - 1) > 0.00001 ) {
-                    [self.progressView setAlpha:1];
-                }
-            }];
-        }
-    }
-    
-    if (scrollView.contentOffset.y < - 130) {
-//        [self loadLast];
-        if (!self.prepareLoadLast) {
-            self.prepareLoadLast = YES;
-//            UIImpactFeedbackGenerator* g;
-            if (scrollView.isDragging) {
-                [self.g impactOccurred];
-            }
-            
-        }
-    }
-    else {
-        if (self.prepareLoadLast) {
-            self.prepareLoadLast = NO;
-            if (scrollView.isDragging) {
-                 [self.g impactOccurred];
-            }
-        }
-    }
-    
-    if (scrollView.contentOffset.y - (scrollView.contentSize.height-scrollView.frame.size.height) > 130)
-    {
-//        [self loadNext];
-        if (!self.prepareLoadNext) {
-            self.prepareLoadNext = YES;
-            if (scrollView.isDragging) {
-                 [self.g impactOccurred];
-            }
-        }
-    }
-    else {
-        if (self.prepareLoadNext) {
-            self.prepareLoadNext = NO;
-            if (scrollView.isDragging) {
-                [self.g impactOccurred];
-            }
-        }
-    }
-}
 
 
 - (Class)mvp_presenterClass
@@ -421,6 +460,7 @@
     if (fabs(progress - 1) < 0.00001 || fabs(progress) < 0.00001) {
         if (self.navigationController.navigationBar.alpha == 0) {
             self.navigationController.navigationBar.alpha = 1;
+            self.navigationController.toolbar.alpha = 1;
         }
     }
     
@@ -624,7 +664,7 @@
 {
     //FIXBUG 切换位移bug
     [self.navigationController.navigationBar setAlpha:1];
-    
+    [self.navigationController.toolbar setAlpha:1];
     self.title = @"";
     __weak typeof(self) weakSelf = self;
     [self.webView stopLoading];
@@ -844,6 +884,7 @@
     [[[self navigationController] navigationBar] setPrefersLargeTitles:YES];
     
     [self.navigationController.navigationBar setAlpha:1];
+    [self.navigationController.toolbar setAlpha:1];
     self.hideNaviBar = NO;
     [self.webView.configuration.userContentController removeScriptMessageHandlerForName:@"getFontSize"];
     [self recordReadProgress:^{
@@ -1095,9 +1136,7 @@
         }];
     }
     
-    if (self.currentArticle) {
-        [RRFeedAction readArticle:self.currentArticle.uuid];
-    }
+    [self readedIt];
     [self hudDismiss];
     
 //    if(0){
@@ -1113,7 +1152,7 @@
 //        //NSLog(@"%@",h);
         weakSelf.downView.frame = ({
             CGRect r = weakSelf.downView.frame;
-            r.origin.y = [h doubleValue];
+            r.origin.y = [h doubleValue]+50;
             r;
         });
         
@@ -1519,5 +1558,11 @@
     });
 }
 
+- (void)readedIt
+{
+    if (self.currentArticle && !self.currentArticle.lastread) {
+        [RRFeedAction readArticle:self.currentArticle.uuid];
+    }
+}
 
 @end

@@ -59,6 +59,11 @@ NSString* const kOffsetMainList = @"kOffsetMainList";
     self.selectMoreThanOne = self.selectArray.count > 0;
 }
 
+- (void)themeUpdate
+{
+    self.mode = [[NSUserDefaults standardUserDefaults] integerForKey:@"kRRReadMode"];
+}
+
 - (void)switchReadMode
 {
     if (self.mode == RRReadModeDark) {
@@ -121,6 +126,7 @@ NSString* const kOffsetMainList = @"kOffsetMainList";
         
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(needUpdateData) name:@"RRMainListNeedUpdate" object:nil];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(loadDataMain) name:@"RRMainListUpdate" object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(themeUpdate) name:@"RRWebNeedReload" object:nil];
     }
     return self;
 }
@@ -147,6 +153,7 @@ NSString* const kOffsetMainList = @"kOffsetMainList";
     //    self.offsetY = 100;
 //    NSLog(@"main offset %@",@(self.offsetY));
     self.mode = [[NSUserDefaults standardUserDefaults] integerForKey:@"kRRReadMode"];
+    [[(UIViewController*)self.view toolbarItems] firstObject].enabled = YES;
 }
 
 - (void)updateOffsetY:(NSNumber*)offsetY
@@ -361,6 +368,7 @@ NSString* const kOffsetMainList = @"kOffsetMainList";
     
     [[NSNotificationCenter defaultCenter] removeObserver:self name:@"RRMainListUpdate" object:nil];
     
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"RRWebNeedReload" object:nil];
     
     [[RPDataNotificationCenter defaultCenter] unregistEntityChange:@"EntityFeedInfo" observer:self];
     
@@ -503,7 +511,8 @@ NSString* const kOffsetMainList = @"kOffsetMainList";
         [a addObject:m];
  
 //        //NSLog(@"- %@- %@",info.title, item.title);
-    } errorBlock:^(NSError * _Nonnull error) {
+    } errorBlock:^(MWFeedInfo * _Nonnull info, NSError * _Nonnull error) {
+        
         //NSLog(@"err %@",error);
         errorCount ++;
         
@@ -604,7 +613,11 @@ NSString* const kOffsetMainList = @"kOffsetMainList";
     [(UIViewController*)self.view presentViewController:nv animated:YES completion:^{
         
     }];
+    
+    [[(UIViewController*)self.view toolbarItems] firstObject].enabled = NO;
+    
 }
+
 
 
 #pragma mark --  实现代理方法
@@ -622,7 +635,9 @@ NSString* const kOffsetMainList = @"kOffsetMainList";
 //弹框消失时调用的方法
 -(void)popoverPresentationControllerDidDismissPopover:(UIPopoverPresentationController *)popoverPresentationController{
     //NSLog(@"弹框已经消失");
+    [[(UIViewController*)self.view toolbarItems] firstObject].enabled = YES;
 }
+
 
 - (void)cleanAll
 {

@@ -15,8 +15,36 @@
 {
     [ClassyKitLoader cleanStyleFiles]; // 删除本地cas文件
     [ClassyKitLoader copyStyleFile]; // 拷贝cas文件
-    [self notiReloadCas];
+    BOOL autoCheck = [[NSUserDefaults standardUserDefaults] boolForKey:@"kAutoTheme"];
+    if (!autoCheck) {
+        [self notiReloadCas];
+    }
+    else {
+        [self checkThemeWithScreenLight];
+    }
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateStyle) name:@"RRCasNeedReload" object:nil];
+}
+
+- (void)checkThemeWithScreenLight
+{
+    CGFloat value = [UIScreen mainScreen].brightness;
+    if (value < 0.3) {
+        [self switchTheme:RRReadModeDark];
+    }
+    else {
+        [self switchTheme:RRReadModeLight];
+    }
+}
+
+- (void)switchTheme:(RRReadMode)mode
+{
+    [[NSUserDefaults standardUserDefaults] setInteger:mode forKey:@"kRRReadMode"];
+    [[NSUserDefaults standardUserDefaults] synchronize];
+    [self notiReloadCas];
+    [self notiReloadCas];
+    [self.window.rootViewController setNeedsStatusBarAppearanceUpdate];
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"RRWebNeedReload" object:nil];
+    
 }
 
 - (void)notiReloadCas
@@ -79,26 +107,9 @@
                         };
     
     NSAttributedString *attributedString = [[NSAttributedString alloc] initWithString:@"搜索" attributes:d];
-    
-//    [[UISearchBar appearance] setBarStyle:UIBarStyleBlack];
-//    [[UIActivityIndicatorView appearance] setTintColor:UIColor.hex(style[@"$main-text-color"])];
-//    [[UIRefreshControl appearance] setTintColor:UIColor.hex(style[@"$main-text-color"])];
-    
     [[UITextField appearanceWhenContainedInInstancesOfClasses:@[[UISearchBar class]]] setAttributedPlaceholder:attributedString];
-    
-//    NSAttributedString *attributedString2 = [[NSAttributedString alloc] initWithString:@"123" attributes:d];
-    
-//    [[UITextField appearanceWhenContainedInInstancesOfClasses:@[[UISearchBar class]]] setAttributedText:attributedString2];
-    
     UITextField* t = [UITextField appearanceWhenContainedInInstancesOfClasses:@[[UISearchBar class]]];
-//    [t setFont:[UIFont fontWithName:style[@"$main-font"] size:[style[@"$sub-font-size"] floatValue]]];
-//    [t setTextColor:UIColor.hex(style[@"$sub-text-color"])];
     [t setDefaultTextAttributes:d];
-//    [t setBackgroundColor:[UIColor redColor]];
-    
-    //    dispatch_async(dispatch_get_main_queue(), ^{
-    
-    //    });
 }
 
 - (void)updateStyle

@@ -40,7 +40,7 @@
     
     if ([model isKindOfClass:[RRFeedArticleModel class]]) {
         RRFeedArticleModel* m = model;
-        self.titleLabel.text = m.title;
+        self.titleLabel.text = [[m.title stringByDecodingHTMLEntities] stringByAppendingString:@"\n"];
         NSDate* date = m.date;
         NSString* des = @"";
         if (date) {
@@ -80,7 +80,7 @@
     else if([model isKindOfClass:[EntityFeedArticle class]])
     {
         EntityFeedArticle* m = model;
-        self.titleLabel.text = m.title;
+        self.titleLabel.text = [[m.title stringByDecodingHTMLEntities] stringByAppendingString:@"\n"];
         NSDate* date = m.date;
         //NSLog(@"%@ %@",m.date,m.updated);
         NSString* des = @"";
@@ -90,6 +90,7 @@
         }
         
         NSString* temp = m.content.length > 30 ? m.content : m.summary;
+        temp = [temp stringByDecodingHTMLEntities];
         temp = [temp stringByConvertingHTMLToPlainText];
         temp = [temp stringByTrimmingCharactersInSet: [NSCharacterSet whitespaceAndNewlineCharacterSet]];
         temp = [temp stringByReplacingOccurrencesOfRegex:@"\\s+" withString:@" "];
@@ -97,7 +98,7 @@
         self.dateLabel.text = des;
         
         if (m.feed) {
-            self.feedLabel.text = m.feed.title;
+            self.feedLabel.text = [m.feed.title stringByDecodingHTMLEntities];
             
             if (m.feed.icon) {
                 [self.iconView sd_setImageWithURL:[NSURL URLWithString:m.feed.icon] placeholderImage:[UIImage imageNamed:@"favicon"]];

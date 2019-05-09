@@ -86,6 +86,7 @@
         [(id)self.presenter viewWillAppear:animated];
     }
     [[self navigationController] setToolbarHidden:!self.showToolBar animated:animated];
+//    [self.outputer reloadData];
 //    NSLog(@"%s",__func__);
 }
 
@@ -165,6 +166,10 @@
 {
     [super mvp_configMiddleware];
     
+//    NSLog(@"----:::%f",[[UIApplication sharedApplication] delegate].window.safeAreaInsets.bottom);
+    
+    
+    
 //    [self mvp_bindSelector:@selector(viewDidDisappear:)];
 
     RRListEmpty* empty = [[RRListEmpty alloc] init];
@@ -176,7 +181,15 @@
      
        
         output.canMove = NO;
-        [output registNibCell:@"RRFeedArticleCell2" withIdentifier:@"articleCell"];
+        
+        BOOL hideDetial = [[NSUserDefaults standardUserDefaults] boolForKey:@"kHideArticleDetial"];
+        if (hideDetial) {
+            [output registNibCell:@"RRFeedArticleCell3" withIdentifier:@"articleCell"];
+        }
+        else {
+            
+            [output registNibCell:@"RRFeedArticleCell2" withIdentifier:@"articleCell"];
+        }
         [weakSelf registerForPreviewingWithDelegate:weakSelf sourceView:output.tableview];
         [empty setActionBlock:^{
             dispatch_async(dispatch_get_main_queue(), ^{
@@ -249,12 +262,12 @@
         
         RRTableOutput* o = (id)output;
         o.canMutiSelect = YES;
-        [o setNewOffsetBlock:^(CGFloat offsetY) {
-            double heigt = weakSelf.navigationController.navigationBar.frame.size.height + [UIApplication sharedApplication].statusBarFrame.size.height;
-            NSLog(@"-- @(%@)",@(offsetY+heigt));
-            
-            [[weakSelf presenter] mvp_runAction:@"newOffset:" value:@(offsetY+heigt)];
-        }];
+//        [o setNewOffsetBlock:^(CGFloat offsetY) {
+//            double heigt = weakSelf.navigationController.navigationBar.frame.size.height + [UIApplication sharedApplication].statusBarFrame.size.height;
+//            NSLog(@"-- @(%@)",@(offsetY+heigt));
+//
+//            [[weakSelf presenter] mvp_runAction:@"newOffset:" value:@(offsetY+heigt)];
+//        }];
     }];
 //    [o mvp_registerNib:[UINib nibWithNibName:@"RRFeedArticleCell2" bundle:[NSBundle mainBundle]] forCellReuseIdentifier:@"articleCell"];
    
@@ -262,7 +275,7 @@
 
 - (Class)mvp_outputerClass
 {
-    return NSClassFromString(@"RRTableOutput");
+    return NSClassFromString(@"RRListTableOutput");
 }
 
 

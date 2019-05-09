@@ -26,6 +26,8 @@
 #import "RRCoreDataModel.h"
 @import DateTools;
 #import "RRSettingPresenter+Swith.h"
+@import ReactiveObjC;
+#import "RRExtraViewController.h"
 
 
 @interface RRSettingPresenter () <UIDocumentPickerDelegate,MVPPresenterProtocol_private,SKStoreProductViewControllerDelegate>
@@ -41,6 +43,7 @@
 @property (nonatomic, strong) RRDataBackuper* backuper;
 
 @property (nonatomic, strong) RRSetting* donateSetting;
+
 @property (nonatomic, strong) void (^ purchasedBlock)(SKPaymentTransaction* t);
 
 @property (nonatomic, assign) BOOL exporting;
@@ -218,14 +221,16 @@
                                 @"紫色":@"#BD10E0",
                                 @"黑色":@"#303E58",
                                 @"橙色":@"#F5A623",
-                                @"青色":@"#50E3C2"
+                                @"青色":@"#50E3C2",
+                                @"马尔斯绿":@"#1aaba8"
                                 };
     NSDictionary* colorDictDark = @{
                                 @"系统":@"#007AFF",
                                 @"紫色":@"#BD10E0",
                                 @"黑色":@"#CFD7DB",
                                 @"橙色":@"#F5A623",
-                                @"青色":@"#50E3C2"
+                                @"青色":@"#50E3C2",
+                                @"马尔斯绿":@"#1aaba8"
                                 };
     NSString* color = colorDict[select];
     NSString* colorDark = colorDictDark[select];
@@ -336,7 +341,7 @@
 
 - (void)openOPML
 {
-    UIDocumentPickerViewController* dvc = [[UIDocumentPickerViewController alloc] initWithDocumentTypes:@[@"public.xml"] inMode:UIDocumentPickerModeImport];
+    UIDocumentPickerViewController* dvc = [[UIDocumentPickerViewController alloc] initWithDocumentTypes:@[@"com.orzer.reader.opml"] inMode:UIDocumentPickerModeImport];
     [[self view] mvp_presentViewController:dvc animated:YES completion:^{
         
     }];
@@ -356,12 +361,36 @@
     __weak typeof(self) weakSelf = self;
     [d openWithCompletionHandler:^(BOOL success) {
         dispatch_async(dispatch_get_main_queue(), ^{
-            if (success) {
-                id view = [MVPRouter viewForURL:@"rr://import" withUserInfo:@{@"model":d}];
-                [weakSelf.view mvp_pushViewController:view];
+               UIViewController* view = [MVPRouter viewForURL:@"rr://import" withUserInfo:@{@"model":d}];
+            
+            if ([UIDevice currentDevice].iPad()) {
+         
+                    RRExtraViewController* rr = [[RRExtraViewController alloc] initWithRootViewController:view];
+                    __weak UIViewController* weakView = view;
+                    view.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"关闭" style:UIBarButtonItemStylePlain target:nil action:nil];
+                    view.navigationItem.leftBarButtonItem.rac_command = [[RACCommand alloc] initWithSignalBlock:^RACSignal * _Nonnull(id  _Nullable input) {
+                        
+                        return [RACSignal createSignal:^RACDisposable * _Nullable(id<RACSubscriber>  _Nonnull subscriber) {
+                            
+                            dispatch_async(dispatch_get_main_queue(), ^{
+                                [weakView dismissViewControllerAnimated:YES completion:nil];
+                            });
+                            
+                            return [RACDisposable disposableWithBlock:^{
+                                
+                            }];
+                        }];
+                    }];
+                    [rr setModalPresentationStyle:UIModalPresentationFormSheet];
+                    //                        [view ]
+                    [weakSelf.view  mvp_presentViewController:rr animated:YES completion:nil];
+              
             }
             else {
-                [self.view hudFail:@"导入文件失败"];
+          
+//                    [n pushViewController:view animated:YES];
+                [weakSelf.view mvp_pushViewController:view];
+       
             }
         });
     }];

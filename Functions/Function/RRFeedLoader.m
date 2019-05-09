@@ -132,7 +132,7 @@
     return o;
 }
 
-- (NSArray*)reloadAll:(NSArray<NSString *> *)feedURIs infoBlock:(void (^)(MWFeedInfo * _Nonnull))infoblock itemBlock:(void (^)(MWFeedInfo * _Nonnull, MWFeedItem * _Nonnull))itemblock errorBlock:(void (^)(NSError * _Nonnull))errblock finishBlock:(void (^)(void))finishblock
+- (NSArray*)reloadAll:(NSArray<NSString *> *)feedURIs infoBlock:(void (^)(MWFeedInfo * _Nonnull))infoblock itemBlock:(void (^)(MWFeedInfo * _Nonnull, MWFeedItem * _Nonnull))itemblock errorBlock:(void (^)(MWFeedInfo* _Nonnull info,NSError * _Nonnull))errblock finishBlock:(void (^)(void))finishblock
 {
     __block NSMutableArray* operations = [[NSMutableArray alloc] init];
     __block NSMutableArray* feeds = [[NSMutableArray alloc] init];
@@ -153,8 +153,14 @@
                 itemblock(info,item);
             }
         } errorBlock:^(NSError * _Nonnull error) {
+            __block id info = nil;
+            [feeds enumerateObjectsUsingBlock:^(MWFeedInfo*  _Nonnull obj2, NSUInteger idx, BOOL * _Nonnull stop) {
+                if ([[obj2.url absoluteString] isEqualToString:obj]) {
+                    info = obj2;
+                }
+            }];
             if (errblock) {
-                errblock(error);
+                errblock(info,error);
             }
         } finishBlock:^{
             if (finishblock) {
@@ -291,10 +297,11 @@
     
     [[RRFeedLoader sharedLoader] reloadAll:all infoBlock:^(MWFeedInfo * _Nonnull info) {
                 //NSLog(@"更新%@",info.title);
-        
         dispatch_async(dispatch_get_main_queue(), ^{
             NSString* key = [NSString stringWithFormat:@"UPDATE_%@",info.url];
+            NSString* failedKey = [NSString stringWithFormat:@"FAILED_%@",info.url];
             [MVCKeyValue setInt:[[NSDate date] timeIntervalSince1970] forKey:key];
+            [MVCKeyValue setBool:NO forKey:failedKey];
         });
         
     } itemBlock:^(MWFeedInfo * _Nonnull info, MWFeedItem * _Nonnull item) {
@@ -309,7 +316,8 @@
         [a addObject:m];
         
         //        //NSLog(@"- %@- %@",info.title, item.title);
-    } errorBlock:^(NSError * _Nonnull error) {
+    } errorBlock:^(MWFeedInfo * _Nonnull info, NSError * _Nonnull error) {
+        
         //NSLog(@"err %@",error);
         errorCount ++;
         

@@ -322,6 +322,10 @@
 {
     [super viewWillDisappear:animated];
 //    [self.navigationController.navigationBar setPrefersLargeTitles:YES];
+    MVPTableViewOutput* o  = (id)self.outputer;
+    __weak typeof(self) weakSelf = self;
+    double height = [UIApplication sharedApplication].statusBarFrame.size.height + weakSelf.navigationController.navigationBar.frame.size.height;
+    [[weakSelf presenter] mvp_runAction:@"updateOffsetY:" value:@(o.tableview.contentOffset.y+height)];
     
 }
 

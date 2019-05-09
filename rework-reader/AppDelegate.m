@@ -8,6 +8,10 @@
 
 #import "AppDelegate.h"
 #import "AppDelegate+Ext.h"
+#import "OttoFPSButton.h"
+#import "OPMLDocument.h"
+@import ReactiveObjC;
+@import ui_base;
 
 @interface AppDelegate () <SDWebImageManagerDelegate,UISplitViewControllerDelegate>
 {
@@ -28,6 +32,13 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     
+    NSDictionary* d = @{@"evatype":@"0",@"PageIndex":@"1",@"PageSize":@"6"};
+    NSString* str = [[NSString alloc] initWithData: [NSJSONSerialization dataWithJSONObject:d options:kNilOptions error:nil] encoding:NSUTF8StringEncoding];
+    NSLog(@"%@",str);
+    NSDictionary* param = @{@"id":@"1417505",@"obj":str};
+    NSLog(@"%@",param);
+    NSString* str2 = [[NSString alloc] initWithData: [NSJSONSerialization dataWithJSONObject:param options:kNilOptions error:nil] encoding:NSUTF8StringEncoding];
+    NSLog(@"%@",str2);
     // 加载logger
     [self preload];
     
@@ -64,7 +75,13 @@
         [AppleAPIHelper review];
     }
   
-    
+#ifdef DEBUG
+//    CGRect frame = CGRectMake(0, 300, 80, 30);
+//    UIColor *btnBGColor = [UIColor colorWithWhite:0.000 alpha:0.700];
+//    OttoFPSButton *btn = [OttoFPSButton setTouchWithFrame:frame titleFont:[UIFont systemFontOfSize:15] backgroundColor:btnBGColor backgroundImage:nil];
+//    [self.window addSubview:btn];
+#endif
+ 
     return YES;
 }
 
@@ -138,11 +155,19 @@
 - (void)applicationWillEnterForeground:(UIApplication *)application {
     // Called as part of the transition from the background to the active state; here you can undo many of the changes made on entering the background.
 //    [self syncWithCompletion:NULL];
+    BOOL autoCheck = [[NSUserDefaults standardUserDefaults] boolForKey:@"kAutoTheme"];
+    if (autoCheck) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self checkThemeWithScreenLight];
+        });
+    }
+    
 }
 
 
 - (void)applicationDidBecomeActive:(UIApplication *)application {
     // Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
+   
 }
 
 
@@ -173,6 +198,84 @@
 
 - (BOOL)application:(UIApplication *)application shouldSaveApplicationState:(NSCoder *)coder
 {
+    return YES;
+}
+
+
+
+- (BOOL)application:(UIApplication *)app openURL:(NSURL *)url options:(NSDictionary<UIApplicationOpenURLOptionsKey,id> *)options
+{
+//    NSLog(@"%s",__func__);
+//    NSLog(@"%@",url);
+//    NSLog(@"%@",options);
+    if (![[url path] hasSuffix:@"opml"]) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [SVProgressHUD showErrorWithStatus:@"仅支持OPML文件"];
+        });
+        return NO;
+    }
+    
+//    NSLog(@"%@",self.window.rootViewController);
+    UINavigationController* n = nil;
+    if ([self.window.rootViewController isKindOfClass:[UISplitViewController class]]) {
+        UISplitViewController* split = (UISplitViewController*)self.window.rootViewController;
+        UIViewController* v = [split.viewControllers firstObject];
+//        NSLog(@"%@",v);
+        if ([v isKindOfClass:[UINavigationController class]]) {
+          n = (UINavigationController*)v;
+        }
+    }
+    else {
+        if ([self.window.rootViewController isKindOfClass:[UINavigationController class]]) {
+            n = (UINavigationController*)self.window.rootViewController;
+        }
+    }
+//
+    OPMLDocument* d = [[RRFeedLoader sharedLoader] loadOPML:url];
+//    __weak typeof(self) weakSelf = self;
+    [d openWithCompletionHandler:^(BOOL success) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            if (success) {
+                UIViewController* view = [MVPRouter viewForURL:@"rr://import" withUserInfo:@{@"model":d}];
+//                                [weakSelf.view mvp_pushViewController:view];
+//
+                if ([UIDevice currentDevice].iPad()) {
+                    if (n) {
+                        RRExtraViewController* rr = [[RRExtraViewController alloc] initWithRootViewController:view];
+                        __weak UIViewController* weakView = view;
+                        view.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"关闭" style:UIBarButtonItemStylePlain target:nil action:nil];
+                        view.navigationItem.leftBarButtonItem.rac_command = [[RACCommand alloc] initWithSignalBlock:^RACSignal * _Nonnull(id  _Nullable input) {
+                           
+                            return [RACSignal createSignal:^RACDisposable * _Nullable(id<RACSubscriber>  _Nonnull subscriber) {
+                               
+                                dispatch_async(dispatch_get_main_queue(), ^{
+                                    [weakView dismissViewControllerAnimated:YES completion:nil];
+                                });
+                                
+                                return [RACDisposable disposableWithBlock:^{
+                                    
+                                }];
+                            }];
+                        }];
+                        [rr setModalPresentationStyle:UIModalPresentationFormSheet];
+//                        [view ]
+                        [n presentViewController:rr animated:YES completion:nil];
+                    }
+                }
+                else {
+                    if (n) {
+                        [n pushViewController:view animated:YES];
+                    }
+                }
+                
+            }
+            else {
+                //                [self.view hudFail:@"导入文件失败"];
+                [SVProgressHUD showErrorWithStatus:@"文件导入失败"];
+            }
+        });
+    }];
+
     return YES;
 }
 
