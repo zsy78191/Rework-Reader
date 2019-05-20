@@ -27,6 +27,11 @@
 @import oc_util;
 
 NSString* const kOffsetMainList = @"kOffsetMainList";
+NSString* const kMainListItemSetting = @"kOffsetMainList";
+NSString* const kShowUnread = @"kShowUnread";
+NSString* const kShowFav = @"kShowFav";
+NSString* const kShowLater = @"kShowLater";
+NSString* const kShowRecent = @"kShowRecent";
 
 @interface RRFeedListPresenter() <UIPopoverPresentationControllerDelegate>
 {
@@ -45,13 +50,16 @@ NSString* const kOffsetMainList = @"kOffsetMainList";
 @property (nonatomic, assign) BOOL firstEnter;
 @property (nonatomic, strong) NSArray* selectArray;
 @property (nonatomic, assign) BOOL selectMoreThanOne;
+@property (nonatomic, assign) BOOL editing;
+@property (nonatomic, weak) RRFeedInfoListOtherModel* unreadModel;
+@property (nonatomic, weak) RRFeedInfoListOtherModel* laterModel;
+@property (nonatomic, weak) RRFeedInfoListOtherModel* favModel;
+@property (nonatomic, weak) RRFeedInfoListOtherModel* recentModel;
 
-@property (nonatomic, strong) RRFeedInfoListOtherModel* unreadModel;
-
+@property (nonatomic, strong) NSMutableDictionary* listItemSetting;
 @end
 
 @implementation RRFeedListPresenter
-
 
 - (void)updateSelections:(NSArray*)indexPaths
 {
@@ -127,6 +135,19 @@ NSString* const kOffsetMainList = @"kOffsetMainList";
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(needUpdateData) name:@"RRMainListNeedUpdate" object:nil];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(loadDataMain) name:@"RRMainListUpdate" object:nil];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(themeUpdate) name:@"RRWebNeedReload" object:nil];
+        
+        NSDictionary* itemsSetting = [[NSUserDefaults standardUserDefaults] dictionaryForKey:kMainListItemSetting];
+        if (!itemsSetting) {
+            itemsSetting = @{
+                             kShowUnread:@(YES),
+                             kShowFav:@(YES),
+                             kShowLater:@(YES),
+                             kShowRecent:@(YES)
+                             };
+            [[NSUserDefaults standardUserDefaults] setObject:itemsSetting forKey:kMainListItemSetting];
+            [[NSUserDefaults standardUserDefaults] synchronize];
+        }
+        self.listItemSetting = [itemsSetting mutableCopy];
     }
     return self;
 }
@@ -166,10 +187,50 @@ NSString* const kOffsetMainList = @"kOffsetMainList";
     self.needUpdateFeed = YES;
     
     [[RPDataNotificationCenter defaultCenter] registEntityChange:@"EntityFeedInfo" observer:self sel:@selector(needUpdateData)];
-    
+
     [[RPDataNotificationCenter defaultCenter] registEntityChange:@"EntityFeedArticle" observer:self sel:@selector(needUpdateData)];
+}
+
+- (void)setEditing:(BOOL)editing animated:(BOOL)animated
+{
+    self.editing = editing;
+    if (editing) {
+//        [self.readStyleInputer mvp_deleteModelAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0]];
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self.readStyleInputer showAll];
+        });
+    }
+    else
+    {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self endEditing];
+        });
+       
+    }
+}
+
+- (void)endEditing
+{
+    [[self.readStyleInputer allModels] enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+        id <RRCanEditProtocol> o = obj;
+        if (o.editType == RRCEEditTypeInsert) {
+            [self.readStyleInputer hideModel:o];
+        }
+    }];
     
+    self.listItemSetting[kShowRecent] = @(self.recentModel.editType == RRCEEditTypeDelete);
+    self.listItemSetting[kShowLater] = @(self.laterModel.editType == RRCEEditTypeDelete);
+    self.listItemSetting[kShowFav] = @(self.favModel.editType == RRCEEditTypeDelete);
+    self.listItemSetting[kShowUnread] = @(self.unreadModel.editType == RRCEEditTypeDelete);
     
+    [[NSUserDefaults standardUserDefaults] setObject:self.listItemSetting forKey:kMainListItemSetting];
+    [[NSUserDefaults standardUserDefaults] synchronize];
+    
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.68 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        if (!self.editing) {
+            [self loadData];
+        }
+    });
 }
 
 - (void)removeAll
@@ -201,18 +262,23 @@ NSString* const kOffsetMainList = @"kOffsetMainList";
     }
     self.firstEnter = NO;
     
-    [self.complexInput mvp_cleanAll];
     
-    RRFeedInfoListOtherModel* mTitle = [[RRFeedInfoListOtherModel alloc] init];
-    mTitle.title = @"阅读规则";
-    mTitle.canEdit = NO;
-    mTitle.type = RRFeedInfoListOtherModelTypeTitle;
-    [self.readStyleInputer mvp_addModel:mTitle];
+    [self.complexInput mvp_cleanAll];
+    [self.readStyleInputer reset];
+//
+//    RRFeedInfoListOtherModel* mTitle = [[RRFeedInfoListOtherModel alloc] init];
+//    mTitle.title = @"阅读规则";
+//    mTitle.canEdit = NO;
+//    mTitle.idx = 0;
+//    mTitle.type = RRFeedInfoListOtherModelTypeTitle;
+//    [self.readStyleInputer mvp_addModel:mTitle];
     
     {
         RRFeedInfoListOtherModel* mUnread = GetRRFeedInfoListOtherModel(@"未读订阅",@"favicon",@"三日内的未读文章",@"unread");
         mUnread.canRefresh = YES;
-        mUnread.canEdit = NO;
+        mUnread.canEdit = YES;
+        mUnread.idx = 0;
+        mUnread.editType = [self.listItemSetting[kShowUnread] boolValue] ? RRCEEditTypeDelete : RRCEEditTypeInsert;
         mUnread.readStyle = ({
             RRReadStyle* s = [[RRReadStyle alloc] init];
             s.onlyUnread = YES;
@@ -225,13 +291,19 @@ NSString* const kOffsetMainList = @"kOffsetMainList";
         
         if (mUnread.count != 0) {
             [self.readStyleInputer mvp_addModel:mUnread];
+            if (![self.listItemSetting[kShowUnread] boolValue]) {
+                [self.readStyleInputer hideModel:mUnread];
+            }
         }
         
         
         {
             RRFeedInfoListOtherModel* mLater = GetRRFeedInfoListOtherModel(@"稍后阅读",@"favicon_4",@"想看还没有看的文章",@"readlater");
             mLater.canRefresh = NO;
-            mLater.canEdit = NO;
+            mLater.canEdit = YES;
+            mLater.idx = 1;
+            mLater.editType = [self.listItemSetting[kShowLater] boolValue] ? RRCEEditTypeDelete : RRCEEditTypeInsert;
+            self.laterModel = mLater;
             mLater.readStyle = ({
                 RRReadStyle* s = [[RRReadStyle alloc] init];
 //                s.onlyReaded = YES;
@@ -245,12 +317,19 @@ NSString* const kOffsetMainList = @"kOffsetMainList";
             
             if ([count3 integerValue] > 0) {
                 [self.readStyleInputer mvp_addModel:mLater];
+                if (![self.listItemSetting[kShowLater] boolValue]) {
+                    [self.readStyleInputer hideModel:mLater];
+                }
             }
         }
         
         RRFeedInfoListOtherModel* mFavourite = GetRRFeedInfoListOtherModel(@"收藏",@"favicon_1",@"收藏的文章",@"favourite");
         mFavourite.canRefresh = NO;
-        mFavourite.canEdit = NO;
+        mFavourite.canEdit = YES;
+        mFavourite.idx = 2;
+        mFavourite.editType = [self.listItemSetting[kShowFav] boolValue] ? RRCEEditTypeDelete : RRCEEditTypeInsert;
+        self.favModel = mFavourite;
+
         mFavourite.readStyle = ({
             RRReadStyle* s = [[RRReadStyle alloc] init];
             s.onlyUnread = NO;
@@ -264,36 +343,46 @@ NSString* const kOffsetMainList = @"kOffsetMainList";
         
         if ([count2 integerValue] > 0) {
             [self.readStyleInputer mvp_addModel:mFavourite];
+            if (![self.listItemSetting[kShowFav] boolValue]) {
+                [self.readStyleInputer hideModel:mFavourite];
+            }
         }
         
         {
             RRFeedInfoListOtherModel* mLast = GetRRFeedInfoListOtherModel(@"最近阅读",@"favicon_3",@"近期阅读的20篇文章",@"last");
             mLast.canRefresh = NO;
-            mLast.canEdit = NO;
+            mLast.canEdit = YES;
+            mLast.idx = 3;
+            mLast.editType = [self.listItemSetting[kShowRecent] boolValue] ? RRCEEditTypeDelete : RRCEEditTypeInsert;;
             mLast.readStyle = ({
                 RRReadStyle* s = [[RRReadStyle alloc] init];
                 s.onlyReaded = YES;
                 s.countlimit = 20;
                 s;
             });
+            self.recentModel = mLast;
             
             NSNumber* count3 = [[RPDataManager sharedManager] getCount:@"EntityFeedArticle" predicate:[mLast.readStyle predicate] key:nil value:nil sort:nil asc:YES];
             mLast.count = [count3 integerValue] > mLast.readStyle.countlimit ? mLast.readStyle.countlimit : [count3 integerValue];
             
             if ([count3 integerValue] > 0) {
                 [self.readStyleInputer mvp_addModel:mLast];
+                if (![self.listItemSetting[kShowRecent] boolValue]) {
+                    [self.readStyleInputer hideModel:mLast];
+                }
             }
         }
     }
     
-    if ([self.readStyleInputer mvp_count] == 1) {
-        [self.readStyleInputer mvp_deleteModel:mTitle];
-    }
+//    if ([self.readStyleInputer mvp_count] == 1) {
+//        [self.readStyleInputer mvp_deleteModel:mTitle];
+//    }
     
     {
         RRFeedInfoListOtherModel* m = [[RRFeedInfoListOtherModel alloc] init];
         m.title = @"订阅源";
         m.canEdit = NO;
+        m.idx = 4;
         m.type = RRFeedInfoListOtherModelTypeTitle;
     
         if (a.count>0) {
@@ -304,6 +393,7 @@ NSString* const kOffsetMainList = @"kOffsetMainList";
             [m loadFromFeed:obj];
             m.feed = obj;
             m.canEdit = YES;
+            m.canMove = YES;
             [self.inputer mvp_addModel:m];
         }];
        
@@ -378,6 +468,10 @@ NSString* const kOffsetMainList = @"kOffsetMainList";
 - (void)refreshData:(UIRefreshControl*)sender
 {
     self.refresher = sender;
+    if (self.editing) {
+        [self.refresher endRefreshing];
+        return;
+    }
     if (self.updating) {
         return;
     }

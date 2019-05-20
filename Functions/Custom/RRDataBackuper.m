@@ -156,6 +156,22 @@
 }
 
 
+- (BOOL)checkFileExistFromiCloud
+{
+    NSFileManager *filemgr = [NSFileManager defaultManager];
+//    NSError* error = nil;
+    NSURL* url = [self iCloudURL];
+    if (![filemgr fileExistsAtPath:[url path]]) {
+        return NO;
+    }
+    NSString* database_path = [[url path] stringByDeletingLastPathComponent];
+    NSArray* b = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:database_path error:nil];
+    if (b.count == 0) {
+        return NO;
+    }
+    return YES;
+}
+
 - (void)downloadFromiCloud:(void (^)(BOOL))finish
 {
     @try {

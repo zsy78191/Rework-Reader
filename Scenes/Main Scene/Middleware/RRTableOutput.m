@@ -12,7 +12,7 @@
 #import "RRFeedInfoListModel.h"
 #import "RRFeedInfoListOtherModel.h"
 #import "RRFeedInputer.h"
-@interface RRTableOutput ()  <UITableViewDelegate>
+@interface RRTableOutput ()  <UITableViewDelegate, UITableViewDataSource>
 {
     
 }
@@ -29,6 +29,17 @@
     return self;
 }
 
+- (BOOL)tableView:(UITableView *)tableView canMoveRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    id model = [self.inputer mvp_modelAtIndexPath:indexPath];
+    if ([model conformsToProtocol:@protocol(RRCanEditProtocol)]) {
+        id<RRCanEditProtocol>m = model;
+        return m.canMove;
+    }
+    return self.canMove;
+}
+
+
 - (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath
 {
     id model = [self.inputer mvp_modelAtIndexPath:indexPath];
@@ -42,6 +53,21 @@
 
 - (UITableViewCellEditingStyle)tableView:(UITableView *)tableView editingStyleForRowAtIndexPath:(NSIndexPath *)indexPath
 {
+    id model = [self.inputer mvp_modelAtIndexPath:indexPath];
+    //    //NSLog(@"%@",model);
+    if ([model conformsToProtocol:@protocol(RRCanEditProtocol)]) {
+        id<RRCanEditProtocol>m = model;
+        if (!tableView.editing) {
+            return UITableViewCellEditingStyleNone;
+        }
+        if (m.editType == RRCEEditTypeInsert) {
+            return UITableViewCellEditingStyleInsert;
+        }
+        else if(m.editType == RRCEEditTypeDelete)
+        {
+            return UITableViewCellEditingStyleDelete;
+        }
+    }
     if (self.canMutiSelect) {
         return UITableViewCellEditingStyleDelete|UITableViewCellEditingStyleInsert;
     }
@@ -111,10 +137,9 @@
 
 - (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath
 {
+    id model = [self.inputer mvp_modelAtIndexPath:indexPath];
     if (editingStyle == UITableViewCellEditingStyleDelete) {
 //        [self.inputer mvp_deleteModelAtIndexPath:indexPath];
-        
-        id model = [self.inputer mvp_modelAtIndexPath:indexPath];
         if ([model isKindOfClass:[RRFeedInfoListModel class]]) {
             
             RRFeedInfoListModel* m = model;
@@ -123,8 +148,38 @@
                  [(id)weakSelf.presenter loadData];
             }];
         }
+        else if([model isKindOfClass:[RRFeedInfoListOtherModel class]]){
+//            NSLog(@"%@",[model class]);
+            RRFeedInfoListOtherModel* m = model;
+            m.editType = RRCEEditTypeInsert;
+            [tableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationNone];
+        }
+    }
+    else if(editingStyle == UITableViewCellEditingStyleInsert)
+    {
+        if([model isKindOfClass:[RRFeedInfoListOtherModel class]]){
+            //            NSLog(@"%@",[model class]);
+            RRFeedInfoListOtherModel* m = model;
+            m.editType = RRCEEditTypeDelete;
+            [tableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationNone];
+        }
     }
 }
+
+//- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
+//{
+//    id model = [self.inputer mvp_modelAtIndexPath:indexPath];
+//    if([model isKindOfClass:[RRFeedInfoListOtherModel class]]){
+//        //            NSLog(@"%@",[model class]);
+//        RRFeedInfoListOtherModel* m = model;
+//        if (m.type == RRCEEditTypeInsert) {
+//            return 0;
+//        }
+//    }
+//    
+//    return UITableViewAutomaticDimension;
+//}
+
 
 - (void)loadData
 {
@@ -155,5 +210,6 @@
         self.startScroll();
     }
 }
+
 
 @end

@@ -34,6 +34,7 @@ RRFeedInfoListOtherModel* (^GetRRFeedInfoListOtherModel)(NSString* title,NSStrin
 @implementation RRFeedInfoListOtherModel
 
 @synthesize canEdit = _canEdit;
-
-
+@synthesize editType = _editType;
+@synthesize canMove = _canMove;
+@synthesize idx = _idx;
 @end

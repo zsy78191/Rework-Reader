@@ -27,6 +27,12 @@
 
 @synthesize canEdit = _canEdit;
 
+@synthesize editType = _editType;
+
+@synthesize canMove = _canMove;
+
+@synthesize idx = _idx;
+
 - (void)removeFromInputer
 {
     [super removeFromInputer];

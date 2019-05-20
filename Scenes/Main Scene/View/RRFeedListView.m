@@ -268,10 +268,16 @@
 {
     [super setEditing:editing animated:animated];
     [self reloadToolBar];
-    
+    self.navigationItem.leftBarButtonItem.enabled = !editing;
     if (!editing) {
          [self.presenter mvp_runAction:@"updateSelections:" value:@[]];
     }
+    
+    if ([self.presenter respondsToSelector:@selector(setEditing:animated:)]) {
+        [(id)self.presenter setEditing:editing animated:animated];
+    }
+    
+    [self.svc.searchBar setUserInteractionEnabled:!editing];
 }
 
 - (void)reloadToolBar
@@ -317,6 +323,8 @@
 //    [self.navigationController.navigationBar setPrefersLargeTitles:NO];
 //    [self reloadEmpty];
 }
+
+
 
 - (void)viewWillDisappear:(BOOL)animated
 {

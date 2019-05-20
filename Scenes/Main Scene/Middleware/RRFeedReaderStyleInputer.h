@@ -11,7 +11,11 @@
 NS_ASSUME_NONNULL_BEGIN
 
 @interface RRFeedReaderStyleInputer : MVPArrayInput
+@property (nonatomic, strong) NSMutableArray* hideItem;
+- (void)hideModel:(id)model;
+- (void)showAll;
 
+- (void)reset;
 @end
 
 NS_ASSUME_NONNULL_END
