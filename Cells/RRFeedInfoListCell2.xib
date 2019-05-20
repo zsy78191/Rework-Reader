@@ -37,7 +37,7 @@
                             <accessibilityTraits key="traits" image="YES" notEnabled="YES"/>
                         </accessibility>
                         <constraints>
-                            <constraint firstAttribute="width" constant="18" id="D84-vU-46D"/>
+                            <constraint firstAttribute="width" priority="999" constant="18" id="D84-vU-46D"/>
                             <constraint firstAttribute="height" constant="18" id="shf-h7-AdP"/>
                         </constraints>
                     </imageView>
@@ -67,7 +67,7 @@
                             <accessibilityTraits key="traits" staticText="YES" notEnabled="YES"/>
                         </accessibility>
                         <constraints>
-                            <constraint firstAttribute="width" constant="48" id="Aqc-9D-1Qm"/>
+                            <constraint firstAttribute="width" priority="999" constant="48" id="Aqc-9D-1Qm"/>
                         </constraints>
                         <fontDescription key="fontDescription" type="system" pointSize="17"/>
                         <nil key="textColor"/>
@@ -100,7 +100,7 @@
                     <constraint firstItem="MDq-50-aNq" firstAttribute="trailing" secondItem="irF-va-kkw" secondAttribute="trailing" id="Fd5-C0-aX9"/>
                     <constraint firstItem="syD-1e-KhI" firstAttribute="centerY" secondItem="wq3-Eh-KDd" secondAttribute="centerY" id="TK2-qX-lEA"/>
                     <constraint firstItem="MDq-50-aNq" firstAttribute="top" secondItem="irF-va-kkw" secondAttribute="bottom" constant="7.5" id="Yxs-xg-R47"/>
-                    <constraint firstItem="irF-va-kkw" firstAttribute="leading" secondItem="SCi-0J-8SS" secondAttribute="trailing" constant="8" id="ZNm-7X-QE0"/>
+                    <constraint firstItem="irF-va-kkw" firstAttribute="leading" secondItem="SCi-0J-8SS" secondAttribute="trailing" priority="998" constant="8" id="ZNm-7X-QE0"/>
                     <constraint firstItem="SCi-0J-8SS" firstAttribute="centerY" secondItem="irF-va-kkw" secondAttribute="centerY" priority="999" id="eZJ-f1-p1O"/>
                     <constraint firstItem="wq3-Eh-KDd" firstAttribute="leading" secondItem="irF-va-kkw" secondAttribute="trailing" constant="7" id="hV3-Vi-Jti"/>
                     <constraint firstAttribute="trailing" secondItem="syD-1e-KhI" secondAttribute="trailing" constant="16" id="i1k-OF-pqb"/>

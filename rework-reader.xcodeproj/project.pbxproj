@@ -18,6 +18,7 @@
 		D418CDE722311CD7004F5706 /* RRWebSettingInputer.m in Sources */ = {isa = PBXBuildFile; fileRef = D418CDE622311CD7004F5706 /* RRWebSettingInputer.m */; };
 		D418CDEB22311D45004F5706 /* RRIconSettingModel.m in Sources */ = {isa = PBXBuildFile; fileRef = D418CDEA22311D45004F5706 /* RRIconSettingModel.m */; };
 		D418CDEE22312025004F5706 /* RRWebStyleModel.m in Sources */ = {isa = PBXBuildFile; fileRef = D418CDED22312025004F5706 /* RRWebStyleModel.m */; };
+		D42E6D9C2292A17D0071848D /* 7@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = D42E6D9B2292A17D0071848D /* 7@2x.png */; };
 		D42F55D1221D1D8800321A21 /* latex.js in Resources */ = {isa = PBXBuildFile; fileRef = D42F55D0221D1D8800321A21 /* latex.js */; };
 		D42F55D6221D49B000321A21 /* RRGetWebIconOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = D42F55D5221D49B000321A21 /* RRGetWebIconOperation.m */; };
 		D42F55D8221E45C100321A21 /* style1.css in Resources */ = {isa = PBXBuildFile; fileRef = D42F55D7221E45C100321A21 /* style1.css */; };
@@ -197,6 +198,7 @@
 		D418CDEA22311D45004F5706 /* RRIconSettingModel.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RRIconSettingModel.m; sourceTree = "<group>"; };
 		D418CDEC22312025004F5706 /* RRWebStyleModel.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RRWebStyleModel.h; sourceTree = "<group>"; };
 		D418CDED22312025004F5706 /* RRWebStyleModel.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RRWebStyleModel.m; sourceTree = "<group>"; };
+		D42E6D9B2292A17D0071848D /* 7@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "7@2x.png"; sourceTree = "<group>"; };
 		D42F55CE221CFB4000321A21 /* RRCoreDataModel.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RRCoreDataModel.h; sourceTree = "<group>"; };
 		D42F55CF221CFBF900321A21 /* rework-reader.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "rework-reader.entitlements"; sourceTree = "<group>"; };
 		D42F55D0221D1D8800321A21 /* latex.js */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.javascript; path = latex.js; sourceTree = "<group>"; };
@@ -1055,6 +1057,7 @@
 		D4E0F9062213C46200902540 /* HTML */ = {
 			isa = PBXGroup;
 			children = (
+				D42E6D9B2292A17D0071848D /* 7@2x.png */,
 				D4EECA8222562FF200491966 /* 6@2x.png */,
 				D4B538B7224FB110002F8333 /* icon3.png */,
 				D4B538B3224FB021002F8333 /* icon2.png */,
@@ -1236,6 +1239,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D42E6D9C2292A17D0071848D /* 7@2x.png in Resources */,
 				D47A7A28221A9E9D00F13194 /* Reader SP说明书.md in Resources */,
 				D4AC4DD72216F9E70028D342 /* 推荐订阅源.md in Resources */,
 				D451E09B22624AF700674526 /* style_1.plist in Resources */,

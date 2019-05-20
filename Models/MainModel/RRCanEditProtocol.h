@@ -10,9 +10,19 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
+typedef enum : NSUInteger {
+    RRCEEditTypeDefault,
+    RRCEEditTypeInsert,
+    RRCEEditTypeDelete,
+ 
+} RRCEEditType;
+
 @protocol RRCanEditProtocol <NSObject>
  
 @property (nonatomic, assign) BOOL canEdit;
+@property (nonatomic, assign) BOOL canMove;
+@property (nonatomic, assign) NSInteger idx;
+@property (nonatomic, assign) RRCEEditType editType;
 
 @end
 

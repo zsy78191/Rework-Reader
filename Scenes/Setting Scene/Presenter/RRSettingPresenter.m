@@ -459,6 +459,11 @@
         [self.view hudInfo:@"iCloud功能没有开启"];
         return;
     }
+    
+    if (!self.backuper.checkFileExistFromiCloud) {
+        [self.view hudInfo:@"您设备的iCloud中没有同步的文件或文件尚未同步"];
+        return;
+    }
     __weak typeof(self) weakSelf = self;
     [self.backuper downloadFromiCloud:^(BOOL x) {
         dispatch_async(dispatch_get_main_queue(), ^{

@@ -22,6 +22,8 @@ NS_ASSUME_NONNULL_BEGIN
 - (NSURL*)localURL;
 - (BOOL)ensureFileDownloaded;
 
+- (BOOL)checkFileExistFromiCloud;
+
 @end
 
 NS_ASSUME_NONNULL_END

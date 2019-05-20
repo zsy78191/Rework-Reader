@@ -31,14 +31,7 @@
 #pragma mark - lifecircle
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
-    
-    NSDictionary* d = @{@"evatype":@"0",@"PageIndex":@"1",@"PageSize":@"6"};
-    NSString* str = [[NSString alloc] initWithData: [NSJSONSerialization dataWithJSONObject:d options:kNilOptions error:nil] encoding:NSUTF8StringEncoding];
-    NSLog(@"%@",str);
-    NSDictionary* param = @{@"id":@"1417505",@"obj":str};
-    NSLog(@"%@",param);
-    NSString* str2 = [[NSString alloc] initWithData: [NSJSONSerialization dataWithJSONObject:param options:kNilOptions error:nil] encoding:NSUTF8StringEncoding];
-    NSLog(@"%@",str2);
+
     // 加载logger
     [self preload];
     
