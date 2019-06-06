@@ -10,6 +10,9 @@
 		03646A5D271E3925704A6DA7 /* Pods_rework_reader.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5AB8B144CE8FF2C6A308FB8C /* Pods_rework_reader.framework */; };
 		5287EC7097E4A9C5B61A6A66 /* Pods_rework_readerTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1EE865CD8F860E1A54E6A61A /* Pods_rework_readerTests.framework */; };
 		D40BA88922436E110068D209 /* RRDataBackuper.m in Sources */ = {isa = PBXBuildFile; fileRef = D40BA88822436E110068D209 /* RRDataBackuper.m */; };
+		D4143D7622A808DF00CCA329 /* URL Scheme.md in Resources */ = {isa = PBXBuildFile; fileRef = D4143D7522A808DF00CCA329 /* URL Scheme.md */; };
+		D4143D7922A83DEA00CCA329 /* UISearchBar+keycommand.m in Sources */ = {isa = PBXBuildFile; fileRef = D4143D7822A83DEA00CCA329 /* UISearchBar+keycommand.m */; };
+		D4143D7C22A8B1DF00CCA329 /* RRFeedListPresenter+FeedHUB.m in Sources */ = {isa = PBXBuildFile; fileRef = D4143D7B22A8B1DF00CCA329 /* RRFeedListPresenter+FeedHUB.m */; };
 		D41788812243428D00BEC6C7 /* RRTableView.m in Sources */ = {isa = PBXBuildFile; fileRef = D41788802243428D00BEC6C7 /* RRTableView.m */; };
 		D418CDDC2231135A004F5706 /* RRSettingApperance.m in Sources */ = {isa = PBXBuildFile; fileRef = D418CDDB2231135A004F5706 /* RRSettingApperance.m */; };
 		D418CDDF22311907004F5706 /* RRWebSettingPresenter.m in Sources */ = {isa = PBXBuildFile; fileRef = D418CDDE22311907004F5706 /* RRWebSettingPresenter.m */; };
@@ -160,6 +163,15 @@
 		D4E0F9052213B38D00902540 /* RRFeedInputer.m in Sources */ = {isa = PBXBuildFile; fileRef = D4E0F9042213B38D00902540 /* RRFeedInputer.m */; };
 		D4E0F9092213C47400902540 /* templete.html in Resources */ = {isa = PBXBuildFile; fileRef = D4E0F9082213C47400902540 /* templete.html */; };
 		D4E0F9102213CA3E00902540 /* RRWebPresenter.m in Sources */ = {isa = PBXBuildFile; fileRef = D4E0F90F2213CA3E00902540 /* RRWebPresenter.m */; };
+		D4E7491C22A517CA0033D53E /* RRFeedManager.m in Sources */ = {isa = PBXBuildFile; fileRef = D4E7491B22A517CA0033D53E /* RRFeedManager.m */; };
+		D4E7491E22A64C940033D53E /* Icons.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = D4E7491D22A64C940033D53E /* Icons.xcassets */; };
+		D4E7492222A64D240033D53E /* IconSelectView.m in Sources */ = {isa = PBXBuildFile; fileRef = D4E7492122A64D240033D53E /* IconSelectView.m */; };
+		D4E7492522A64F800033D53E /* IconSelectPresenter.m in Sources */ = {isa = PBXBuildFile; fileRef = D4E7492422A64F800033D53E /* IconSelectPresenter.m */; };
+		D4E7492822A6502E0033D53E /* IconModel.m in Sources */ = {isa = PBXBuildFile; fileRef = D4E7492722A6502E0033D53E /* IconModel.m */; };
+		D4E7492C22A650670033D53E /* IconCell.m in Sources */ = {isa = PBXBuildFile; fileRef = D4E7492A22A650670033D53E /* IconCell.m */; };
+		D4E7492D22A650670033D53E /* IconCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = D4E7492B22A650670033D53E /* IconCell.xib */; };
+		D4E7493022A652390033D53E /* IconInput.m in Sources */ = {isa = PBXBuildFile; fileRef = D4E7492F22A652390033D53E /* IconInput.m */; };
+		D4E7493422A665DB0033D53E /* UIViewController+PresentAndPush.m in Sources */ = {isa = PBXBuildFile; fileRef = D4E7493322A665DB0033D53E /* UIViewController+PresentAndPush.m */; };
 		D4EECA812255C40A00491966 /* RRFeedInfoListCell2.xib in Resources */ = {isa = PBXBuildFile; fileRef = D4EECA802255C40A00491966 /* RRFeedInfoListCell2.xib */; };
 		D4EECA8322562FF200491966 /* 6@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = D4EECA8222562FF200491966 /* 6@2x.png */; };
 		D4F8553B2265855E006798C8 /* OttoFPSButton.m in Sources */ = {isa = PBXBuildFile; fileRef = D4F8553A2265855D006798C8 /* OttoFPSButton.m */; };
@@ -183,6 +195,11 @@
 		9249FA864BE3F2B5DA9F8915 /* Pods-rework-readerTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-rework-readerTests.release.xcconfig"; path = "Pods/Target Support Files/Pods-rework-readerTests/Pods-rework-readerTests.release.xcconfig"; sourceTree = "<group>"; };
 		D40BA88722436E110068D209 /* RRDataBackuper.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RRDataBackuper.h; sourceTree = "<group>"; };
 		D40BA88822436E110068D209 /* RRDataBackuper.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RRDataBackuper.m; sourceTree = "<group>"; };
+		D4143D7522A808DF00CCA329 /* URL Scheme.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = "URL Scheme.md"; sourceTree = "<group>"; };
+		D4143D7722A83DEA00CCA329 /* UISearchBar+keycommand.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "UISearchBar+keycommand.h"; sourceTree = "<group>"; };
+		D4143D7822A83DEA00CCA329 /* UISearchBar+keycommand.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "UISearchBar+keycommand.m"; sourceTree = "<group>"; };
+		D4143D7A22A8B1DF00CCA329 /* RRFeedListPresenter+FeedHUB.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "RRFeedListPresenter+FeedHUB.h"; sourceTree = "<group>"; };
+		D4143D7B22A8B1DF00CCA329 /* RRFeedListPresenter+FeedHUB.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "RRFeedListPresenter+FeedHUB.m"; sourceTree = "<group>"; };
 		D417887F2243428D00BEC6C7 /* RRTableView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RRTableView.h; sourceTree = "<group>"; };
 		D41788802243428D00BEC6C7 /* RRTableView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RRTableView.m; sourceTree = "<group>"; };
 		D418CDDA2231135A004F5706 /* RRSettingApperance.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RRSettingApperance.h; sourceTree = "<group>"; };
@@ -436,6 +453,22 @@
 		D4E0F9082213C47400902540 /* templete.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = templete.html; sourceTree = "<group>"; };
 		D4E0F90E2213CA3E00902540 /* RRWebPresenter.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RRWebPresenter.h; sourceTree = "<group>"; };
 		D4E0F90F2213CA3E00902540 /* RRWebPresenter.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RRWebPresenter.m; sourceTree = "<group>"; tabWidth = 4; wrapsLines = 1; };
+		D4E7491A22A517CA0033D53E /* RRFeedManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RRFeedManager.h; sourceTree = "<group>"; };
+		D4E7491B22A517CA0033D53E /* RRFeedManager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RRFeedManager.m; sourceTree = "<group>"; };
+		D4E7491D22A64C940033D53E /* Icons.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Icons.xcassets; sourceTree = "<group>"; };
+		D4E7492022A64D240033D53E /* IconSelectView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = IconSelectView.h; sourceTree = "<group>"; };
+		D4E7492122A64D240033D53E /* IconSelectView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = IconSelectView.m; sourceTree = "<group>"; };
+		D4E7492322A64F800033D53E /* IconSelectPresenter.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = IconSelectPresenter.h; sourceTree = "<group>"; };
+		D4E7492422A64F800033D53E /* IconSelectPresenter.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = IconSelectPresenter.m; sourceTree = "<group>"; };
+		D4E7492622A6502E0033D53E /* IconModel.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = IconModel.h; sourceTree = "<group>"; };
+		D4E7492722A6502E0033D53E /* IconModel.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = IconModel.m; sourceTree = "<group>"; };
+		D4E7492922A650670033D53E /* IconCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = IconCell.h; sourceTree = "<group>"; };
+		D4E7492A22A650670033D53E /* IconCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = IconCell.m; sourceTree = "<group>"; };
+		D4E7492B22A650670033D53E /* IconCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = IconCell.xib; sourceTree = "<group>"; };
+		D4E7492E22A652390033D53E /* IconInput.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = IconInput.h; sourceTree = "<group>"; };
+		D4E7492F22A652390033D53E /* IconInput.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = IconInput.m; sourceTree = "<group>"; };
+		D4E7493222A665DB0033D53E /* UIViewController+PresentAndPush.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "UIViewController+PresentAndPush.h"; sourceTree = "<group>"; };
+		D4E7493322A665DB0033D53E /* UIViewController+PresentAndPush.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "UIViewController+PresentAndPush.m"; sourceTree = "<group>"; };
 		D4EECA802255C40A00491966 /* RRFeedInfoListCell2.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = RRFeedInfoListCell2.xib; sourceTree = "<group>"; };
 		D4EECA8222562FF200491966 /* 6@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "6@2x.png"; sourceTree = "<group>"; };
 		D4F855392265855D006798C8 /* OttoFPSButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OttoFPSButton.h; sourceTree = "<group>"; };
@@ -670,6 +703,8 @@
 		D47717CA21ED90CF0050DF14 = {
 			isa = PBXGroup;
 			children = (
+				D4E7493122A664970033D53E /* Ext */,
+				D4E0F9072213C46C00902540 /* Help */,
 				D4AC4DD22216BB9B0028D342 /* Scenes */,
 				D47A396B2239F3F8006251A6 /* Cells */,
 				D47A39652236CC23006251A6 /* Models */,
@@ -696,6 +731,7 @@
 		D47717D521ED90CF0050DF14 /* rework-reader */ = {
 			isa = PBXGroup;
 			children = (
+				D4E7491D22A64C940033D53E /* Icons.xcassets */,
 				D473F29E22278B4900DF3C6D /* MWPhotoBrowser.bundle */,
 				D42F55CF221CFBF900321A21 /* rework-reader.entitlements */,
 				D49941B421FC9C280041B998 /* PrefixHeader.pch */,
@@ -733,6 +769,7 @@
 		D47A39642236C972006251A6 /* Functions */ = {
 			isa = PBXGroup;
 			children = (
+				D4E7491922A517BE0033D53E /* Feed */,
 				D4F855382265855D006798C8 /* OttoFPSButton */,
 				D40BA88622436D460068D209 /* Custom */,
 				D47A396C2239FB90006251A6 /* Document */,
@@ -983,6 +1020,8 @@
 			children = (
 				D49941D321FEA7BB0041B998 /* RRFeedListPresenter.h */,
 				D49941D421FEA7BB0041B998 /* RRFeedListPresenter.m */,
+				D4143D7A22A8B1DF00CCA329 /* RRFeedListPresenter+FeedHUB.h */,
+				D4143D7B22A8B1DF00CCA329 /* RRFeedListPresenter+FeedHUB.m */,
 			);
 			path = Presenter;
 			sourceTree = "<group>";
@@ -1003,6 +1042,7 @@
 		D4AC4DD22216BB9B0028D342 /* Scenes */ = {
 			isa = PBXGroup;
 			children = (
+				D4E7491F22A64CE60033D53E /* IconSelect Scene */,
 				D47A3972223A2109006251A6 /* Import Scene */,
 				D42F55EE221E7E0600321A21 /* List Scene */,
 				D49941CB21FEA7300041B998 /* Main Scene */,
@@ -1075,7 +1115,6 @@
 				D42F55D0221D1D8800321A21 /* latex.js */,
 				D4AC4DF7221821150028D342 /* h.js */,
 				D42F55D7221E45C100321A21 /* style1.css */,
-				D4E0F9072213C46C00902540 /* Help */,
 			);
 			path = HTML;
 			sourceTree = "<group>";
@@ -1089,6 +1128,7 @@
 				D4B903882246885900341584 /* 开源代码.md */,
 				D473F2A5222817F000DF3C6D /* Reader 版本.md */,
 				D47A3958223421A6006251A6 /* 网友推荐源.md */,
+				D4143D7522A808DF00CCA329 /* URL Scheme.md */,
 			);
 			path = Help;
 			sourceTree = "<group>";
@@ -1105,6 +1145,44 @@
 				D42F55D2221D3C7800321A21 /* RRProvideDataProtocol.h */,
 			);
 			path = "Web Scene";
+			sourceTree = "<group>";
+		};
+		D4E7491922A517BE0033D53E /* Feed */ = {
+			isa = PBXGroup;
+			children = (
+				D4E7491A22A517CA0033D53E /* RRFeedManager.h */,
+				D4E7491B22A517CA0033D53E /* RRFeedManager.m */,
+			);
+			path = Feed;
+			sourceTree = "<group>";
+		};
+		D4E7491F22A64CE60033D53E /* IconSelect Scene */ = {
+			isa = PBXGroup;
+			children = (
+				D4E7492022A64D240033D53E /* IconSelectView.h */,
+				D4E7492122A64D240033D53E /* IconSelectView.m */,
+				D4E7492322A64F800033D53E /* IconSelectPresenter.h */,
+				D4E7492422A64F800033D53E /* IconSelectPresenter.m */,
+				D4E7492622A6502E0033D53E /* IconModel.h */,
+				D4E7492722A6502E0033D53E /* IconModel.m */,
+				D4E7492922A650670033D53E /* IconCell.h */,
+				D4E7492A22A650670033D53E /* IconCell.m */,
+				D4E7492B22A650670033D53E /* IconCell.xib */,
+				D4E7492E22A652390033D53E /* IconInput.h */,
+				D4E7492F22A652390033D53E /* IconInput.m */,
+			);
+			path = "IconSelect Scene";
+			sourceTree = "<group>";
+		};
+		D4E7493122A664970033D53E /* Ext */ = {
+			isa = PBXGroup;
+			children = (
+				D4E7493222A665DB0033D53E /* UIViewController+PresentAndPush.h */,
+				D4E7493322A665DB0033D53E /* UIViewController+PresentAndPush.m */,
+				D4143D7722A83DEA00CCA329 /* UISearchBar+keycommand.h */,
+				D4143D7822A83DEA00CCA329 /* UISearchBar+keycommand.m */,
+			);
+			path = Ext;
 			sourceTree = "<group>";
 		};
 		D4F855382265855D006798C8 /* OttoFPSButton */ = {
@@ -1245,6 +1323,7 @@
 				D451E09B22624AF700674526 /* style_1.plist in Resources */,
 				D47A39672236D69A006251A6 /* RRFeedArticleCell2.xib in Resources */,
 				D4B9037722456D0F00341584 /* 4@2x.png in Resources */,
+				D4E7492D22A650670033D53E /* IconCell.xib in Resources */,
 				D473F2C6222DE48B00DF3C6D /* action.js in Resources */,
 				D440CFF0221555E0003B7203 /* RRFeedArticleCell.xib in Resources */,
 				D451E0A0226258AF00674526 /* style_2.plist in Resources */,
@@ -1252,6 +1331,7 @@
 				D4B538B4224FB021002F8333 /* icon2.png in Resources */,
 				D451E0A222625E8100674526 /* style_dark_1.plist in Resources */,
 				D473F29F22278B4900DF3C6D /* MWPhotoBrowser.bundle in Resources */,
+				D4143D7622A808DF00CCA329 /* URL Scheme.md in Resources */,
 				D4B53890224F929E002F8333 /* icon1.png in Resources */,
 				D4A72D13223F894D00AD6C75 /* style_dark.plist in Resources */,
 				D43F3717224372580035B28A /* iCloud.json in Resources */,
@@ -1293,6 +1373,7 @@
 				D440CFF82216529F003B7203 /* RRTitleCell.xib in Resources */,
 				D47C8EE42282BF390062B60D /* RRFeedArticleCell3.xib in Resources */,
 				D4B538B8224FB111002F8333 /* icon3.png in Resources */,
+				D4E7491E22A64C940033D53E /* Icons.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1469,6 +1550,7 @@
 				D4A72D1C2240D5A900AD6C75 /* RRPopoverSettingView.m in Sources */,
 				D49941AA21FC9B0E0041B998 /* RPGetAllModelKeyAndValueOperation.m in Sources */,
 				D49941B721FC9D4C0041B998 /* ClassyKitLoader.m in Sources */,
+				D4E7493022A652390033D53E /* IconInput.m in Sources */,
 				D42F55ED221E752B00321A21 /* RRFeedReaderStyleInputer.m in Sources */,
 				D418CDE722311CD7004F5706 /* RRWebSettingInputer.m in Sources */,
 				D4B903872245EAC400341584 /* AppleAPIHelper.m in Sources */,
@@ -1490,6 +1572,7 @@
 				D49941C221FE1AC00041B998 /* RRExtraViewController.m in Sources */,
 				D4AC4DEB2217CF290028D342 /* RRBtnCell.m in Sources */,
 				D418CDEB22311D45004F5706 /* RRIconSettingModel.m in Sources */,
+				D4E7491C22A517CA0033D53E /* RRFeedManager.m in Sources */,
 				D4CD6624225DF1CD005EA2B9 /* ActionTest.m in Sources */,
 				D4E0F8EB2211486100902540 /* RPSettingInputer.m in Sources */,
 				D473F28E2223E77D00DF3C6D /* RRFeedAction.m in Sources */,
@@ -1507,7 +1590,10 @@
 				D47A396322363ABE006251A6 /* Model.xcdatamodeld in Sources */,
 				D479D1EC225F11E90057DAC5 /* RRFeedFinder.m in Sources */,
 				D418CDE322311B2E004F5706 /* RRIconSettingCell.m in Sources */,
+				D4143D7C22A8B1DF00CCA329 /* RRFeedListPresenter+FeedHUB.m in Sources */,
+				D4E7492522A64F800033D53E /* IconSelectPresenter.m in Sources */,
 				D49941D521FEA7BB0041B998 /* RRFeedListPresenter.m in Sources */,
+				D4E7492822A6502E0033D53E /* IconModel.m in Sources */,
 				D4A72D192240D55A00AD6C75 /* RRMainPageAddPresenter.m in Sources */,
 				D47A3978223A2134006251A6 /* RRImportPresenter.m in Sources */,
 				D42F55F1221E7E2200321A21 /* RRListView.m in Sources */,
@@ -1520,7 +1606,11 @@
 				D440CFE322154DB0003B7203 /* RRFeedInfoCell.m in Sources */,
 				D44EDCE2223A296800BC24CA /* RRImportOutput.m in Sources */,
 				D4B903802245E93C00341584 /* ApplePurchaseDelegate.m in Sources */,
+				D4E7492C22A650670033D53E /* IconCell.m in Sources */,
 				D4AC4DD52216BBD60028D342 /* RRAddFeedView.m in Sources */,
+				D4E7492222A64D240033D53E /* IconSelectView.m in Sources */,
+				D4143D7922A83DEA00CCA329 /* UISearchBar+keycommand.m in Sources */,
+				D4E7493422A665DB0033D53E /* UIViewController+PresentAndPush.m in Sources */,
 				D49941B121FC9B0E0041B998 /* RPCoreDataInsertOperation.m in Sources */,
 				D418CDEE22312025004F5706 /* RRWebStyleModel.m in Sources */,
 				D440CFD922153CB4003B7203 /* RRFeedConfigView.m in Sources */,

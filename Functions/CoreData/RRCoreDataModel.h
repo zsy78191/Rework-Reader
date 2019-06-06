@@ -12,5 +12,6 @@
 #import "EntityFeedInfo+CoreDataProperties.h"
 #import "EntityFeedArticle+CoreDataProperties.h"
 #import "EntityFeedStyle+CoreDataProperties.h"
+#import "EntityHub+CoreDataProperties.h"
 
 #endif /* RRCoreDataModel_h */

@@ -35,7 +35,12 @@
         RRFeedInfoListModel* m = model;
         self.titleLabel.text = [m.title stringByDecodingHTMLEntities];
         if (m.icon) {
-            [self.iconView sd_setImageWithURL:[NSURL URLWithString:m.icon] placeholderImage:[UIImage imageNamed:@"favicon"]];
+            if ([m.icon hasPrefix:@"http"]) {
+                [self.iconView sd_setImageWithURL:[NSURL URLWithString:m.icon] placeholderImage:[UIImage imageNamed:@"favicon"]];
+            }
+            else {
+                [self.iconView setImage:[UIImage imageNamed:m.icon]];
+            }
         }
         else {
             [self.iconView setImage:[UIImage imageNamed:@"favicon"]];

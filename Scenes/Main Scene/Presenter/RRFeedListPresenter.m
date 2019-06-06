@@ -20,11 +20,12 @@
 #import "RPDataManager.h"
 #import "RRFeedArticleModel.h"
 #import "PWToastView.h"
-#import "RRReadMode.h"
+
 @import DateTools;
 #import "RRExtraViewController.h"
 @import ui_base;
 @import oc_util;
+#import "RRFeedListPresenter+FeedHUB.h"
 
 NSString* const kOffsetMainList = @"kOffsetMainList";
 NSString* const kMainListItemSetting = @"kOffsetMainList";
@@ -37,26 +38,7 @@ NSString* const kShowRecent = @"kShowRecent";
 {
     
 }
-@property (nonatomic, strong) MVPComplexInput* complexInput;
-@property (nonatomic, strong) RRFeedInputer* inputer;
-@property (nonatomic, strong) RRFeedReaderStyleInputer* readStyleInputer;
-@property (nonatomic, assign) BOOL needUpdate;
-@property (nonatomic, assign) BOOL needUpdateFeed;
-@property (nonatomic, assign) RRReadMode mode;
-@property (nonatomic, assign) BOOL updating;
-@property (nonatomic, weak) UIRefreshControl* refresher;
-@property (nonatomic, assign) BOOL hasDatas;
-@property (nonatomic, assign) double offsetY;
-@property (nonatomic, assign) BOOL firstEnter;
-@property (nonatomic, strong) NSArray* selectArray;
-@property (nonatomic, assign) BOOL selectMoreThanOne;
-@property (nonatomic, assign) BOOL editing;
-@property (nonatomic, weak) RRFeedInfoListOtherModel* unreadModel;
-@property (nonatomic, weak) RRFeedInfoListOtherModel* laterModel;
-@property (nonatomic, weak) RRFeedInfoListOtherModel* favModel;
-@property (nonatomic, weak) RRFeedInfoListOtherModel* recentModel;
 
-@property (nonatomic, strong) NSMutableDictionary* listItemSetting;
 @end
 
 @implementation RRFeedListPresenter
@@ -434,19 +416,8 @@ NSString* const kShowRecent = @"kShowRecent";
 
 - (void)openSearch:(NSString*)searchText
 {
-    RRFeedInfoListOtherModel* mUnread = GetRRFeedInfoListOtherModel([NSString stringWithFormat:@"搜索「%@」",searchText],@"favicon",@"三日内的未读文章",@"serach");
-    mUnread.canRefresh = NO;
-    mUnread.canEdit = NO;
-    mUnread.readStyle = ({
-        RRReadStyle* s = [[RRReadStyle alloc] init];
-        s.onlyUnread = NO;
-        s.daylimit = -1;
-        s.liked = NO;
-        s.keyword = searchText;
-        s;
-    });
-    
-    id vc = [MVPRouter viewForURL:@"rr://list" withUserInfo:@{@"model":mUnread}];
+    RRFeedInfoListOtherModel* mSearch = [RRFeedInfoListOtherModel searchModel:searchText];
+    id vc = [MVPRouter viewForURL:@"rr://list" withUserInfo:@{@"model":mSearch}];
     [self.view mvp_pushViewController:vc];
 }
 

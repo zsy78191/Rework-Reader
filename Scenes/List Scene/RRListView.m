@@ -54,6 +54,7 @@
     else if([m isKindOfClass:[RRFeedInfoListOtherModel class]])
     {
         RRFeedInfoListOtherModel* mm = m;
+//        NSLog(@"%@",mm.key);
         if (mm.readStyle.onlyUnread) {
             UIBarButtonItem* item = [self mvp_buttonItemWithActionName:@"maskAllReaded:" title:@"全部已读"];
             self.navigationItem.rightBarButtonItems = @[item];
@@ -69,8 +70,21 @@
 //            [o mvp_bindTableRefreshActionName:@"refreshData:"];
         }
         self.showToolBar = NO;
+        
+        
+        if ([mm.key isEqualToString:@"search"]) {
+            //搜索模式下增加右上角的功能按钮
+            [self configSearch];
+        }
     }
 }
+
+- (void)configSearch
+{
+    UIBarButtonItem* item = [self mvp_buttonItemWithActionName:@"forSearch:" title:@"快捷方式"];
+    self.navigationItem.rightBarButtonItems = @[item];
+}
+
 
 - (void)motionBegan:(UIEventSubtype)motion withEvent:(UIEvent *)event
 {
@@ -319,5 +333,24 @@
     return vc;
 }
 
+- (void)back:(id)sender
+{
+    [self mvp_popViewController:nil];
+}
+
+
+- (BOOL)canBecomeFirstResponder
+{
+    return YES;
+}
+
+- (NSArray<UIKeyCommand *> *)keyCommands
+{
+    return @[
+ 
+             [UIKeyCommand keyCommandWithInput:@"w" modifierFlags:UIKeyModifierCommand action:@selector(back:) discoverabilityTitle:@"返回上一层"],
+             [UIKeyCommand keyCommandWithInput:UIKeyInputEscape modifierFlags:0 action:@selector(back:) discoverabilityTitle:@"返回上一层"]
+             ];
+}
 
 @end

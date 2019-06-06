@@ -178,6 +178,7 @@
     [MVPRouter registView:NSClassFromString(@"RRListView") forURL:@"rr://list"];
     [MVPRouter registView:NSClassFromString(@"RRPopoverSettingView") forURL:@"rr://websetting"];
     [MVPRouter registView:NSClassFromString(@"RRImportView") forURL:@"rr://import"];
+    [MVPRouter registView:NSClassFromString(@"IconSelectView") forURL:@"rr://selecticon"];
 }
 
 

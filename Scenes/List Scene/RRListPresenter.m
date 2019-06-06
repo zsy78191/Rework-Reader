@@ -28,6 +28,10 @@
 #import "RRSafariViewController.h"
 @import MagicalRecord;
 #import "RRExtraViewController.h"
+@import ReactiveObjC;
+#import "UIViewController+PresentAndPush.h"
+
+static NSString * const kShortcutItemsKey = @"kShortcutItemsKey";
 
 @interface RRListPresenter ()
 {
@@ -53,6 +57,7 @@
 @property (nonatomic, assign) double t1OffesetY;
 @property (nonatomic, assign) double t2OffesetY;
 @property (nonatomic, assign) double t3OffesetY;
+
 
 @end
 
@@ -208,7 +213,95 @@
         self.modelTitle = self.title = mm.title;
         self.styleModel = mm;
         self.inputerCoreData.model = mm;
+        
     }
+}
+
+- (void)forSearch:(id)sender
+{
+    __weak typeof(self) weakself = self;
+    UIAlertController* a = UI_ActionSheet()
+    .titled(@"快捷方式")
+    .recommend(@"拷贝URLScheme", ^(UIAlertAction * _Nonnull action, UIAlertController * _Nonnull alert) {
+//        NSLog(@"%@",self.styleModel.readStyle.keyword);
+        NSString* scheme = [NSString stringWithFormat:@"readerprime://search?keyword=%@",weakself.styleModel.readStyle.keyword._urlEncodeString];
+        [[UIPasteboard generalPasteboard] setString:scheme];
+        [weakself.view hudSuccess:@"已复制到剪切板"];
+    });
+    if (![UIDevice currentDevice].iPad()) {
+        a.action(@"增加到3D Touch快捷菜单", ^(UIAlertAction * _Nonnull action, UIAlertController * _Nonnull alert) {
+            NSString* scheme = [NSString stringWithFormat:@"readerprime://search?keyword=%@",weakself.styleModel.readStyle.keyword._urlEncodeString];
+            [self insertShortcutItems:scheme name:weakself.styleModel.readStyle.keyword];
+        })
+        .action(@"重置3D Touch菜单", ^(UIAlertAction * _Nonnull action, UIAlertController * _Nonnull alert) {
+            [self resetShortcutItems];
+        });
+    }
+    a.cancel(@"取消", nil);
+    
+    if ([UIDevice currentDevice].iPad()) {
+        [[self view] showAsProver:a view:[(UIViewController*)[self view] view] item:sender arrow:UIPopoverArrowDirectionDown];
+    }
+    else {
+        a.show((id)self.view);
+    }
+}
+
+- (void)insertShortcutItems:(NSString*)scheme name:(NSString*)keyword
+{
+    NSUserDefaults * ud = [NSUserDefaults standardUserDefaults];
+    NSArray* allShort = [ud arrayForKey:kShortcutItemsKey];
+    if (!allShort) {
+        allShort = @[];
+    }
+    NSMutableArray* shorts = [allShort mutableCopy];
+    __block BOOL has = false;
+    [shorts enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+        if ([obj[@"keyword"] isEqualToString:keyword]) {
+            has = YES;
+            *stop = YES;
+        }
+    }];
+    
+    if (has) {
+        [self.view hudInfo:[NSString stringWithFormat:@"已经添加过「%@」关键词了",keyword]];
+        return;
+    }
+    [shorts addObject:@{
+                        @"scheme":scheme,
+                        @"keyword":keyword
+                        }];
+    [ud setObject:shorts forKey:kShortcutItemsKey];
+    [ud synchronize];
+    [self.view hudSuccess:@"添加成功"];
+    [self reloadShortcutItems];
+}
+
+- (void)resetShortcutItems
+{
+    NSUserDefaults * ud = [NSUserDefaults standardUserDefaults];
+    [ud setObject:@[] forKey:kShortcutItemsKey];
+    [ud synchronize];
+    [self reloadShortcutItems];
+    [[self view] hudSuccess:@"重置成功"];
+}
+
+- (void)reloadShortcutItems
+{
+    [UIApplication sharedApplication].shortcutItems = [self generateShortCutForAppIcon];
+}
+
+- (NSArray*)generateShortCutForAppIcon
+{
+    NSUserDefaults * ud = [NSUserDefaults standardUserDefaults];
+    NSArray* allShort = [ud arrayForKey:kShortcutItemsKey];
+    if (!allShort) {
+        allShort = @[];
+    }
+//    return allShort.ma;
+    return allShort.map(^id _Nonnull(NSDictionary*  _Nonnull x) {
+        return [[UIApplicationShortcutItem alloc] initWithType:@"search" localizedTitle:[NSString stringWithFormat:@"搜索「%@」",x[@"keyword"]] localizedSubtitle:nil icon:[UIApplicationShortcutIcon iconWithTemplateImageName:@"search"] userInfo:x];
+    });
 }
 
 - (void)deleteIt:(id)sender
@@ -636,6 +729,9 @@
         })
         .show((id)self.view);
     })
+    .action(@"修改图标", ^(UIAlertAction * _Nonnull action, UIAlertController * _Nonnull alert) {
+        [self changeIcon];
+    })
     .action(@"复制订阅源URL", ^(UIAlertAction * _Nonnull action, UIAlertController * _Nonnull alert) {
         [[UIPasteboard generalPasteboard] setURL:feed.url];
         [self.view hudSuccess:@"复制成功"];
@@ -760,5 +856,24 @@
     }];
 }
 
+- (void)changeIcon
+{
+    __weak typeof(self) weakself = self;
+     UIViewController* v = (UIViewController* )self.view;
+    id changeCallback = ^ (NSString* name ){
+//        NSLog(@"%@",name);
+        [weakself changeFeedValue:name forKey:@"icon" void:^(NSError *e) {
+            if (!e) {
+                [[weakself view] mvp_reloadData];
+                [v dismissOrPopViewController];
+            }
+        }];
+    };
+    UIViewController* view = [MVPRouter viewForURL:@"rr://selecticon" withUserInfo:@{
+        @"callback" : changeCallback
+    }];
+   
+    [v presentOrPushViewController:view];
+}
 
 @end

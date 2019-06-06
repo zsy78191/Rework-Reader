@@ -9,12 +9,33 @@
 
 
 @import mvc_base;
+#import "RRReadMode.h"
 
 NS_ASSUME_NONNULL_BEGIN
-
+@class RRFeedInfoListOtherModel,RRFeedInputer,RRFeedReaderStyleInputer;
 @interface RRFeedListPresenter : MVPPresenter
 
 @property (nonatomic, strong) NSString* title;
+@property (nonatomic, strong) MVPComplexInput* complexInput;
+@property (nonatomic, strong) RRFeedInputer* inputer;
+@property (nonatomic, strong) RRFeedReaderStyleInputer* readStyleInputer;
+@property (nonatomic, assign) BOOL needUpdate;
+@property (nonatomic, assign) BOOL needUpdateFeed;
+@property (nonatomic, assign) RRReadMode mode;
+@property (nonatomic, assign) BOOL updating;
+@property (nonatomic, weak) UIRefreshControl* refresher;
+@property (nonatomic, assign) BOOL hasDatas;
+@property (nonatomic, assign) double offsetY;
+@property (nonatomic, assign) BOOL firstEnter;
+@property (nonatomic, strong) NSArray* selectArray;
+@property (nonatomic, assign) BOOL selectMoreThanOne;
+@property (nonatomic, assign) BOOL editing;
+@property (nonatomic, weak) RRFeedInfoListOtherModel* unreadModel;
+@property (nonatomic, weak) RRFeedInfoListOtherModel* laterModel;
+@property (nonatomic, weak) RRFeedInfoListOtherModel* favModel;
+@property (nonatomic, weak) RRFeedInfoListOtherModel* recentModel;
+
+@property (nonatomic, strong) NSMutableDictionary* listItemSetting;
 
 @end
 

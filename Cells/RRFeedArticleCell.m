@@ -59,7 +59,12 @@
             self.feedLabel.text = m.feed.title;
             
             if (m.feed.icon) {
-                [self.iconView sd_setImageWithURL:[NSURL URLWithString:m.feed.icon] placeholderImage:[UIImage imageNamed:@"favicon"]];
+                if ([m.feed.icon hasPrefix:@"http"]) {
+                    [self.iconView sd_setImageWithURL:[NSURL URLWithString:m.feed.icon] placeholderImage:[UIImage imageNamed:@"favicon"]];
+                }
+                else {
+                    [self.iconView setImage:[UIImage imageNamed:m.feed.icon]];
+                }
             }
             else {
                 [self.iconView setImage:[UIImage imageNamed:@"favicon"]];
@@ -70,7 +75,12 @@
             self.feedLabel.text = m.feedEntity.title;
             
             if (m.feedEntity.icon) {
-                [self.iconView sd_setImageWithURL:[NSURL URLWithString:m.feedEntity.icon] placeholderImage:[UIImage imageNamed:@"favicon"]];
+                if ([m.feedEntity.icon hasPrefix:@"http"]) {
+                    [self.iconView sd_setImageWithURL:[NSURL URLWithString:m.feedEntity.icon] placeholderImage:[UIImage imageNamed:@"favicon"]];
+                }
+                else {
+                   [self.iconView setImage:[UIImage imageNamed:m.feedEntity.icon]];
+                }
             }
             else {
                 [self.iconView setImage:[UIImage imageNamed:@"favicon"]];
@@ -101,7 +111,12 @@
             self.feedLabel.text = [m.feed.title stringByDecodingHTMLEntities];
             
             if (m.feed.icon) {
-                [self.iconView sd_setImageWithURL:[NSURL URLWithString:m.feed.icon] placeholderImage:[UIImage imageNamed:@"favicon"]];
+                if ([m.feed.icon hasPrefix:@"http"]) {
+                    [self.iconView sd_setImageWithURL:[NSURL URLWithString:m.feed.icon] placeholderImage:[UIImage imageNamed:@"favicon"]];
+                }
+                else {
+                     [self.iconView setImage:[UIImage imageNamed:m.feed.icon]];
+                }
             }
             else {
                 [self.iconView setImage:[UIImage imageNamed:@"favicon"]];

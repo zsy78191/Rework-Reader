@@ -32,6 +32,8 @@ extern RRFeedInfoListOtherModel* (^GetRRFeedInfoListOtherModel)(NSString* title,
 
 @property (nonatomic, strong, nullable) RRReadStyle* readStyle;
 
++ (RRFeedInfoListOtherModel *)searchModel:(NSString*)searchText;
+
 @end
 
 NS_ASSUME_NONNULL_END

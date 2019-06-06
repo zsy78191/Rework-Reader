@@ -13,6 +13,7 @@ NS_ASSUME_NONNULL_BEGIN
 @interface RRWKWebview : WKWebView
 - (UIImage *)imageRepresentation;
 - (NSData *)PDFData;
+- (void)emailString:(void (^)(NSString* ))htmlString;
 @end
 
 NS_ASSUME_NONNULL_END

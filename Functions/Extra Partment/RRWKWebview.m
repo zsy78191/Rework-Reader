@@ -96,7 +96,6 @@
 
 - (NSData *)PDFData
 {
-    
     UIViewPrintFormatter *fmt = [self viewPrintFormatter];
     UIPrintPageRenderer *render = [[UIPrintPageRenderer alloc] init];
     [render addPrintFormatter:fmt startingAtPageAtIndex:0];
@@ -123,6 +122,15 @@
     }
     UIGraphicsEndPDFContext();
     return pdfData;
+}
+
+- (void)emailString:(void (^)(NSString* ))htmlString
+{
+    [self evaluateJavaScript:@"document.getElementsByTagName('html')[0].innerHTML" completionHandler:^(id _Nullable data, NSError * _Nullable error) {
+        if (htmlString) {
+            htmlString(data);
+        }
+    }];
 }
 
 @end

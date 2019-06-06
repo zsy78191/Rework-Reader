@@ -11,7 +11,7 @@
 NS_ASSUME_NONNULL_BEGIN
 
 @interface RRFeedListView : MVPListView
-
+@property (nonatomic, strong) UIDropInteraction* dropIntercation;
 @end
 
 NS_ASSUME_NONNULL_END
