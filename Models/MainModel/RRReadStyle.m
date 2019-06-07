@@ -19,6 +19,18 @@
     }
 }
 
+- (void)setFeeds:(NSSet<EntityFeedInfo *> *)feeds
+{
+    _feeds = feeds;
+    __block BOOL useAchieve = YES;
+    [feeds enumerateObjectsUsingBlock:^(EntityFeedInfo * _Nonnull obj, BOOL * _Nonnull stop) {
+        useAchieve = useAchieve && obj.useachieve;
+    }];
+    if (useAchieve) {
+        self.onlyUnread = YES;
+    }
+}
+
 - (instancetype)initWithEntity:(EntityFeedStyle*)style;
 {
     self = [super init];
@@ -97,10 +109,10 @@
         if (self.feeds && self.feeds.count > 0) {
             [m appendString:@"("];
             [self.feeds enumerateObjectsUsingBlock:^(EntityFeedInfo*  _Nonnull obj, BOOL * _Nonnull stop) {
-                if (m.length != 0) {
+                if (m.length > 1) {
                     [m appendString:@" || "];
                 }
-                [m appendFormat:@"feed.uuid = %@",obj.uuid];
+                [m appendFormat:@"feed.uuid = '%@'",obj.uuid];
             }];
             [m appendString:@")"];
         }

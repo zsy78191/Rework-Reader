@@ -286,6 +286,18 @@
 
 }
 
+- (void)pageUp
+{
+    CGFloat y = self.webView.scrollView.contentOffset.y - 100> 0? self.webView.scrollView.contentOffset.y - 100 : 0;
+    [[self.webView scrollView] setContentOffset:CGPointMake(self.webView.scrollView.contentOffset.x, y) animated:YES];
+}
+- (void)pageDown
+{
+//    NSLog(@"%@",@(self.webView.scrollView.contentSize.height));
+     CGFloat y = self.webView.scrollView.contentOffset.y + 100 < self.webView.scrollView.contentSize.height - self.webView.scrollView.frame.size.height? self.webView.scrollView.contentOffset.y + 100 : self.webView.scrollView.contentSize.height - self.webView.scrollView.frame.size.height;
+    [[self.webView scrollView] setContentOffset:CGPointMake(self.webView.scrollView.contentOffset.x, y) animated:YES];
+}
+
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView
 {
@@ -383,6 +395,15 @@
 
 - (void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate
 {
+ 
+    if (self.splitViewController) {
+        UIViewController* vc = [[self.splitViewController viewControllers] firstObject];
+        while ([vc isKindOfClass:[UINavigationController class]]) {
+            vc = [(UINavigationController*)vc topViewController];
+        }
+        [vc becomeFirstResponder];
+    }
+    
     self.startDraging = NO;
     
     if (scrollView.contentOffset.y < - 130) {
@@ -1025,6 +1046,17 @@
     return result;
 }
 
+- (void)switchReadlater
+{
+    if (self.articleReadLatered) {
+        [self.presenter mvp_runAction:@"cancelReadLater"];
+    }
+    else {
+        [self.presenter mvp_runAction:@"readLater"];
+    }
+    [self reloadItems];
+}
+
 - (NSArray*)likedItem
 {
     __weak typeof(self) weakSelf = self;
@@ -1044,6 +1076,17 @@
         [result addObject:favItem];
     }
     return result;
+}
+
+- (void)switchFavorite
+{
+    if (self.articleLiked) {
+        [self.presenter mvp_runAction:@"unfavIt"];
+    }
+    else {
+        [self.presenter mvp_runAction:@"favIt"];
+    }
+    [self reloadItems];
 }
 
 
@@ -1632,5 +1675,6 @@
         [RRFeedAction readArticle:self.currentArticle.uuid];
     }
 }
+
 
 @end

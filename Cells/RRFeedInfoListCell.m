@@ -11,6 +11,7 @@
 #import "RRFeedInfoListOtherModel.h"
 #import "RRCoreDataModel.h"
 #import "RRImageRender.h"
+@import oc_string;
 @import Fork_MWFeedParser;
 
 @import SDWebImage;
@@ -45,13 +46,37 @@
         else {
             [self.iconView setImage:[UIImage imageNamed:@"favicon"]];
         }
-        self.subLabel.text = m.summary;
+        if (m.thehub) {
+            NSString* summary = [[m.thehub infos] sortedArrayUsingDescriptors:@[[NSSortDescriptor sortDescriptorWithKey:@"sort" ascending:YES]]].map(^id _Nonnull(EntityFeedInfo*  _Nonnull x) {
+                return x.title;
+            }).join(@",");
+            self.subLabel.text = summary;
+        }
+        else {
+            self.subLabel.text = m.summary;
+        }
+        
         if (m.useachieve) {
             NSSet* t = [m.feed.articles filteredSetUsingPredicate:[NSPredicate predicateWithFormat:@"readed = false"]];
             self.countLabel.text = [NSString stringWithFormat:@"%ld",t.count];
         }
         else {
-            self.countLabel.text = [NSString stringWithFormat:@"%ld",m.feed.articles.count];
+            if (m.feed) {
+                self.countLabel.text = [NSString stringWithFormat:@"%ld",m.feed.articles.count];
+            }
+            else if(m.thehub)
+            {
+                __block NSUInteger sum = 0;
+                [m.thehub.infos enumerateObjectsUsingBlock:^(EntityFeedInfo * _Nonnull obj, BOOL * _Nonnull stop) {
+                    if (obj.useachieve) {
+                        sum += [obj.articles filteredSetUsingPredicate:[NSPredicate predicateWithFormat:@"readed = false"]].count;
+                    }
+                    else {
+                        sum += obj.articles.count;
+                    }
+                }];
+                self.countLabel.text = [NSString stringWithFormat:@"%ld",sum];
+            }
         }
     }
     else if([model isKindOfClass:[RRFeedInfoListOtherModel class]])

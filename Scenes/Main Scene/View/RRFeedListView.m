@@ -17,6 +17,7 @@
 @import Classy;
 @import IQKeyboardManager;
 #import "UISearchBar+keycommand.h"
+#import "RRFeedInfoListModel.h"
 
 @interface RRFeedListView () <UIViewControllerPreviewingDelegate,UISearchBarDelegate,UIDropInteractionDelegate>
 {
@@ -139,10 +140,25 @@
             m.color = UIColor.hex(style[@"$main-tint-color"]);
             m.action = @"makeItDelete:";
         })];
+        
+        [[output actionsArrays] addObject:MVPCellActionModel.m(^(__kindof MVPCellActionModel * _Nonnull m) {
+            m.title = @"删除分类";
+            m.color = UIColor.hex(style[@"$sub-text-color"]);
+            m.action = @"makeHubDelete:";
+        })];
+        
      
         [output setActionArraysBeforeUseBlock:^NSMutableArray * _Nonnull(NSMutableArray * _Nonnull actionsArrays, id  _Nonnull model) {
             if ([model isKindOfClass:NSClassFromString(@"RRFeedInfoListModel")]) {
-                return actionsArrays;
+                RRFeedInfoListModel* m = model;
+                if (m.feed) {
+                    return [[actionsArrays subarrayWithRange:NSMakeRange(0, 1)] mutableCopy];
+                }
+                else if(m.thehub)
+                {
+                    return [[actionsArrays subarrayWithRange:NSMakeRange(0, 2)] mutableCopy];
+                }
+                return [@[] mutableCopy];
             }
 //            [actionsArrays removeAllObjects];
 //            return actionsArrays;
@@ -252,7 +268,7 @@
 - (UIBarButtonItem*)addHUBItem
 {
     if (!_addHUBItem) {
-        _addHUBItem = [self mvp_buttonItemWithActionName:@"addHUB" title:@"创建分类"];
+        _addHUBItem = [self mvp_buttonItemWithActionName:@"addHUB" title:@"加入分类"];
     }
     return _addHUBItem;
 }

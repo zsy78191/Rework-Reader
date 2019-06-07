@@ -48,6 +48,14 @@
         s.feed = self.feed;
         return [s predicate];
     }
+    else if(self.hub)
+    {
+        RRReadStyle* s = [[RRReadStyle alloc] init];
+        self.style = s;
+        EntityHub* hub = self.hub;
+        s.feeds = hub.infos;
+        return [s predicate];
+    }
     return nil;
 }
 

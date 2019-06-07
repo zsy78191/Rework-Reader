@@ -30,6 +30,7 @@
 #import "RRExtraViewController.h"
 @import ReactiveObjC;
 #import "UIViewController+PresentAndPush.h"
+#import "RRFeedManager.h"
 
 static NSString * const kShortcutItemsKey = @"kShortcutItemsKey";
 
@@ -205,7 +206,13 @@ static NSString * const kShortcutItemsKey = @"kShortcutItemsKey";
         RRFeedInfoListModel* mm = m;
         self.modelTitle = self.title = mm.title;
         self.infoModel = mm;
-        self.inputerCoreData.feed = mm.feed;
+        if (mm.thehub) {
+            self.inputerCoreData.hub = mm.thehub;
+        }
+        else if(mm.feed)
+        {
+            self.inputerCoreData.feed = mm.feed;
+        }
     }
     else if([m isKindOfClass:[RRFeedInfoListOtherModel class]])
     {
@@ -306,18 +313,43 @@ static NSString * const kShortcutItemsKey = @"kShortcutItemsKey";
 
 - (void)deleteIt:(id)sender
 {
-//    UIBarButtonItem* i = sender;
-//    CGRect r =({
-//        CGRect r = [[i valueForKeyPath:@"view.superview.frame"] CGRectValue];
-//        r.origin.x -= r.size.width/4;
-//        r.origin.y += r.size.height/2;
-//        r;
-//    });
-//
+    if (self.infoModel.thehub) {
+        [self deleteHub:sender];
+        return;
+    }
+    
     __weak typeof(self) weakSelf = self;
     [RRFeedAction delFeed:self.infoModel.feed view:(id)self.view item:sender arrow:UIPopoverArrowDirectionDown finish:^{
         [(id)weakSelf.view mvp_popViewController:nil];
     }];
+}
+
+- (void)deleteHub:(id)sender
+{
+    RRFeedInfoListModel* m = self.infoModel;
+    
+    __weak typeof(self) weakSelf = self;
+    UI_Alert()
+    .titled([NSString stringWithFormat:@"确认删除分类「%@」",m.thehub.title])
+    .recommend(@"删除", ^(UIAlertAction * _Nonnull action, UIAlertController * _Nonnull alert) {
+        [RRFeedManager removeHUB:m.thehub complete:^(BOOL s) {
+            if (s) {
+                
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    [weakSelf.view hudSuccess:@"操作成功"];
+//                    [weakSelf loadData];
+                    [[NSNotificationCenter defaultCenter] postNotificationName:@"RRMainListNeedUpdate" object:nil];
+                    [(id)weakSelf.view mvp_popViewController:nil];
+                });
+            }
+            else {
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    [weakSelf.view hudSuccess:@"操作失败"];
+                });
+            }
+        }];
+    }).cancel(@"取消", nil)
+    .show((id)self.view);
 }
 
 - (void)deleteIt2:(id)sender
@@ -404,22 +436,58 @@ static NSString * const kShortcutItemsKey = @"kShortcutItemsKey";
 - (void)updateFeedData:(void (^)(NSInteger x))finished
 {
     if (self.infoModel) {
-        __block NSMutableArray* temp = [[NSMutableArray alloc] init];
-        [[RRFeedLoader sharedLoader] loadFeed:[self.infoModel.feed.url absoluteString] infoBlock:^(MWFeedInfo * _Nonnull info) {
-        } itemBlock:^(MWFeedItem * _Nonnull item) {
-            //NSLog(@"%@",item.title);
-            // AllReadyTODO:新增文章
-            RRFeedArticleModel* m = [[RRFeedArticleModel alloc] initWithItem:item];
-            [temp addObject:m];
-        } errorBlock:^(NSError * _Nonnull error) {
+        
+        if (self.infoModel.feed) {
             
-        } finishBlock:^{
-            [RRFeedAction insertArticle:temp withFeed:self.infoModel.feed finish:^(NSUInteger x) {
-                if (finished) {
-                    finished(x);
-                }
+            //单订阅源更新
+            __block NSMutableArray* temp = [[NSMutableArray alloc] init];
+            [[RRFeedLoader sharedLoader] loadFeed:[self.infoModel.feed.url absoluteString] infoBlock:^(MWFeedInfo * _Nonnull info) {
+            } itemBlock:^(MWFeedItem * _Nonnull item) {
+                //NSLog(@"%@",item.title);
+                // AllReadyTODO:新增文章
+                RRFeedArticleModel* m = [[RRFeedArticleModel alloc] initWithItem:item];
+                [temp addObject:m];
+            } errorBlock:^(NSError * _Nonnull error) {
+                
+            } finishBlock:^{
+                [RRFeedAction insertArticle:temp withFeed:self.infoModel.feed finish:^(NSUInteger x) {
+                    if (finished) {
+                        finished(x);
+                    }
+                }];
+            } needUpdateIcon:NO];
+        }
+        else if(self.infoModel.thehub){
+            
+            //订阅源集合更新
+            __block NSInteger finishCount = 0;
+            __block NSInteger allArticleCount = 0;
+            __block NSInteger allCount = self.infoModel.thehub.infos.count;
+            [self.infoModel.thehub.infos enumerateObjectsUsingBlock:^(EntityFeedInfo * _Nonnull obj, BOOL * _Nonnull stop) {
+                __block NSMutableArray* temp = [[NSMutableArray alloc] init];
+                [[RRFeedLoader sharedLoader] loadFeed:[obj.url absoluteString] infoBlock:^(MWFeedInfo * _Nonnull info) {
+                } itemBlock:^(MWFeedItem * _Nonnull item) {
+                    //NSLog(@"%@",item.title);
+                    // AllReadyTODO:新增文章
+                    RRFeedArticleModel* m = [[RRFeedArticleModel alloc] initWithItem:item];
+                    [temp addObject:m];
+                } errorBlock:^(NSError * _Nonnull error) {
+                    
+                } finishBlock:^{
+                    [RRFeedAction insertArticle:temp withFeed:obj finish:^(NSUInteger x) {
+                        finishCount ++;
+                        allArticleCount += x;
+                        if (finishCount == allCount) {
+                            if (finished) {
+                                finished(allArticleCount);
+                            }
+                        }
+                    }];
+                } needUpdateIcon:NO];
             }];
-        } needUpdateIcon:NO];
+            
+        }
+       
     }
     else if(self.styleModel)
     {
@@ -669,8 +737,18 @@ static NSString * const kShortcutItemsKey = @"kShortcutItemsKey";
 - (void)changeFeedValue:(id)value forKey:(NSString*)key void:(void (^)(NSError*e))finish
 {
     __weak typeof(self) weakSelf = self;
-    EntityFeedInfo* feed = self.infoModel.feed;
-    [[RPDataManager sharedManager] updateClass:@"EntityFeedInfo" queryKey:@"uuid" queryValue:feed.uuid keysAndValues:@{key:value} modify:^id _Nonnull(id  _Nonnull key, id  _Nonnull value) {
+    id target = nil;
+    NSString* className = @"EntityFeedInfo";
+    if (self.infoModel.feed) {
+        EntityFeedInfo* feed = self.infoModel.feed;
+        target = feed;
+    }
+    else if(self.infoModel.thehub)
+    {
+        target = self.infoModel.thehub;
+        className = @"EntityHub";
+    }
+    [[RPDataManager sharedManager] updateClass:className queryKey:@"uuid" queryValue:[target uuid] keysAndValues:@{key:value} modify:^id _Nonnull(id  _Nonnull key, id  _Nonnull value) {
         return value;
     } finish:^(__kindof NSManagedObject * _Nonnull obj, NSError * _Nonnull e) {
         dispatch_async(dispatch_get_main_queue(), ^{
@@ -688,24 +766,61 @@ static NSString * const kShortcutItemsKey = @"kShortcutItemsKey";
     }];
 }
 
+- (void)configHub:(id)sender
+{
+    EntityHub* hub = self.infoModel.thehub;
+    
+    __weak typeof(self) weakSelf = self;
+    UIAlertController* a = UI_ActionSheet()
+    .titled(@"设置")
+    .recommend(@"修改标题", ^(UIAlertAction * _Nonnull action, UIAlertController * _Nonnull alert) {
+        UI_Alert()
+        .titled(@"修改标题")
+        .recommend(@"确定", ^(UIAlertAction * _Nonnull action, UIAlertController * _Nonnull alert) {
+            UITextField* t = alert.textFields[0];
+            [weakSelf changeFeedValue:t.text forKey:@"title" void:^(NSError *e) {
+                if (!e) {
+                    weakSelf.title = t.text;
+                }
+            }];
+        })
+        .cancel(@"取消", ^(UIAlertAction * _Nonnull action) {
+            
+        })
+        .input(@"标题", ^(UITextField * _Nonnull field) {
+            field.text = hub.title;
+        })
+        .show((id)self.view);
+    })
+    .action(@"修改图标", ^(UIAlertAction * _Nonnull action, UIAlertController * _Nonnull alert) {
+        [self changeIcon];
+    })
+    .action(@"删除分类", ^(UIAlertAction * _Nonnull action, UIAlertController * _Nonnull alert) {
+        [weakSelf deleteIt:sender];
+    })
+    .cancel(@"取消", ^(UIAlertAction * _Nonnull action) {
+    });
+    
+    if ([UIDevice currentDevice].iPad()) {
+        //        [[self view] showAsProver:a view:[(UIViewController*)self.view view] rect:r arrow:UIPopoverArrowDirectionUp];
+        [[self view] showAsProver:a view:[(UIViewController*)[self view] view] item:sender arrow:UIPopoverArrowDirectionDown];
+    }
+    else {
+        a.show((id)self.view);
+    }
+}
+
 - (void)configit:(id)sender
 {
-//    [[self.inputerCoreData allModels] enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
-//        NSLog(@"%@",[obj valueForKey:@"date"]);
-//    }];
-    
+    if (self.infoModel.thehub) {
+        [self configHub:sender];
+        return;
+    }
+ 
     EntityFeedInfo* feed = self.infoModel.feed;
     BOOL usetll = feed.usettl;
     BOOL useauto = feed.useautoupdate;
     BOOL usesafari = feed.usesafari;
-    
-//    UIBarButtonItem* i = sender;
-//    CGRect r =({
-//        CGRect r = [[i valueForKeyPath:@"view.superview.frame"] CGRectValue];
-//        r.origin.x -= r.size.width/4;
-//        r.origin.y += r.size.height/2;
-//        r;
-//    });
     
     __weak typeof(self) weakSelf = self;
     UIAlertController* a = UI_ActionSheet()

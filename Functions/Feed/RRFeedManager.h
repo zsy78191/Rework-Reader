@@ -38,6 +38,7 @@ NS_ASSUME_NONNULL_BEGIN
 + (RRFeedHub*)hubWithName:(NSString*)name;
 + (NSArray<RRFeedHub*>*)allHubs;
 + (void)removeAllHUBs;
++ (void)removeHUB:(EntityHub*)hub complete:(void (^)(BOOL))complete;
 
 @end
 

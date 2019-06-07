@@ -25,6 +25,9 @@
     self = [super init];
     if (self) {
         self.hub = [EntityHub MR_findFirstOrCreateByAttribute:@"title" withValue:name inContext:[NSManagedObjectContext MR_rootSavingContext]];
+        if (!self.hub.uuid) {
+            self.hub.uuid = [NSUUID UUID].UUIDString;
+        }
         self.hub.title = name;
     }
     return self;
@@ -106,7 +109,6 @@
 {
     return ^ (void (^ finish)(BOOL)) {
 //
- 
         [[self.hub managedObjectContext] MR_saveOnlySelfWithCompletion:^(BOOL contextDidSave, NSError * _Nullable error) {
             if (finish) {
                 finish(contextDidSave);
@@ -137,6 +139,24 @@
     } completion:^(BOOL contextDidSave, NSError * _Nullable error) {
         if (contextDidSave) {
             NSLog(@"remove all hubs");
+        }
+        else {
+            NSLog(@"%@ %@",error,@(contextDidSave));
+        }
+    }];
+}
+
++ (void)removeHUB:(EntityHub*)hub complete:(void (^)(BOOL))complete;
+{
+    [[NSManagedObjectContext MR_rootSavingContext] MR_saveWithBlock:^(NSManagedObjectContext * _Nonnull localContext) {
+//        EntityHub* hub = [hub MR_inContext:localContext];
+        [hub MR_deleteEntityInContext:localContext];
+    } completion:^(BOOL contextDidSave, NSError * _Nullable error) {
+        if (complete) {
+            complete(contextDidSave);
+        }
+        if (contextDidSave) {
+            NSLog(@"remove the hub");
         }
         else {
             NSLog(@"%@ %@",error,@(contextDidSave));
