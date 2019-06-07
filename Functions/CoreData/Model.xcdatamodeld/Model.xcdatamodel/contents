@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="14490.99" systemVersion="18E226" minimumToolsVersion="Automatic" sourceLanguage="Objective-C" userDefinedModelVersionIdentifier="version0">
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="14490.99" systemVersion="18F132" minimumToolsVersion="Automatic" sourceLanguage="Objective-C" userDefinedModelVersionIdentifier="version0">
     <entity name="EntityFeedArticle" representedClassName="EntityFeedArticle" syncable="YES" codeGenerationType="class">
         <attribute name="author" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="categories" optional="YES" attributeType="String" syncable="YES"/>
@@ -42,6 +42,7 @@
         <attribute name="usettl" optional="YES" attributeType="Boolean" usesScalarValueType="YES" syncable="YES"/>
         <attribute name="uuid" optional="YES" attributeType="String" syncable="YES"/>
         <relationship name="articles" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="EntityFeedArticle" inverseName="feed" inverseEntity="EntityFeedArticle" syncable="YES"/>
+        <relationship name="hub" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="EntityHub" inverseName="infos" inverseEntity="EntityHub" syncable="YES"/>
         <relationship name="styles" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="EntityFeedStyle" inverseName="feeds" inverseEntity="EntityFeedStyle" syncable="YES"/>
     </entity>
     <entity name="EntityFeedStyle" representedClassName="EntityFeedStyle" syncable="YES" codeGenerationType="class">
@@ -56,9 +57,18 @@
         <attribute name="uuid" optional="YES" attributeType="String" syncable="YES"/>
         <relationship name="feeds" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="EntityFeedInfo" inverseName="styles" inverseEntity="EntityFeedInfo" syncable="YES"/>
     </entity>
+    <entity name="EntityHub" representedClassName="EntityHub" syncable="YES" codeGenerationType="class">
+        <attribute name="icon" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="sort" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
+        <attribute name="title" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="type" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
+        <attribute name="uuid" optional="YES" attributeType="String" syncable="YES"/>
+        <relationship name="infos" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="EntityFeedInfo" inverseName="hub" inverseEntity="EntityFeedInfo" syncable="YES"/>
+    </entity>
     <elements>
         <element name="EntityFeedArticle" positionX="-54" positionY="99" width="128" height="345"/>
-        <element name="EntityFeedInfo" positionX="-63" positionY="-18" width="128" height="345"/>
+        <element name="EntityFeedInfo" positionX="-63" positionY="-18" width="128" height="360"/>
         <element name="EntityFeedStyle" positionX="-63" positionY="135" width="128" height="195"/>
+        <element name="EntityHub" positionX="-54" positionY="135" width="128" height="135"/>
     </elements>
 </model>

@@ -115,6 +115,9 @@
     .action(@"导出PDF", ^(UIAlertAction * _Nonnull action, UIAlertController * _Nonnull alert) {
         [weakSelf exportPDF:sender];
     })
+    .action(@"导出Email", ^(UIAlertAction * _Nonnull action, UIAlertController * _Nonnull alert) {
+        [weakSelf exportEmail:sender];
+    })
     .cancel(@"取消", ^(UIAlertAction * _Nonnull action) {
         
     });
@@ -137,6 +140,11 @@
 - (void)exportPDF:(id)sender
 {
     [self.view mvp_runAction:NSSelectorFromString(@"exportPDF")];
+}
+
+- (void)exportEmail:(id)sender
+{
+    [self.view mvp_runAction:NSSelectorFromString(@"exportEmail")];
 }
 
 - (void)shareFile:(NSDictionary*)t

@@ -15,6 +15,8 @@
 #import "RRCoreDataModel.h"
 @import SDWebImage;
 #import "OPMLDocument.h"
+@import ReactiveObjC;
+#import "RRFeedManager.h"
 
 @implementation RRTest
 
@@ -138,6 +140,40 @@
         
     }];
     
+}
+
+- (void)objectivec
+{
+    RACSignal* s = [RACSignal createSignal:^RACDisposable * _Nullable(id<RACSubscriber>  _Nonnull subscriber) {
+       
+        NSLog(@"i1");
+        [subscriber sendNext:@"1"];
+        [subscriber sendCompleted];
+        return [RACDisposable disposableWithBlock:^{
+            
+        }];
+    }];
+    
+    RACSignal* s2 = [RACSignal createSignal:^RACDisposable * _Nullable(id<RACSubscriber>  _Nonnull subscriber) {
+        
+        NSLog(@"i2");
+        [subscriber sendNext:@"2"];
+        return [RACDisposable disposableWithBlock:^{
+            
+        }];
+    }];
+    
+    RACSignal* n = [s concat:s2];
+    [n subscribeNext:^(id  _Nullable x) {
+        NSLog(@"11 %@",x);
+    }];
+    
+    
+}
+
+- (void)feedhubtest
+{
+    [RRFeedManager hubWithName:@"123"];
 }
 
 @end

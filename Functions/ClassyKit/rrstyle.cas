@@ -59,6 +59,10 @@ DZNEmptyDataSetView > ^UIButton {
     tintColor $main-tint-color
 }
 
+^UICollectionViewCell > ^UIView > ^UIImageView  {
+    tintColor $main-tint-color
+}
+
 ^UITableViewCell > ^UIView > UILabel.TitleLabel
 {
     font $main-font $main-font-size
@@ -87,6 +91,8 @@ UILabel.TipLabel {
 {
     backgroundColor $main-bg-color
 }
+
+
 UIView.statuCover {
     backgroundColor $bar-tint-color
 }

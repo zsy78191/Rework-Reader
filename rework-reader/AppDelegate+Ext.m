@@ -178,6 +178,7 @@
     [MVPRouter registView:NSClassFromString(@"RRListView") forURL:@"rr://list"];
     [MVPRouter registView:NSClassFromString(@"RRPopoverSettingView") forURL:@"rr://websetting"];
     [MVPRouter registView:NSClassFromString(@"RRImportView") forURL:@"rr://import"];
+    [MVPRouter registView:NSClassFromString(@"IconSelectView") forURL:@"rr://selecticon"];
 }
 
 
@@ -232,6 +233,7 @@
         [split setViewControllers:@[nv,nv2]];
         split.delegate = self;
         split.preferredDisplayMode = UISplitViewControllerDisplayModeAllVisible;
+        split.presentsWithGesture = YES;
         //设置左侧主视图Master Controller的显示模式，现在是一直显示。如果设置为横屏显示竖屏不显示，还可以再设置一下相关的手势属性，如presentsWithGesture
         //        split.maximumPrimaryColumnWidth = 128.0f;
         //调整左侧主视图Master Controller的最大显示宽度

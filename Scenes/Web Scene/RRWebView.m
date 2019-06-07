@@ -26,8 +26,9 @@
 #import "RRSafariViewController.h"
 @import oc_util;
 @import TYSnapshotScroll;
+@import MessageUI;
 
-@interface RRWebView () <WKUIDelegate,WKNavigationDelegate,UIScrollViewDelegate,MWPhotoBrowserDelegate,WKScriptMessageHandler>
+@interface RRWebView () <WKUIDelegate,WKNavigationDelegate,UIScrollViewDelegate,MWPhotoBrowserDelegate,WKScriptMessageHandler,MFMailComposeViewControllerDelegate>
 {
     
 }
@@ -285,6 +286,18 @@
 
 }
 
+- (void)pageUp
+{
+    CGFloat y = self.webView.scrollView.contentOffset.y - 100> 0? self.webView.scrollView.contentOffset.y - 100 : 0;
+    [[self.webView scrollView] setContentOffset:CGPointMake(self.webView.scrollView.contentOffset.x, y) animated:YES];
+}
+- (void)pageDown
+{
+//    NSLog(@"%@",@(self.webView.scrollView.contentSize.height));
+     CGFloat y = self.webView.scrollView.contentOffset.y + 100 < self.webView.scrollView.contentSize.height - self.webView.scrollView.frame.size.height? self.webView.scrollView.contentOffset.y + 100 : self.webView.scrollView.contentSize.height - self.webView.scrollView.frame.size.height;
+    [[self.webView scrollView] setContentOffset:CGPointMake(self.webView.scrollView.contentOffset.x, y) animated:YES];
+}
+
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView
 {
@@ -382,6 +395,15 @@
 
 - (void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate
 {
+ 
+    if (self.splitViewController) {
+        UIViewController* vc = [[self.splitViewController viewControllers] firstObject];
+        while ([vc isKindOfClass:[UINavigationController class]]) {
+            vc = [(UINavigationController*)vc topViewController];
+        }
+        [vc becomeFirstResponder];
+    }
+    
     self.startDraging = NO;
     
     if (scrollView.contentOffset.y < - 130) {
@@ -1024,6 +1046,17 @@
     return result;
 }
 
+- (void)switchReadlater
+{
+    if (self.articleReadLatered) {
+        [self.presenter mvp_runAction:@"cancelReadLater"];
+    }
+    else {
+        [self.presenter mvp_runAction:@"readLater"];
+    }
+    [self reloadItems];
+}
+
 - (NSArray*)likedItem
 {
     __weak typeof(self) weakSelf = self;
@@ -1043,6 +1076,17 @@
         [result addObject:favItem];
     }
     return result;
+}
+
+- (void)switchFavorite
+{
+    if (self.articleLiked) {
+        [self.presenter mvp_runAction:@"unfavIt"];
+    }
+    else {
+        [self.presenter mvp_runAction:@"favIt"];
+    }
+    [self reloadItems];
 }
 
 
@@ -1558,11 +1602,79 @@
     });
 }
 
+- (void)exportEmail
+{
+    __weak typeof(self) weakSelf = self;
+    //    [self hudWait:@"处理中"];
+    [weakSelf.webView emailString:^(NSString * _Nonnull x) {
+        UI_Alert()
+        .titled(@"是否在Email中使用Prime的HTML样式?")
+        .recommend(@"使用", ^(UIAlertAction * _Nonnull action, UIAlertController * _Nonnull alert) {
+            [weakSelf emailString:x useCss:YES];
+        })
+        .action(@"不使用", ^(UIAlertAction * _Nonnull action, UIAlertController * _Nonnull alert) {
+            [weakSelf emailString:x useCss:NO];
+        })
+        .cancel(@"取消", ^(UIAlertAction * _Nonnull action) {
+            
+        })
+        .show(weakSelf);
+    }];
+}
+
+- (void)emailString:(NSString*)str useCss:(BOOL)useCss
+{
+    MFMailComposeViewController* c = [[MFMailComposeViewController alloc] init];
+    if (!c) {
+        // 在设备还没有添加邮件账户的时候mailViewController为空，
+        // 下面的present view controller会导致程序崩溃，这里要作出判断
+        [self hudInfo:@"设备没有设置邮件帐户"];
+        return;
+    }
+    c.mailComposeDelegate = self;
+    [c setSubject:self.title];
+    if (useCss) {
+        NSString* cssFile = [[NSBundle mainBundle] pathForResource:@"style1" ofType:@"css"];
+        NSString* cssFileContent = [[NSString alloc] initWithContentsOfFile:cssFile encoding:NSUTF8StringEncoding error:nil];
+        NSString* cssStyle = [[NSString alloc] initWithFormat:@"<style>%@</style>",cssFileContent];
+        str = [str stringByReplacingOccurrencesOfString:@"<link rel=\"stylesheet\" href=\"style1.css\" type=\"text/css\">" withString:cssStyle];
+    }
+    [c setMessageBody:str isHTML:YES];
+    [self presentViewController:c animated:YES completion:nil];
+}
+
+- (void)mailComposeController:(MFMailComposeViewController *)controller didFinishWithResult:(MFMailComposeResult)result error:(NSError *)error
+{
+    switch (result) {
+        case MFMailComposeResultSent:
+        {
+            [self hudSuccess:@"已发送"];
+            break;
+        }
+        case MFMailComposeResultSaved:
+        {
+            [self hudSuccess:@"已保存"];
+            break;
+        }
+        case MFMailComposeResultFailed:
+        case MFMailComposeResultCancelled:
+        {
+            break;
+        }
+        default:
+            break;
+    }
+    [controller dismissViewControllerAnimated:YES completion:^{
+        
+    }];
+}
+
 - (void)readedIt
 {
     if (self.currentArticle && !self.currentArticle.lastread) {
         [RRFeedAction readArticle:self.currentArticle.uuid];
     }
 }
+
 
 @end

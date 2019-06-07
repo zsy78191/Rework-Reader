@@ -14,6 +14,7 @@ NS_ASSUME_NONNULL_BEGIN
 @interface RRListInputer : MVPCoredataInput
 
 @property (nonatomic, strong, nullable) id feed;
+@property (nonatomic, strong, nullable) id hub;
 
 @property (nonatomic, strong, nullable) RRFeedInfoListOtherModel* model;
 

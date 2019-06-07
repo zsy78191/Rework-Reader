@@ -20,7 +20,14 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, strong) __nullable id (^lastFeed)(id current);
 
 - (void)loadData:(RRFeedArticleModel*)m feed:(MWFeedInfo*)feedInfo;
+- (void)loadNext;
+- (void)loadLast;
 
+// RRTODO:暂时先放在这里
+- (void)pageUp;
+- (void)pageDown;
+- (void)switchFavorite;
+- (void)switchReadlater;
 @end
 
 NS_ASSUME_NONNULL_END

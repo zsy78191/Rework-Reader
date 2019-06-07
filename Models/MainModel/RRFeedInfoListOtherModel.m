@@ -37,4 +37,22 @@ RRFeedInfoListOtherModel* (^GetRRFeedInfoListOtherModel)(NSString* title,NSStrin
 @synthesize editType = _editType;
 @synthesize canMove = _canMove;
 @synthesize idx = _idx;
+
++ (RRFeedInfoListOtherModel *)searchModel:(NSString*)searchText
+{
+    RRFeedInfoListOtherModel* mSearch = GetRRFeedInfoListOtherModel([NSString stringWithFormat:@"搜索「%@」",searchText],@"favicon",@"搜索",@"search");
+    mSearch.canRefresh = NO;
+    mSearch.canEdit = NO;
+    mSearch.readStyle = ({
+        RRReadStyle* s = [[RRReadStyle alloc] init];
+        s.onlyUnread = NO;
+        s.daylimit = -1;
+        s.liked = NO;
+        s.keyword = searchText;
+        s;
+    });
+    return mSearch;
+}
+
+
 @end

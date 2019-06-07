@@ -20,11 +20,13 @@
 #import "RPDataManager.h"
 #import "RRFeedArticleModel.h"
 #import "PWToastView.h"
-#import "RRReadMode.h"
+
 @import DateTools;
 #import "RRExtraViewController.h"
 @import ui_base;
 @import oc_util;
+#import "RRFeedListPresenter+FeedHUB.h"
+#import "RRFeedManager.h"
 
 NSString* const kOffsetMainList = @"kOffsetMainList";
 NSString* const kMainListItemSetting = @"kOffsetMainList";
@@ -37,26 +39,7 @@ NSString* const kShowRecent = @"kShowRecent";
 {
     
 }
-@property (nonatomic, strong) MVPComplexInput* complexInput;
-@property (nonatomic, strong) RRFeedInputer* inputer;
-@property (nonatomic, strong) RRFeedReaderStyleInputer* readStyleInputer;
-@property (nonatomic, assign) BOOL needUpdate;
-@property (nonatomic, assign) BOOL needUpdateFeed;
-@property (nonatomic, assign) RRReadMode mode;
-@property (nonatomic, assign) BOOL updating;
-@property (nonatomic, weak) UIRefreshControl* refresher;
-@property (nonatomic, assign) BOOL hasDatas;
-@property (nonatomic, assign) double offsetY;
-@property (nonatomic, assign) BOOL firstEnter;
-@property (nonatomic, strong) NSArray* selectArray;
-@property (nonatomic, assign) BOOL selectMoreThanOne;
-@property (nonatomic, assign) BOOL editing;
-@property (nonatomic, weak) RRFeedInfoListOtherModel* unreadModel;
-@property (nonatomic, weak) RRFeedInfoListOtherModel* laterModel;
-@property (nonatomic, weak) RRFeedInfoListOtherModel* favModel;
-@property (nonatomic, weak) RRFeedInfoListOtherModel* recentModel;
 
-@property (nonatomic, strong) NSMutableDictionary* listItemSetting;
 @end
 
 @implementation RRFeedListPresenter
@@ -187,6 +170,8 @@ NSString* const kShowRecent = @"kShowRecent";
     self.needUpdateFeed = YES;
     
     [[RPDataNotificationCenter defaultCenter] registEntityChange:@"EntityFeedInfo" observer:self sel:@selector(needUpdateData)];
+    
+    [[RPDataNotificationCenter defaultCenter] registEntityChange:@"EntityHub" observer:self sel:@selector(needUpdateData)];
 
     [[RPDataNotificationCenter defaultCenter] registEntityChange:@"EntityFeedArticle" observer:self sel:@selector(needUpdateData)];
 }
@@ -384,17 +369,41 @@ NSString* const kShowRecent = @"kShowRecent";
         m.canEdit = NO;
         m.idx = 4;
         m.type = RRFeedInfoListOtherModelTypeTitle;
-    
+        
         if (a.count>0) {
             [self.readStyleInputer mvp_addModel:m];
         }
-        [a enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+        
+        NSMutableArray* allFeedAndHub = [NSMutableArray arrayWithCapacity:10];
+        
+        NSArray* hubs = [[RPDataManager sharedManager] getAll:@"EntityHub" predicate:nil key:nil value:nil sort:@"sort" asc:YES];
+        [hubs enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
             RRFeedInfoListModel* m = [[RRFeedInfoListModel alloc] init];
             [m loadFromFeed:obj];
-            m.feed = obj;
+            m.thehub = obj;
             m.canEdit = YES;
             m.canMove = YES;
-            [self.inputer mvp_addModel:m];
+            [allFeedAndHub addObject:m];
+        }];
+        
+        [a enumerateObjectsUsingBlock:^(EntityFeedInfo*  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+            if (obj.hub.count > 0) {
+                
+            }
+            else {
+                RRFeedInfoListModel* m = [[RRFeedInfoListModel alloc] init];
+                [m loadFromFeed:obj];
+                m.feed = obj;
+                m.canEdit = YES;
+                m.canMove = YES;
+                [allFeedAndHub addObject:m];
+            }
+        }];
+        
+        [allFeedAndHub sortUsingDescriptors:@[[NSSortDescriptor sortDescriptorWithKey:@"sort" ascending:YES]]];
+        
+        [allFeedAndHub enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+            [self.inputer mvp_addModel:obj];
         }];
        
     }
@@ -434,19 +443,8 @@ NSString* const kShowRecent = @"kShowRecent";
 
 - (void)openSearch:(NSString*)searchText
 {
-    RRFeedInfoListOtherModel* mUnread = GetRRFeedInfoListOtherModel([NSString stringWithFormat:@"搜索「%@」",searchText],@"favicon",@"三日内的未读文章",@"serach");
-    mUnread.canRefresh = NO;
-    mUnread.canEdit = NO;
-    mUnread.readStyle = ({
-        RRReadStyle* s = [[RRReadStyle alloc] init];
-        s.onlyUnread = NO;
-        s.daylimit = -1;
-        s.liked = NO;
-        s.keyword = searchText;
-        s;
-    });
-    
-    id vc = [MVPRouter viewForURL:@"rr://list" withUserInfo:@{@"model":mUnread}];
+    RRFeedInfoListOtherModel* mSearch = [RRFeedInfoListOtherModel searchModel:searchText];
+    id vc = [MVPRouter viewForURL:@"rr://list" withUserInfo:@{@"model":mSearch}];
     [self.view mvp_pushViewController:vc];
 }
 
@@ -461,6 +459,8 @@ NSString* const kShowRecent = @"kShowRecent";
     [[NSNotificationCenter defaultCenter] removeObserver:self name:@"RRWebNeedReload" object:nil];
     
     [[RPDataNotificationCenter defaultCenter] unregistEntityChange:@"EntityFeedInfo" observer:self];
+    
+    [[RPDataNotificationCenter defaultCenter] unregistEntityChange:@"EntityHub" observer:self];
     
     [[RPDataNotificationCenter defaultCenter] unregistEntityChange:@"EntityFeedArticle" observer:self];
 }
@@ -801,9 +801,53 @@ NSString* const kShowRecent = @"kShowRecent";
 //    NSLog(@"%@",sender);
     __weak typeof(self) weakSelf = self;
     RRFeedInfoListModel* m = (id)[self.complexInput mvp_modelAtIndexPath:sender];
-    [RRFeedAction delFeed:m.feed view:(id)self.view item:nil arrow:UIPopoverArrowDirectionRight finish:^{
-        [weakSelf loadData];
-    }];
+    if (m.feed) {
+        [RRFeedAction delFeed:m.feed view:(id)self.view item:nil arrow:UIPopoverArrowDirectionRight finish:^{
+            [weakSelf loadData];
+        }];
+    }
+    else if(m.thehub)
+    {
+        NSArray* feeds = [m.thehub.infos sortedArrayUsingDescriptors:@[[NSSortDescriptor sortDescriptorWithKey:@"sort" ascending:YES]]];
+        UIAlertController* alert = UI_Alert().
+        titled(@"请选择要取消的源");
+        [feeds enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+            alert.action([obj title], ^(UIAlertAction * _Nonnull action, UIAlertController * _Nonnull alert) {
+                [RRFeedAction delFeed:obj view:(id)self.view item:nil arrow:UIPopoverArrowDirectionRight finish:^{
+                    [weakSelf loadData];
+                }];
+            });
+        }];
+        alert.cancel(@"取消", nil);
+        alert.show((id)self.view);
+    }
+}
+
+- (void)makeHubDelete:(id)sender
+{
+    __weak typeof(self) weakSelf = self;
+    RRFeedInfoListModel* m = (id)[self.complexInput mvp_modelAtIndexPath:sender];
+    if (m.thehub) {
+        UI_Alert()
+        .titled([NSString stringWithFormat:@"确认删除分类「%@」",m.thehub.title])
+        .recommend(@"删除", ^(UIAlertAction * _Nonnull action, UIAlertController * _Nonnull alert) {
+            [RRFeedManager removeHUB:m.thehub complete:^(BOOL s) {
+                if (s) {
+                    
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        [weakSelf.view hudSuccess:@"操作成功"];
+                        [weakSelf loadData];
+                    });
+                }
+                else {
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        [weakSelf.view hudSuccess:@"操作失败"];
+                    });
+                }
+            }];
+        }).cancel(@"取消", nil)
+        .show((id)self.view);
+    }
 }
 
 - (void)makeItRead:(id)sender
@@ -811,7 +855,19 @@ NSString* const kShowRecent = @"kShowRecent";
 //    NSLog(@"%@",sender);
     __weak typeof(self) weakSelf = self;
     RRFeedInfoListModel* m = (id)[self.complexInput mvp_modelAtIndexPath:sender];
-    NSPredicate* p = [NSPredicate predicateWithFormat:@"feed.uuid = %@",m.feed.uuid];
+    NSPredicate* p;
+    if (m.feed) {
+        p = [NSPredicate predicateWithFormat:@"feed.uuid = %@",m.feed.uuid];
+    }
+    else if(m.thehub){
+
+        NSMutableArray* pa = [[NSMutableArray alloc] init];
+        [m.thehub.infos enumerateObjectsUsingBlock:^(EntityFeedInfo * _Nonnull obj, BOOL * _Nonnull stop) {
+            [pa addObject:[NSPredicate predicateWithFormat:@"feed.uuid = %@",obj.uuid]];
+        }];
+        p = [NSCompoundPredicate orPredicateWithSubpredicates:pa];
+    }
+    
     [[RPDataManager sharedManager] updateDatas:@"EntityFeedArticle" predicate:p modify:^(EntityFeedArticle*  _Nonnull obj) {
         obj.readed = YES;
     } finish:^(NSArray * _Nonnull results, NSError * _Nonnull e) {

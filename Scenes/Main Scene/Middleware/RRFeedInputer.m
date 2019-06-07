@@ -19,6 +19,10 @@
 - (NSString *)mvp_identifierForModel:(id<MVPModelProtocol>)model
 {
 //    NSLog(@"%@",model);
+    RRFeedInfoListModel* m = (RRFeedInfoListModel*)model;
+    if (m.thehub) {
+        return @"styleCell";
+    }
     return @"feedCell";
 }
 
@@ -38,7 +42,19 @@
         obj.sort = @(idx);
     }];
     
-    [[RPDataManager sharedManager] udpateDatas:@"EntityFeedInfo" models:all queryKey:@"uuid" saveKeys:@[@"sort"] modify:nil finish:nil];
+    NSArray* allFeeds =
+    all.filter(^BOOL(RRFeedInfoListModel*  _Nonnull x) {
+        return x.feed != nil;
+    });
+    
+    NSArray* allHubs =
+    all.filter(^BOOL(RRFeedInfoListModel*  _Nonnull x) {
+        return x.thehub != nil;
+    });
+    
+    [[RPDataManager sharedManager] udpateDatas:@"EntityFeedInfo" models:allFeeds queryKey:@"uuid" saveKeys:@[@"sort"] modify:nil finish:nil];
+    
+    [[RPDataManager sharedManager] udpateDatas:@"EntityHub" models:allHubs queryKey:@"uuid" saveKeys:@[@"sort"] modify:nil finish:nil];
 }
 
 

@@ -6,9 +6,20 @@
     separatorColor $main-separator-color
 }
 
+^ UICollectionView>UIView.bgView
+{
+   backgroundColor $bar-tint-color
+}
+
+
 ^ UITableViewCell {
     backgroundColor $main-bg-color
 }
+
+^ UICollectionViewCell.managedCell {
+    backgroundColor $main-bg-color
+}
+
 
 UINavigationBar {
     barTintColor $bar-tint-color

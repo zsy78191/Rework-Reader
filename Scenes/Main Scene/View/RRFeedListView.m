@@ -16,12 +16,15 @@
 @import ui_base;
 @import Classy;
 @import IQKeyboardManager;
+#import "UISearchBar+keycommand.h"
+#import "RRFeedInfoListModel.h"
 
-@interface RRFeedListView () <UIViewControllerPreviewingDelegate,UISearchBarDelegate>
+@interface RRFeedListView () <UIViewControllerPreviewingDelegate,UISearchBarDelegate,UIDropInteractionDelegate>
 {
 }
 @property (nonatomic, strong) UIBarButtonItem* blackBtn;
 @property (nonatomic, strong) UIBarButtonItem* cleanAllBtn;
+@property (nonatomic, strong) UIBarButtonItem* addHUBItem;
 @property (nonatomic, strong) UISearchController* svc;
 @property (nonatomic, assign) BOOL afterLoaded;
 @end
@@ -46,10 +49,13 @@
     // Do any additional setup after loading the view.
     self.afterLoaded = NO;
     UISearchBar * bar = self.svc.searchBar;
+    
     self.navigationItem.searchController = self.svc;
     bar.cas_styleClass = @"sbar";
     bar.delegate = self;
     [bar setSearchBarStyle:UISearchBarStyleMinimal];
+    
+    [self.view addInteraction:self.dropIntercation];
 }
 
 - (Class)mvp_presenterClass
@@ -134,10 +140,25 @@
             m.color = UIColor.hex(style[@"$main-tint-color"]);
             m.action = @"makeItDelete:";
         })];
+        
+        [[output actionsArrays] addObject:MVPCellActionModel.m(^(__kindof MVPCellActionModel * _Nonnull m) {
+            m.title = @"删除分类";
+            m.color = UIColor.hex(style[@"$sub-text-color"]);
+            m.action = @"makeHubDelete:";
+        })];
+        
      
         [output setActionArraysBeforeUseBlock:^NSMutableArray * _Nonnull(NSMutableArray * _Nonnull actionsArrays, id  _Nonnull model) {
             if ([model isKindOfClass:NSClassFromString(@"RRFeedInfoListModel")]) {
-                return actionsArrays;
+                RRFeedInfoListModel* m = model;
+                if (m.feed) {
+                    return [[actionsArrays subarrayWithRange:NSMakeRange(0, 1)] mutableCopy];
+                }
+                else if(m.thehub)
+                {
+                    return [[actionsArrays subarrayWithRange:NSMakeRange(0, 2)] mutableCopy];
+                }
+                return [@[] mutableCopy];
             }
 //            [actionsArrays removeAllObjects];
 //            return actionsArrays;
@@ -244,6 +265,14 @@
     return _cleanAllBtn;
 }
 
+- (UIBarButtonItem*)addHUBItem
+{
+    if (!_addHUBItem) {
+        _addHUBItem = [self mvp_buttonItemWithActionName:@"addHUB" title:@"加入分类"];
+    }
+    return _addHUBItem;
+}
+
 - (void)mvp_configOther
 {
     UIBarButtonItem* bSetting = [self mvp_buttonItemWithActionName:@"openSetting" title:@"更多内容"];
@@ -283,8 +312,9 @@
 - (void)reloadToolBar
 {
     UIBarButtonItem* item3 = self.editing?self.cleanAllBtn: self.blackBtn;
-    UIBarButtonItem* bAdd = [self mvp_buttonItemWithSystem:UIBarButtonSystemItemAdd actionName:@"openActionText:" title:@"添加订阅源"];
-    bAdd.enabled = !self.editing;
+    
+    UIBarButtonItem* bAdd = self.editing?self.addHUBItem : [self mvp_buttonItemWithSystem:UIBarButtonSystemItemAdd actionName:@"openActionText:" title:@"添加订阅源"];
+//    bAdd.enabled = !self.editing;
     //    UIBarButtonItem* bAddHub = [self mvp_buttonItemWithActionName:@"addHub" title:@"添加阅读规则"];
     UIBarButtonItem* space = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
     self.toolbarItems = @[item3,space,bAdd];
@@ -354,6 +384,54 @@
     return vc;
 }
 
+- (UIDropInteraction *)dropIntercation
+{
+    if (!_dropIntercation) {
+        _dropIntercation = [[UIDropInteraction alloc] initWithDelegate:self];
+    }
+    return _dropIntercation;
+}
+
+- (BOOL)dropInteraction:(UIDropInteraction *)interaction canHandleSession:(id<UIDropSession>)session
+{
+    NSLog(@"%@",session);
+    return YES;
+}
+
+- (BOOL)canBecomeFirstResponder
+{
+    return YES;
+}
+
+- (NSArray<UIKeyCommand *> *)keyCommands
+{
+    return @[
+             [UIKeyCommand keyCommandWithInput:@"f"
+                                 modifierFlags:UIKeyModifierCommand
+                                        action:@selector(search:)
+                          discoverabilityTitle:@"搜索"]
+             ];
+}
+
+- (void)resignResponeser:(id)sender
+{
+    [[self.svc searchBar] resignFirstResponder];
+}
+
+- (void)selectTab:(id)sender
+{
+}
+
+- (void)back:(id)sender
+{
+    [self mvp_popViewController:nil];
+}
+
+- (void)search:(id)sender
+{
+    [self.svc.searchBar becomeFirstResponder];
+}
+
 /*
 #pragma mark - Navigation
 
@@ -372,5 +450,16 @@
     }
     [self.svc setActive:NO];
 }
+
+
+
+- (void)searchBarCancelButtonClicked:(UISearchBar *)searchBar
+{
+    [searchBar resignFirstResponder];
+    [self.svc setActive:NO];
+    [self becomeFirstResponder];
+}
+
+
 
 @end

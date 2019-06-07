@@ -14,6 +14,7 @@
 @import ReactiveObjC;
 #import "RRTableOutput.h"
 @import DZNEmptyDataSet;
+#import "RRProvideDataProtocol.h"
 
 @interface RRListView () <UIViewControllerPreviewingDelegate>
 {
@@ -54,6 +55,7 @@
     else if([m isKindOfClass:[RRFeedInfoListOtherModel class]])
     {
         RRFeedInfoListOtherModel* mm = m;
+//        NSLog(@"%@",mm.key);
         if (mm.readStyle.onlyUnread) {
             UIBarButtonItem* item = [self mvp_buttonItemWithActionName:@"maskAllReaded:" title:@"全部已读"];
             self.navigationItem.rightBarButtonItems = @[item];
@@ -69,8 +71,21 @@
 //            [o mvp_bindTableRefreshActionName:@"refreshData:"];
         }
         self.showToolBar = NO;
+        
+        
+        if ([mm.key isEqualToString:@"search"]) {
+            //搜索模式下增加右上角的功能按钮
+            [self configSearch];
+        }
     }
 }
+
+- (void)configSearch
+{
+    UIBarButtonItem* item = [self mvp_buttonItemWithActionName:@"forSearch:" title:@"快捷方式"];
+    self.navigationItem.rightBarButtonItems = @[item];
+}
+
 
 - (void)motionBegan:(UIEventSubtype)motion withEvent:(UIEvent *)event
 {
@@ -319,5 +334,117 @@
     return vc;
 }
 
+- (void)back:(id)sender
+{
+    [self mvp_popViewController:nil];
+}
 
+
+- (BOOL)canBecomeFirstResponder
+{
+    return YES;
+}
+
+- (NSArray<UIKeyCommand *> *)keyCommands
+{
+    return @[
+              [UIKeyCommand keyCommandWithInput:@"s" modifierFlags:UIKeyModifierCommand action:@selector(switchFavorite) discoverabilityTitle:@"收藏/取消收藏"],
+                       [UIKeyCommand keyCommandWithInput:@"r" modifierFlags:UIKeyModifierCommand action:@selector(switchReadLater) discoverabilityTitle:@"稍后阅读/取消"],
+             [UIKeyCommand keyCommandWithInput:UIKeyInputLeftArrow modifierFlags:UIKeyModifierCommand action:@selector(allScreen:) discoverabilityTitle:@"全屏"],
+             [UIKeyCommand keyCommandWithInput:UIKeyInputRightArrow modifierFlags:UIKeyModifierCommand action:@selector(speScreen:) discoverabilityTitle:@"分屏"],
+                  [UIKeyCommand keyCommandWithInput:UIKeyInputUpArrow modifierFlags:UIKeyModifierCommand action:@selector(lastArticle:) discoverabilityTitle:@"前一篇"],
+                  [UIKeyCommand keyCommandWithInput:UIKeyInputDownArrow modifierFlags:UIKeyModifierCommand action:@selector(nextArticle:) discoverabilityTitle:@"后一篇"],
+             [UIKeyCommand keyCommandWithInput:UIKeyInputUpArrow modifierFlags:0 action:@selector(pageUp)],
+             [UIKeyCommand keyCommandWithInput:UIKeyInputDownArrow modifierFlags:0 action:@selector(pageDown)],
+             
+             [UIKeyCommand keyCommandWithInput:UIKeyInputEscape modifierFlags:0 action:@selector(back:) discoverabilityTitle:@"返回上一层"]
+             ];
+}
+
+- (void)allScreen:(id)sender
+{
+ 
+    if (self.splitViewController.displayMode == 2) {
+        UIBarButtonItem* item = self.splitViewController.displayModeButtonItem;
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Warc-performSelector-leaks"
+        [[item target] performSelector:item.action];
+#pragma clang diagnostic pop
+    }
+
+}
+- (void)speScreen:(id)sender
+{
+//    [self.splitViewController setPreferredDisplayMode:UISplitViewControllerDisplayModeAutomatic];
+    if (self.splitViewController.displayMode == 1) {
+        UIBarButtonItem* item = self.splitViewController.displayModeButtonItem;
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Warc-performSelector-leaks"
+        [[item target] performSelector:item.action];
+#pragma clang diagnostic pop
+    }
+}
+
+- (id<RRProvideDataProtocol>)speView
+{
+    id vc = [[self.splitViewController viewControllers] lastObject];
+    if ([vc isKindOfClass:[UINavigationController class]]) {
+        vc = [vc topViewController];
+    }
+    if ([vc conformsToProtocol:@protocol(RRProvideDataProtocol)]) {
+        return vc;
+    }
+    return nil;
+}
+
+- (void)lastArticle:(id)sender
+{
+    id<RRProvideDataProtocol> vc = [self speView];
+    if (vc && [vc respondsToSelector:@selector(loadLast)]) {
+        [vc loadLast];
+    }
+}
+
+- (void)nextArticle:(id)sender
+{
+    id<RRProvideDataProtocol> vc = [self speView];
+    if (vc && [vc respondsToSelector:@selector(loadNext)]) {
+        [vc loadNext];
+    }
+}
+
+- (void)pageUp
+{
+    id<RRProvideDataProtocol> vc = [self speView];
+    if (vc && [vc respondsToSelector:@selector(pageUp)]) {
+        [vc pageUp];
+    }
+}
+- (void)pageDown
+{
+    id<RRProvideDataProtocol> vc = [self speView];
+    if (vc && [vc respondsToSelector:@selector(pageDown)]) {
+        [vc pageDown];
+    }
+}
+
+- (void)switchFavorite
+{
+    id<RRProvideDataProtocol> vc = [self speView];
+    if (vc && [vc respondsToSelector:@selector(switchFavorite)]) {
+        [vc switchFavorite];
+    }
+}
+- (void)switchReadLater
+{
+    id<RRProvideDataProtocol> vc = [self speView];
+    if (vc && [vc respondsToSelector:@selector(switchReadlater)]) {
+        [vc switchReadlater];
+    }
+}
+
+//- (BOOL)canResignFirstResponder
+//{
+//    return NO;
+//}
 @end

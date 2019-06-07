@@ -12,6 +12,9 @@
 #import "OPMLDocument.h"
 @import ReactiveObjC;
 @import ui_base;
+@import oc_string;
+#import "UIViewController+PresentAndPush.h"
+#import "RRFeedInfoListOtherModel.h"
 
 @interface AppDelegate () <SDWebImageManagerDelegate,UISplitViewControllerDelegate>
 {
@@ -194,13 +197,79 @@
     return YES;
 }
 
+- (void)application:(UIApplication *)application performActionForShortcutItem:(UIApplicationShortcutItem *)shortcutItem completionHandler:(void (^)(BOOL))completionHandler
+{
+    if([shortcutItem.type isEqualToString:@"search"])
+    {
+        NSString* urlStr = (NSString*)shortcutItem.userInfo[@"scheme"];
+        if (urlStr) {
+            [self handleScheme:[NSURL URLWithString:urlStr]];
+        }
+    }
+}
 
+- (void)handleScheme:(NSURL*)url
+{
+//    NSString* urlStr = [[url path] stringByReplacingOccurrencesOfString:@"readerprime" withString:@"rr"];
+//    NSLog(@"%@",url.host);
+//    NSLog(@"%@",url.query);
+//    NSLog(@"%@",url.path);
+    __block NSString* keyword = nil;
+    if ([[url host] isEqualToString:@"search"]) {
+        NSURLComponents *components = [[NSURLComponents alloc] initWithString:url.absoluteString];
+        [components.queryItems enumerateObjectsUsingBlock:^(NSURLQueryItem * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+
+            if ([obj.name isEqualToString:@"keyword"]) {
+                keyword = obj.value;
+            }
+        }];
+    }
+    if (!keyword) {
+        [SVProgressHUD showErrorWithStatus:@"缺少keyword参数"];
+        return;
+    }
+    
+    NSString* searchText = keyword;
+    RRFeedInfoListOtherModel* mSearch = [RRFeedInfoListOtherModel searchModel:searchText];
+    UIViewController* view = [MVPRouter viewForURL:@"rr://list" withUserInfo:@{@"model":mSearch}];
+    if (view) {
+        [[self topVC] pushViewController:view animated:YES];
+    }
+    else {
+        [SVProgressHUD showInfoWithStatus:[NSString stringWithFormat:@"不支持URLScheme:\n%@",[url absoluteString]._urlDecodeString]];
+    }
+    
+}
+
+- (UINavigationController*)topVC
+{
+    UINavigationController* n = nil;
+    if ([self.window.rootViewController isKindOfClass:[UISplitViewController class]]) {
+        UISplitViewController* split = (UISplitViewController*)self.window.rootViewController;
+        UIViewController* v = [split.viewControllers firstObject];
+        //        NSLog(@"%@",v);
+        if ([v isKindOfClass:[UINavigationController class]]) {
+            n = (UINavigationController*)v;
+        }
+    }
+    else {
+        if ([self.window.rootViewController isKindOfClass:[UINavigationController class]]) {
+            n = (UINavigationController*)self.window.rootViewController;
+        }
+    }
+    return n;
+}
 
 - (BOOL)application:(UIApplication *)app openURL:(NSURL *)url options:(NSDictionary<UIApplicationOpenURLOptionsKey,id> *)options
 {
-//    NSLog(@"%s",__func__);
-//    NSLog(@"%@",url);
-//    NSLog(@"%@",options);
+    NSLog(@"%s",__func__);
+    NSLog(@"%@",url);
+    NSLog(@"%@",options);
+    NSLog(@"%@",[url absoluteString]);
+    if ([[url absoluteString] hasPrefix:@"readerprime"]) {
+        [self handleScheme:url];
+        return YES;
+    }
     if (![[url path] hasSuffix:@"opml"]) {
         dispatch_async(dispatch_get_main_queue(), ^{
             [SVProgressHUD showErrorWithStatus:@"仅支持OPML文件"];
@@ -230,8 +299,7 @@
         dispatch_async(dispatch_get_main_queue(), ^{
             if (success) {
                 UIViewController* view = [MVPRouter viewForURL:@"rr://import" withUserInfo:@{@"model":d}];
-//                                [weakSelf.view mvp_pushViewController:view];
-//
+ 
                 if ([UIDevice currentDevice].iPad()) {
                     if (n) {
                         RRExtraViewController* rr = [[RRExtraViewController alloc] initWithRootViewController:view];
@@ -263,7 +331,6 @@
                 
             }
             else {
-                //                [self.view hudFail:@"导入文件失败"];
                 [SVProgressHUD showErrorWithStatus:@"文件导入失败"];
             }
         });

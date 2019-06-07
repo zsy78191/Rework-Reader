@@ -253,6 +253,13 @@
     [[self view] mvp_pushViewController:vc];
 }
 
+- (void)openURLScheme
+{
+    id vc = [MVPRouter viewForURL:@"rr://web" withUserInfo:@{@"name":@"URL Scheme.md"}];
+    [[self view] mvp_pushViewController:vc];
+}
+
+
 - (void)openSourceList
 {
     id vc = [MVPRouter viewForURL:@"rr://web" withUserInfo:@{@"name":@"开源代码.md"}];
@@ -341,7 +348,7 @@
 
 - (void)openOPML
 {
-    UIDocumentPickerViewController* dvc = [[UIDocumentPickerViewController alloc] initWithDocumentTypes:@[@"com.orzer.reader.opml"] inMode:UIDocumentPickerModeImport];
+    UIDocumentPickerViewController* dvc = [[UIDocumentPickerViewController alloc] initWithDocumentTypes:@[@"com.orzer.reader.opml",@"com.orzer.reader.opml2",@"public.xml"] inMode:UIDocumentPickerModeImport];
     [[self view] mvp_presentViewController:dvc animated:YES completion:^{
         
     }];

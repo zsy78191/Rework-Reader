@@ -7,13 +7,14 @@
 //
 
 @import mvc_base;
-@class EntityFeedInfo;
+@class EntityFeedInfo,EntityHub;
 #import "RRCanEditProtocol.h"
 NS_ASSUME_NONNULL_BEGIN
 
 @interface RRFeedInfoListModel : MVPModel <RRCanEditProtocol>
 
 @property (nonatomic, strong) EntityFeedInfo* feed;
+@property (nonatomic, strong) EntityHub* thehub;
 
 @property (nullable, nonatomic, copy) NSString *copyright;
 @property (nullable, nonatomic, copy) NSString *generator;
