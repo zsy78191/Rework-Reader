@@ -203,10 +203,24 @@ NSString* const kShowRecent = @"kShowRecent";
         }
     }];
     
-    self.listItemSetting[kShowRecent] = @(self.recentModel.editType == RRCEEditTypeDelete);
-    self.listItemSetting[kShowLater] = @(self.laterModel.editType == RRCEEditTypeDelete);
-    self.listItemSetting[kShowFav] = @(self.favModel.editType == RRCEEditTypeDelete);
-    self.listItemSetting[kShowUnread] = @(self.unreadModel.editType == RRCEEditTypeDelete);
+    NSLog(@"-- %@",@(self.recentModel != nil));
+    NSLog(@"-- %@",@(self.laterModel != nil));
+    NSLog(@"-- %@",@(self.favModel != nil));
+    NSLog(@"-- %@",@(self.unreadModel != nil));
+    
+    if (self.recentModel) {
+        self.listItemSetting[kShowRecent] = @(self.recentModel.editType == RRCEEditTypeDelete);
+    }
+    if (self.favModel) {
+        self.listItemSetting[kShowFav] = @(self.favModel.editType == RRCEEditTypeDelete);
+    }
+    if (self.laterModel) {
+       self.listItemSetting[kShowLater] = @(self.laterModel.editType == RRCEEditTypeDelete);
+    }
+    if (self.unreadModel) {
+        self.listItemSetting[kShowUnread] = @(self.unreadModel.editType == RRCEEditTypeDelete);
+    }
+    
     
     [[NSUserDefaults standardUserDefaults] setObject:self.listItemSetting forKey:kMainListItemSetting];
     [[NSUserDefaults standardUserDefaults] synchronize];
@@ -236,6 +250,11 @@ NSString* const kShowRecent = @"kShowRecent";
     NSNumber* count = [[RPDataManager sharedManager] getCount:@"EntityFeedArticle" predicate:[self.unreadModel.readStyle predicate] key:nil value:nil sort:nil asc:YES];
 
     return [count integerValue];
+}
+
+- (void)updateUnreadCount
+{
+    self.unreadModel.count = [self unreadCount];
 }
 
 - (void)loadData
@@ -280,8 +299,10 @@ NSString* const kShowRecent = @"kShowRecent";
                 [self.readStyleInputer hideModel:mUnread];
             }
         }
-        
-        
+        else {
+            [self.readStyleInputer hideModel:mUnread];
+        }
+      
         {
             RRFeedInfoListOtherModel* mLater = GetRRFeedInfoListOtherModel(@"稍后阅读",@"favicon_4",@"想看还没有看的文章",@"readlater");
             mLater.canRefresh = NO;
@@ -306,6 +327,10 @@ NSString* const kShowRecent = @"kShowRecent";
                     [self.readStyleInputer hideModel:mLater];
                 }
             }
+            else {
+                [self.readStyleInputer hideModel:mLater];
+            }
+          
         }
         
         RRFeedInfoListOtherModel* mFavourite = GetRRFeedInfoListOtherModel(@"收藏",@"favicon_1",@"收藏的文章",@"favourite");
@@ -332,6 +357,10 @@ NSString* const kShowRecent = @"kShowRecent";
                 [self.readStyleInputer hideModel:mFavourite];
             }
         }
+        else {
+            [self.readStyleInputer hideModel:mFavourite];
+        }
+     
         
         {
             RRFeedInfoListOtherModel* mLast = GetRRFeedInfoListOtherModel(@"最近阅读",@"favicon_3",@"近期阅读的20篇文章",@"last");
@@ -356,6 +385,10 @@ NSString* const kShowRecent = @"kShowRecent";
                     [self.readStyleInputer hideModel:mLast];
                 }
             }
+            else {
+                [self.readStyleInputer hideModel:mLast];
+            }
+          
         }
     }
     
@@ -478,7 +511,25 @@ NSString* const kShowRecent = @"kShowRecent";
     self.updating = YES;
     
     NSArray* all = self.inputer.allModels;
+    all = all.map(^id _Nonnull(RRFeedInfoListModel*   _Nonnull x) {
+        if (x.thehub) {
+            NSArray* infos = [x.thehub.infos sortedArrayUsingDescriptors:@[[NSSortDescriptor sortDescriptorWithKey:@"sort" ascending:YES]]];
+            return infos.map(^id _Nonnull(EntityFeedInfo*  _Nonnull x) {
+                RRFeedInfoListModel* l = [[RRFeedInfoListModel alloc] init];
+                [l loadFromFeed:x];
+                l.feed = x;
+                return l;
+            });
+        }
+        else {
+            return x;
+        }
+    }).flatten(1);
     
+//    [all enumerateObjectsUsingBlock:^(RRFeedInfoListModel*  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+//        NSLog(@"%@",obj.title);
+//    }];
+//
     // RRTODO:这部分也需要拆分，目前已经有三个地方用到了
     all =
     all.filter(^BOOL(RRFeedInfoListModel*  _Nonnull x) {
@@ -746,13 +797,14 @@ NSString* const kShowRecent = @"kShowRecent";
                 dispatch_async(dispatch_get_main_queue(), ^{
                     [weakSelf.view hudSuccess:@"全部标记成功"];
                     [weakSelf updateSelections:@[]];
-                    NSInteger c = [self unreadCount];
-                    if (c == 0) {
-                        if ([self.readStyleInputer mvp_indexPathWithModel:self.unreadModel]) {
-                            [self.readStyleInputer mvp_deleteModel:self.unreadModel];
-                        }
-                        
-                    }
+//                    NSInteger c = [self unreadCount];
+//                    if (c == 0) {
+//                        if ([self.readStyleInputer mvp_indexPathWithModel:self.unreadModel]) {
+//                            [self.readStyleInputer mvp_deleteModel:self.unreadModel];
+//                        }
+//
+//                    }
+                    [weakSelf updateUnreadCount];
                     [[weakSelf view] mvp_reloadData];
                 });
             }
@@ -776,12 +828,13 @@ NSString* const kShowRecent = @"kShowRecent";
                     dispatch_async(dispatch_get_main_queue(), ^{
                         [weakSelf.view hudSuccess:@"标记成功"];
                         [weakSelf updateSelections:@[]];
-                        NSInteger c = [weakSelf unreadCount];
-                        if (c == 0) {
-                            if ([weakSelf.readStyleInputer mvp_indexPathWithModel:weakSelf.unreadModel]) {
-                                [weakSelf.readStyleInputer mvp_deleteModel:weakSelf.unreadModel];
-                            }
-                        }
+//                        NSInteger c = [weakSelf unreadCount];
+//                        if (c == 0) {
+//                            if ([weakSelf.readStyleInputer mvp_indexPathWithModel:weakSelf.unreadModel]) {
+//                                [weakSelf.readStyleInputer mvp_deleteModel:weakSelf.unreadModel];
+//                            }
+//                        }
+                        [weakSelf updateUnreadCount];
                         [[weakSelf view] mvp_reloadData];
                     });
                 }
@@ -874,13 +927,14 @@ NSString* const kShowRecent = @"kShowRecent";
         if (!e) {
             dispatch_async(dispatch_get_main_queue(), ^{
                 [weakSelf updateSelections:@[]];
-                NSInteger c = [weakSelf unreadCount];
-                weakSelf.unreadModel.count = c;
-                if (c == 0) {
-                    if ([weakSelf.readStyleInputer mvp_indexPathWithModel:weakSelf.unreadModel]) {
-                        [weakSelf.readStyleInputer mvp_deleteModel:weakSelf.unreadModel];
-                    }
-                }
+//                NSInteger c = [weakSelf unreadCount];
+//                weakSelf.unreadModel.count = c;
+//                if (c == 0) {
+//                    if ([weakSelf.readStyleInputer mvp_indexPathWithModel:weakSelf.unreadModel]) {
+//                        [weakSelf.readStyleInputer mvp_deleteModel:weakSelf.unreadModel];
+//                    }
+//                }
+                [weakSelf updateUnreadCount];
                 [[weakSelf view] mvp_reloadData];
             });
         }

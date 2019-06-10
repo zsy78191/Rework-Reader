@@ -65,37 +65,53 @@
 
 - (void)recoverFromiCloud:(void (^)(BOOL))finish
 {
+    [self recoverFromiCloud:finish time:0];
+}
+
+- (void)recoverFromiCloud:(void (^)(BOOL))finish time:(NSUInteger)time
+{
     NSURL* icloud_url = [self iCloudURL];
     if (icloud_url) {
         NSURL* local_url = [[NSPersistentStore MR_defaultPersistentStore] URL];
+        __block BOOL ss = YES;
         if (local_url) {
-            [MagicalRecord cleanUp];
+            if (time == 0) {
+                [MagicalRecord cleanUp];
+            }
+            
             NSString* database_path = [[local_url path] stringByDeletingLastPathComponent];
             NSArray* b = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:database_path error:nil];
             [b enumerateObjectsUsingBlock:^(NSString*  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
                 NSURL* url1 = [NSURL fileURLWithPath:[database_path stringByAppendingPathComponent:obj]];
                 NSURL* url2 = [icloud_url URLByAppendingPathComponent:obj];
+//                NSURL* url1b = [url1 URLByAppendingPathExtension:@"bak"];
                 NSError* error;
                 if ([[NSFileManager defaultManager] fileExistsAtPath:[url1 path]]) {
                     NSError* del_error;
                     [[NSFileManager defaultManager] removeItemAtURL:url1 error:&del_error];
+//                    [[NSFileManager defaultManager] removeItemAtURL:url1b error:nil];
+//                    [[NSFileManager defaultManager] moveItemAtURL:url1 toURL:url1b error:&del_error];
                     if (del_error) {
+                        NSLog(@"备份失败");
                     }
                 }
                 BOOL copy = [[NSFileManager defaultManager] copyItemAtURL:url2 toURL:url1 error:&error];
+                ss = ss && copy;
                 if (!copy) {
+                    [[NSFileManager defaultManager] startDownloadingUbiquitousItemAtURL:url2 error:nil];
+//                    NSLog(@"失败2");
+//                    [[NSFileManager defaultManager] removeItemAtURL:url1 error:nil];
+//                    BOOL recover = [[NSFileManager defaultManager] moveItemAtURL:url1b toURL:url1 error:nil];
+//                    NSLog(@"恢复 %@",@(recover));
                 }
                 else
                 {
                 }
             }];
-//            NSManagedObjectModel *model = [NSManagedObjectModel MR_newManagedObjectModelNamed:@"Model.momd"];
-//            [NSManagedObjectModel MR_setDefaultManagedObjectModel:model];
-//            [MagicalRecord setShouldAutoCreateManagedObjectModel:NO];
-//            [MagicalRecord setupAutoMigratingCoreDataStack];
+            
             [MagicalRecord setupCoreDataStackWithAutoMigratingSqliteStoreNamed:@"Model"];
             if (finish) {
-                finish(YES);
+                finish(ss);
             }
             return;
         }
@@ -127,14 +143,14 @@
             [b enumerateObjectsUsingBlock:^(NSString*  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
 
                 NSURL* url1 = [NSURL fileURLWithPath:[database_path stringByAppendingPathComponent:obj]];
-
                 NSURL* url2 = [icloud_url URLByAppendingPathComponent:obj];
-
                 NSError* error;
                 if ([[NSFileManager defaultManager] fileExistsAtPath:[url2 path]]) {
                     NSError* del_error;
                     [[NSFileManager defaultManager] removeItemAtURL:url2 error:&del_error];
+//                    [[NSFileManager defaultManager] moveItemAtURL:url2 toURL:[url2 URLByAppendingPathExtension:@"bak"] error:&del_error];
                     if (del_error) {
+                        NSLog(@"备份失败");
                     }
                 }
                 BOOL copy = [[NSFileManager defaultManager] copyItemAtURL:url1 toURL:url2 error:&error];
@@ -144,7 +160,11 @@
                 }
                 else
                 {
-
+                    NSError* del_error;
+//                    [[NSFileManager defaultManager] moveItemAtURL:[url2 URLByAppendingPathExtension:@"bak"] toURL:url2 error:&del_error];
+                    if (del_error) {
+                        NSLog(@"恢复失败");
+                    }
                 }
             }];
             
@@ -164,9 +184,15 @@
     if (![filemgr fileExistsAtPath:[url path]]) {
         return NO;
     }
-    NSString* database_path = [[url path] stringByDeletingLastPathComponent];
+    NSString* database_path = [url path];
     NSArray* b = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:database_path error:nil];
-    if (b.count == 0) {
+    __block BOOL _needDownload = NO;
+    [b enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+//        NSString* fp = [database_path stringByAppendingPathComponent:obj];
+        _needDownload = _needDownload || [[NSFileManager defaultManager] startDownloadingUbiquitousItemAtURL:[url URLByAppendingPathComponent:obj] error:nil];
+        
+    }];
+    if (b.count < 3) {
         return NO;
     }
     return YES;

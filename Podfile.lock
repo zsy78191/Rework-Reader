@@ -25,8 +25,8 @@ PODS:
   - Masonry (1.1.0)
   - MBProgressHUD (0.9.2)
   - MGJRouter (0.10.0)
-  - MMKV (1.0.19)
-  - mvc-base (0.3.7.3):
+  - MMKV (1.0.21)
+  - mvc-base (0.3.7.4):
     - DZNEmptyDataSet
     - MagicalRecord
     - Masonry
@@ -50,9 +50,9 @@ PODS:
   - pop (1.0.12)
   - ReactiveObjC (3.1.1)
   - RegexKitLite (4.0)
-  - SDWebImage (4.4.6):
-    - SDWebImage/Core (= 4.4.6)
-  - SDWebImage/Core (4.4.6)
+  - SDWebImage (4.4.7):
+    - SDWebImage/Core (= 4.4.7)
+  - SDWebImage/Core (4.4.7)
   - SVProgressHUD (2.2.5)
   - TYSnapshotScroll (0.0.7)
   - ui-base (0.1.2):
@@ -138,8 +138,8 @@ SPEC CHECKSUMS:
   Masonry: 678fab65091a9290e40e2832a55e7ab731aad201
   MBProgressHUD: 1569cf7ace17a8bac47aabfbb8580a49690386d1
   MGJRouter: 15d94541eb2cc81eff7d577337288feb7ae9575f
-  MMKV: d362c29ab6ad839a16fcdf9e5b454944ecce588b
-  mvc-base: c41c10aae39806d1f417ed4e6b7241594a97d17f
+  MMKV: 080c7e378cd042ab733af941cd1793ff0f9eaca9
+  mvc-base: 7e03fba79ecf5a8c1aeaff0a869d542a8bc3daa0
   oc-base: 4d381ce4ce8d088c632ff1362f0f03595299efb7
   oc-date: d8601fcc9eeea98f9d84506b77ef508cf9057786
   oc-string: 79be9e8e4c80dd3e668690d3ac462e79a713489d
@@ -147,7 +147,7 @@ SPEC CHECKSUMS:
   pop: d582054913807fd11fd50bfe6a539d91c7e1a55a
   ReactiveObjC: 011caa393aa0383245f2dcf9bf02e86b80b36040
   RegexKitLite: c0e4c12e6e7de0769f3a3ed679f0f61604170661
-  SDWebImage: 3f3f0c02f09798048c47a5ed0a13f17b063572d8
+  SDWebImage: c10d14a8883ebd89664f02a422006f66a85c0c5d
   SVProgressHUD: 1428aafac632c1f86f62aa4243ec12008d7a51d6
   TYSnapshotScroll: 699a985c9d630f00b62b90bb3ba5ea9ccd03767a
   ui-base: 0babea0480a05031ec226e20b47f9698a919b822
@@ -156,4 +156,4 @@ SPEC CHECKSUMS:
 
 PODFILE CHECKSUM: a6c0358917fa11844f59bc316936293f01150ece
 
-COCOAPODS: 1.6.0
+COCOAPODS: 1.7.1
