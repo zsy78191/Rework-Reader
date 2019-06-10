@@ -40,12 +40,13 @@
 - (void)hideModel:(id)model
 {
     [self.hideItem addObject:model];
+    NSLog(@"hide %@",[model title]);
     [self mvp_deleteModel:model];
 }
 
 - (void)showAll{
     NSArray* a = [self allModels];
-    
+    NSLog(@"%@",self.hideItem);
     [self.hideItem sortUsingComparator:^NSComparisonResult(    id<RRCanEditProtocol>  _Nonnull obj1,     id<RRCanEditProtocol>  _Nonnull obj2) {
         return obj2.idx > obj1.idx;
     }];

@@ -439,6 +439,11 @@
         [self.view hudInfo:@"iCloud功能没有开启"];
         return;
     }
+    if (!self.backuper.checkFileExistFromiCloud) {
+        [self.backuper ensureFileDownloaded];
+        [self.view hudInfo:@"iCloud文件尚未同步到本机，请稍后重试"];
+        return;
+    }
     NSArray* files = [self.backuper showiCloudFiles];
     if (files.count > 1) {
         __weak typeof(self) weakSelf = self;
@@ -449,7 +454,7 @@
                     [[NSNotificationCenter defaultCenter] postNotificationName:@"RRMainListNeedUpdate" object:nil];
                 }
                 else {
-                    [weakSelf.view hudFail:@"操作失败"];
+                    [weakSelf.view hudFail:@"操作失败，iCloud文件可能正在同步中，清重试"];
                 }
                 [weakSelf.view mvp_reloadData];
             });

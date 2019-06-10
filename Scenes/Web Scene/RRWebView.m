@@ -1406,7 +1406,30 @@
     }];
     if (vc) {
         dispatch_async(dispatch_get_main_queue(), ^{
-             [self mvp_pushViewController:vc];
+            if (self.splitViewController) {
+                BOOL split = [[NSUserDefaults standardUserDefaults] boolForKey:@"RRSplit"];
+                if (split) {
+                    [self mvp_pushViewController:vc];
+                }
+                else {
+                    id vv = [[self.splitViewController viewControllers] firstObject];
+                    if ([vv isKindOfClass:[UINavigationController class]]) {
+                        UINavigationController* nvc = vv;
+                        [nvc pushViewController:vc animated:YES];
+                    }
+                    else {
+                        UI_Alert()
+                        .titled(@"理论上不应该出现这种错误，清将此页面截图发送给开发者，谢谢您。")
+                        .cancel(@"关闭", ^(UIAlertAction * _Nonnull action) {
+                            
+                        })
+                        .show(self);
+                    }
+                }
+            }
+            else {
+                [self mvp_pushViewController:vc];
+            }
         });
     }
 }

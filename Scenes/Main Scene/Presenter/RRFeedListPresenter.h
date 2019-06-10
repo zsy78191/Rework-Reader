@@ -30,10 +30,10 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, strong) NSArray* selectArray;
 @property (nonatomic, assign) BOOL selectMoreThanOne;
 @property (nonatomic, assign) BOOL editing;
-@property (nonatomic, weak) RRFeedInfoListOtherModel* unreadModel;
-@property (nonatomic, weak) RRFeedInfoListOtherModel* laterModel;
-@property (nonatomic, weak) RRFeedInfoListOtherModel* favModel;
-@property (nonatomic, weak) RRFeedInfoListOtherModel* recentModel;
+@property (nonatomic, strong) RRFeedInfoListOtherModel* unreadModel;
+@property (nonatomic, strong) RRFeedInfoListOtherModel* laterModel;
+@property (nonatomic, strong) RRFeedInfoListOtherModel* favModel;
+@property (nonatomic, strong) RRFeedInfoListOtherModel* recentModel;
 
 @property (nonatomic, strong) NSMutableDictionary* listItemSetting;
 
