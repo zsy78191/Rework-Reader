@@ -13,6 +13,7 @@
 @import oc_base;
 @import oc_util;
 @import ui_base;
+@import oc_string;
 @import SDWebImage;
 @import RegexKitLite;
 @import Fork_MWFeedParser;
@@ -83,8 +84,19 @@
 {
     RRFeedArticleModel* m = obj;
     // FIXED: 这里很奇怪，判断条件顺序变化，会导致结果变化
-    NSPredicate * p = [NSPredicate predicateWithFormat:@"(title = %@ or link = %@) and feed.uuid = %@",m.title,m.link,info.uuid];
-    NSNumber* c = [[RPDataManager sharedManager] getCount:@"EntityFeedArticle" predicate:p key:nil value:nil sort:nil asc:YES];
+    // 修改Predicate，优化重复判断条件
+//    NSPredicate * p = [NSPredicate predicateWithFormat:@"(title = %@ or link = %@) and feed.uuid = %@",m.title,m.link,info.uuid];
+    NSPredicate* p1  =[NSPredicate predicateWithFormat:@"title = %@",m.title];
+    NSPredicate* p2  =[NSPredicate predicateWithFormat:@"link = %@",m.link];
+    NSPredicate* p3  =[NSPredicate predicateWithFormat:@"identifier = %@",m.identifier];
+    
+    NSCompoundPredicate* c1 = [NSCompoundPredicate orPredicateWithSubpredicates:@[p1,p2,p3]];
+    NSPredicate* p4 = [NSPredicate predicateWithFormat:@"feed.uuid = %@",info.uuid];
+    
+    NSCompoundPredicate* c2 = [NSCompoundPredicate andPredicateWithSubpredicates:@[c1,p4]];
+//    NSLog(@"%@",c2);
+    
+    NSNumber* c = [[RPDataManager sharedManager] getCount:@"EntityFeedArticle" predicate:c2 key:nil value:nil sort:nil asc:YES];
     return [c integerValue];
 }
 
@@ -144,6 +156,7 @@
 
 + (void)insertArticle:(NSArray*)article withFeed:(EntityFeedInfo*)info finish:(void (^)(NSUInteger))finish
 {
+    article = [[self class] removeSame:article];
     [MagicalRecord saveWithBlockAndWait:^(NSManagedObjectContext * _Nonnull localContext) {
         __block NSUInteger c = 0;
         [article enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
@@ -223,6 +236,7 @@
 
 + (void)insertArticle:(NSArray*)article finish:(void (^)(NSUInteger))finish
 {
+    article = [[self class] removeSame:article];
     [MagicalRecord saveWithBlockAndWait:^(NSManagedObjectContext * _Nonnull localContext) {
         __block NSUInteger c = 0;
         [article enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
@@ -240,6 +254,23 @@
         }
     }];
     //NSLog(@"一共增加%ld篇文章",c);
+}
+
+//插入数据库前先做一次排重
++ (NSArray*)removeSame:(NSArray*)article
+{
+    NSMutableDictionary* d = [NSMutableDictionary dictionaryWithCapacity:10];
+    article = [article filteredArrayUsingPredicate:[NSPredicate predicateWithBlock:^BOOL(EntityFeedArticle*  _Nullable evaluatedObject, NSDictionary<NSString *,id> * _Nullable bindings) {
+//        NSLog(@"%@",evaluatedObject);
+//        NSLog(@"%@",bindings);
+        NSString* key = [evaluatedObject.title stringByAppendingString:evaluatedObject.link]._md5String;
+        if (d[key]) {
+            return NO;
+        }
+        d[key] = @(1);
+        return YES;
+    }]];
+    return article;
 }
 
 + (void)readArticle:(NSString *)articleUUID

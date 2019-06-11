@@ -33,4 +33,9 @@
     }];
 }
 
+- (void)test
+{
+    UIAccessibilityElement* a;
+}
+
 @end

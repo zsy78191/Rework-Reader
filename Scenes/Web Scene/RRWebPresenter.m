@@ -88,7 +88,12 @@
 {
     if (self.model) {
 //        NSLog(@"%@",self.model.link);
-        [self activeShare:[NSURL URLWithString:self.model.link] sender:sender];
+        #ifdef DEBUG
+            NSLog(@"%@",self.model);
+        #else
+            [self activeShare:[NSURL URLWithString:self.model.link] sender:sender];
+        #endif
+
     }
     else {
         
