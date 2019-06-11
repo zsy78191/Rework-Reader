@@ -27,11 +27,15 @@
 @import oc_util;
 @import TYSnapshotScroll;
 @import MessageUI;
+@import MagicalRecord;
+#import "RRCoreDataModel.h"
 
 @interface RRWebView () <WKUIDelegate,WKNavigationDelegate,UIScrollViewDelegate,MWPhotoBrowserDelegate,WKScriptMessageHandler,MFMailComposeViewControllerDelegate>
 {
     
 }
+
+@property (nonatomic, assign) BOOL voiceover;
 
 @property (nonatomic, strong) NSString* originURL;
 @property (nonatomic, assign) BOOL isSub;
@@ -222,6 +226,9 @@
 
 - (void)loadLast
 {
+    if ([self isVoiceoverRunning]) {
+        return;
+    }
     if (!self.canDragPage) {
         return;
     }
@@ -254,6 +261,9 @@
 
 - (void)loadNext
 {
+    if ([self isVoiceoverRunning]) {
+        return;
+    }
     if (!self.canDragPage) {
         return;
     }
@@ -301,6 +311,10 @@
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView
 {
+    if ([self voiceover]) {
+        return;
+    }
+    
     if (self.startDraging) {
         if (self.startOffset.y - scrollView.contentOffset.y > 60) {
             if (self.hideNaviBar) {
@@ -325,31 +339,6 @@
             }
         }
     }
-    
-    //    //NSLog(@"(2)%f %d",scrollView.contentOffset.y,self.loadFinished);
-//    if (scrollView.contentOffset.y > 0 && self.loadFinished) {
-//        if (!self.hideNaviBar && (self.progressView.progress == 0 || self.progressView.progress == 1)) {
-//            self.hideNaviBar = YES;
-//            [UIView animateWithDuration:0.24 animations:^{
-//                [self.navigationController.navigationBar setAlpha:0];
-//                [self.navigationController.toolbar setAlpha:0];
-//                self.progressView.alpha = 0;
-//            }];
-//        }
-//    }
-//    else if(scrollView.contentOffset.y < 50)
-//    {
-//        if (self.hideNaviBar) {
-//            self.hideNaviBar = NO;
-//            [UIView animateWithDuration:0.24 animations:^{
-//                [self.navigationController.navigationBar setAlpha:1];
-//                [self.navigationController.toolbar setAlpha:1];
-//                if ( fabs(self.progressView.progress - 1) > 0.00001 ) {
-//                    [self.progressView setAlpha:1];
-//                }
-//            }];
-//        }
-//    }
     
     if (scrollView.contentOffset.y < - 130) {
         //        [self loadLast];
@@ -427,7 +416,7 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    
+    self.voiceover = UIAccessibilityIsVoiceOverRunning();
     self.view.cas_styleClass = @"bgView";
     self.restorationIdentifier = @"RRWebRestoreView";
 }
@@ -435,12 +424,35 @@
 - (void)encodeRestorableStateWithCoder:(NSCoder *)coder
 {
     [super encodeRestorableStateWithCoder:coder];
+    [coder encodeObject:self.currentArticle forKey:@"article"];
+    if ([self.currentFeed isKindOfClass:[MWFeedInfo class]]) {
+        [coder encodeObject:self.currentFeed forKey:@"feed"];
+    }
+    else if([self.currentFeed isKindOfClass:[EntityFeedInfo class]])
+    {
+        [coder encodeObject:self.currentFeed.url forKey:@"url"];
+    }
 }
 
 - (void)decodeRestorableStateWithCoder:(NSCoder *)coder
 {
     [super decodeRestorableStateWithCoder:coder];
+    self.currentArticle = [coder decodeObjectForKey:@"article"];
+    NSURL* url = [coder decodeObjectForKey:@"url"];
+    MWFeedInfo* info = [coder decodeObjectForKey:@"feed"];
+    if (info) {
+        self.currentFeed = info;
+    }
+    else if(url)
+    {
+        self.currentFeed = (id)[EntityFeedInfo MR_findFirstByAttribute:@"url" withValue:url];
+    }
+    
+    if (self.currentArticle && self.currentFeed) {
+        [self preloadData:self.currentArticle feed:self.currentFeed];
+    }
 }
+
 
 
 
@@ -576,8 +588,13 @@
 //    NSLog(@"%@",self.webView.scrollView);
 
     self.webView.scrollView.delegate = self;
-    [self.webView.scrollView addSubview:self.upView];
-    [self.webView.scrollView addSubview:self.downView];
+    if ([self isVoiceoverRunning]) {
+        
+    }
+    else{
+        [self.webView.scrollView addSubview:self.upView];
+        [self.webView.scrollView addSubview:self.downView];
+    }
 //    [self.webView.scrollView setDirectionalLockEnabled:YES];
 //    [self.webView.scrollView setAlwaysBounceHorizontal:NO];
     
@@ -1257,7 +1274,12 @@
 
 - (void)setCanDragPage:(BOOL)canDragPage
 {
-    _canDragPage = canDragPage;
+    if ([self isVoiceoverRunning]) {
+        _canDragPage = NO;
+    }
+    else {
+        _canDragPage = canDragPage;
+    }
     if (canDragPage) {
         [self.downView setAlpha:1];
         [self.upView setAlpha:1];
@@ -1697,6 +1719,11 @@
     if (self.currentArticle && !self.currentArticle.lastread) {
         [RRFeedAction readArticle:self.currentArticle.uuid];
     }
+}
+
+- (BOOL)isVoiceoverRunning
+{
+    return self.voiceover;
 }
 
 

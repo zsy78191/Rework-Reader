@@ -8,6 +8,8 @@
 
 #import "RRFeedArticleModel.h"
 #import "RRCoreDataModel.h"
+@import oc_base;
+@import MagicalRecord;
 
 //@property (nonatomic, copy) NSString *identifier;
 //@property (nonatomic, copy) NSString *title;
@@ -20,6 +22,32 @@
 //@property (nonatomic, copy) NSArray *enclosures;
 
 @implementation RRFeedArticleModel
+
+- (void)encodeWithCoder:(NSCoder *)aCoder
+{
+    [[self propertys] enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+        id target = [self valueForKey:obj];
+        if ([target conformsToProtocol:@protocol(NSCoding)]) {
+            [aCoder encodeObject:target forKey:obj];
+        }
+    }];
+}
+
+- (instancetype)initWithCoder:(NSCoder *)aDecoder
+{
+    self = [super init];
+    if (self) {
+        [[self propertys] enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+            if (![obj isEqualToString:@"feedEntity"]) {
+                 [self setValue:[aDecoder decodeObjectForKey:obj] forKey:obj];
+            }
+        }];
+        if (self.feed) {
+            self.feedEntity = [EntityFeedInfo MR_findFirstByAttribute:@"url" withValue:self.feed.url];
+        }
+    }
+    return self;
+}
 
 - (instancetype)initWithItem:(MWFeedItem *)item
 {
@@ -73,7 +101,7 @@
 
 - (NSString *)description
 {
-    return [[super description] stringByAppendingFormat:@"%@ %@ %@",self.title,self.date,self.updateTime];
+    return [[super description] stringByAppendingFormat:@"%@ %@ %@ %@",self.title,self.date,self.updateTime,self.link];
 }
 
 @end

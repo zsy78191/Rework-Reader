@@ -14,7 +14,7 @@ NS_ASSUME_NONNULL_BEGIN
 @class EntityFeedArticle;
 @class EntityFeedInfo;
 
-@interface RRFeedArticleModel : MVPModel
+@interface RRFeedArticleModel : MVPModel <NSCoding>
 
 @property (nonatomic, copy) NSString *identifier;
 @property (nonatomic, copy) NSString *title;
