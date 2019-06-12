@@ -90,7 +90,9 @@
     NSPredicate* p2  =[NSPredicate predicateWithFormat:@"link = %@",m.link];
     NSPredicate* p3  =[NSPredicate predicateWithFormat:@"identifier = %@",m.identifier];
     
-    NSCompoundPredicate* c1 = [NSCompoundPredicate orPredicateWithSubpredicates:@[p1,p2,p3]];
+    NSCompoundPredicate* c1 = m.identifier? [NSCompoundPredicate orPredicateWithSubpredicates:@[p1,p2,p3]]: [NSCompoundPredicate orPredicateWithSubpredicates:@[p1,p2]];
+    
+    
     NSPredicate* p4 = [NSPredicate predicateWithFormat:@"feed.uuid = %@",info.uuid];
     
     NSCompoundPredicate* c2 = [NSCompoundPredicate andPredicateWithSubpredicates:@[c1,p4]];
@@ -165,7 +167,11 @@
             NSUInteger i = [RRFeedAction exist:obj feed:info];
             if (i == 0) {
                 c++;
+//                NSLog(@"添加 %@",[obj title]);
                 [RRFeedAction _insert:obj keys:ps feed:info context:localContext];
+            }
+            else {
+//                NSLog(@"%@ | %@ | %@  有 %@",[obj title],[obj link],[obj identifier],@(i));
             }
         }];
         if (finish) {
