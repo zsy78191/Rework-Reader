@@ -28,6 +28,7 @@
     }
 }
 
+
 - (void)viewDidLoad {
     [super viewDidLoad];
     
@@ -44,6 +45,7 @@
 {
     [super viewWillAppear:animated];
     [self.navigationController setToolbarHidden:YES animated:animated];
+    [self.navigationController setNavigationBarHidden:YES animated:animated];
 }
 
 - (void)mvp_configMiddleware

@@ -96,7 +96,13 @@
         }
         else if(self.onlyReaded)
         {
-            return [NSPredicate predicateWithFormat:@"feed = %@ and readed = true",self.feed];
+            if (self.withOutNotReadlyRead) {
+                return [NSPredicate predicateWithFormat:@"feed = %@ and readed = true and lastread != nil",self.feed];
+            }
+            else{
+                return [NSPredicate predicateWithFormat:@"feed = %@ and readed = true",self.feed];
+            }
+            
         }
         else if(self.liked)
         {
@@ -124,12 +130,16 @@
                 [m appendString:@" && "];
             }
             [m appendString:@"readed = false"];
+           
         }
         if (self.onlyReaded) {
             if (m.length != 0) {
                 [m appendString:@" && "];
             }
-            [m appendString:@"readed = true and lastread != null"];
+            [m appendString:@"readed = true"];
+            if (self.withOutNotReadlyRead) {
+                [m appendString:@"&& lastread != nil"];
+            }
         }
         if (self.liked) {
             if (m.length != 0) {
@@ -146,7 +156,7 @@
             NSPredicate * pp = [NSPredicate predicateWithFormat:m,d];
             return pp;
         }
-        //        //NSLog(@"%@",m);
+                NSLog(@"%@",m);
         return [NSPredicate predicateWithFormat:m];
     }
     return [NSPredicate predicateWithFormat:@"feed = %@",self.feed];

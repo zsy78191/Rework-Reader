@@ -12,6 +12,9 @@
 @import oc_string;
 #import "RRCoreDataModel.h"
 @import MagicalRecord;
+#import "rework_reader-Swift.h"
+
+
 @implementation ActionTest
 
 - (void)hub
@@ -35,7 +38,7 @@
 
 - (void)test
 {
-    UIAccessibilityElement* a;
+   
 }
 
 @end

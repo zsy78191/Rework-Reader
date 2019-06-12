@@ -21,6 +21,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, strong, nullable) NSSet<EntityFeedInfo*>* feeds;
 @property (nonatomic, assign) BOOL onlyUnread;
 @property (nonatomic, assign) BOOL onlyReaded;
+@property (nonatomic, assign) BOOL withOutNotReadlyRead;
 @property (nonatomic, assign) NSInteger daylimit;
 @property (nonatomic, assign) BOOL liked;
 @property (nonatomic, assign) BOOL canEdit;

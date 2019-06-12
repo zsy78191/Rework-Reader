@@ -264,6 +264,9 @@
 //        NSLog(@"%@",evaluatedObject);
 //        NSLog(@"%@",bindings);
         NSString* key = [evaluatedObject.title stringByAppendingString:evaluatedObject.link]._md5String;
+        if (!key) {
+            return NO;
+        }
         if (d[key]) {
             return NO;
         }
