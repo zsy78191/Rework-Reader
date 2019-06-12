@@ -94,7 +94,15 @@
         else
         {
             NSString* s = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
-            [[self class] findItemWithContent:s url:url result:result];
+            @try {
+                 [[self class] findItemWithContent:s url:url result:result];
+            } @catch (NSException *exception) {
+                
+            } @finally {
+                if (result) {
+                    result(NO,nil);
+                }
+            }
         }
     }];
     [t resume];

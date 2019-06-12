@@ -37,11 +37,17 @@
     }
     
     Class a = self.getClass;
-    id result = nil;
+    id result = @(0);
     NSManagedObjectContext* context = [NSManagedObjectContext MR_rootSavingContext];
     if (self.onlyGetCount) {
         if (self.predicate) {
-            result = [NSNumber numberWithInteger:[(id)a MR_countOfEntitiesWithPredicate:self.predicate inContext:context]];
+            @try {
+                result = [NSNumber numberWithInteger:[(id)a MR_countOfEntitiesWithPredicate:self.predicate inContext:context]];
+            } @catch (NSException *exception) {
+                
+            } @finally {
+                
+            }
         }
         else
         {

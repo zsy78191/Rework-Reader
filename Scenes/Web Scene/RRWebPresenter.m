@@ -90,6 +90,7 @@
 //        NSLog(@"%@",self.model.link);
         #ifdef DEBUG
             NSLog(@"%@",self.model);
+            [self activeShare:[NSURL URLWithString:self.model.link] sender:sender];
         #else
             [self activeShare:[NSURL URLWithString:self.model.link] sender:sender];
         #endif

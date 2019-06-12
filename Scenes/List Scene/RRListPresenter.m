@@ -942,13 +942,13 @@ static NSString * const kShortcutItemsKey = @"kShortcutItemsKey";
 - (void)markAsReaded:(NSIndexPath*)path
 {
     EntityFeedArticle* model = (id)[self.inputerCoreData mvp_modelAtIndexPath:path];
-//    [RRFeedAction readArticle:model.uuid onlyMark:YES];
-    [MagicalRecord saveWithBlock:^(NSManagedObjectContext * _Nonnull localContext) {
-        EntityFeedArticle* a = [model MR_inContext:localContext];
-        a.readed = YES;
-    } completion:^(BOOL contextDidSave, NSError * _Nullable error) {
-//        NSLog(@"save %@")
-    }];
+    [RRFeedAction readArticle:model.uuid onlyMark:YES];
+//    [MagicalRecord saveWithBlock:^(NSManagedObjectContext * _Nonnull localContext) {
+//        EntityFeedArticle* a = [model MR_inContext:localContext];
+//        a.readed = YES;
+//    } completion:^(BOOL contextDidSave, NSError * _Nullable error) {
+////        NSLog(@"save %@")
+//    }];
 }
 
 - (void)markAsReadLater:(NSIndexPath*)path

@@ -43,7 +43,7 @@ target 'rework-reader' do
 
   # 网页长图生成
   pod 'TYSnapshotScroll'
-  
+ 
 
   # Pods for rework-reader
 

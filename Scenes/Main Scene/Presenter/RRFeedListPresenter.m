@@ -363,7 +363,7 @@ NSString* const kShowRecent = @"kShowRecent";
      
         
         {
-            RRFeedInfoListOtherModel* mLast = GetRRFeedInfoListOtherModel(@"最近阅读",@"favicon_3",@"近期阅读的20篇文章",@"last");
+            RRFeedInfoListOtherModel* mLast = GetRRFeedInfoListOtherModel(@"最近阅读",@"favicon_3",@"近期阅读的30篇文章",@"last");
             mLast.canRefresh = NO;
             mLast.canEdit = YES;
             mLast.idx = 3;
@@ -371,7 +371,8 @@ NSString* const kShowRecent = @"kShowRecent";
             mLast.readStyle = ({
                 RRReadStyle* s = [[RRReadStyle alloc] init];
                 s.onlyReaded = YES;
-                s.countlimit = 20;
+                s.countlimit = 30;
+                s.withOutNotReadlyRead = YES;
                 s;
             });
             self.recentModel = mLast;
@@ -746,13 +747,13 @@ NSString* const kShowRecent = @"kShowRecent";
     
     UIViewController* vc = [MVPRouter viewForURL:@"rr://websetting?p=RRMainPageAddPresenter" withUserInfo:@{@"action1":action1,@"action2":action2,@"action3":action3}];
     RRExtraViewController* nv = [[RRExtraViewController alloc] initWithRootViewController:vc];
-    vc.preferredContentSize = CGSizeMake(200, 60);
+    vc.preferredContentSize = CGSizeMake(200, 1);
     [nv.view setBackgroundColor:[UIColor clearColor]];
     nv.modalPresentationStyle = UIModalPresentationPopover;
     nv.popoverPresentationController.barButtonItem = sender;
     nv.popoverPresentationController.permittedArrowDirections = UIPopoverArrowDirectionDown;
     nv.popoverPresentationController.delegate = self;
-    nv.popoverPresentationController.popoverLayoutMargins = UIEdgeInsetsMake(15,15,15,15);
+//    nv.popoverPresentationController.popoverLayoutMargins = UIEdgeInsetsMake(15,15,15,15);
     NSDictionary* style = [[NSUserDefaults standardUserDefaults] valueForKey:@"style"];
     nv.popoverPresentationController.backgroundColor = UIColor.hex(style[@"$bar-tint-color"]);
     [(UIViewController*)self.view presentViewController:nv animated:YES completion:^{
