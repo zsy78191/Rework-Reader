@@ -39,7 +39,7 @@
     [super loadModel:model];
     
     if ([model isKindOfClass:[RRFeedArticleModel class]]) {
-        RRFeedArticleModel* m = model;
+        RRFeedArticleModel* m = (id)model;
         self.titleLabel.text = [[m.title stringByDecodingHTMLEntities] stringByAppendingString:@"\n"];
         NSDate* date = m.date;
         NSString* des = @"";

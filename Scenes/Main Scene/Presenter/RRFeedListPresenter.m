@@ -64,11 +64,14 @@ NSString* const kShowRecent = @"kShowRecent";
     {
         self.mode = RRReadModeDark;
     }
+    
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        UIAccessibilityPostNotification(UIAccessibilityAnnouncementNotification, [@"已切换至" stringByAppendingString:self.mode == RRReadModeDark?@"暗色主题":@"亮色主题"]);
+    });
     [[NSUserDefaults standardUserDefaults] setInteger:self.mode forKey:@"kRRReadMode"];
     [[NSUserDefaults standardUserDefaults] synchronize];
-    
+
     [[NSNotificationCenter defaultCenter] postNotificationName:@"RRCasNeedReload" object:nil];
-    
     [[NSNotificationCenter defaultCenter] postNotificationName:@"RRWebNeedReload" object:nil];
     
     [[(UIViewController*)self.view navigationController] setNeedsStatusBarAppearanceUpdate];
@@ -118,6 +121,8 @@ NSString* const kShowRecent = @"kShowRecent";
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(needUpdateData) name:@"RRMainListNeedUpdate" object:nil];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(loadDataMain) name:@"RRMainListUpdate" object:nil];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(themeUpdate) name:@"RRWebNeedReload" object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(loadData) name:UIApplicationDidBecomeActiveNotification object:nil];
+        
         
         NSDictionary* itemsSetting = [[NSUserDefaults standardUserDefaults] dictionaryForKey:kMainListItemSetting];
         if (!itemsSetting) {
@@ -492,6 +497,8 @@ NSString* const kShowRecent = @"kShowRecent";
     
     [[NSNotificationCenter defaultCenter] removeObserver:self name:@"RRWebNeedReload" object:nil];
     
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:UIApplicationDidBecomeActiveNotification object:nil];
+    
     [[RPDataNotificationCenter defaultCenter] unregistEntityChange:@"EntityFeedInfo" observer:self];
     
     [[RPDataNotificationCenter defaultCenter] unregistEntityChange:@"EntityHub" observer:self];
@@ -657,9 +664,8 @@ NSString* const kShowRecent = @"kShowRecent";
         [a addObject:m];
  
 //        //NSLog(@"- %@- %@",info.title, item.title);
-    } errorBlock:^(MWFeedInfo * _Nonnull info, NSError * _Nonnull error) {
-        
-        //NSLog(@"err %@",error);
+    } errorBlock:^(NSString * _Nonnull infoURL, NSError * _Nonnull error) {
+ 
         errorCount ++;
         
     } finishBlock:^{
@@ -747,7 +753,7 @@ NSString* const kShowRecent = @"kShowRecent";
     
     UIViewController* vc = [MVPRouter viewForURL:@"rr://websetting?p=RRMainPageAddPresenter" withUserInfo:@{@"action1":action1,@"action2":action2,@"action3":action3}];
     RRExtraViewController* nv = [[RRExtraViewController alloc] initWithRootViewController:vc];
-    vc.preferredContentSize = CGSizeMake(200, 1);
+    vc.preferredContentSize = CGSizeMake(200, 94);
     [nv.view setBackgroundColor:[UIColor clearColor]];
     nv.modalPresentationStyle = UIModalPresentationPopover;
     nv.popoverPresentationController.barButtonItem = sender;
@@ -847,6 +853,15 @@ NSString* const kShowRecent = @"kShowRecent";
             }];
             
         }];
+    }
+}
+
+- (void)makeItCopyed:(id)sender
+{
+    RRFeedInfoListModel* m = (id)[self.complexInput mvp_modelAtIndexPath:sender];
+    if (m.feed) {
+        [[UIPasteboard generalPasteboard] setURL:m.feed.url];
+        [self.view hudSuccess:@"复制成功"];
     }
 }
 

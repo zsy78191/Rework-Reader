@@ -22,6 +22,17 @@
 
 @implementation RRFeedAction
 
++ (void)markFeedAsEnable:(BOOL)enable feedUUID:(NSString *)uuid
+{
+    NSDictionary* kv = @{@"lastUpdateResult":@(enable)};
+    [[RPDataManager sharedManager] updateClass:@"EntityFeedInfo" queryKey:@"uuid" queryValue:uuid keysAndValues:kv modify:^id _Nonnull(id  _Nonnull key, id  _Nonnull value) {
+        return value;
+    } finish:^(__kindof NSManagedObject * _Nonnull obj, NSError * _Nonnull e) {
+    }];
+}
+
+
+
 + (void)likeArticle:(BOOL)like withUUID:(NSString *)uuid block:(nonnull void (^)(NSError * _Nonnull))finished
 {
     NSDictionary* kv = @{@"liked":@(like),@"likedTime":like?[NSDate date]:[NSNull null]};
@@ -242,7 +253,9 @@
 
 + (void)insertArticle:(NSArray*)article finish:(void (^)(NSUInteger))finish
 {
+//    NSLog(@"Before %@",@(article.count));
     article = [[self class] removeSame:article];
+//    NSLog(@"After %@",@(article.count));
     [MagicalRecord saveWithBlockAndWait:^(NSManagedObjectContext * _Nonnull localContext) {
         __block NSUInteger c = 0;
         [article enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
@@ -269,7 +282,11 @@
     article = [article filteredArrayUsingPredicate:[NSPredicate predicateWithBlock:^BOOL(EntityFeedArticle*  _Nullable evaluatedObject, NSDictionary<NSString *,id> * _Nullable bindings) {
 //        NSLog(@"%@",evaluatedObject);
 //        NSLog(@"%@",bindings);
-        NSString* key = [evaluatedObject.title stringByAppendingString:evaluatedObject.link]._md5String;
+        NSString* title = evaluatedObject.title?evaluatedObject.title:@"";
+        if (!evaluatedObject.link) {
+            NSLog(@"No link %@ %@",evaluatedObject.title,evaluatedObject.feed);
+        }
+        NSString* key = [title stringByAppendingString:evaluatedObject.link?evaluatedObject.link:@""]._md5String;
         if (!key) {
             return NO;
         }

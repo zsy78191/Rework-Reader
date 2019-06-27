@@ -21,6 +21,7 @@
 #import "OPMLDocument.h"
 @import KissXML;
 @import RegexKitLite;
+#import "RRCoreDataModel.h"
 
 @interface RRFeedLoader ()
 @property (nonatomic, strong) NSOperationQueue* highQuene;
@@ -132,7 +133,7 @@
     return o;
 }
 
-- (NSArray*)reloadAll:(NSArray<NSString *> *)feedURIs infoBlock:(void (^)(MWFeedInfo * _Nonnull))infoblock itemBlock:(void (^)(MWFeedInfo * _Nonnull, MWFeedItem * _Nonnull))itemblock errorBlock:(void (^)(MWFeedInfo* _Nonnull info,NSError * _Nonnull))errblock finishBlock:(void (^)(void))finishblock
+- (NSArray*)reloadAll:(NSArray<NSString *> *)feedURIs infoBlock:(void (^)(MWFeedInfo * _Nonnull))infoblock itemBlock:(void (^)(MWFeedInfo * _Nonnull, MWFeedItem * _Nonnull))itemblock errorBlock:(void (^)(NSString * _Nonnull, NSError * _Nonnull))errblock finishBlock:(void (^)(void))finishblock
 {
     __block NSMutableArray* operations = [[NSMutableArray alloc] init];
     __block NSMutableArray* feeds = [[NSMutableArray alloc] init];
@@ -153,14 +154,15 @@
                 itemblock(info,item);
             }
         } errorBlock:^(NSError * _Nonnull error) {
-            __block id info = nil;
-            [feeds enumerateObjectsUsingBlock:^(MWFeedInfo*  _Nonnull obj2, NSUInteger idx, BOOL * _Nonnull stop) {
-                if ([[obj2.url absoluteString] isEqualToString:obj]) {
-                    info = obj2;
-                }
-            }];
+//            NSLog(@"error %@",obj);
+//            __block id info = nil;
+//            [feeds enumerateObjectsUsingBlock:^(MWFeedInfo*  _Nonnull obj2, NSUInteger idx, BOOL * _Nonnull stop) {
+//                if ([[obj2.url absoluteString] isEqualToString:obj]) {
+//                    info = obj2;
+//                }
+//            }];
             if (errblock) {
-                errblock(info,error);
+                errblock(obj,error);
             }
         } finishBlock:^{
             if (finishblock) {
@@ -312,12 +314,33 @@
             i = [[RPDataManager sharedManager] getFirst:@"EntityFeedInfo" predicate:nil key:@"url" value:info.url sort:nil asc:YES];
             [dd setObject:i forKey:info];
         }
+        if (!i.lastUpdateResult) {
+            @try {
+                [RRFeedAction markFeedAsEnable:YES feedUUID:[i uuid]];
+            } @catch (NSException *exception) {
+                
+            } @finally {
+                
+            }
+        }
         m.feedEntity = i;
         [a addObject:m];
         
         //        //NSLog(@"- %@- %@",info.title, item.title);
-    } errorBlock:^(MWFeedInfo * _Nonnull info, NSError * _Nonnull error) {
+    } errorBlock:^(NSString * _Nonnull infoURL, NSError * _Nonnull error) {
         
+        EntityFeedInfo* i = [[RPDataManager sharedManager] getFirst:@"EntityFeedInfo" predicate:nil key:@"url" value:infoURL sort:nil asc:YES];
+        NSLog(@"%@ 更新失败",infoURL);
+        NSLog(@"%@",i.title);
+        @try {
+            [RRFeedAction markFeedAsEnable:NO feedUUID:[i uuid]];
+        } @catch (NSException *exception) {
+            
+        } @finally {
+            
+        }
+     
+//        NSDictionary* d = @{}
         //NSLog(@"err %@",error);
         errorCount ++;
         

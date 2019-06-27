@@ -35,6 +35,9 @@
     if ([model isKindOfClass:[RRFeedInfoListModel class]]) {
         RRFeedInfoListModel* m = model;
         self.titleLabel.text = [m.title stringByDecodingHTMLEntities];
+        if (m.feed && !m.lastUpdateResult) {
+            self.titleLabel.text = [self.titleLabel.text stringByAppendingString:@" (更新失败)"];
+        }
         if (m.icon) {
             if ([m.icon hasPrefix:@"http"]) {
                 [self.iconView sd_setImageWithURL:[NSURL URLWithString:m.icon] placeholderImage:[UIImage imageNamed:@"favicon"]];

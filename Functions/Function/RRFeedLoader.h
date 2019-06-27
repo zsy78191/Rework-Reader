@@ -33,7 +33,7 @@ NS_ASSUME_NONNULL_BEGIN
 - (NSArray*)reloadAll:(NSArray<NSString*>*)feedURIs
         infoBlock:(void(^)(MWFeedInfo* info))infoblock
         itemBlock:(void(^)(MWFeedInfo* info,MWFeedItem* item))itemblock
-       errorBlock:(void(^)(MWFeedInfo* info,NSError* error))errblock
+       errorBlock:(void(^)(NSString* infoURL,NSError* error))errblock
       finishBlock:(void(^)(void))finishblock;
 
 - (void)cancel:(FMFeedParserOperation*)operation;

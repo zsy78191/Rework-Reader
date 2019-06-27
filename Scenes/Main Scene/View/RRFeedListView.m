@@ -136,6 +136,12 @@
         })];
         
         [[output actionsArrays] addObject:MVPCellActionModel.m(^(__kindof MVPCellActionModel * _Nonnull m) {
+            m.title = @"拷贝链接";
+            m.color = UIColor.hex(style[@"$sub-text-color"]);
+            m.action = @"makeItCopyed:";
+        })];
+        
+        [[output actionsArrays] addObject:MVPCellActionModel.m(^(__kindof MVPCellActionModel * _Nonnull m) {
             m.title = @"取消订阅";
             m.color = UIColor.hex(style[@"$main-tint-color"]);
             m.action = @"makeItDelete:";
@@ -152,11 +158,11 @@
             if ([model isKindOfClass:NSClassFromString(@"RRFeedInfoListModel")]) {
                 RRFeedInfoListModel* m = model;
                 if (m.feed) {
-                    return [[actionsArrays subarrayWithRange:NSMakeRange(0, 1)] mutableCopy];
+                    return [[actionsArrays subarrayWithRange:NSMakeRange(0, 2)] mutableCopy];
                 }
                 else if(m.thehub)
                 {
-                    return [[actionsArrays subarrayWithRange:NSMakeRange(0, 2)] mutableCopy];
+                    return [[actionsArrays subarrayWithRange:NSMakeRange(1, 2)] mutableCopy];
                 }
                 return [@[] mutableCopy];
             }
@@ -224,9 +230,8 @@
 - (UIBarButtonItem *)blackBtn
 {
     if (!_blackBtn) {
-        UIBarButtonItem* item3 = [self mvp_buttonItemWithActionName:@"switchReadMode" title:@"阅读模式切换"];
+        UIBarButtonItem* item3 = [self mvp_buttonItemWithActionName:@"switchReadMode" title:@"主题切换"];
         item3.image = [UIImage imageNamed:@"icon_yue"];
-        
         
         [self.presenter mvp_bindBlock:^(id view, id value) {
             NSInteger mode = [value integerValue];
@@ -235,11 +240,13 @@
                     case RRReadModeLight:
                     {
                         item3.image = [UIImage imageNamed:@"icon_yue"];
+                        item3.accessibilityHint = @"暗色主题";
                         break;
                     }
                     case RRReadModeDark:
                     {
                         item3.image = [UIImage imageNamed:@"icon_ri"];
+                        item3.accessibilityHint = @"亮色主题";
                         break;
                     }
                     default:
