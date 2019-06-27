@@ -442,6 +442,7 @@
 		D4B903882246885900341584 /* 开源代码.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = "开源代码.md"; sourceTree = "<group>"; };
 		D4CD6622225DF1CD005EA2B9 /* ActionTest.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ActionTest.h; sourceTree = "<group>"; };
 		D4CD6623225DF1CD005EA2B9 /* ActionTest.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ActionTest.m; sourceTree = "<group>"; };
+		D4D5EF4922B76E4200D7DE1A /* Model 2.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Model 2.xcdatamodel"; sourceTree = "<group>"; };
 		D4E0F8E92211486100902540 /* RPSettingInputer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RPSettingInputer.h; sourceTree = "<group>"; };
 		D4E0F8EA2211486100902540 /* RPSettingInputer.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RPSettingInputer.m; sourceTree = "<group>"; };
 		D4E0F8F7221149F000902540 /* RPFontLoader.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RPFontLoader.h; sourceTree = "<group>"; };
@@ -1949,9 +1950,10 @@
 		D47A396122363ABE006251A6 /* Model.xcdatamodeld */ = {
 			isa = XCVersionGroup;
 			children = (
+				D4D5EF4922B76E4200D7DE1A /* Model 2.xcdatamodel */,
 				D47A396222363ABE006251A6 /* Model.xcdatamodel */,
 			);
-			currentVersion = D47A396222363ABE006251A6 /* Model.xcdatamodel */;
+			currentVersion = D4D5EF4922B76E4200D7DE1A /* Model 2.xcdatamodel */;
 			path = Model.xcdatamodeld;
 			sourceTree = "<group>";
 			versionGroupType = wrapper.xcdatamodel;

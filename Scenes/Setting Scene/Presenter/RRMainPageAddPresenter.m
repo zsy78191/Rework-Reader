@@ -25,7 +25,7 @@
 
 - (void)mvp_initFromModel:(MVPInitModel *)model
 {
-//    self.title = @"";
+    self.title = @"";
     
     [self.inputer mvp_addModel:({
         RRIconSettingModel* m = [[RRIconSettingModel alloc] init];

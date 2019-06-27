@@ -146,7 +146,7 @@
         }];
     } itemBlock:^(MWFeedInfo * _Nonnull info, MWFeedItem * _Nonnull item) {
        
-    } errorBlock:^(MWFeedInfo * _Nonnull info, NSError * _Nonnull error) {
+    } errorBlock:^(NSString* _Nonnull infoURL, NSError * _Nonnull error) {
    
         NSLog(@"error");
         errorCount++;

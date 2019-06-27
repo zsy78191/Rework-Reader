@@ -226,21 +226,31 @@
 
 - (void)loadLast
 {
-    if ([self isVoiceoverRunning]) {
-        return;
-    }
-    if (!self.canDragPage) {
+ 
+    if (!self.canDragPage && !self.voiceover) {
         return;
     }
     if (!self.lastFeed || !self.lastArticle) {
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+            UIAccessibilityPostNotification(UIAccessibilityAnnouncementNotification, @"没有上一篇文章");
+        });
         return;
     }
     if (!self.lastFeed(self.currentArticle) || !self.lastArticle(self.currentArticle)) {
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+             UIAccessibilityPostNotification(UIAccessibilityAnnouncementNotification, @"没有上一篇文章");
+        });
         [self.g impactOccurred];
+        
         return;
     }
     
     __weak typeof(self) weakSelf = self;
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{    UIAccessibilityPostNotification(UIAccessibilityAnnouncementNotification,[self.currentArticle title]);
+    });
+    if (self.voiceover) {
+        [self.g impactOccurred];
+    }
     [self recordReadProgress:^{
         UIView* fakeCover = [[weakSelf webView] snapshotViewAfterScreenUpdates:YES];
         [weakSelf.view addSubview:fakeCover];
@@ -261,17 +271,21 @@
 
 - (void)loadNext
 {
-    if ([self isVoiceoverRunning]) {
-        return;
-    }
-    if (!self.canDragPage) {
+ 
+    if (!self.canDragPage && !self.voiceover) {
         return;
     }
     if (!self.nextFeed || !self.nextArticle) {
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+            UIAccessibilityPostNotification(UIAccessibilityAnnouncementNotification, @"没有下一篇文章");
+        });
         return;
     }
     if (!self.nextFeed(self.currentArticle) || !self.nextArticle(self.currentArticle)) {
         [self.g impactOccurred];
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+            UIAccessibilityPostNotification(UIAccessibilityAnnouncementNotification, @"没有下一篇文章");
+        });
         return;
     }
     
@@ -283,6 +297,11 @@
     UIView* fakeCover = [[weakSelf webView] snapshotViewAfterScreenUpdates:YES];
     [weakSelf.view addSubview:fakeCover];
     
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{    UIAccessibilityPostNotification(UIAccessibilityAnnouncementNotification,[self.currentArticle title]);
+    });
+    if (self.voiceover) {
+        [self.g impactOccurred];
+    }
     [weakSelf preloadData:weakSelf.nextArticle(weakSelf.currentArticle) feed:weakSelf.nextFeed(weakSelf.currentArticle)];
 
     [UIView animateWithDuration:0.4 animations:^{
@@ -384,7 +403,10 @@
 
 - (void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate
 {
- 
+    if (self.voiceover) {
+        return;
+    }
+    
     if (self.splitViewController) {
         UIViewController* vc = [[self.splitViewController viewControllers] firstObject];
         while ([vc isKindOfClass:[UINavigationController class]]) {
@@ -680,7 +702,7 @@
         [self preloadData:m feed:feedInfo];
         self.showToolbar = YES;
         
-        UIBarButtonItem* rb = [self mvp_buttonItemWithActionName:@"openActionText:" title:@"更多操作"];
+        UIBarButtonItem* rb = [self mvp_buttonItemWithActionName:@"openActionText:" title:@"阅读字体与排版设置"];
         rb.image = [UIImage imageNamed:@"icon_text"];
         
         self.navigationItem.rightBarButtonItem = rb;

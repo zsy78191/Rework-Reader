@@ -29,6 +29,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nullable, nonatomic, copy) NSDate *updateDate;
 @property (nullable, nonatomic, copy) NSURL *url;
 @property (nullable, nonatomic, copy) NSNumber* sort;
+@property (nonatomic) BOOL lastUpdateResult;
 @property (nonatomic) BOOL useautoupdate;
 @property (nonatomic) BOOL usesafari;
 @property (nonatomic) BOOL usettl;

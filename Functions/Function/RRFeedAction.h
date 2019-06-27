@@ -22,6 +22,9 @@ NS_ASSUME_NONNULL_BEGIN
 + (void)insertArticle:(NSArray*)article finish:(void (^)(NSUInteger))finish;
 + (void)insertArticle:(NSArray*)article withFeed:(EntityFeedInfo*)info finish:(void (^)(NSUInteger))finish;
 
++ (void)markFeedAsEnable:(BOOL)enable feedUUID:(NSString *)uuid;
+
+
 + (void)readArticle:(NSString*)articleUUID;
 + (void)readArticle:(NSString *)articleUUID onlyMark:(BOOL)onlymark;
 + (void)recordArticle:(NSString*)articleUUID position:(CGFloat)position;
