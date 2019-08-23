@@ -46,7 +46,6 @@ target 'rework-reader' do
  
 
   # Pods for rework-reader
-
   target 'rework-readerTests' do
     inherit! :search_paths
     # Pods for testing

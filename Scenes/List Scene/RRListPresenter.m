@@ -311,6 +311,26 @@ static NSString * const kShortcutItemsKey = @"kShortcutItemsKey";
     });
 }
 
+- (void)removeIt:(id)sender
+{
+    __weak typeof(self) weakSelf = self;
+    [self configFeeds:sender selected:^(EntityFeedInfo * en) {
+        [MagicalRecord saveWithBlock:^(NSManagedObjectContext * _Nonnull localContext) {
+            EntityHub* hub = [weakSelf.infoModel.thehub MR_inContext:localContext];
+            EntityFeedInfo* target = [en MR_inContext:localContext];
+            [hub removeInfosObject:target];
+        } completion:^(BOOL contextDidSave, NSError * _Nullable error) {
+            if (contextDidSave) {
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    [[weakSelf view] hudSuccess:@"移除完成"];
+                    [[NSNotificationCenter defaultCenter] postNotificationName:@"RRMainListNeedUpdate" object:nil];
+                     [(id)weakSelf.view mvp_popViewController:nil];
+                });
+            }
+        }];
+    }];
+}
+
 - (void)deleteIt:(id)sender
 {
     if (self.infoModel.thehub) {
@@ -734,12 +754,15 @@ static NSString * const kShortcutItemsKey = @"kShortcutItemsKey";
 }
 
 
-- (void)changeFeedValue:(id)value forKey:(NSString*)key void:(void (^)(NSError*e))finish
+- (void)changeFeedValue:(id)value forKey:(NSString*)key feed:(EntityFeedInfo*)feed void:(void (^)(NSError*e))finish
 {
     __weak typeof(self) weakSelf = self;
     id target = nil;
     NSString* className = @"EntityFeedInfo";
-    if (self.infoModel.feed) {
+    if (feed) {
+        target = feed;
+    }
+    else if (self.infoModel.feed) {
         EntityFeedInfo* feed = self.infoModel.feed;
         target = feed;
     }
@@ -769,16 +792,20 @@ static NSString * const kShortcutItemsKey = @"kShortcutItemsKey";
 - (void)configHub:(id)sender
 {
     EntityHub* hub = self.infoModel.thehub;
-    
     __weak typeof(self) weakSelf = self;
     UIAlertController* a = UI_ActionSheet()
     .titled(@"设置")
-    .recommend(@"修改标题", ^(UIAlertAction * _Nonnull action, UIAlertController * _Nonnull alert) {
+    .recommend(@"设置订阅源", ^(UIAlertAction * _Nonnull action, UIAlertController * _Nonnull alert) {
+        [weakSelf configFeeds:sender selected:^(EntityFeedInfo * en) {
+            [weakSelf configFeed:en sender:sender];
+        }];
+    })
+    .action(@"修改标题", ^(UIAlertAction * _Nonnull action, UIAlertController * _Nonnull alert) {
         UI_Alert()
         .titled(@"修改标题")
         .recommend(@"确定", ^(UIAlertAction * _Nonnull action, UIAlertController * _Nonnull alert) {
             UITextField* t = alert.textFields[0];
-            [weakSelf changeFeedValue:t.text forKey:@"title" void:^(NSError *e) {
+            [weakSelf changeFeedValue:t.text forKey:@"title" feed:nil void:^(NSError *e) {
                 if (!e) {
                     weakSelf.title = t.text;
                 }
@@ -793,16 +820,18 @@ static NSString * const kShortcutItemsKey = @"kShortcutItemsKey";
         .show((id)self.view);
     })
     .action(@"修改图标", ^(UIAlertAction * _Nonnull action, UIAlertController * _Nonnull alert) {
-        [self changeIcon];
+        [self changeIcon:nil];
     })
     .action(@"删除分类", ^(UIAlertAction * _Nonnull action, UIAlertController * _Nonnull alert) {
         [weakSelf deleteIt:sender];
+    })
+    .action(@"移除订阅源", ^(UIAlertAction * _Nonnull action, UIAlertController * _Nonnull alert) {
+        [weakSelf removeIt:sender];
     })
     .cancel(@"取消", ^(UIAlertAction * _Nonnull action) {
     });
     
     if ([UIDevice currentDevice].iPad()) {
-        //        [[self view] showAsProver:a view:[(UIViewController*)self.view view] rect:r arrow:UIPopoverArrowDirectionUp];
         [[self view] showAsProver:a view:[(UIViewController*)[self view] view] item:sender arrow:UIPopoverArrowDirectionDown];
     }
     else {
@@ -810,6 +839,14 @@ static NSString * const kShortcutItemsKey = @"kShortcutItemsKey";
     }
 }
 
+- (void)configit2:(id)sender
+{
+    id view = [MVPRouter viewForURL:@"rr://tableauto" withUserInfo:@{}];
+    [self.view mvp_pushViewController:view];
+}
+
+
+// 废弃
 - (void)configit:(id)sender
 {
     if (self.infoModel.thehub) {
@@ -818,21 +855,107 @@ static NSString * const kShortcutItemsKey = @"kShortcutItemsKey";
     }
  
     EntityFeedInfo* feed = self.infoModel.feed;
+    [self configFeed:feed sender:sender];
+}
+
+- (void)configFeeds:(id)sender selected:(void (^)(EntityFeedInfo*))selected
+{
+    EntityHub* hub = self.infoModel.thehub;
+    UIAlertController* a = UI_ActionSheet()
+    .titled(@"选择订阅源");
+//     __weak typeof(self) weakSelf = self;
+    [hub.infos enumerateObjectsUsingBlock:^(EntityFeedInfo * _Nonnull obj, BOOL * _Nonnull stop) {
+        a.action(obj.title, ^(UIAlertAction * _Nonnull action, UIAlertController * _Nonnull alert) {
+//            [weakSelf configFeed:obj sender:sender];
+            if(selected){
+                selected(obj);
+            }
+        });
+    }];
+    
+    a.cancel(@"取消", ^(UIAlertAction * _Nonnull action) {
+        
+    });
+    
+    if ([UIDevice currentDevice].iPad()) {
+        [[self view] showAsProver:a view:[(UIViewController*)[self view] view] item:sender arrow:UIPopoverArrowDirectionDown];
+    }
+    else {
+        a.show((id)self.view);
+    }
+}
+
+- (void)zipFeed:(EntityFeedInfo*)feed sender:(id)sender {
+    __weak typeof(self) weakSelf = self;
+    UIAlertController* a = UI_ActionSheet();
+    a
+    .titled([NSString stringWithFormat:@"归档「%@」",feed.title])
+    .descripted(@"所有操作均不会影响收藏数据")
+    .recommend(@"归档一个月之前的数据", ^(UIAlertAction * _Nonnull action, UIAlertController * _Nonnull alert) {
+    
+        [MagicalRecord saveWithBlock:^(NSManagedObjectContext * _Nonnull localContext) {
+            NSDate* d = [NSDate dateWithTimeIntervalSinceNow:-3600*24*30];
+            NSPredicate* p = [NSPredicate predicateWithFormat:@"date != nil and date < %@ and liked = false and feed = %@",d,feed];
+          
+            NSInteger count = [EntityFeedArticle MR_countOfEntitiesWithPredicate:p inContext:localContext];
+            UI_Alert().
+            titled(@"确认删除")
+            .descripted([NSString stringWithFormat:@"共有「%@」篇文章将被删除，请确认",@(count)])
+            .action(@"确认", ^(UIAlertAction * _Nonnull action, UIAlertController * _Nonnull alert) {
+                [MagicalRecord saveWithBlock:^(NSManagedObjectContext * _Nonnull localContext) {
+                    [EntityFeedArticle MR_deleteAllMatchingPredicate:p inContext:localContext];
+                } completion:^(BOOL contextDidSave, NSError * _Nullable error) {
+                    if (contextDidSave) {
+                        dispatch_async(dispatch_get_main_queue(), ^{
+                            [weakSelf.view hudSuccess:@"操作成功"];
+                            [[NSNotificationCenter defaultCenter] postNotificationName:@"RRMainListNeedUpdate" object:nil];
+                            [(id)weakSelf.view mvp_popViewController:nil];
+                        });
+                    } else {
+                        dispatch_async(dispatch_get_main_queue(), ^{
+                            [weakSelf.view hudSuccess:@"操作失败"];
+                        });
+                    }
+                }];
+            })
+            .cancel(@"取消", ^(UIAlertAction * _Nonnull action) {
+                
+            })
+            .show((id)weakSelf.view);
+        }];
+    })
+    .cancel(@"取消", ^(UIAlertAction * _Nonnull action) {
+        
+    });
+    
+    if ([UIDevice currentDevice].iPad()) {
+        [[self view] showAsProver:a view:[(UIViewController*)[self view] view] item:sender arrow:UIPopoverArrowDirectionDown];
+    }
+    else {
+        a.show((id)self.view);
+    }
+}
+
+- (void)configFeed:(EntityFeedInfo*)feed sender:(id)sender {
     BOOL usetll = feed.usettl;
     BOOL useauto = feed.useautoupdate;
     BOOL usesafari = feed.usesafari;
     
     __weak typeof(self) weakSelf = self;
     UIAlertController* a = UI_ActionSheet()
-    .titled(@"设置")
+    .titled([NSString stringWithFormat:@"设置「%@」",feed.title])
     .recommend(@"修改标题", ^(UIAlertAction * _Nonnull action, UIAlertController * _Nonnull alert) {
         UI_Alert()
         .titled(@"修改标题")
         .recommend(@"确定", ^(UIAlertAction * _Nonnull action, UIAlertController * _Nonnull alert) {
             UITextField* t = alert.textFields[0];
-            [weakSelf changeFeedValue:t.text forKey:@"title" void:^(NSError *e) {
+            [weakSelf changeFeedValue:t.text forKey:@"title" feed:feed void:^(NSError *e) {
                 if (!e) {
-                    weakSelf.title = t.text;
+                    if (!weakSelf.infoModel.thehub) {
+                        dispatch_async(dispatch_get_main_queue(), ^{
+                            weakSelf.title = t.text;
+                        });
+                    }
                 }
             }];
         })
@@ -845,32 +968,35 @@ static NSString * const kShortcutItemsKey = @"kShortcutItemsKey";
         .show((id)self.view);
     })
     .action(@"修改图标", ^(UIAlertAction * _Nonnull action, UIAlertController * _Nonnull alert) {
-        [self changeIcon];
+        [self changeIcon:feed];
     })
     .action(@"复制订阅源URL", ^(UIAlertAction * _Nonnull action, UIAlertController * _Nonnull alert) {
         [[UIPasteboard generalPasteboard] setURL:feed.url];
         [self.view hudSuccess:@"复制成功"];
     })
     .action(usetll?@"关闭缓存期内更新":@"开启缓存期内更新", ^(UIAlertAction * _Nonnull action, UIAlertController * _Nonnull alert) {
-        [weakSelf changeFeedValue:@(!usetll) forKey:@"usettl" void:^(NSError *e) {
+        [weakSelf changeFeedValue:@(!usetll) forKey:@"usettl" feed:feed void:^(NSError *e) {
         }];
     })
     .action(useauto?@"关闭自动更新文章":@"开启自动更新文章", ^(UIAlertAction * _Nonnull action, UIAlertController * _Nonnull alert) {
-        [weakSelf changeFeedValue:@(!useauto) forKey:@"useautoupdate" void:^(NSError *e) {
+        [weakSelf changeFeedValue:@(!useauto) forKey:@"useautoupdate" feed:feed void:^(NSError *e) {
         }];
     })
     .action(usesafari?@"关闭直接阅读原文":@"开启直接阅读原文", ^(UIAlertAction * _Nonnull action, UIAlertController * _Nonnull alert) {
-        [weakSelf changeFeedValue:@(!usesafari) forKey:@"usesafari" void:^(NSError *e) {
+        [weakSelf changeFeedValue:@(!usesafari) forKey:@"usesafari" feed:feed void:^(NSError *e) {
         }];
     })
     .action(@"删除订阅源", ^(UIAlertAction * _Nonnull action, UIAlertController * _Nonnull alert) {
         [weakSelf deleteIt:sender];
     })
+    .action(@"数据归档", ^(UIAlertAction * _Nonnull action, UIAlertController * _Nonnull alert) {
+        [weakSelf zipFeed:feed sender:sender];
+    })
     .cancel(@"取消", ^(UIAlertAction * _Nonnull action) {
     });
     
     if ([UIDevice currentDevice].iPad()) {
-//        [[self view] showAsProver:a view:[(UIViewController*)self.view view] rect:r arrow:UIPopoverArrowDirectionUp];
+        //        [[self view] showAsProver:a view:[(UIViewController*)self.view view] rect:r arrow:UIPopoverArrowDirectionUp];
         [[self view] showAsProver:a view:[(UIViewController*)[self view] view] item:sender arrow:UIPopoverArrowDirectionDown];
     }
     else {
@@ -971,13 +1097,13 @@ static NSString * const kShortcutItemsKey = @"kShortcutItemsKey";
     }];
 }
 
-- (void)changeIcon
+- (void)changeIcon:(EntityFeedInfo*)feed
 {
     __weak typeof(self) weakself = self;
      UIViewController* v = (UIViewController* )self.view;
     id changeCallback = ^ (NSString* name ){
 //        NSLog(@"%@",name);
-        [weakself changeFeedValue:name forKey:@"icon" void:^(NSError *e) {
+        [weakself changeFeedValue:name forKey:@"icon" feed:feed void:^(NSError *e) {
             if (!e) {
                 [[weakself view] mvp_reloadData];
                 [v dismissOrPopViewController];

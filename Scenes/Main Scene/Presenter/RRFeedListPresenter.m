@@ -207,11 +207,11 @@ NSString* const kShowRecent = @"kShowRecent";
             [self.readStyleInputer hideModel:o];
         }
     }];
-    
-    NSLog(@"-- %@",@(self.recentModel != nil));
-    NSLog(@"-- %@",@(self.laterModel != nil));
-    NSLog(@"-- %@",@(self.favModel != nil));
-    NSLog(@"-- %@",@(self.unreadModel != nil));
+//
+//    NSLog(@"-- %@",@(self.recentModel != nil));
+//    NSLog(@"-- %@",@(self.laterModel != nil));
+//    NSLog(@"-- %@",@(self.favModel != nil));
+//    NSLog(@"-- %@",@(self.unreadModel != nil));
     
     if (self.recentModel) {
         self.listItemSetting[kShowRecent] = @(self.recentModel.editType == RRCEEditTypeDelete);
