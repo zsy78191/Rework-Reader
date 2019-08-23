@@ -12,7 +12,7 @@
 #import "RRFeedInfoListModel.h"
 #import "RRFeedInfoListOtherModel.h"
 #import "RRFeedInputer.h"
-@interface RRTableOutput ()  <UITableViewDelegate, UITableViewDataSource>
+@interface RRTableOutput ()  
 {
     
 }

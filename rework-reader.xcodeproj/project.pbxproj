@@ -96,6 +96,7 @@
 		D484562E2213E38300202401 /* marked.js in Resources */ = {isa = PBXBuildFile; fileRef = D484562D2213E38300202401 /* marked.js */; };
 		D48456302213E6D200202401 /* 什么是RSS.md in Resources */ = {isa = PBXBuildFile; fileRef = D484562F2213E6D200202401 /* 什么是RSS.md */; };
 		D48D736C2247A1FE00E79184 /* 5@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = D48D736B2247A1FE00E79184 /* 5@2x.png */; };
+		D48F7C7E22F2E0AE004476E7 /* TableAutoView.m in Sources */ = {isa = PBXBuildFile; fileRef = D48F7C7D22F2E0AE004476E7 /* TableAutoView.m */; };
 		D499418B21FC9AB10041B998 /* style.cas in Resources */ = {isa = PBXBuildFile; fileRef = D499418721FC9AB10041B998 /* style.cas */; };
 		D49941AA21FC9B0E0041B998 /* RPGetAllModelKeyAndValueOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = D499419521FC9B0E0041B998 /* RPGetAllModelKeyAndValueOperation.m */; };
 		D49941AB21FC9B0E0041B998 /* RPSortItemOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = D499419621FC9B0E0041B998 /* RPSortItemOperation.m */; };
@@ -342,6 +343,8 @@
 		D484562D2213E38300202401 /* marked.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = marked.js; sourceTree = "<group>"; };
 		D484562F2213E6D200202401 /* 什么是RSS.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = "什么是RSS.md"; sourceTree = "<group>"; };
 		D48D736B2247A1FE00E79184 /* 5@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "5@2x.png"; sourceTree = "<group>"; };
+		D48F7C7C22F2E0AE004476E7 /* TableAutoView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TableAutoView.h; sourceTree = "<group>"; };
+		D48F7C7D22F2E0AE004476E7 /* TableAutoView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TableAutoView.m; sourceTree = "<group>"; };
 		D499418721FC9AB10041B998 /* style.cas */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = style.cas; sourceTree = "<group>"; };
 		D499418821FC9AB10041B998 /* SourceHanSerifCN-SemiBold.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "SourceHanSerifCN-SemiBold.otf"; sourceTree = "<group>"; };
 		D499418921FC9AB10041B998 /* SourceHanSerifCN-Regular.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "SourceHanSerifCN-Regular.otf"; sourceTree = "<group>"; };
@@ -876,6 +879,15 @@
 			path = "Import Scene";
 			sourceTree = "<group>";
 		};
+		D48F7C7B22F2E07E004476E7 /* Table Scene */ = {
+			isa = PBXGroup;
+			children = (
+				D48F7C7C22F2E0AE004476E7 /* TableAutoView.h */,
+				D48F7C7D22F2E0AE004476E7 /* TableAutoView.m */,
+			);
+			path = "Table Scene";
+			sourceTree = "<group>";
+		};
 		D499418521FC9AB10041B998 /* ClassyKit */ = {
 			isa = PBXGroup;
 			children = (
@@ -1056,6 +1068,7 @@
 		D4AC4DD22216BB9B0028D342 /* Scenes */ = {
 			isa = PBXGroup;
 			children = (
+				D48F7C7B22F2E07E004476E7 /* Table Scene */,
 				D4E7491F22A64CE60033D53E /* IconSelect Scene */,
 				D47A3972223A2109006251A6 /* Import Scene */,
 				D42F55EE221E7E0600321A21 /* List Scene */,
@@ -1540,6 +1553,7 @@
 				D4E0F9052213B38D00902540 /* RRFeedInputer.m in Sources */,
 				D440CFF322155697003B7203 /* RRFeedArticleModel.m in Sources */,
 				D473F287221FCCE800DF3C6D /* RRListInputer.m in Sources */,
+				D48F7C7E22F2E0AE004476E7 /* TableAutoView.m in Sources */,
 				D49941AC21FC9B0E0041B998 /* RPDataManager.m in Sources */,
 				D47A396322363ABE006251A6 /* Model.xcdatamodeld in Sources */,
 				D479D1EC225F11E90057DAC5 /* RRFeedFinder.m in Sources */,
