@@ -13,6 +13,7 @@
 #import "RRImageRender.h"
 @import oc_string;
 @import Fork_MWFeedParser;
+@import Classy;
 
 @import SDWebImage;
 @implementation RRFeedInfoListCell
@@ -22,6 +23,9 @@
     // Initialization code
     self.imageView.clipsToBounds = YES;
 //    self.imageView.layer.cornerRadius = 50;
+    self.selectedBackgroundView = [UIView new];
+    self.selectedBackgroundView.cas_styleClass = @"selectView";
+//    self.selectedBackgroundView.backgroundColor = [UIColor redColor];
 }
 
 - (void)setSelected:(BOOL)selected animated:(BOOL)animated {

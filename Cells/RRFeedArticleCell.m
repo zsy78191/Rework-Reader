@@ -24,7 +24,7 @@
     self.i1.image = [UIImage new];
     self.i2.image = [UIImage new];
     
-    self.selectionStyle = UITableViewCellSelectionStyleDefault;
+    self.selectionStyle = UITableViewCellSelectionStyleNone;
 
 }
 

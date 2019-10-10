@@ -11,11 +11,11 @@
 
 // Include any system framework and library headers here that should be included in all compilation units.
 // You will also need to set the Prefix Header build setting of one or more of your targets to reference this file.
-@import CocoaLumberjack;
-#ifdef DEBUG
-static const int ddLogLevel = DDLogLevelVerbose;
-#else
-static const int ddLogLevel = DDLogLevelOff;
-#endif
+//@import CocoaLumberjack;
+//#ifdef DEBUG
+//static const int ddLogLevel = DDLogLevelVerbose;
+//#else
+//static const int ddLogLevel = DDLogLevelOff;
+//#endif
 
 #endif /* PrefixHeader_pch */

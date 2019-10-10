@@ -754,6 +754,9 @@ NSString* const kShowRecent = @"kShowRecent";
     UIViewController* vc = [MVPRouter viewForURL:@"rr://websetting?p=RRMainPageAddPresenter" withUserInfo:@{@"action1":action1,@"action2":action2,@"action3":action3}];
     RRExtraViewController* nv = [[RRExtraViewController alloc] initWithRootViewController:vc];
     vc.preferredContentSize = CGSizeMake(200, 94);
+//    if (@available(iOS 13.0, *)) {
+//        vc.preferredContentSize = CGSizeMake(200, 94 + 50);
+//    }
     [nv.view setBackgroundColor:[UIColor clearColor]];
     nv.modalPresentationStyle = UIModalPresentationPopover;
     nv.popoverPresentationController.barButtonItem = sender;

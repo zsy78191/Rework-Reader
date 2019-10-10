@@ -56,6 +56,12 @@
     [bar setSearchBarStyle:UISearchBarStyleMinimal];
     
     [self.view addInteraction:self.dropIntercation];
+    
+    if (@available(iOS 13.0, *)) {
+//        NSLog(@"--- %@",@(self.preferredUserInterfaceStyle));
+    } else {
+        // Fallback on earlier versions
+    }
 }
 
 - (Class)mvp_presenterClass
@@ -105,6 +111,8 @@
             [[output tableview] setContentOffset:CGPointMake(0, [value doubleValue]-height) animated:NO];
         });
     } keypath:@"offsetY"];
+    
+    
  
 //    MVPTableViewOutput* o = self.outputer;
 //    __weak typeof(self) weakSelf = self;
@@ -234,6 +242,7 @@
         item3.image = [UIImage imageNamed:@"icon_yue"];
         
         [self.presenter mvp_bindBlock:^(id view, id value) {
+            [view setNeedsStatusBarAppearanceUpdate];
             NSInteger mode = [value integerValue];
             dispatch_async(dispatch_get_main_queue(), ^{
                 switch (mode) {

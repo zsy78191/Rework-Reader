@@ -94,11 +94,14 @@
             }
 //            NSString * e = [x._urlEncodeString stringByReplacingOccurrencesOfString:@"%3A" withString:@":"];
 //            //NSLog(@"%@",e);
+            x = [x stringByReplacingOccurrencesOfString:@"%" withString:@"..BFH.."];
             NSString* e = [x stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLFragmentAllowedCharacterSet]];
             
             if (x.length != e.length) {
                 x = e;
             }
+            
+            x = [x stringByReplacingOccurrencesOfString:@"..BFH.." withString:@"%"];
             
 //            RRFeedFinder* f = [[RRFeedFinder alloc] init];
             [RRFeedFinder findItem:x result:^(BOOL isRSS, NSString * _Nonnull url) {

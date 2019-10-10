@@ -24,7 +24,7 @@ target 'rework-reader' do
   pod 'Fork-MWFeedParser'
   
   #log框架
-  pod 'CocoaLumberjack'
+#  pod 'CocoaLumberjack'
   
   #相对时间转换工具
   pod 'DateTools'

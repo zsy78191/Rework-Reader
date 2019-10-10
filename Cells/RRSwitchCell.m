@@ -59,7 +59,7 @@
     {
         dispatch_async(dispatch_get_main_queue(), ^{
             self.subLabel.text = value;
-            [self.subLabel sizeToFit];
+//            [self.subLabel sizeToFit];
         });
     }
 }

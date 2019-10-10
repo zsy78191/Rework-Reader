@@ -89,8 +89,8 @@
     if (self.model) {
 //        NSLog(@"%@",self.model.link);
         #ifdef DEBUG
-            NSLog(@"%@",self.model);
-            [self activeShare:[NSURL URLWithString:self.model.link] sender:sender];
+//            NSLog(@"%@",self.model);
+            [self outputHTML];
         #else
             [self activeShare:[NSURL URLWithString:self.model.link] sender:sender];
         #endif
@@ -272,6 +272,7 @@
     nv.popoverPresentationController.popoverLayoutMargins = UIEdgeInsetsMake(15,15,15,15);
     NSDictionary* style = [[NSUserDefaults standardUserDefaults] valueForKey:@"style"];
     nv.popoverPresentationController.backgroundColor = UIColor.hex(style[@"$bar-tint-color"]);
+    
     [(UIViewController*)self.view presentViewController:nv animated:YES completion:^{
         
     }];

@@ -28,7 +28,7 @@
     
     
     if (!self.delClass) {
-        DDLogWarn(@"%@ need set class",self);
+        NSLog(@"%@ need set class",self);
         return;
     }
     
