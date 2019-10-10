@@ -16,10 +16,16 @@
     [ClassyKitLoader cleanStyleFiles]; // 删除本地cas文件
     [ClassyKitLoader copyStyleFile]; // 拷贝cas文件
     BOOL autoCheck = [[NSUserDefaults standardUserDefaults] boolForKey:@"kAutoTheme"];
+    BOOL userSystemDarkMode = [[NSUserDefaults standardUserDefaults] boolForKey:@"kAutoThemeDarkMode"];
     if (!autoCheck) {
+        if(userSystemDarkMode) {
+            [self iOS13SystemDark];
+        }
         [self notiReloadCas];
-    }
-    else {
+    } else if(userSystemDarkMode) {
+        [self iOS13SystemDark];
+        [self notiReloadCas];
+    } else {
         [self checkThemeWithScreenLight];
     }
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateStyle) name:@"RRCasNeedReload" object:nil];
@@ -47,11 +53,37 @@
     
 }
 
+- (BOOL)iOS13SystemDark
+{
+    RRReadMode mode = [[NSUserDefaults standardUserDefaults] integerForKey:@"kRRReadMode"];
+    BOOL same = YES;
+     
+     if (@available(iOS 12.0, *)) {
+         if (self.window.traitCollection.userInterfaceStyle == UIUserInterfaceStyleDark) {
+             same = mode == RRReadModeDark;
+             mode = RRReadModeDark;
+             [[NSUserDefaults standardUserDefaults] setInteger:mode forKey:@"kRRReadMode"];
+             [[NSUserDefaults standardUserDefaults] synchronize];
+         } else if(self.window.traitCollection.userInterfaceStyle == UIUserInterfaceStyleLight) {
+             same = mode == RRReadModeLight;
+             mode = RRReadModeLight;
+             [[NSUserDefaults standardUserDefaults] setInteger:mode forKey:@"kRRReadMode"];
+             [[NSUserDefaults standardUserDefaults] synchronize];
+         }
+     } else {
+         // Fallback on earlier versions
+     }
+    return same;
+}
+
 - (void)notiReloadCas
 {
     RRReadMode mode = [[NSUserDefaults standardUserDefaults] integerForKey:@"kRRReadMode"];
+ 
+    
     RRReadLightSubMode subMode = [[NSUserDefaults standardUserDefaults] integerForKey:@"kRRReadModeLight"];
     RRReadDarkSubMode darkMode = [[NSUserDefaults standardUserDefaults] integerForKey:@"kRRReadModeDark"];
+    
     switch (mode) {
         case RRReadModeDark:
         {
@@ -122,7 +154,7 @@
 
 - (void)preload
 {
-    [DDLog addLogger:[DDTTYLogger sharedInstance]]; // TTY = Xcode 控制台
+//    [DDLog addLogger:[DDTTYLogger sharedInstance]]; // TTY = Xcode 控制台
     //    [DDLog addLogger:[DDOSLogger sharedInstance] withLevel:DDLogLevelWarning]; // ASL = Apple System Logs 苹果系统日志
     //    DDFileLogger *fileLogger = [[DDFileLogger alloc] init]; // 本地文件日志
     //    fileLogger.rollingFrequency = 60 * 60 * 24; // 每24小时创建一个新文件
@@ -196,7 +228,7 @@
         
         [[NSUserDefaults standardUserDefaults] setBool:NO forKey:@"openUnread"];
         [[NSUserDefaults standardUserDefaults] synchronize];
-        // RRTODO:优化
+    
         //        id v2 = []
         
         RRFeedInfoListOtherModel* mUnread = GetRRFeedInfoListOtherModel(@"未读订阅",@"favicon",@"三日内的未读文章",@"unread");
@@ -213,9 +245,7 @@
         id v2 = [MVPRouter viewForURL:@"rr://list" withUserInfo:@{@"model":mUnread}];
         [nv pushViewController:v2 animated:NO];
     }
-    
-    self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
-    
+
     if([UIDevice currentDevice].iPad())
     {
         RRFeedInfoListOtherModel* mUnread = GetRRFeedInfoListOtherModel(@"未读订阅",@"favicon",@"三日内的未读文章",@"unread");
@@ -360,5 +390,13 @@
 }
 
 
+- (void)system {
+    
+    [UIApplication sharedApplication];
+    UIApplicationUserDidTakeScreenshotNotification;
+    [UIScreen mainScreen];
+    [UIDevice currentDevice];
+    [UIViewController class];
+}
 
 @end

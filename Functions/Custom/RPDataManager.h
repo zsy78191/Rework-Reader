@@ -9,7 +9,7 @@
 #import <Foundation/Foundation.h>
 #import "RPSortableItem.h"
 
-@class NSManagedObject;
+@class NSManagedObject,NSManagedObjectContext;
 
 NS_ASSUME_NONNULL_BEGIN
 

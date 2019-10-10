@@ -21,7 +21,8 @@
 #import "ApplePurchaseDelegate.h"
 #import "AppleAPIHelper.h"
 #import "PWToastView.h"
-@import YYKit;
+//@import YYKit;
+@import oc_string;
 #import "RPDataManager.h"
 #import "RRCoreDataModel.h"
 @import DateTools;
@@ -67,11 +68,11 @@
         NSURL* url = [[NSBundle mainBundle] URLForResource:self.settingFileName withExtension:@"json"];
         NSString* json = [[NSString alloc] initWithContentsOfURL:url encoding:NSUTF8StringEncoding error:&error];
         if (error) {
-            DDLogError(@"%@",error);
+            NSLog(@"%@",error);
         }
         _item = [RRModelItem fromJSON:json encoding:NSUTF8StringEncoding error:&error2];
         if (error2) {
-            DDLogError(@"%@",error2);
+            NSLog(@"%@",error2);
         }
     }
     return _item;

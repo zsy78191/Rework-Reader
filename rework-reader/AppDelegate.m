@@ -50,11 +50,17 @@
 //        [self loadEnsemble];
     }
 
+    
+    
+    self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
+    
+
     // 加载Classy样式
     [self loadCas];
     
     // 加载额外的样式
     [self loadExtra];
+    
     
     // 加载路由
     [self loadRouter];
@@ -62,6 +68,8 @@
     // 加载VC
     [self loadPage];
     
+
+
     // 配置background fetch
     [[UIApplication sharedApplication] setMinimumBackgroundFetchInterval:UIApplicationBackgroundFetchIntervalMinimum];
     //NSLog(@"%@",launchOptions);
@@ -158,12 +166,23 @@
         });
     }
     
+    
 }
 
 
 - (void)applicationDidBecomeActive:(UIApplication *)application {
     // Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
-   
+    
+   BOOL userSystemDarkMode = [[NSUserDefaults standardUserDefaults] boolForKey:@"kAutoThemeDarkMode"];
+    if(userSystemDarkMode) {
+        BOOL same = [self iOS13SystemDark];
+        dispatch_async(dispatch_get_main_queue(), ^{
+            if (!same) {
+                [self notiReloadCas];
+                [[NSNotificationCenter defaultCenter] postNotificationName:@"RRWebNeedReload" object:nil];
+            }
+        });
+    }
 }
 
 

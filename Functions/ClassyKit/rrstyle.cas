@@ -119,6 +119,10 @@ UIView.SeparaterView
     backgroundColor $main-separator-color
 }
 
+UIView.selectView {
+    backgroundColor $main-separator-color
+}
+
 
 ^UITableViewCell > ^UIView > ^UILabel.F1 {
     font PingFangSC-Light $main-font-size

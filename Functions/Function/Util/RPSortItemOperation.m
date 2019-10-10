@@ -15,7 +15,7 @@
 - (void)main
 {
     if (!self.sortItems) {
-        DDLogWarn(@"排序需要设置sortItems");
+//        DDLogWarn(@"排序需要设置sortItems");
         return;
     }
     
@@ -27,7 +27,7 @@
         temp = [self.sortItems sortedArrayUsingDescriptors:@[s]];
     }
     else {
-        DDLogWarn(@"排序需要设置sortKey，或者使用accordingIdx");
+//        DDLogWarn(@"排序需要设置sortKey，或者使用accordingIdx");
         return;
     }
     

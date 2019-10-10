@@ -6,7 +6,7 @@
 //  Copyright © 2019 orzer. All rights reserved.
 //
 
-#import <Foundation/Foundation.h>
+#import <UIKit/UIKit.h>
 @import CoreImage;
 
 NS_ASSUME_NONNULL_BEGIN

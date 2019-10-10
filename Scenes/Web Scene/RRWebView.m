@@ -81,7 +81,7 @@
 {
     [super motionBegan:motion withEvent:event];
     if (motion == UIEventSubtypeMotionShake) {
-        [self.presenter mvp_runAction:@"openAction2:"];
+        [self.presenter mvp_runAction:@"openAction2:" value:self];
     }
 }
 
@@ -645,7 +645,7 @@
 {
     NSURL * url = [[NSBundle mainBundle] URLForResource:[filename stringByDeletingPathExtension] withExtension:[filename pathExtension]];
     if (!m && ![filename hasPrefix:@"http"] && ![[NSFileManager defaultManager] fileExistsAtPath:[url path]]) {
-        DDLogWarn(@"文件%@不存在",filename);
+//        DDLogWarn(@"文件%@不存在",filename);
         return;
     }
     
@@ -1235,7 +1235,7 @@
 //        //NSLog(@"%@",h);
         weakSelf.downView.frame = ({
             CGRect r = weakSelf.downView.frame;
-            r.origin.y = [h doubleValue]+50;
+            r.origin.y = [h doubleValue] < [webView frame].size.height ? [webView frame].size.height - 30 : [h doubleValue] + 50;
             r;
         });
         
@@ -1284,6 +1284,7 @@
 {
     __weak typeof(self) weakSelf = self;
     [self.webView evaluateJavaScript:@"document.body.scrollHeight" completionHandler:^(id _Nullable h, NSError * _Nullable error) {
+//        NSLog(@"**()@%@",h);
         dispatch_async(dispatch_get_main_queue(), ^{
             weakSelf.downView.frame = ({
                 CGRect r = weakSelf.downView.frame;

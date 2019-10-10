@@ -63,6 +63,15 @@
             "switchkey": "kAutoTheme",
             "select": "autoThemeSetting",
             "type": 3
+        },
+        {
+            "title": "根据系统深色模式设置变化",
+            "value": "iOS 13开始支持，优先级高于前一个设置。",
+            "action": "changeAutoThemeDarkMode:",
+            "switchkey": "kAutoThemeDarkMode",
+            "select": "autoThemeDarkModeSetting",
+            "type": 3
         }
+        
     ]
 }

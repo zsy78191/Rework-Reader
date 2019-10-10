@@ -117,5 +117,16 @@
     [[NSUserDefaults standardUserDefaults] synchronize];
 }
 
+- (void)changeAutoThemeDarkMode:(UISwitch*)sender
+{
+    if (![sender isKindOfClass:[UISwitch class]]) {
+        return;
+    }
+    
+    [[NSUserDefaults standardUserDefaults] setBool:[sender isOn] forKey:self.autoThemeDarkModeSetting.switchkey];
+    [[NSUserDefaults standardUserDefaults] synchronize];
+}
+
+
 
 @end

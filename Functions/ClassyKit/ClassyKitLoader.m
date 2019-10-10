@@ -21,7 +21,7 @@
     NSError* e;
     NSArray* all = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:[u path] error:&e];
     if (e) {
-        DDLogError(@"%@",e);
+        NSLog(@"%@",e);
     }
     else {
         [all.filter(^BOOL(id  _Nonnull x) {
@@ -30,10 +30,10 @@
 //            //NSLog(@"%@",obj);
             BOOL x = [[NSFileManager defaultManager] removeItemAtURL:[u URLByAppendingPathComponent:obj] error:nil];
             if (x) {
-                DDLogVerbose(@"删除成功%@",obj);
+                NSLog(@"删除成功%@",obj);
             }
             else {
-                DDLogWarn(@"删除失败%@",obj);
+                NSLog(@"删除失败%@",obj);
             }
         }];
     }
@@ -49,10 +49,10 @@
             NSError* e;
             [[NSFileManager defaultManager] copyItemAtURL:[NSURL fileURLWithPath:obj] toURL:u error:&e];
             if (e) {
-                DDLogError(@"%@",e);
+                NSLog(@"%@",e);
             }
             else {
-                DDLogVerbose(@"拷贝Cas文件成功");
+                NSLog(@"拷贝Cas文件成功");
             }
         }
     }];
@@ -93,7 +93,7 @@
         [styleVariables setValue:[RPFontLoader fontSizeWithTextStyle:UIFontTextStyleSubheadline] forKey:@"$sub-font-size"];
     }
     
-    DDLogInfo(@"%@",styleVariables);
+    NSLog(@"%@",styleVariables);
     
     [[CASStyler defaultStyler] setVariables:styleVariables];
 
@@ -101,7 +101,8 @@
     dispatch_once(&onceToken, ^{
          [CASStyler bootstrapClassyWithTargetWindows:UIApplication.sharedApplication.windows];
     });
-    [[CASStyler defaultStyler] setTargetWindows:UIApplication.sharedApplication.windows];
+    
+    
 //    [CASStyler defaultStyler].filePath = [[NSBundle mainBundle] pathForResource:[style stringByAppendingString:@".cas"] ofType:nil];
    
 #if TARGET_IPHONE_SIMULATOR

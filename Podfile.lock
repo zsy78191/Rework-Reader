@@ -3,21 +3,18 @@ PODS:
     - ChameleonFramework/Default (= 2.1.0)
   - ChameleonFramework/Default (2.1.0)
   - Classy (1.0.0)
-  - CocoaLumberjack (3.5.3):
-    - CocoaLumberjack/Core (= 3.5.3)
-  - CocoaLumberjack/Core (3.5.3)
-  - cocore (1.2.0)
+  - cocore (1.2.5)
   - coobjc (1.2.0):
     - cocore (~> 1.2.0)
   - DACircularProgress (2.3.1)
   - DateTools (2.0.0)
   - DZNEmptyDataSet (1.8.1)
   - Fork-MWFeedParser (0.1.4)
-  - Fork-MWPhotoBrowser (2.1.5.2):
+  - Fork-MWPhotoBrowser (2.1.5.3):
     - DACircularProgress (~> 2.3)
     - MBProgressHUD (~> 0.9)
     - SDWebImage (~> 4.4.6)
-  - IQKeyboardManager (6.3.0)
+  - IQKeyboardManager (6.5.0)
   - KissXML (5.2.3)
   - MagicalRecord (2.3.2):
     - MagicalRecord/Core (= 2.3.2)
@@ -25,7 +22,7 @@ PODS:
   - Masonry (1.1.0)
   - MBProgressHUD (0.9.2)
   - MGJRouter (0.10.0)
-  - MMKV (1.0.22)
+  - MMKV (1.0.23)
   - mvc-base (0.3.7.4):
     - DZNEmptyDataSet
     - MagicalRecord
@@ -34,17 +31,15 @@ PODS:
     - oc-string
     - ReactiveObjC
     - ui-base
-  - oc-base (0.0.5):
+  - oc-base (0.0.7):
     - MagicalRecord
     - MGJRouter
     - ReactiveObjC
     - RegexKitLite
-    - YYKit
   - oc-date (0.0.3):
     - DateTools
-  - oc-string (0.0.3):
+  - oc-string (0.0.6):
     - RegexKitLite (~> 4.0)
-    - YYKit (~> 1.0.9)
   - oc-util (0.0.3):
     - MMKV
   - pop (1.0.12)
@@ -55,23 +50,17 @@ PODS:
   - SDWebImage/Core (4.4.7)
   - SVProgressHUD (2.2.5)
   - TYSnapshotScroll (0.0.7)
-  - ui-base (0.1.2):
+  - ui-base (0.1.5):
     - ChameleonFramework
     - Classy
     - IQKeyboardManager
     - Masonry
     - oc-string
     - pop
-    - SDWebImage
     - SVProgressHUD (~> 2.2.5)
-    - YYKit
   - ui-util (0.0.5)
-  - YYKit (1.0.9):
-    - YYKit/no-arc (= 1.0.9)
-  - YYKit/no-arc (1.0.9)
 
 DEPENDENCIES:
-  - CocoaLumberjack
   - coobjc
   - DateTools
   - Fork-MWFeedParser
@@ -91,7 +80,6 @@ SPEC REPOS:
   https://github.com/cocoapods/specs.git:
     - ChameleonFramework
     - Classy
-    - CocoaLumberjack
     - cocore
     - coobjc
     - DACircularProgress
@@ -119,30 +107,28 @@ SPEC REPOS:
     - TYSnapshotScroll
     - ui-base
     - ui-util
-    - YYKit
 
 SPEC CHECKSUMS:
   ChameleonFramework: d21a3cc247abfe5e37609a283a8238b03575cf64
-  Classy: bbe2436d6872dfeda5eaa2a3c3d705a9c30b1709
-  CocoaLumberjack: 2f44e60eb91c176d471fdba43b9e3eae6a721947
-  cocore: cc9d76229458f286a632d9cecb63bd699bd3529d
+  Classy: 6111e471761bb6fb11cfc028bbe25c0a03566e69
+  cocore: 5099f3ba3f73e32c9c61ad9a388ae59fd4911a5f
   coobjc: 090a460e32e90d0e820e64c31cf7b79dece51a7c
   DACircularProgress: 4dd437c0fc3da5161cb289e07ac449493d41db71
   DateTools: 933ac9c490f21f92127cf690ccd8c397e0126caf
   DZNEmptyDataSet: 9525833b9e68ac21c30253e1d3d7076cc828eaa7
   Fork-MWFeedParser: 8da399e2d69378717e5d6012d9440cba38fcc357
-  Fork-MWPhotoBrowser: 83f1adb61348075b73bced381ad8f3ae32d96ee5
-  IQKeyboardManager: 2ca9d64893247556f53523dcd8d78641f0ba7c23
+  Fork-MWPhotoBrowser: f063dd0485aa43da18c878fa92e56679b17f2fe6
+  IQKeyboardManager: 700e5155d6a292383b54e8678aec769e14fc78fc
   KissXML: 09f88ff8161fd058d67b70740b8b516687b52823
   MagicalRecord: 53bed74b4323b930992a725be713e53b37d19755
   Masonry: 678fab65091a9290e40e2832a55e7ab731aad201
   MBProgressHUD: 1569cf7ace17a8bac47aabfbb8580a49690386d1
   MGJRouter: 15d94541eb2cc81eff7d577337288feb7ae9575f
-  MMKV: 99b05c376c0eb412b468ba1d3e6813502edeaa24
+  MMKV: 031ae51aedc0af1b250922f7ed8a6b6ee2f94c4c
   mvc-base: 7e03fba79ecf5a8c1aeaff0a869d542a8bc3daa0
-  oc-base: 4d381ce4ce8d088c632ff1362f0f03595299efb7
+  oc-base: 4e2ff597b9f24a1e677b52183e0cc3efb48ed93c
   oc-date: d8601fcc9eeea98f9d84506b77ef508cf9057786
-  oc-string: 79be9e8e4c80dd3e668690d3ac462e79a713489d
+  oc-string: 21daf685eb8c767f904eb57f9b6f75422cb44d18
   oc-util: 8e423d4c1da426e4989b4f793468276f89fc0843
   pop: d582054913807fd11fd50bfe6a539d91c7e1a55a
   ReactiveObjC: 011caa393aa0383245f2dcf9bf02e86b80b36040
@@ -150,10 +136,9 @@ SPEC CHECKSUMS:
   SDWebImage: c10d14a8883ebd89664f02a422006f66a85c0c5d
   SVProgressHUD: 1428aafac632c1f86f62aa4243ec12008d7a51d6
   TYSnapshotScroll: 699a985c9d630f00b62b90bb3ba5ea9ccd03767a
-  ui-base: 0babea0480a05031ec226e20b47f9698a919b822
+  ui-base: e0a904e9459a043ca6e972f6ea3a430451880264
   ui-util: 8f870cfb52b611516279bd0bf362ee2fac34d42d
-  YYKit: 7cda43304a8dc3696c449041e2cb3107b4e236e7
 
-PODFILE CHECKSUM: 4e76e73ced69115913216a4756243c09165dd8ae
+PODFILE CHECKSUM: 5a74b85de5c12b43bf4ff2db1cc6675b75f11031
 
-COCOAPODS: 1.7.1
+COCOAPODS: 1.7.5
