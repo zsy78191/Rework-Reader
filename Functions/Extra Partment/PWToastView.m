@@ -9,6 +9,7 @@
 #import "PWToastView.h"
 @import pop;
 @import Classy;
+#import "UIApplication+iOS13.h"
 //#import "UIColor+Additions.h"
 @interface PWToastView ()
 {
@@ -95,7 +96,10 @@
         t.show = YES;
         CGSize size = [UIScreen mainScreen].bounds.size;
         t.transform = CGAffineTransformMakeTranslation(0, size.height);
-        [[UIApplication sharedApplication].keyWindow addSubview:t];
+        UIWindow* keyWindow = [UIApplication sharedApplication].keyWindowiOS13;
+        if(keyWindow) {
+            [keyWindow addSubview:t];
+        }
         
 //        CGRect r = t.frame;
         

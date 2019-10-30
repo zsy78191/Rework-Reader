@@ -6,6 +6,7 @@
 //  Copyright © 2019 orzer. All rights reserved.
 //
 
+
 #import "AppDelegate+Ext.h"
 #import "RRDataBackuper.h"
 @import ui_base;
@@ -17,6 +18,11 @@
     [ClassyKitLoader copyStyleFile]; // 拷贝cas文件
     BOOL autoCheck = [[NSUserDefaults standardUserDefaults] boolForKey:@"kAutoTheme"];
     BOOL userSystemDarkMode = [[NSUserDefaults standardUserDefaults] boolForKey:@"kAutoThemeDarkMode"];
+    if(@available(iOS 13.0, *)) {
+        
+    } else {
+        userSystemDarkMode = false;
+    }
     if (!autoCheck) {
         if(userSystemDarkMode) {
             [self iOS13SystemDark];
@@ -79,8 +85,7 @@
 - (void)notiReloadCas
 {
     RRReadMode mode = [[NSUserDefaults standardUserDefaults] integerForKey:@"kRRReadMode"];
- 
-    
+
     RRReadLightSubMode subMode = [[NSUserDefaults standardUserDefaults] integerForKey:@"kRRReadModeLight"];
     RRReadDarkSubMode darkMode = [[NSUserDefaults standardUserDefaults] integerForKey:@"kRRReadModeDark"];
     
@@ -170,7 +175,7 @@
     [SDWebImageDownloader sharedDownloader].downloadTimeout = 5;
     
     BOOL x = [[[RRDataBackuper alloc] init] ensureFileDownloaded];
-    NSLog(@"%@",@(x));
+//    NSLog(@"%@",@(x));
 }
 
 - (void)loadFonts
@@ -217,11 +222,9 @@
 
 - (void)loadPage
 {
-    
     id vc = [MVPRouter viewForURL:@"rr://feedlist" withUserInfo:nil];
     RRExtraViewController* nv = [[RRExtraViewController alloc] initWithRootViewController:vc];
     nv.handleTrait = NO;
-    
     
     BOOL openUnreadAlways = [[NSUserDefaults standardUserDefaults] boolForKey:@"kEnterUnread"];
     if ([[NSUserDefaults standardUserDefaults] boolForKey:@"openUnread"] || openUnreadAlways) {
@@ -280,7 +283,20 @@
 
 - (id)initialVC
 {
-    id v2 = [MVPRouter viewForURL:@"rr://web" withUserInfo:@{@"name":@"http://www.orzer.club",@"isSub":@(NO)}];
+    NSInteger homepagetype = [[NSUserDefaults standardUserDefaults] integerForKey:@"kDefaultHomePage"];
+    id v2 = NULL;
+    if (homepagetype == 0) {
+        v2 = [MVPRouter viewForURL:@"rr://web" withUserInfo:@{@"name":@"http://www.orzer.club",@"isSub":@(NO)}];
+    } else if(homepagetype == 1) {
+        v2 = [[UIViewController alloc] initWithNibName:@"PlaceholderViewController" bundle:[NSBundle mainBundle]];
+    } else if(homepagetype == 2) {
+        NSString* path = [[NSUserDefaults standardUserDefaults] stringForKey:@"kDefaultHomePagePath"];
+        v2 = [MVPRouter viewForURL:@"rr://web" withUserInfo:@{@"name":path,@"isSub":@(NO)}];
+    }
+    
+    if(!v2) {
+        v2 = [MVPRouter viewForURL:@"rr://web" withUserInfo:@{@"name":@"http://www.orzer.club",@"isSub":@(NO)}];
+    }
     RRExtraViewController* nv2 = [[RRExtraViewController alloc] initWithRootViewController:v2];
     nv2.handleTrait = YES;
     return nv2;
@@ -392,11 +408,7 @@
 
 - (void)system {
     
-    [UIApplication sharedApplication];
-    UIApplicationUserDidTakeScreenshotNotification;
-    [UIScreen mainScreen];
-    [UIDevice currentDevice];
-    [UIViewController class];
+
 }
 
 @end

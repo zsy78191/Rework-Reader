@@ -215,6 +215,49 @@
     }
 }
 
+//      "action": "selectHomePage:",
+//    "select": ["官方博客","空白页","自定义URL"],
+- (void)selectHomePage:(NSString*)select
+{
+    __weak typeof(self) weakself = self;
+    if ([select isEqualToString:@"官方博客"]) {
+        [[NSUserDefaults standardUserDefaults] setObject:@(0) forKey:@"kDefaultHomePage"];
+        [[NSUserDefaults standardUserDefaults] synchronize];
+        [[weakself view] hudSuccess:@"设置成功"];
+    } else if([select isEqualToString:@"空白页"]) {
+        [[NSUserDefaults standardUserDefaults] setObject:@(1) forKey:@"kDefaultHomePage"];
+        [[NSUserDefaults standardUserDefaults] synchronize];
+        [[weakself view] hudSuccess:@"设置成功"];
+    } else if([select isEqualToString:@"自定义URL"]) {
+        UI_Alert()
+       .titled(@"设置自定义启动页")
+       .recommend(@"确定", ^(UIAlertAction * _Nonnull action, UIAlertController * _Nonnull alert) {
+           dispatch_async(dispatch_get_main_queue(), ^{
+                UITextField* t = alert.textFields[0];
+                //           NSLog(@"%@",t.text);
+               if(![[t text] hasPrefix:@"http"]) {
+                   [[weakself view] hudInfo:@"请输入http开头的URL地址"];
+               } else {
+                   [[NSUserDefaults standardUserDefaults] setObject:@(2) forKey:@"kDefaultHomePage"];
+                   [[NSUserDefaults standardUserDefaults] setObject:[t text] forKey:@"kDefaultHomePagePath"];
+                   [[NSUserDefaults standardUserDefaults] synchronize];
+                   [[weakself view] hudSuccess:@"设置成功"];
+               }
+           });
+       })
+       .cancel(@"取消", ^(UIAlertAction * _Nonnull action) {
+           
+       })
+       .input(@"启动页URL", ^(UITextField * _Nonnull field) {
+           NSString* s = [[NSUserDefaults standardUserDefaults] stringForKey:@"kDefaultHomePagePath"];
+           if(s) {
+               field.text = s;
+           }
+       })
+       .show((id)self.view);
+    }
+}
+
 - (void)selectMainColor:(NSString*)select
 {
     NSDictionary* colorDict = @{

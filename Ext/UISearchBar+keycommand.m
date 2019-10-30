@@ -8,12 +8,14 @@
 
 #import "UISearchBar+keycommand.h"
 #import "RRExtraViewController.h"
+
+#import "UIKeyCommand+iOS13.h"
 @implementation UISearchBar (keycommand)
 
 - (NSArray<UIKeyCommand *> *)keyCommands
 {
     return @[
-             [UIKeyCommand keyCommandWithInput:UIKeyInputEscape modifierFlags:0 action:@selector(resignResponeser:) discoverabilityTitle:@"取消"]
+        [UIKeyCommand keyCommandWithInput_IOS13:UIKeyInputEscape modifierFlags:0 action:@selector(resignResponeser:) discoverabilityTitle:@"取消"]
              ];
 }
 

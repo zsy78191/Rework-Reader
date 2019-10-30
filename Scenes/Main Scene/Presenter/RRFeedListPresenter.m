@@ -782,7 +782,7 @@ NSString* const kShowRecent = @"kShowRecent";
 }
 
 //点击蒙版是否消失，默认为yes；
-
+#if !TARGET_OS_MACCATALYST
 -(BOOL)popoverPresentationControllerShouldDismissPopover:(UIPopoverPresentationController *)popoverPresentationController{
     return YES;
 }
@@ -790,9 +790,18 @@ NSString* const kShowRecent = @"kShowRecent";
 //弹框消失时调用的方法
 -(void)popoverPresentationControllerDidDismissPopover:(UIPopoverPresentationController *)popoverPresentationController{
     //NSLog(@"弹框已经消失");
-    [[(UIViewController*)self.view toolbarItems] firstObject].enabled = YES;
+}
+#else
+- (BOOL)presentationControllerShouldDismiss:(UIPresentationController *)presentationController
+{
+    return YES;
 }
 
+- (void)presentationControllerDidDismiss:(UIPresentationController *)presentationController
+{
+    
+}
+#endif
 
 - (void)cleanAll
 {

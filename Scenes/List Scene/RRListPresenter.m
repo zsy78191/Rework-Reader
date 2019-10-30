@@ -178,6 +178,7 @@ static NSString * const kShortcutItemsKey = @"kShortcutItemsKey";
 {
     if (!_inputerCoreData) {
         _inputerCoreData = [[RRListInputer alloc] init];
+
     }
     return _inputerCoreData;
 }
@@ -213,6 +214,8 @@ static NSString * const kShortcutItemsKey = @"kShortcutItemsKey";
         {
             self.inputerCoreData.feed = mm.feed;
         }
+        
+        [self changeTypeByType:0];
     }
     else if([m isKindOfClass:[RRFeedInfoListOtherModel class]])
     {
@@ -1004,43 +1007,57 @@ static NSString * const kShortcutItemsKey = @"kShortcutItemsKey";
     }
 }
 
+- (void)changeTypeByType:(NSInteger)type {
+     switch (type) {
+            case 0: {
+                self.inputerCoreData.style.onlyUnread = NO;
+                self.inputerCoreData.style.onlyReaded = NO;
+                self.inputerCoreData.style.liked = NO;
+                break;
+            }
+            case 1:
+            {
+                self.inputerCoreData.style.onlyUnread = YES;
+                self.inputerCoreData.style.onlyReaded = NO;
+                self.inputerCoreData.style.liked = NO;
+                break;
+            }
+            case 2:
+            {
+                self.inputerCoreData.style.onlyUnread = NO;
+                self.inputerCoreData.style.onlyReaded = YES;
+                self.inputerCoreData.style.liked = NO;
+                break;
+            }
+            case 3:
+            {
+                self.inputerCoreData.style.onlyUnread = NO;
+                self.inputerCoreData.style.onlyReaded = NO;
+                self.inputerCoreData.style.liked = YES;
+                break;
+            }
+            default:
+                break;
+        }
+        [self.inputerCoreData rebuildFetch];
+    //    [(id)self.view reloadData];
+        [self reloadHashData];
+        [self.view mvp_reloadData];
+}
 
 - (void)changeType:(UISegmentedControl*)sender
 {
 //    NSLog(@"%@",sender);
     self.currentIdx = sender.selectedSegmentIndex;
-    switch (sender.selectedSegmentIndex) {
-        case 0:
-        {
-            self.inputerCoreData.style.onlyUnread = YES;
-            self.inputerCoreData.style.onlyReaded = NO;
-            self.inputerCoreData.style.liked = NO;
-            break;
-        }
-        case 1:
-        {
-            self.inputerCoreData.style.onlyUnread = NO;
-            self.inputerCoreData.style.onlyReaded = YES;
-            self.inputerCoreData.style.liked = NO;
-            break;
-        }
-        case 2:
-        {
-            self.inputerCoreData.style.onlyUnread = NO;
-            self.inputerCoreData.style.onlyReaded = NO;
-            self.inputerCoreData.style.liked = YES;
-            break;
-        }
-        default:
-            break;
-    }
-    [self.inputerCoreData rebuildFetch];
-//    [(id)self.view reloadData];
-    [self reloadHashData];
-    [self.view mvp_reloadData];
+    [self changeTypeByType:self.currentIdx];
 }
 
 - (void)maskAllReaded:(id)sender
+{
+    
+}
+
+- (void)maskAllReaded2
 {
 //    __weak typeof(self) weakSelf = self;
     UI_Alert()
@@ -1057,12 +1074,29 @@ static NSString * const kShortcutItemsKey = @"kShortcutItemsKey";
 
 - (void)markAllAsReaded
 {
+    NSUserDefaults * ud = [NSUserDefaults standardUserDefaults];
+    BOOL tipOfShake = [ud boolForKey:@"kTipOfShake"];
+    
     NSPredicate* p = [self.inputerCoreData.style predicate];
+    __weak typeof(self) weakself = self;
     [[RPDataManager sharedManager] updateDatas:@"EntityFeedArticle" predicate:p modify:^(EntityFeedArticle*  _Nonnull obj) {
         obj.readed = YES;
     } finish:^(NSArray * _Nonnull results, NSError * _Nonnull e) {
         NSLog(@"%@",e);
+        if(!e) {
+            if([UIDevice currentDevice].iPad()) {
+                
+            } else {
+                if(tipOfShake){
+                   [[weakself view] hudSuccess:@"标记成功"];
+                } else {
+                    [[weakself view] hudInfo:@"试试晃动手机"];
+                }
+            }
+        }
     }];
+    
+
 }
 
 - (void)markAsReaded:(NSIndexPath*)path

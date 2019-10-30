@@ -13,6 +13,7 @@
 @import ReactiveObjC;
 @import ui_base;
 @import oc_string;
+@import BackgroundTasks;
 #import "UIViewController+PresentAndPush.h"
 #import "RRFeedInfoListOtherModel.h"
 
@@ -35,6 +36,8 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
 
+    NSLog(@"%@", [[NSBundle mainBundle] bundlePath]);
+    
     // 加载logger
     [self preload];
     
@@ -49,18 +52,14 @@
 //        CDESetCurrentLoggingLevel(CDELoggingLevelVerbose);
 //        [self loadEnsemble];
     }
-
-    
     
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
     
-
     // 加载Classy样式
     [self loadCas];
     
     // 加载额外的样式
     [self loadExtra];
-    
     
     // 加载路由
     [self loadRouter];
@@ -68,24 +67,27 @@
     // 加载VC
     [self loadPage];
     
-
-
+    
     // 配置background fetch
+#if !TARGET_OS_MACCATALYST
     [[UIApplication sharedApplication] setMinimumBackgroundFetchInterval:UIApplicationBackgroundFetchIntervalMinimum];
+#endif
+
+    
     //NSLog(@"%@",launchOptions);
     
     int r = arc4random() % 4;
     if (r == 2) {
         [AppleAPIHelper review];
     }
-  
+    
 #ifdef DEBUG
 //    CGRect frame = CGRectMake(0, 300, 80, 30);
 //    UIColor *btnBGColor = [UIColor colorWithWhite:0.000 alpha:0.700];
 //    OttoFPSButton *btn = [OttoFPSButton setTouchWithFrame:frame titleFont:[UIFont systemFontOfSize:15] backgroundColor:btnBGColor backgroundImage:nil];
 //    [self.window addSubview:btn];
 #endif
- 
+  
     return YES;
 }
 
@@ -112,6 +114,7 @@
     }
 }
 
+#if !TARGET_OS_MACCATALYST
 - (void)application:(UIApplication *)application performFetchWithCompletionHandler:(void (^)(UIBackgroundFetchResult))completionHandler
 {
     __weak typeof(self) weakSelf = self;
@@ -122,7 +125,7 @@
             [[NSUserDefaults standardUserDefaults] synchronize];
             [weakSelf notiArticle:x];
         }
-        NSLog(@"更新了%ld",x);
+//        NSLog(@"更新了%ld",x);
         if (x > 0) {
             completionHandler(UIBackgroundFetchResultNewData);
         }
@@ -133,6 +136,7 @@
     }];
     //NSLog(@"%s",__func__);
 }
+#endif
 
 - (void)applicationWillResignActive:(UIApplication *)application {
     // Sent when the application is about to move from active to inactive state. This can occur for certain types of temporary interruptions (such as an incoming phone call or SMS message) or when the user quits the application and it begins the transition to the background state.
@@ -172,16 +176,17 @@
 
 - (void)applicationDidBecomeActive:(UIApplication *)application {
     // Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
-    
-   BOOL userSystemDarkMode = [[NSUserDefaults standardUserDefaults] boolForKey:@"kAutoThemeDarkMode"];
-    if(userSystemDarkMode) {
-        BOOL same = [self iOS13SystemDark];
-        dispatch_async(dispatch_get_main_queue(), ^{
-            if (!same) {
-                [self notiReloadCas];
-                [[NSNotificationCenter defaultCenter] postNotificationName:@"RRWebNeedReload" object:nil];
-            }
-        });
+    if (@available(iOS 13.0, *)) {
+        BOOL userSystemDarkMode = [[NSUserDefaults standardUserDefaults] boolForKey:@"kAutoThemeDarkMode"];
+           if(userSystemDarkMode) {
+               BOOL same = [self iOS13SystemDark];
+               dispatch_async(dispatch_get_main_queue(), ^{
+                   if (!same) {
+                       [self notiReloadCas];
+                       [[NSNotificationCenter defaultCenter] postNotificationName:@"RRWebNeedReload" object:nil];
+                   }
+               });
+        }
     }
 }
 
@@ -281,10 +286,10 @@
 
 - (BOOL)application:(UIApplication *)app openURL:(NSURL *)url options:(NSDictionary<UIApplicationOpenURLOptionsKey,id> *)options
 {
-    NSLog(@"%s",__func__);
-    NSLog(@"%@",url);
-    NSLog(@"%@",options);
-    NSLog(@"%@",[url absoluteString]);
+//    NSLog(@"%s",__func__);
+//    NSLog(@"%@",url);
+//    NSLog(@"%@",options);
+//    NSLog(@"%@",[url absoluteString]);
     if ([[url absoluteString] hasPrefix:@"readerprime"]) {
         [self handleScheme:url];
         return YES;
