@@ -18,8 +18,16 @@
 @import IQKeyboardManager;
 #import "UISearchBar+keycommand.h"
 #import "RRFeedInfoListModel.h"
+#import "targetconditionals.h"
+#import "MVPView+iOS13.h"
+#import "UIKeyCommand+iOS13.h"
 
+#if !TARGET_OS_MACCATALYST
 @interface RRFeedListView () <UIViewControllerPreviewingDelegate,UISearchBarDelegate,UIDropInteractionDelegate>
+#else
+@interface RRFeedListView () <UISearchBarDelegate,UIDropInteractionDelegate>
+#endif
+
 {
 }
 @property (nonatomic, strong) UIBarButtonItem* blackBtn;
@@ -37,7 +45,12 @@
 //        UITableViewController* t = [[UITableViewController alloc] initWithStyle:UITableViewStylePlain];
         _svc = [[UISearchController alloc] initWithSearchResultsController:nil];
         _svc.obscuresBackgroundDuringPresentation = NO;
+#if TARGET_OS_MACCATALYST
+//        _svc.obscuresBackgroundDuringPresentation = NO;
+#else
         _svc.dimsBackgroundDuringPresentation = NO;
+#endif
+        
         _svc.hidesNavigationBarDuringPresentation = NO;
     }
     return _svc;
@@ -107,7 +120,7 @@
         MVPTableViewOutput* output = (id)view.outputer;
         dispatch_async(dispatch_get_main_queue(), ^{
             NSLog(@"+++++");
-            double height = [UIApplication sharedApplication].statusBarFrame.size.height + view.navigationController.navigationBar.frame.size.height;
+            double height = [weakSelf statusframe].size.height + view.navigationController.navigationBar.frame.size.height;
             [[output tableview] setContentOffset:CGPointMake(0, [value doubleValue]-height) animated:NO];
         });
     } keypath:@"offsetY"];
@@ -117,7 +130,9 @@
 //    MVPTableViewOutput* o = self.outputer;
 //    __weak typeof(self) weakSelf = self;
     [self.outputer setRegistBlock:^(MVPTableViewOutput* output) {
+#if !TARGET_OS_MACCATALYST
         [weakSelf registerForPreviewingWithDelegate:weakSelf sourceView:output.tableview];
+#endif
         [output registNibCell:@"RRFeedInfoListCell2" withIdentifier:@"styleCell"];
         [output registNibCell:@"RRFeedInfoListCell" withIdentifier:@"feedCell"];
         [output registNibCell:@"RRTitleCell" withIdentifier:@"titleCell"];
@@ -207,7 +222,7 @@
     RRTableOutput* output = (id)self.outputer;
     [output setCanMutiSelect:YES];
     [output setNewOffsetBlock:^(CGFloat offsetY) {
-         double height = [UIApplication sharedApplication].statusBarFrame.size.height + weakSelf.navigationController.navigationBar.frame.size.height;
+         double height =  [weakSelf statusframe].size.height + weakSelf.navigationController.navigationBar.frame.size.height;
         [[weakSelf presenter] mvp_runAction:@"updateOffsetY:" value:@(offsetY+height)];
     }];
     
@@ -378,11 +393,12 @@
 //    [self.navigationController.navigationBar setPrefersLargeTitles:YES];
     MVPTableViewOutput* o  = (id)self.outputer;
     __weak typeof(self) weakSelf = self;
-    double height = [UIApplication sharedApplication].statusBarFrame.size.height + weakSelf.navigationController.navigationBar.frame.size.height;
+    double height = [weakSelf statusframe].size.height + weakSelf.navigationController.navigationBar.frame.size.height;
     [[weakSelf presenter] mvp_runAction:@"updateOffsetY:" value:@(o.tableview.contentOffset.y+height)];
     
 }
 
+#if !TARGET_OS_MACCATALYST
 - (void)previewingContext:(id<UIViewControllerPreviewing>)previewingContext commitViewController:(UIViewController *)viewControllerToCommit
 {
     [self mvp_pushViewController:viewControllerToCommit];
@@ -399,6 +415,7 @@
     id vc = [self.presenter mvp_valueWithSelectorName:@"viewControllerAtIndexPath:" sender:path];
     return vc;
 }
+#endif
 
 - (UIDropInteraction *)dropIntercation
 {
@@ -422,7 +439,7 @@
 - (NSArray<UIKeyCommand *> *)keyCommands
 {
     return @[
-             [UIKeyCommand keyCommandWithInput:@"f"
+             [UIKeyCommand keyCommandWithInput_IOS13:@"f"
                                  modifierFlags:UIKeyModifierCommand
                                         action:@selector(search:)
                           discoverabilityTitle:@"搜索"]

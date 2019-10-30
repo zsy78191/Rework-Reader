@@ -15,8 +15,15 @@
 #import "RRTableOutput.h"
 @import DZNEmptyDataSet;
 #import "RRProvideDataProtocol.h"
+#import "MVPView+iOS13.h"
+#import "targetconditionals.h"
+#import "UIKeyCommand+iOS13.h"
 
+#if !TARGET_OS_MACCATALYST
 @interface RRListView () <UIViewControllerPreviewingDelegate>
+#else
+@interface RRListView () 
+#endif
 {
 }
 @property (nonatomic, assign) BOOL showToolBar;
@@ -39,7 +46,7 @@
     if ([m isKindOfClass:[RRFeedInfoListModel class]]) {
 //        RRFeedInfoListModel* mm = m;
         
-        UIBarButtonItem* item = [self mvp_buttonItemWithActionName:@"maskAllReaded:" title:@"全部已读"];
+        UIBarButtonItem* item = [self mvp_buttonItemWithActionName:@"maskAllReaded2" title:@"全部已读"];
         self.navigationItem.rightBarButtonItems = @[item];
         
 //        UIBarButtonItem* item = [self mvp_buttonItemWithSystem:UIBarButtonSystemItemTrash actionName:@"deleteIt:" title:@"删除"];
@@ -90,7 +97,11 @@
 - (void)motionBegan:(UIEventSubtype)motion withEvent:(UIEvent *)event
 {
     if (motion == UIEventSubtypeMotionShake) {
-        [[self presenter] mvp_runAction:@"maskAllReaded:"];
+        [[self presenter] mvp_runAction:@"maskAllReaded2"];
+        NSUserDefaults * ud = [NSUserDefaults standardUserDefaults];
+//        BOOL tipOfShake = [ud boolForKey:@"kTipOfShake"];
+        [ud setBool:YES forKey:@"kTipOfShake"];
+        [ud synchronize];
     }
 }
 
@@ -126,7 +137,7 @@
 //    NSLog(@"%s",__func__);
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
-        double heigt = self.navigationController.navigationBar.frame.size.height + [UIApplication sharedApplication].statusBarFrame.size.height;
+        double heigt = self.navigationController.navigationBar.frame.size.height + [self statusframe].size.height;
         [[self presenter] mvp_runAction:@"setInitailOffset:" value:@(-heigt)];
     });
 }
@@ -139,7 +150,7 @@
 - (void)mvp_reloadData
 {
     MVPTableViewOutput* outputer = (id)self.outputer;
-    double heigt = self.navigationController.navigationBar.frame.size.height + [UIApplication sharedApplication].statusBarFrame.size.height;
+    double heigt = self.navigationController.navigationBar.frame.size.height +  [self statusframe].size.height;
     double contentY = [[self.presenter mvp_valueWithSelectorName:@"currentOffset"] doubleValue];
     
     dispatch_async(dispatch_get_main_queue(), ^{
@@ -165,13 +176,14 @@
     
     UIBarButtonItem* t = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
     UIBarButtonItem* t2 = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
-    UISegmentedControl* c = [[UISegmentedControl alloc] initWithItems:@[@"未读",@"已读",@"收藏"]];
+    UISegmentedControl* c = [[UISegmentedControl alloc] initWithItems:@[@"全部",@"未读",@"已读",@"收藏"]];
     UIBarButtonItem* i = [[UIBarButtonItem alloc] initWithCustomView:c];
     [c setSelectedSegmentIndex:0];
     [self mvp_bindAction:UIControlEventValueChanged target:c actionName:@"changeType:"];
     
-    UIBarButtonItem* item2 = [self mvp_buttonItemWithActionName:@"configit:" title:@"设置"];
     
+    
+    UIBarButtonItem* item2 = [self mvp_buttonItemWithActionName:@"configit:" title:@"设置"];
     self.toolbarItems = @[t2,i,t,item2];
 }
 
@@ -205,7 +217,9 @@
             
             [output registNibCell:@"RRFeedArticleCell2" withIdentifier:@"articleCell"];
         }
+#if !TARGET_OS_MACCATALYST
         [weakSelf registerForPreviewingWithDelegate:weakSelf sourceView:output.tableview];
+#endif
         [empty setActionBlock:^{
             dispatch_async(dispatch_get_main_queue(), ^{
                 if ([[output refreshControl] isRefreshing]) {
@@ -309,7 +323,7 @@
     // Pass the selected object to the new view controller.
 }
 */
-
+#if !TARGET_OS_MACCATALYST
 - (void)previewingContext:(id<UIViewControllerPreviewing>)previewingContext commitViewController:(UIViewController *)viewControllerToCommit
 {
     if ([viewControllerToCommit isKindOfClass:NSClassFromString(@"SFSafariViewController")]) {
@@ -333,7 +347,7 @@
     id vc = [self.presenter mvp_valueWithSelectorName:@"viewControllerAtIndexPath:" sender:path];
     return vc;
 }
-
+#endif
 - (void)back:(id)sender
 {
     [self mvp_popViewController:nil];
@@ -348,16 +362,16 @@
 - (NSArray<UIKeyCommand *> *)keyCommands
 {
     return @[
-              [UIKeyCommand keyCommandWithInput:@"s" modifierFlags:UIKeyModifierCommand action:@selector(switchFavorite) discoverabilityTitle:@"收藏/取消收藏"],
-                       [UIKeyCommand keyCommandWithInput:@"r" modifierFlags:UIKeyModifierCommand action:@selector(switchReadLater) discoverabilityTitle:@"稍后阅读/取消"],
-             [UIKeyCommand keyCommandWithInput:UIKeyInputLeftArrow modifierFlags:UIKeyModifierCommand action:@selector(allScreen:) discoverabilityTitle:@"全屏"],
-             [UIKeyCommand keyCommandWithInput:UIKeyInputRightArrow modifierFlags:UIKeyModifierCommand action:@selector(speScreen:) discoverabilityTitle:@"分屏"],
-                  [UIKeyCommand keyCommandWithInput:UIKeyInputUpArrow modifierFlags:UIKeyModifierCommand action:@selector(lastArticle:) discoverabilityTitle:@"前一篇"],
-                  [UIKeyCommand keyCommandWithInput:UIKeyInputDownArrow modifierFlags:UIKeyModifierCommand action:@selector(nextArticle:) discoverabilityTitle:@"后一篇"],
+              [UIKeyCommand keyCommandWithInput_IOS13:@"s" modifierFlags:UIKeyModifierCommand action:@selector(switchFavorite) discoverabilityTitle:@"收藏/取消收藏"],
+                       [UIKeyCommand keyCommandWithInput_IOS13:@"r" modifierFlags:UIKeyModifierCommand action:@selector(switchReadLater) discoverabilityTitle:@"稍后阅读/取消"],
+             [UIKeyCommand keyCommandWithInput_IOS13:UIKeyInputLeftArrow modifierFlags:UIKeyModifierCommand action:@selector(allScreen:) discoverabilityTitle:@"全屏"],
+             [UIKeyCommand keyCommandWithInput_IOS13:UIKeyInputRightArrow modifierFlags:UIKeyModifierCommand action:@selector(speScreen:) discoverabilityTitle:@"分屏"],
+                  [UIKeyCommand keyCommandWithInput_IOS13:UIKeyInputUpArrow modifierFlags:UIKeyModifierCommand action:@selector(lastArticle:) discoverabilityTitle:@"前一篇"],
+                  [UIKeyCommand keyCommandWithInput_IOS13:UIKeyInputDownArrow modifierFlags:UIKeyModifierCommand action:@selector(nextArticle:) discoverabilityTitle:@"后一篇"],
              [UIKeyCommand keyCommandWithInput:UIKeyInputUpArrow modifierFlags:0 action:@selector(pageUp)],
              [UIKeyCommand keyCommandWithInput:UIKeyInputDownArrow modifierFlags:0 action:@selector(pageDown)],
              
-             [UIKeyCommand keyCommandWithInput:UIKeyInputEscape modifierFlags:0 action:@selector(back:) discoverabilityTitle:@"返回上一层"]
+             [UIKeyCommand keyCommandWithInput_IOS13:UIKeyInputEscape modifierFlags:0 action:@selector(back:) discoverabilityTitle:@"返回上一层"]
              ];
 }
 

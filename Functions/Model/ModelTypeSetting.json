@@ -151,6 +151,14 @@
             "switchkey": "kEnterUnread",
             "select": "enterUnreadSetting",
             "type": 3
+        },
+        {
+            "title": "iPad版本启动默认页",
+            "value": "",
+            "action": "selectHomePage:",
+            "switchkey": null,
+            "select": ["官方博客","空白页","自定义URL"],
+            "type": 1
         }
     ]
 }

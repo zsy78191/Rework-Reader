@@ -254,7 +254,13 @@
 + (void)insertArticle:(NSArray*)article finish:(void (^)(NSUInteger))finish
 {
 //    NSLog(@"Before %@",@(article.count));
-    article = [[self class] removeSame:article];
+    @try {
+        article = [[self class] removeSame:article];
+    } @catch (NSException *exception) {
+        article = article;
+    } @finally {
+        
+    }
 //    NSLog(@"After %@",@(article.count));
     [MagicalRecord saveWithBlockAndWait:^(NSManagedObjectContext * _Nonnull localContext) {
         __block NSUInteger c = 0;

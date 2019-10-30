@@ -43,7 +43,10 @@ target 'rework-reader' do
 
   # 网页长图生成
   pod 'TYSnapshotScroll'
+  
+  pod 'PromiseKit'
  
+  pod 'Masonry'
 
   # Pods for rework-reader
   target 'rework-readerTests' do

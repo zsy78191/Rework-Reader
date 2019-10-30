@@ -178,16 +178,6 @@
     [RRFeedManager hubWithName:@"123"];
 }
 
-- (void)coderTest
-{
-    EntityFeedArticle* article = [EntityFeedArticle MR_findFirst];
-    NSLog(@"%@",article.title);
-    RRFeedArticleModel* m = [[RRFeedArticleModel alloc] initWithEntity:article];
-    NSLog(@"%@",m);
-    NSData* d = [NSKeyedArchiver archivedDataWithRootObject:m];
-    NSLog(@"%@",d);
-    RRFeedArticleModel* m2 = [NSKeyedUnarchiver unarchiveObjectWithData:d];
-    NSLog(@"%@",m2);
-}
+
 
 @end

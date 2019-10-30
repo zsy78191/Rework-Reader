@@ -324,7 +324,9 @@
             }
         }
         m.feedEntity = i;
-        [a addObject:m];
+        if(m) {
+           [a addObject:m];
+        }
         
         //        //NSLog(@"- %@- %@",info.title, item.title);
     } errorBlock:^(NSString * _Nonnull infoURL, NSError * _Nonnull error) {

@@ -29,6 +29,9 @@
 @import MessageUI;
 @import MagicalRecord;
 #import "RRCoreDataModel.h"
+#import "targetconditionals.h"
+@import Masonry;
+#import "MVPView+iOS13.h"
 
 @interface RRWebView () <WKUIDelegate,WKNavigationDelegate,UIScrollViewDelegate,MWPhotoBrowserDelegate,WKScriptMessageHandler,MFMailComposeViewControllerDelegate>
 {
@@ -96,7 +99,8 @@
 - (UIView *)statusCover
 {
     if (!_statusCover) {
-        _statusCover = [[UIView alloc] initWithFrame:[UIApplication sharedApplication].statusBarFrame];
+        CGRect sf = [self statusframe];
+        _statusCover = [[UIView alloc] initWithFrame: sf];
         [_statusCover setUserInteractionEnabled:NO];
         _statusCover.cas_styleClass = @"statuCover";
     }
@@ -140,7 +144,7 @@
         //        [_upView setBackgroundColor:[UIColor grayColor]];
         UILabel * label = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, 80)];
         [_downView addSubview:label];
-        [label setText:@"下一篇\n千古一片江山红"];
+        [label setText:@""];
         [label setNumberOfLines:0];
         [label setTextAlignment:NSTextAlignmentCenter];
         [label setCas_styleClass:@"TipLabel"];
@@ -333,7 +337,7 @@
     if ([self voiceover]) {
         return;
     }
-    
+    #if !TARGET_OS_MACCATALYST
     if (self.startDraging) {
         if (self.startOffset.y - scrollView.contentOffset.y > 60) {
             if (self.hideNaviBar) {
@@ -358,8 +362,14 @@
             }
         }
     }
+    #endif
     
+//    NSLog(@"%@",@(scrollView.contentOffset.y));
     if (scrollView.contentOffset.y < - 130) {
+        
+        CGFloat da = fabs(scrollView.contentOffset.y + 130) / 100;
+        self.upView.alpha = da;
+        
         //        [self loadLast];
         if (!self.prepareLoadLast) {
             self.prepareLoadLast = YES;
@@ -371,6 +381,8 @@
         }
     }
     else {
+        
+        self.upView.alpha = 0;
         if (self.prepareLoadLast) {
             self.prepareLoadLast = NO;
             if (scrollView.isDragging) {
@@ -381,6 +393,10 @@
     
     if (scrollView.contentOffset.y - (scrollView.contentSize.height-scrollView.frame.size.height) > 130)
     {
+        
+        CGFloat da = fabs(scrollView.contentOffset.y - 130) / 100;
+        self.downView.alpha = da;
+        
         //        [self loadNext];
         if (!self.prepareLoadNext) {
             self.prepareLoadNext = YES;
@@ -390,6 +406,8 @@
         }
     }
     else {
+        
+        self.downView.alpha = 0;
         if (self.prepareLoadNext) {
             self.prepareLoadNext = NO;
             if (scrollView.isDragging) {
@@ -483,13 +501,26 @@
     return NSClassFromString(@"RRWebPresenter");
 }
 
+
+
 - (void)viewDidLayoutSubviews
 {
     [super viewDidLayoutSubviews];
-    [self.progressView setFrame:CGRectMake(0, self.navigationController.navigationBar.height+[UIApplication sharedApplication].statusBarFrame.size.height, self.view.frame.size.width, 2)];
-    [self.webView setFrame:self.view.bounds];
+//    return;
+    CGRect sf = [self statusframe];
+       
+//    NSLog(@"%@",@(self.navigationController.navigationBar.height));
+//    NSLog(@"%@",@(sf.size.height));
+    #if !TARGET_OS_MACCATALYST
+        [self.progressView setFrame:CGRectMake(0, self.navigationController.navigationBar.height+sf.size.height, self.view.frame.size.width, 2)];
+    #else
+        [self.progressView setFrame:CGRectMake(0, 10, self.view.frame.size.width, 2)];
+    #endif
     
-    CGFloat toolHeight = [self.navigationController toolbar].frame.size.height + [UIApplication sharedApplication].statusBarFrame.size.height;
+//    NSLog(@"%@",NSStringFromCGRect(self.progressView.frame));
+//    [self.webView setFrame:self.view.bounds];
+    CGFloat toolHeight = [self.navigationController toolbar].frame.size.height + sf.size.height;
+
     self.upView.frame = CGRectMake(0, -toolHeight, self.view.frame.size.width, 80);
     [[self.upView subviews] enumerateObjectsUsingBlock:^(__kindof UIView * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
         [obj setFrame:self.upView.bounds];
@@ -604,6 +635,14 @@
     
     
     [self.view addSubview:self.webView];
+    UIEdgeInsets padding = UIEdgeInsetsMake(0, 0, 0, 0);
+    [self.webView mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.edges.equalTo(self.view).with.insets(padding);
+    }];
+    
+//#if TARGET_OS_MACCATALYST
+//    [self setAdditionalSafeAreaInsets:UIEdgeInsetsMake(50, 0, 0, 0)];
+//#endif
     self.navigationItem.backBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"返回" style:UIBarButtonItemStylePlain target:nil action:nil];
     
     [[self view] addSubview:self.progressView];
@@ -614,8 +653,10 @@
         
     }
     else{
+        #if !TARGET_OS_MACCATALYST
         [self.webView.scrollView addSubview:self.upView];
         [self.webView.scrollView addSubview:self.downView];
+        #endif
     }
 //    [self.webView.scrollView setDirectionalLockEnabled:YES];
 //    [self.webView.scrollView setAlwaysBounceHorizontal:NO];
@@ -695,7 +736,8 @@
             string = [self removeLatex:string];
         }
         
-        [self.webView loadHTMLString:string baseURL:[[NSBundle mainBundle] bundleURL]];
+        [self.webView loadHTMLString:string baseURL:[[NSBundle mainBundle] resourceURL]];
+//        [self.webView loadHTMLString:string baseURL:nil];
     }
     else {
         //        [self.navigationController setToolbarHidden:NO animated:NO];
@@ -819,7 +861,7 @@
     NSURL* u = [NSURL URLWithString:m.link];
     string = [string stringByReplacingOccurrencesOfString:@"<#host#>" withString:[NSString stringWithFormat:@"%@://%@",u.scheme,u.host]];
     
-    [self.webView loadHTMLString:string baseURL:[[NSBundle mainBundle] bundleURL]];
+    [self.webView loadHTMLString:string baseURL:[[NSBundle mainBundle] resourceURL]];
 }
 
 - (BOOL)hasPreMark:(NSString*)html isMd:(BOOL)isMd
@@ -905,14 +947,15 @@
     dispatch_once(&onceToken, ^{
         if (@available(iOS 11, *)) {
             weakSelf.webView.scrollView.contentInsetAdjustmentBehavior = UIScrollViewContentInsetAdjustmentNever;
-            CGFloat height = [UIApplication sharedApplication].statusBarFrame.size.height + weakSelf.navigationController.navigationBar.frame.size.height;
+            CGRect sf = [self statusframe];
+            CGFloat height = sf.size.height + weakSelf.navigationController.navigationBar.frame.size.height;
             CGFloat toolHeight = [weakSelf.navigationController toolbar].frame.size.height;
             weakSelf.webView.scrollView.contentInset = UIEdgeInsetsMake(height, 0, toolHeight, 0);
         }
         
     });
-    
-    CGFloat toolHeight = [weakSelf.navigationController toolbar].frame.size.height + [UIApplication sharedApplication].statusBarFrame.size.height;
+    CGRect sf = [self statusframe];
+    CGFloat toolHeight = [weakSelf.navigationController toolbar].frame.size.height + sf.size.height;
     self.upView.frame = CGRectMake(0, -toolHeight, self.view.frame.size.width, 80);
     [self.webView.configuration.userContentController addScriptMessageHandler:self name:@"getFontSize"];
     
@@ -944,9 +987,13 @@
     [self resetToolBar];
     [[[self navigationController] navigationBar] setPrefersLargeTitles:YES];
     
+    
+    #if !TARGET_OS_MACCATALYST
     [self.navigationController.navigationBar setAlpha:1];
     [self.navigationController.toolbar setAlpha:1];
     self.hideNaviBar = NO;
+    #endif
+
     [self.webView.configuration.userContentController removeScriptMessageHandlerForName:@"getFontSize"];
     [self recordReadProgress:^{
         
@@ -1212,10 +1259,11 @@
 //        weakSelf.webView.scrollView.contentInset = UIEdgeInsetsMake(height, 0, toolHeight, 0);
 //    }
     
-    if (self.recordPostion > 0) {
+    NSLog(@"Record Postion: %@",@(self.recordPostion));
+    if (self.recordPostion > 100) {
         NSString* js = [NSString stringWithFormat:@"document.body.scrollTop = %@;",@(self.recordPostion)];
         [webView evaluateJavaScript:js completionHandler:^(id _Nullable x, NSError * _Nullable error) {
-            
+
         }];
     }
     
@@ -1304,8 +1352,8 @@
         _canDragPage = canDragPage;
     }
     if (canDragPage) {
-        [self.downView setAlpha:1];
-        [self.upView setAlpha:1];
+        [self.downView setAlpha:0];
+        [self.upView setAlpha:0];
     }
     else {
         [self.downView setAlpha:0];

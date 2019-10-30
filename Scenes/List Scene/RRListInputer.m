@@ -44,8 +44,12 @@
     }
     else if(self.feed){
         RRReadStyle* s = [[RRReadStyle alloc] init];
-        self.style = s;
         s.feed = self.feed;
+        self.style = s;
+        self.style.onlyReaded = NO;
+        self.style.onlyUnread = NO;
+        self.style.liked = NO;
+       
         return [s predicate];
     }
     else if(self.hub)

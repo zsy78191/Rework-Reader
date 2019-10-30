@@ -7,10 +7,12 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		03646A5D271E3925704A6DA7 /* Pods_rework_reader.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5AB8B144CE8FF2C6A308FB8C /* Pods_rework_reader.framework */; };
 		5287EC7097E4A9C5B61A6A66 /* Pods_rework_readerTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1EE865CD8F860E1A54E6A61A /* Pods_rework_readerTests.framework */; };
 		D4054B4122B0EF0300422A97 /* Reader-Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4054B4022B0EF0300422A97 /* Reader-Extension.swift */; };
 		D40BA88922436E110068D209 /* RRDataBackuper.m in Sources */ = {isa = PBXBuildFile; fileRef = D40BA88822436E110068D209 /* RRDataBackuper.m */; };
+		D411F440236838DA00DA3F95 /* MVPView+iOS13.m in Sources */ = {isa = PBXBuildFile; fileRef = D411F43F236838DA00DA3F95 /* MVPView+iOS13.m */; };
+		D411F443236839FA00DA3F95 /* UIApplication+iOS13.m in Sources */ = {isa = PBXBuildFile; fileRef = D411F442236839FA00DA3F95 /* UIApplication+iOS13.m */; };
+		D411F4462368441E00DA3F95 /* UIKeyCommand+iOS13.m in Sources */ = {isa = PBXBuildFile; fileRef = D411F4452368441E00DA3F95 /* UIKeyCommand+iOS13.m */; };
 		D4143D7622A808DF00CCA329 /* URL Scheme.md in Resources */ = {isa = PBXBuildFile; fileRef = D4143D7522A808DF00CCA329 /* URL Scheme.md */; };
 		D4143D7922A83DEA00CCA329 /* UISearchBar+keycommand.m in Sources */ = {isa = PBXBuildFile; fileRef = D4143D7822A83DEA00CCA329 /* UISearchBar+keycommand.m */; };
 		D4143D7C22A8B1DF00CCA329 /* RRFeedListPresenter+FeedHUB.m in Sources */ = {isa = PBXBuildFile; fileRef = D4143D7B22A8B1DF00CCA329 /* RRFeedListPresenter+FeedHUB.m */; };
@@ -62,6 +64,8 @@
 		D451E09E2262511A00674526 /* RRSettingPresenter+Theme.m in Sources */ = {isa = PBXBuildFile; fileRef = D451E09D2262511A00674526 /* RRSettingPresenter+Theme.m */; };
 		D451E0A0226258AF00674526 /* style_2.plist in Resources */ = {isa = PBXBuildFile; fileRef = D451E09F226258AF00674526 /* style_2.plist */; };
 		D451E0A222625E8100674526 /* style_dark_1.plist in Resources */ = {isa = PBXBuildFile; fileRef = D451E0A122625E8100674526 /* style_dark_1.plist */; };
+		D46600762368908B00AAD238 /* Pods_rework_reader.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5AB8B144CE8FF2C6A308FB8C /* Pods_rework_reader.framework */; };
+		D46600792368908D00AAD238 /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D4B9037C2245E8C900341584 /* StoreKit.framework */; };
 		D47302D32271977600B94788 /* RRListTableOutput.m in Sources */ = {isa = PBXBuildFile; fileRef = D47302D22271977600B94788 /* RRListTableOutput.m */; };
 		D473F287221FCCE800DF3C6D /* RRListInputer.m in Sources */ = {isa = PBXBuildFile; fileRef = D473F286221FCCE800DF3C6D /* RRListInputer.m */; };
 		D473F28B221FE9BC00DF3C6D /* RRReadStyle.m in Sources */ = {isa = PBXBuildFile; fileRef = D473F28A221FE9BC00DF3C6D /* RRReadStyle.m */; };
@@ -97,6 +101,8 @@
 		D48456302213E6D200202401 /* 什么是RSS.md in Resources */ = {isa = PBXBuildFile; fileRef = D484562F2213E6D200202401 /* 什么是RSS.md */; };
 		D48D736C2247A1FE00E79184 /* 5@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = D48D736B2247A1FE00E79184 /* 5@2x.png */; };
 		D48F7C7E22F2E0AE004476E7 /* TableAutoView.m in Sources */ = {isa = PBXBuildFile; fileRef = D48F7C7D22F2E0AE004476E7 /* TableAutoView.m */; };
+		D496633F235ED8E40004DFCA /* PlaceholderViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D496633D235ED8E40004DFCA /* PlaceholderViewController.m */; };
+		D4966340235ED8E40004DFCA /* PlaceholderViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = D496633E235ED8E40004DFCA /* PlaceholderViewController.xib */; };
 		D499418B21FC9AB10041B998 /* style.cas in Resources */ = {isa = PBXBuildFile; fileRef = D499418721FC9AB10041B998 /* style.cas */; };
 		D49941AA21FC9B0E0041B998 /* RPGetAllModelKeyAndValueOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = D499419521FC9B0E0041B998 /* RPGetAllModelKeyAndValueOperation.m */; };
 		D49941AB21FC9B0E0041B998 /* RPSortItemOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = D499419621FC9B0E0041B998 /* RPSortItemOperation.m */; };
@@ -152,7 +158,6 @@
 		D4B903752245685000341584 /* 3@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = D4B903742245685000341584 /* 3@2x.png */; };
 		D4B9037722456D0F00341584 /* 4@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = D4B9037622456D0F00341584 /* 4@2x.png */; };
 		D4B9037A22457B0E00341584 /* RRBaseEmpty.m in Sources */ = {isa = PBXBuildFile; fileRef = D4B9037922457B0E00341584 /* RRBaseEmpty.m */; };
-		D4B9037D2245E8C900341584 /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D4B9037C2245E8C900341584 /* StoreKit.framework */; };
 		D4B903802245E93C00341584 /* ApplePurchaseDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = D4B9037E2245E93B00341584 /* ApplePurchaseDelegate.m */; };
 		D4B903872245EAC400341584 /* AppleAPIHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = D4B903852245EAC400341584 /* AppleAPIHelper.m */; };
 		D4B903892246885900341584 /* 开源代码.md in Resources */ = {isa = PBXBuildFile; fileRef = D4B903882246885900341584 /* 开源代码.md */; };
@@ -199,6 +204,12 @@
 		D4054B4022B0EF0300422A97 /* Reader-Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Reader-Extension.swift"; sourceTree = "<group>"; };
 		D40BA88722436E110068D209 /* RRDataBackuper.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RRDataBackuper.h; sourceTree = "<group>"; };
 		D40BA88822436E110068D209 /* RRDataBackuper.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RRDataBackuper.m; sourceTree = "<group>"; };
+		D411F43E236838DA00DA3F95 /* MVPView+iOS13.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "MVPView+iOS13.h"; sourceTree = "<group>"; };
+		D411F43F236838DA00DA3F95 /* MVPView+iOS13.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "MVPView+iOS13.m"; sourceTree = "<group>"; };
+		D411F441236839FA00DA3F95 /* UIApplication+iOS13.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "UIApplication+iOS13.h"; sourceTree = "<group>"; };
+		D411F442236839FA00DA3F95 /* UIApplication+iOS13.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "UIApplication+iOS13.m"; sourceTree = "<group>"; };
+		D411F4442368441E00DA3F95 /* UIKeyCommand+iOS13.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "UIKeyCommand+iOS13.h"; sourceTree = "<group>"; };
+		D411F4452368441E00DA3F95 /* UIKeyCommand+iOS13.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "UIKeyCommand+iOS13.m"; sourceTree = "<group>"; };
 		D4143D7522A808DF00CCA329 /* URL Scheme.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = "URL Scheme.md"; sourceTree = "<group>"; };
 		D4143D7722A83DEA00CCA329 /* UISearchBar+keycommand.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "UISearchBar+keycommand.h"; sourceTree = "<group>"; };
 		D4143D7822A83DEA00CCA329 /* UISearchBar+keycommand.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "UISearchBar+keycommand.m"; sourceTree = "<group>"; };
@@ -345,6 +356,9 @@
 		D48D736B2247A1FE00E79184 /* 5@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "5@2x.png"; sourceTree = "<group>"; };
 		D48F7C7C22F2E0AE004476E7 /* TableAutoView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TableAutoView.h; sourceTree = "<group>"; };
 		D48F7C7D22F2E0AE004476E7 /* TableAutoView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TableAutoView.m; sourceTree = "<group>"; };
+		D496633C235ED8E40004DFCA /* PlaceholderViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PlaceholderViewController.h; sourceTree = "<group>"; };
+		D496633D235ED8E40004DFCA /* PlaceholderViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PlaceholderViewController.m; sourceTree = "<group>"; };
+		D496633E235ED8E40004DFCA /* PlaceholderViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = PlaceholderViewController.xib; sourceTree = "<group>"; };
 		D499418721FC9AB10041B998 /* style.cas */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = style.cas; sourceTree = "<group>"; };
 		D499418821FC9AB10041B998 /* SourceHanSerifCN-SemiBold.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "SourceHanSerifCN-SemiBold.otf"; sourceTree = "<group>"; };
 		D499418921FC9AB10041B998 /* SourceHanSerifCN-Regular.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "SourceHanSerifCN-Regular.otf"; sourceTree = "<group>"; };
@@ -488,8 +502,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				03646A5D271E3925704A6DA7 /* Pods_rework_reader.framework in Frameworks */,
-				D4B9037D2245E8C900341584 /* StoreKit.framework in Frameworks */,
+				D46600762368908B00AAD238 /* Pods_rework_reader.framework in Frameworks */,
+				D46600792368908D00AAD238 /* StoreKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -888,6 +902,16 @@
 			path = "Table Scene";
 			sourceTree = "<group>";
 		};
+		D4966341235ED8ED0004DFCA /* Other */ = {
+			isa = PBXGroup;
+			children = (
+				D496633C235ED8E40004DFCA /* PlaceholderViewController.h */,
+				D496633D235ED8E40004DFCA /* PlaceholderViewController.m */,
+				D496633E235ED8E40004DFCA /* PlaceholderViewController.xib */,
+			);
+			path = Other;
+			sourceTree = "<group>";
+		};
 		D499418521FC9AB10041B998 /* ClassyKit */ = {
 			isa = PBXGroup;
 			children = (
@@ -1068,6 +1092,7 @@
 		D4AC4DD22216BB9B0028D342 /* Scenes */ = {
 			isa = PBXGroup;
 			children = (
+				D4966341235ED8ED0004DFCA /* Other */,
 				D48F7C7B22F2E07E004476E7 /* Table Scene */,
 				D4E7491F22A64CE60033D53E /* IconSelect Scene */,
 				D47A3972223A2109006251A6 /* Import Scene */,
@@ -1208,6 +1233,12 @@
 				D4E7493322A665DB0033D53E /* UIViewController+PresentAndPush.m */,
 				D4143D7722A83DEA00CCA329 /* UISearchBar+keycommand.h */,
 				D4143D7822A83DEA00CCA329 /* UISearchBar+keycommand.m */,
+				D411F43E236838DA00DA3F95 /* MVPView+iOS13.h */,
+				D411F43F236838DA00DA3F95 /* MVPView+iOS13.m */,
+				D411F441236839FA00DA3F95 /* UIApplication+iOS13.h */,
+				D411F442236839FA00DA3F95 /* UIApplication+iOS13.m */,
+				D411F4442368441E00DA3F95 /* UIKeyCommand+iOS13.h */,
+				D411F4452368441E00DA3F95 /* UIKeyCommand+iOS13.m */,
 			);
 			path = Ext;
 			sourceTree = "<group>";
@@ -1387,6 +1418,7 @@
 				D47A3959223421A6006251A6 /* 网友推荐源.md in Resources */,
 				D440E1C721FF03DC0087B228 /* ModelTypeSetting.json in Resources */,
 				D48456302213E6D200202401 /* 什么是RSS.md in Resources */,
+				D4966340235ED8E40004DFCA /* PlaceholderViewController.xib in Resources */,
 				D49941C621FE241C0041B998 /* style.plist in Resources */,
 				D440CFE422154DB0003B7203 /* RRFeedInfoCell.xib in Resources */,
 				D4AC4DF8221821150028D342 /* h.js in Resources */,
@@ -1509,6 +1541,7 @@
 				D42F55F4221E7F1200321A21 /* RRListPresenter.m in Sources */,
 				D418CDDC2231135A004F5706 /* RRSettingApperance.m in Sources */,
 				D4F8553B2265855E006798C8 /* OttoFPSButton.m in Sources */,
+				D411F440236838DA00DA3F95 /* MVPView+iOS13.m in Sources */,
 				D49941D221FEA7AE0041B998 /* RRFeedListView.m in Sources */,
 				D49941AE21FC9B0E0041B998 /* RPDataLocker.m in Sources */,
 				D473F29C2226902400DF3C6D /* RRPhotoBrowser.m in Sources */,
@@ -1520,6 +1553,7 @@
 				D4E7493022A652390033D53E /* IconInput.m in Sources */,
 				D42F55ED221E752B00321A21 /* RRFeedReaderStyleInputer.m in Sources */,
 				D418CDE722311CD7004F5706 /* RRWebSettingInputer.m in Sources */,
+				D496633F235ED8E40004DFCA /* PlaceholderViewController.m in Sources */,
 				D4B903872245EAC400341584 /* AppleAPIHelper.m in Sources */,
 				D440E1C521FEF8920087B228 /* RRSettingPresenter.m in Sources */,
 				D47A396F2239FBA0006251A6 /* OPMLDocument.m in Sources */,
@@ -1540,6 +1574,7 @@
 				D4AC4DEB2217CF290028D342 /* RRBtnCell.m in Sources */,
 				D418CDEB22311D45004F5706 /* RRIconSettingModel.m in Sources */,
 				D4E7491C22A517CA0033D53E /* RRFeedManager.m in Sources */,
+				D411F4462368441E00DA3F95 /* UIKeyCommand+iOS13.m in Sources */,
 				D4CD6624225DF1CD005EA2B9 /* ActionTest.m in Sources */,
 				D4E0F8EB2211486100902540 /* RPSettingInputer.m in Sources */,
 				D473F28E2223E77D00DF3C6D /* RRFeedAction.m in Sources */,
@@ -1572,6 +1607,7 @@
 				D4B53864224E84D4002F8333 /* AppDelegate+Ext.m in Sources */,
 				D4AC4DDD2217BDEF0028D342 /* RRAddInputer.m in Sources */,
 				D440CFE322154DB0003B7203 /* RRFeedInfoCell.m in Sources */,
+				D411F443236839FA00DA3F95 /* UIApplication+iOS13.m in Sources */,
 				D44EDCE2223A296800BC24CA /* RRImportOutput.m in Sources */,
 				D4B903802245E93C00341584 /* ApplePurchaseDelegate.m in Sources */,
 				D4E7492C22A650670033D53E /* IconCell.m in Sources */,
@@ -1796,8 +1832,9 @@
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = "rework-reader/rework-reader.entitlements";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1.2.0.5;
+				CURRENT_PROJECT_VERSION = 1.2.5;
 				DEFINES_MODULE = YES;
+				DERIVE_MACCATALYST_PRODUCT_BUNDLE_IDENTIFIER = YES;
 				DEVELOPMENT_TEAM = ZLQPGKAQFY;
 				GCC_PREFIX_HEADER = PrefixHeader.pch;
 				GCC_PREPROCESSOR_DEFINITIONS = (
@@ -1811,12 +1848,12 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.2.0;
+				MARKETING_VERSION = 1.2.2;
 				ON_DEMAND_RESOURCES_INITIAL_INSTALL_TAGS = Extrafont;
 				OTHER_LIBTOOLFLAGS = "";
 				PRODUCT_BUNDLE_IDENTIFIER = com.orzer.rework.reader.sp;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MACCATALYST = YES;
 				SWIFT_OBJC_BRIDGING_HEADER = "Swift/rework-reader-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
@@ -1832,8 +1869,9 @@
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = "rework-reader/rework-reader.entitlements";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1.2.0.5;
+				CURRENT_PROJECT_VERSION = 1.2.5;
 				DEFINES_MODULE = YES;
+				DERIVE_MACCATALYST_PRODUCT_BUNDLE_IDENTIFIER = YES;
 				DEVELOPMENT_TEAM = ZLQPGKAQFY;
 				GCC_PREFIX_HEADER = PrefixHeader.pch;
 				GCC_PREPROCESSOR_DEFINITIONS = (
@@ -1847,12 +1885,12 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.2.0;
+				MARKETING_VERSION = 1.2.2;
 				ON_DEMAND_RESOURCES_INITIAL_INSTALL_TAGS = Extrafont;
 				OTHER_LIBTOOLFLAGS = "";
 				PRODUCT_BUNDLE_IDENTIFIER = com.orzer.rework.reader.sp;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MACCATALYST = YES;
 				SWIFT_OBJC_BRIDGING_HEADER = "Swift/rework-reader-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";

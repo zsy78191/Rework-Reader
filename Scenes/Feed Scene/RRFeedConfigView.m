@@ -120,7 +120,7 @@
         return YES;
     }
     
-    UIAlertController* a = [self alert:@"是否放弃订阅？" recommend:@"继续订阅" action:nil cancel:@"放弃" block:^(NSInteger idx, __kindof UIViewController *vc) {
+    UIAlertController* a = [self alert:@"是否放弃订阅？" recommend:@"继续订阅" action:@"" cancel:@"放弃" block:^(NSInteger idx, __kindof UIViewController *vc) {
 //        //NSLog(@"%@",@(idx));
         if (idx == 0) {
             [[vc navigationController] popViewControllerAnimated:YES];
