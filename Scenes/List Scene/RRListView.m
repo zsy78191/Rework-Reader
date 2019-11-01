@@ -176,7 +176,7 @@
     
     UIBarButtonItem* t = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
     UIBarButtonItem* t2 = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
-    UISegmentedControl* c = [[UISegmentedControl alloc] initWithItems:@[@"全部",@"未读",@"已读",@"收藏"]];
+    UISegmentedControl* c = [[UISegmentedControl alloc] initWithItems:@[@"未读",@"全部",@"已读",@"收藏"]];
     UIBarButtonItem* i = [[UIBarButtonItem alloc] initWithCustomView:c];
     [c setSelectedSegmentIndex:0];
     [self mvp_bindAction:UIControlEventValueChanged target:c actionName:@"changeType:"];

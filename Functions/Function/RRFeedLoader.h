@@ -12,6 +12,10 @@
 NS_ASSUME_NONNULL_BEGIN
 
 @interface RRFeedLoader : NSObject
+{
+    
+}
+@property (nonatomic) BOOL loading;
 
 - (void)setQualityLevel:(NSQualityOfService)service;
 

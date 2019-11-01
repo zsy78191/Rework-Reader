@@ -12,7 +12,7 @@
 @import oc_string;
 #import "RRCoreDataModel.h"
 @import MagicalRecord;
-#import "rework_reader-Swift.h"
+//#import "rework_reader-Swift.h"
 
 
 @implementation ActionTest

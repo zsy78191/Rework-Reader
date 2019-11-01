@@ -276,6 +276,16 @@
 
 - (void)refresh:(NSArray*)origin endRefreshBlock:(void (^)(void))endBlock progress:(void(^ _Nullable )(NSUInteger current,NSUInteger all))progressblock finishBlock:(void (^)(NSUInteger all,NSUInteger error, NSUInteger article))finishBlock;
 {
+    if (self.loading) {
+        if (endBlock) {
+           endBlock();
+        }
+        if (finishBlock) {
+            finishBlock(0,0,0);
+        }
+        return;
+    }
+    self.loading = true;
     NSArray* all = origin;
     if (all.count == 0) {
 //        [sender endRefreshing];
@@ -286,6 +296,7 @@
         if (finishBlock) {
             finishBlock(0,0,0);
         }
+        self.loading = false;
         return;
     }
     
@@ -293,7 +304,7 @@
     __block NSUInteger finishCount = 0;
     //    __block NSUInteger articleCount = 0;
     __block NSUInteger errorCount = 0;
-    
+    __weak typeof(self) ws = self;
     NSMapTable* dd = [[NSMapTable alloc] initWithKeyOptions:NSPointerFunctionsStrongMemory valueOptions:NSPointerFunctionsStrongMemory capacity:10];
     NSMutableArray* a = [[NSMutableArray alloc] init];
     
@@ -370,6 +381,7 @@
                     if (finishBlock) {
                         finishBlock(finishCount,errorCount,x);
                     }
+                    ws.loading = false;
                     if (x == 0) {
 //                        [PWToastView showText:@"没有更新的订阅"];
                        
@@ -382,6 +394,7 @@
                         else {
 //                            [PWToastView showText:[NSString stringWithFormat:@"更新了%ld个订阅源，共计%ld篇订阅，%ld个源更新失败",finishCount,x,errorCount]];
                         }
+                        
                     }
                 });
             }];

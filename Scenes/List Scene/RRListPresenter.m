@@ -58,6 +58,7 @@ static NSString * const kShortcutItemsKey = @"kShortcutItemsKey";
 @property (nonatomic, assign) double t1OffesetY;
 @property (nonatomic, assign) double t2OffesetY;
 @property (nonatomic, assign) double t3OffesetY;
+@property (nonatomic, assign) double t4OffesetY;
 
 
 @end
@@ -66,7 +67,7 @@ static NSString * const kShortcutItemsKey = @"kShortcutItemsKey";
 
 - (void)setInitailOffset:(NSNumber*)y
 {
-    self.t1OffesetY = self.t2OffesetY = self.t3OffesetY = [y doubleValue];
+    self.t1OffesetY = self.t2OffesetY = self.t3OffesetY = self.t4OffesetY = [y doubleValue];
 }
 
 - (NSNumber*)currentOffset
@@ -85,6 +86,11 @@ static NSString * const kShortcutItemsKey = @"kShortcutItemsKey";
         case 2:
         {
             return @(self.t3OffesetY);
+            break;
+        }
+        case 3:
+        {
+            return @(self.t4OffesetY);
             break;
         }
         default:
@@ -110,6 +116,11 @@ static NSString * const kShortcutItemsKey = @"kShortcutItemsKey";
         {
             self.t3OffesetY = [offsetY doubleValue];
             break;
+        }
+        case 4:
+        {
+           self.t4OffesetY = [offsetY doubleValue];
+           break;
         }
         default:
             break;
@@ -514,7 +525,7 @@ static NSString * const kShortcutItemsKey = @"kShortcutItemsKey";
     }
     else if(self.styleModel)
     {
-        //RRTODO: 为了适配更多更新方式，这里要优化
+        //RRALTODO: 为了适配更多更新方式，这里要优化
         [self updateFeedData2:finished];
     }
 }
@@ -1009,13 +1020,13 @@ static NSString * const kShortcutItemsKey = @"kShortcutItemsKey";
 
 - (void)changeTypeByType:(NSInteger)type {
      switch (type) {
-            case 0: {
+            case 1: {
                 self.inputerCoreData.style.onlyUnread = NO;
                 self.inputerCoreData.style.onlyReaded = NO;
                 self.inputerCoreData.style.liked = NO;
                 break;
             }
-            case 1:
+            case 0:
             {
                 self.inputerCoreData.style.onlyUnread = YES;
                 self.inputerCoreData.style.onlyReaded = NO;

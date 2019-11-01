@@ -169,7 +169,14 @@
 
 + (void)insertArticle:(NSArray*)article withFeed:(EntityFeedInfo*)info finish:(void (^)(NSUInteger))finish
 {
-    article = [[self class] removeSame:article];
+    NSArray* copy = [article copy];
+    @try {
+        article = [[self class] removeSame:article];
+    } @catch (NSException *exception) {
+        article = copy;
+    } @finally {
+        
+    }
     [MagicalRecord saveWithBlockAndWait:^(NSManagedObjectContext * _Nonnull localContext) {
         __block NSUInteger c = 0;
         [article enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
@@ -254,10 +261,11 @@
 + (void)insertArticle:(NSArray*)article finish:(void (^)(NSUInteger))finish
 {
 //    NSLog(@"Before %@",@(article.count));
+    NSArray* copy = [article copy];
     @try {
         article = [[self class] removeSame:article];
     } @catch (NSException *exception) {
-        article = article;
+        article = copy;
     } @finally {
         
     }
