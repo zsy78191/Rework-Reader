@@ -20,7 +20,7 @@
     self = [super init];
     if (self) {
         self.pageCount = 20;
-        self.currentPage = 0;
+        self.currentPage = 1;
     }
     return self;
 }
@@ -82,7 +82,7 @@
     {
         return self.model.readStyle.countlimit;
     }
-    return 0;
+    return self.currentPage * self.pageCount;
 }
 
 - (NSString *)mvp_identifierForModel:(id<MVPModelProtocol>)model

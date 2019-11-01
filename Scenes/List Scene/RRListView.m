@@ -289,6 +289,32 @@
             }
         }];
         
+        __block BOOL loadMore = false;
+        void (^checkLoadMoreBlock)(CGPoint) = ^(CGPoint x) {
+           CGFloat y1 = x.y + t.frame.size.height;
+           CGFloat y2 = t.contentSize.height;
+//           NSLog(@"-- %@ %@",@(y1),@(y2));
+           if(fabs(y1 - y2)<t.frame.size.height) {
+               if(!loadMore) {
+                   loadMore = true;
+                   
+                   [weakSelf.presenter mvp_runAction:@"loadMore"];
+               }
+           } else {
+               loadMore = false;
+           }
+        };
+        
+        [[t rac_valuesForKeyPath:@keypath(t, contentOffset) observer:weakSelf] subscribeNext:^(id  _Nullable x) {
+            checkLoadMoreBlock([x CGPointValue]);
+        }];
+        
+        [[t rac_valuesForKeyPath:@keypath(t, contentSize) observer:weakSelf] subscribeNext:^(id  _Nullable x) {
+            NSLog(@"%@",x);
+            checkLoadMoreBlock([t contentOffset]);
+        }];
+        
+        
         RRTableOutput* o = (id)output;
         o.canMutiSelect = YES;
 //        [o setNewOffsetBlock:^(CGFloat offsetY) {

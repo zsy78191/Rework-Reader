@@ -1062,7 +1062,10 @@
     loadNextItem.title = @"下一篇";
     loadNextItem.accessibilityLabel = @"下一篇";
     
-     UIBarButtonItem* rb = [self mvp_buttonItemWithSystem:UIBarButtonSystemItemAction actionName:@"openAction:" title:@"更多操作"];
+    
+//     UIBarButtonItem* rb = [self mvp_buttonItemWithSystem:UIBarButtonSystemItemAction actionName:@"openAction:" title:@"更多操作"];
+    UIBarButtonItem* rb = [self mvp_buttonItemWithActionName:@"openAction:" title:@"更多操作"];
+    [rb setImage:[UIImage imageNamed:@"icon_set"]];
 
     UIBarButtonItem* test = [self mvp_buttonItemWithActionName:@"testf" title:@"测试"];
     [test setTarget:self];
@@ -1259,7 +1262,7 @@
 //        weakSelf.webView.scrollView.contentInset = UIEdgeInsetsMake(height, 0, toolHeight, 0);
 //    }
     
-    NSLog(@"Record Postion: %@",@(self.recordPostion));
+//    NSLog(@"Record Postion: %@",@(self.recordPostion));
     if (self.recordPostion > 100) {
         NSString* js = [NSString stringWithFormat:@"document.body.scrollTop = %@;",@(self.recordPostion)];
         [webView evaluateJavaScript:js completionHandler:^(id _Nullable x, NSError * _Nullable error) {
