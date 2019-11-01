@@ -16,6 +16,9 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, strong, nullable) id feed;
 @property (nonatomic, strong, nullable) id hub;
 
+@property (nonatomic, assign) NSUInteger currentPage;
+@property (nonatomic, assign) NSUInteger pageCount;
+
 @property (nonatomic, strong, nullable) RRFeedInfoListOtherModel* model;
 
 @property (nonatomic, strong) RRReadStyle* style;

@@ -15,6 +15,16 @@
 
 @implementation RRListInputer
 
+- (instancetype)init
+{
+    self = [super init];
+    if (self) {
+        self.pageCount = 20;
+        self.currentPage = 1;
+    }
+    return self;
+}
+
 - (Class)mvp_modelClass
 {
     return NSClassFromString(@"EntityFeedArticle");
@@ -47,7 +57,7 @@
         s.feed = self.feed;
         self.style = s;
         self.style.onlyReaded = NO;
-        self.style.onlyUnread = NO;
+        self.style.onlyUnread = YES;
         self.style.liked = NO;
        
         return [s predicate];
@@ -56,6 +66,9 @@
     {
         RRReadStyle* s = [[RRReadStyle alloc] init];
         self.style = s;
+         self.style.onlyReaded = NO;
+         self.style.onlyUnread = YES;
+         self.style.liked = NO;
         EntityHub* hub = self.hub;
         s.feeds = hub.infos;
         return [s predicate];
@@ -69,14 +82,12 @@
     {
         return self.model.readStyle.countlimit;
     }
-    return 0;
+    return self.currentPage * self.pageCount;
 }
 
 - (NSString *)mvp_identifierForModel:(id<MVPModelProtocol>)model
 {
     return @"articleCell";
 }
-
-
-
+ 
 @end

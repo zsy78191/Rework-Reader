@@ -176,7 +176,7 @@
     
     UIBarButtonItem* t = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
     UIBarButtonItem* t2 = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
-    UISegmentedControl* c = [[UISegmentedControl alloc] initWithItems:@[@"全部",@"未读",@"已读",@"收藏"]];
+    UISegmentedControl* c = [[UISegmentedControl alloc] initWithItems:@[@"未读",@"全部",@"已读",@"收藏"]];
     UIBarButtonItem* i = [[UIBarButtonItem alloc] initWithCustomView:c];
     [c setSelectedSegmentIndex:0];
     [self mvp_bindAction:UIControlEventValueChanged target:c actionName:@"changeType:"];
@@ -288,6 +288,32 @@
                 }
             }
         }];
+        
+        __block BOOL loadMore = false;
+        void (^checkLoadMoreBlock)(CGPoint) = ^(CGPoint x) {
+           CGFloat y1 = x.y + t.frame.size.height;
+           CGFloat y2 = t.contentSize.height;
+//           NSLog(@"-- %@ %@",@(y1),@(y2));
+           if(fabs(y1 - y2)<t.frame.size.height) {
+               if(!loadMore) {
+                   loadMore = true;
+                   
+                   [weakSelf.presenter mvp_runAction:@"loadMore"];
+               }
+           } else {
+               loadMore = false;
+           }
+        };
+        
+        [[t rac_valuesForKeyPath:@keypath(t, contentOffset) observer:weakSelf] subscribeNext:^(id  _Nullable x) {
+            checkLoadMoreBlock([x CGPointValue]);
+        }];
+        
+        [[t rac_valuesForKeyPath:@keypath(t, contentSize) observer:weakSelf] subscribeNext:^(id  _Nullable x) {
+            NSLog(@"%@",x);
+            checkLoadMoreBlock([t contentOffset]);
+        }];
+        
         
         RRTableOutput* o = (id)output;
         o.canMutiSelect = YES;

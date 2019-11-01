@@ -34,6 +34,13 @@
 
 static NSString * const kShortcutItemsKey = @"kShortcutItemsKey";
 
+typedef struct  {
+    NSUInteger page1;
+    NSUInteger page2;
+    NSUInteger page3;
+    NSUInteger page4;
+} PageState;
+
 @interface RRListPresenter ()
 {
     
@@ -58,7 +65,9 @@ static NSString * const kShortcutItemsKey = @"kShortcutItemsKey";
 @property (nonatomic, assign) double t1OffesetY;
 @property (nonatomic, assign) double t2OffesetY;
 @property (nonatomic, assign) double t3OffesetY;
+@property (nonatomic, assign) double t4OffesetY;
 
+@property (nonatomic, assign) PageState pageState;
 
 @end
 
@@ -66,7 +75,7 @@ static NSString * const kShortcutItemsKey = @"kShortcutItemsKey";
 
 - (void)setInitailOffset:(NSNumber*)y
 {
-    self.t1OffesetY = self.t2OffesetY = self.t3OffesetY = [y doubleValue];
+    self.t1OffesetY = self.t2OffesetY = self.t3OffesetY = self.t4OffesetY = [y doubleValue];
 }
 
 - (NSNumber*)currentOffset
@@ -85,6 +94,11 @@ static NSString * const kShortcutItemsKey = @"kShortcutItemsKey";
         case 2:
         {
             return @(self.t3OffesetY);
+            break;
+        }
+        case 3:
+        {
+            return @(self.t4OffesetY);
             break;
         }
         default:
@@ -110,6 +124,11 @@ static NSString * const kShortcutItemsKey = @"kShortcutItemsKey";
         {
             self.t3OffesetY = [offsetY doubleValue];
             break;
+        }
+        case 4:
+        {
+           self.t4OffesetY = [offsetY doubleValue];
+           break;
         }
         default:
             break;
@@ -149,6 +168,16 @@ static NSString * const kShortcutItemsKey = @"kShortcutItemsKey";
 {
     [self.hashTable removeAllObjects];
     [self.hashTable addObjectsFromArray:self.inputerCoreData.allModels];
+}
+
+
+- (void)reloadHashDataWithouClean
+{
+    [(NSArray*)self.inputerCoreData.allModels enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+        if(![self.hashTable containsObject:obj]) {
+            [self.hashTable addObject:obj];
+        }
+    }];
 }
 
 - (void)updateHashData
@@ -196,6 +225,8 @@ static NSString * const kShortcutItemsKey = @"kShortcutItemsKey";
 - (void)mvp_initFromModel:(MVPInitModel *)model
 {
     self.refreshing = NO;
+    PageState state = {1,1,1,1};
+    self.pageState = state;
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateHashData) name:UIApplicationDidBecomeActiveNotification object:nil];
     
@@ -514,7 +545,7 @@ static NSString * const kShortcutItemsKey = @"kShortcutItemsKey";
     }
     else if(self.styleModel)
     {
-        //RRTODO: 为了适配更多更新方式，这里要优化
+        //RRALTODO: 为了适配更多更新方式，这里要优化
         [self updateFeedData2:finished];
     }
 }
@@ -1009,17 +1040,19 @@ static NSString * const kShortcutItemsKey = @"kShortcutItemsKey";
 
 - (void)changeTypeByType:(NSInteger)type {
      switch (type) {
-            case 0: {
+            case 1: {
                 self.inputerCoreData.style.onlyUnread = NO;
                 self.inputerCoreData.style.onlyReaded = NO;
                 self.inputerCoreData.style.liked = NO;
+                self.inputerCoreData.currentPage = self.pageState.page2;
                 break;
             }
-            case 1:
+            case 0:
             {
                 self.inputerCoreData.style.onlyUnread = YES;
                 self.inputerCoreData.style.onlyReaded = NO;
                 self.inputerCoreData.style.liked = NO;
+                self.inputerCoreData.currentPage = self.pageState.page1;
                 break;
             }
             case 2:
@@ -1027,6 +1060,7 @@ static NSString * const kShortcutItemsKey = @"kShortcutItemsKey";
                 self.inputerCoreData.style.onlyUnread = NO;
                 self.inputerCoreData.style.onlyReaded = YES;
                 self.inputerCoreData.style.liked = NO;
+                self.inputerCoreData.currentPage = self.pageState.page3;
                 break;
             }
             case 3:
@@ -1034,15 +1068,52 @@ static NSString * const kShortcutItemsKey = @"kShortcutItemsKey";
                 self.inputerCoreData.style.onlyUnread = NO;
                 self.inputerCoreData.style.onlyReaded = NO;
                 self.inputerCoreData.style.liked = YES;
+                self.inputerCoreData.currentPage = self.pageState.page4;
                 break;
             }
             default:
                 break;
         }
         [self.inputerCoreData rebuildFetch];
-    //    [(id)self.view reloadData];
         [self reloadHashData];
         [self.view mvp_reloadData];
+}
+
+- (void)loadMore {
+    NSLog(@"load more");
+    [self addPage];
+    [self.inputerCoreData rebuildFetch];
+    [self reloadHashDataWithouClean];
+    [self.view mvp_reloadData];
+}
+
+- (void)addPage {
+    PageState p = self.pageState;
+    switch (self.currentIdx) {
+            case 0: {
+                p.page1++;
+                self.inputerCoreData.currentPage = p.page1;
+                break;
+            }
+            case 1: {
+                p.page2++;
+                self.inputerCoreData.currentPage = p.page2;
+                break;
+            }
+            case 2: {
+                p.page3++;
+                self.inputerCoreData.currentPage = p.page3;
+                break;
+            }
+            case 3: {
+                p.page4++;
+                self.inputerCoreData.currentPage = p.page4;
+                break;
+            }
+        default:
+            break;
+    }
+    self.pageState = p;
 }
 
 - (void)changeType:(UISegmentedControl*)sender
