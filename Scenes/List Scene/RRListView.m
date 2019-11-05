@@ -64,7 +64,7 @@
         RRFeedInfoListOtherModel* mm = m;
 //        NSLog(@"%@",mm.key);
         if (mm.readStyle.onlyUnread) {
-            UIBarButtonItem* item = [self mvp_buttonItemWithActionName:@"maskAllReaded:" title:@"全部已读"];
+            UIBarButtonItem* item = [self mvp_buttonItemWithActionName:@"maskAllReaded2" title:@"全部已读"];
             self.navigationItem.rightBarButtonItems = @[item];
         }
         else {

@@ -5,9 +5,9 @@
 	<key>$main-text-color</key>
 	<string>#C0C0C0</string>
 	<key>$main-text-color-readed</key>
-	<string>#a0a0a0</string>
+	<string>#808080</string>
 	<key>$sub-text-color</key>
-	<string>#909090</string>
+	<string>#707070</string>
 	<key>$main-tint-color</key>
 	<string>#F5A623</string>
 	<key>$main-separator-color</key>

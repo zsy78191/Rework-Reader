@@ -248,6 +248,7 @@
 		D42F55F0221E7E2200321A21 /* RRListView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RRListView.m; sourceTree = "<group>"; };
 		D42F55F2221E7F1200321A21 /* RRListPresenter.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RRListPresenter.h; sourceTree = "<group>"; };
 		D42F55F3221E7F1200321A21 /* RRListPresenter.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RRListPresenter.m; sourceTree = "<group>"; };
+		D43826FB236FB9B70049A732 /* rework-reader-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "rework-reader-Bridging-Header.h"; sourceTree = "<group>"; };
 		D43F3716224372580035B28A /* iCloud.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = iCloud.json; sourceTree = "<group>"; };
 		D43F3740224390040035B28A /* RRSplitViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RRSplitViewController.h; sourceTree = "<group>"; };
 		D43F3741224390040035B28A /* RRSplitViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RRSplitViewController.m; sourceTree = "<group>"; };
@@ -543,13 +544,6 @@
 			name = Pods;
 			sourceTree = "<group>";
 		};
-		D4054B3922B0E2EC00422A97 /* Swift */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = Swift;
-			sourceTree = "<group>";
-		};
 		D40BA88622436D460068D209 /* Custom */ = {
 			isa = PBXGroup;
 			children = (
@@ -629,6 +623,14 @@
 				D47302D22271977600B94788 /* RRListTableOutput.m */,
 			);
 			path = "List Scene";
+			sourceTree = "<group>";
+		};
+		D43826FA236FB99A0049A732 /* Swift */ = {
+			isa = PBXGroup;
+			children = (
+				D43826FB236FB9B70049A732 /* rework-reader-Bridging-Header.h */,
+			);
+			path = Swift;
 			sourceTree = "<group>";
 		};
 		D440CFD622153C7C003B7203 /* Feed Scene */ = {
@@ -728,7 +730,7 @@
 		D47717CA21ED90CF0050DF14 = {
 			isa = PBXGroup;
 			children = (
-				D4054B3922B0E2EC00422A97 /* Swift */,
+				D43826FA236FB99A0049A732 /* Swift */,
 				D4E7493122A664970033D53E /* Ext */,
 				D4E0F9072213C46C00902540 /* Help */,
 				D4AC4DD22216BB9B0028D342 /* Scenes */,
@@ -1320,7 +1322,7 @@
 				TargetAttributes = {
 					D47717D221ED90CF0050DF14 = {
 						CreatedOnToolsVersion = 10.1;
-						LastSwiftMigration = 1020;
+						LastSwiftMigration = 1120;
 						SystemCapabilities = {
 							com.apple.BackgroundModes = {
 								enabled = 1;
@@ -1827,7 +1829,7 @@
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = "rework-reader/rework-reader.entitlements";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1.2.7;
+				CURRENT_PROJECT_VERSION = 1.2.8;
 				DEFINES_MODULE = YES;
 				DEVELOPMENT_TEAM = ZLQPGKAQFY;
 				GCC_PREFIX_HEADER = PrefixHeader.pch;
@@ -1842,12 +1844,13 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.2.2;
+				MARKETING_VERSION = 1.2.3;
 				ON_DEMAND_RESOURCES_INITIAL_INSTALL_TAGS = Extrafont;
 				OTHER_LIBTOOLFLAGS = "";
 				PRODUCT_BUNDLE_IDENTIFIER = com.orzer.rework.reader.sp;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTS_MACCATALYST = NO;
+				SWIFT_OBJC_BRIDGING_HEADER = "Swift/rework-reader-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -1863,7 +1866,7 @@
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = "rework-reader/rework-reader.entitlements";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1.2.7;
+				CURRENT_PROJECT_VERSION = 1.2.8;
 				DEFINES_MODULE = YES;
 				DEVELOPMENT_TEAM = ZLQPGKAQFY;
 				GCC_PREFIX_HEADER = PrefixHeader.pch;
@@ -1878,12 +1881,13 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.2.2;
+				MARKETING_VERSION = 1.2.3;
 				ON_DEMAND_RESOURCES_INITIAL_INSTALL_TAGS = Extrafont;
 				OTHER_LIBTOOLFLAGS = "";
 				PRODUCT_BUNDLE_IDENTIFIER = com.orzer.rework.reader.sp;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTS_MACCATALYST = NO;
+				SWIFT_OBJC_BRIDGING_HEADER = "Swift/rework-reader-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
