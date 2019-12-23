@@ -62,7 +62,7 @@
     else if([m isKindOfClass:[RRFeedInfoListOtherModel class]])
     {
         RRFeedInfoListOtherModel* mm = m;
-//        NSLog(@"%@",mm.key);
+//        //NSLog(@"%@",mm.key);
         if (mm.readStyle.onlyUnread) {
             UIBarButtonItem* item = [self mvp_buttonItemWithActionName:@"maskAllReaded2" title:@"全部已读"];
             self.navigationItem.rightBarButtonItems = @[item];
@@ -85,6 +85,8 @@
             [self configSearch];
         }
     }
+    
+
 }
 
 - (void)configSearch
@@ -113,19 +115,19 @@
     }
     [[self navigationController] setToolbarHidden:!self.showToolBar animated:animated];
 //    [self.outputer reloadData];
-//    NSLog(@"%s",__func__);
+//    //NSLog(@"%s",__func__);
 }
 
 - (void)viewWillDisappear:(BOOL)animated
 {
     [super viewWillDisappear:animated];
-//    NSLog(@"%s",__func__);
+//    //NSLog(@"%s",__func__);
 }
 
 - (void)viewDidDisappear:(BOOL)animated
 {
     [super viewDidDisappear:animated];
-//    NSLog(@"%s",__func__);
+//    //NSLog(@"%s",__func__);
 }
 
 - (void)viewDidAppear:(BOOL)animated
@@ -134,7 +136,7 @@
     if ([self.presenter respondsToSelector:@selector(viewDidAppear:)]) {
         [(id)self.presenter viewDidAppear:animated];
     }
-//    NSLog(@"%s",__func__);
+//    //NSLog(@"%s",__func__);
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
         double heigt = self.navigationController.navigationBar.frame.size.height + [self statusframe].size.height;
@@ -154,7 +156,7 @@
     double contentY = [[self.presenter mvp_valueWithSelectorName:@"currentOffset"] doubleValue];
     
     dispatch_async(dispatch_get_main_queue(), ^{
-//        NSLog(@"cc %@",@([[outputer inputer] mvp_count]));
+//        //NSLog(@"cc %@",@([[outputer inputer] mvp_count]));
         if ([[outputer inputer] mvp_count] == 0) {
             [[outputer tableview] setContentOffset:CGPointMake(0, contentY-heigt) animated:NO];
         }
@@ -178,10 +180,15 @@
     UIBarButtonItem* t2 = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
     UISegmentedControl* c = [[UISegmentedControl alloc] initWithItems:@[@"未读",@"全部",@"已读",@"收藏"]];
     UIBarButtonItem* i = [[UIBarButtonItem alloc] initWithCustomView:c];
-    [c setSelectedSegmentIndex:0];
+    [c setSelectedSegmentIndex:3];
     [self mvp_bindAction:UIControlEventValueChanged target:c actionName:@"changeType:"];
-    
-    
+    __weak typeof(c) wc = c;
+    [self.presenter mvp_bindBlock:^(RRListView*  _Nonnull view, id  _Nonnull value) {
+        if (value) {
+            [wc setSelectedSegmentIndex:[value integerValue]];
+            //NSLog(@"select %@",value);
+        }
+    } keypath:@"segmentOrigin"];
     
     UIBarButtonItem* item2 = [self mvp_buttonItemWithActionName:@"configit:" title:@"设置"];
     self.toolbarItems = @[t2,i,t,item2];
@@ -193,7 +200,7 @@
 {
     [super mvp_configMiddleware];
     
-//    NSLog(@"----:::%f",[[UIApplication sharedApplication] delegate].window.safeAreaInsets.bottom);
+//    //NSLog(@"----:::%f",[[UIApplication sharedApplication] delegate].window.safeAreaInsets.bottom);
     
     
     
@@ -293,7 +300,7 @@
         void (^checkLoadMoreBlock)(CGPoint) = ^(CGPoint x) {
            CGFloat y1 = x.y + t.frame.size.height;
            CGFloat y2 = t.contentSize.height;
-//           NSLog(@"-- %@ %@",@(y1),@(y2));
+//           //NSLog(@"-- %@ %@",@(y1),@(y2));
            if(fabs(y1 - y2)<t.frame.size.height) {
                if(!loadMore) {
                    loadMore = true;
@@ -310,7 +317,7 @@
         }];
         
         [[t rac_valuesForKeyPath:@keypath(t, contentSize) observer:weakSelf] subscribeNext:^(id  _Nullable x) {
-            NSLog(@"%@",x);
+            //NSLog(@"%@",x);
             checkLoadMoreBlock([t contentOffset]);
         }];
         
@@ -319,7 +326,7 @@
         o.canMutiSelect = YES;
 //        [o setNewOffsetBlock:^(CGFloat offsetY) {
 //            double heigt = weakSelf.navigationController.navigationBar.frame.size.height + [UIApplication sharedApplication].statusBarFrame.size.height;
-//            NSLog(@"-- @(%@)",@(offsetY+heigt));
+//            //NSLog(@"-- @(%@)",@(offsetY+heigt));
 //
 //            [[weakSelf presenter] mvp_runAction:@"newOffset:" value:@(offsetY+heigt)];
 //        }];

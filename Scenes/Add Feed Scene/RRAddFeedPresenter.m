@@ -90,10 +90,11 @@
             }
             if (![x hasPrefix:@"http://"] && ![x hasPrefix:@"https://"]) {
                 [(UIViewController*)self.view hudInfo:@"订阅源或网页URL无效"];
+                self.feeding = NO;
                 return;
             }
 //            NSString * e = [x._urlEncodeString stringByReplacingOccurrencesOfString:@"%3A" withString:@":"];
-//            //NSLog(@"%@",e);
+//            ////NSLog(@"%@",e);
             x = [x stringByReplacingOccurrencesOfString:@"%" withString:@"..BFH.."];
             NSString* e = [x stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLFragmentAllowedCharacterSet]];
             
@@ -105,7 +106,7 @@
             
 //            RRFeedFinder* f = [[RRFeedFinder alloc] init];
             [RRFeedFinder findItem:x result:^(BOOL isRSS, NSString * _Nonnull url) {
-//                NSLog(@"--- %@",url);
+//                //NSLog(@"--- %@",url);
                 
                 if (isRSS) {
                     dispatch_async(dispatch_get_main_queue(), ^{
@@ -138,7 +139,7 @@
 {
     __weak UIViewController<MVPViewProtocol>* vv = (UIViewController<MVPViewProtocol>*)self.view;
     id vc = [[RRFeedLoader sharedLoader] feedItem:url errorBlock:^(NSError * _Nonnull error) {
-        NSLog(@"%@",error);
+        //NSLog(@"%@",error);
     } cancelBlock:^{
         dispatch_async(dispatch_get_main_queue(), ^{
             [vv hudDismiss];

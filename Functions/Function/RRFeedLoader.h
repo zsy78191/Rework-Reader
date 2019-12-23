@@ -7,7 +7,12 @@
 //
 
 #import <Foundation/Foundation.h>
-@import Fork_MWFeedParser;
+//@import Fork_MWFeedParser;
+#import "MWFeedItem.h"
+#import "MWFeedInfo.h"
+@class UIViewController;
+#import "FMFeedParserOperation.h"
+
 @class OPMLDocument;
 NS_ASSUME_NONNULL_BEGIN
 

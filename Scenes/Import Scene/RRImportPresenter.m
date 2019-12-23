@@ -120,7 +120,7 @@
     __block void (^setCount)(NSUInteger all,NSUInteger finish) = ^(NSUInteger all,NSUInteger finish){
         dispatch_async(dispatch_get_main_queue(), ^{
             
-//            NSLog(@"222222");
+//            //NSLog(@"222222");
             weakSelf.allFeedCount = all;
             weakSelf.finishCount = finish;
 //             [weakSelf.view hudProgress:(float)finish/all];
@@ -138,8 +138,8 @@
     
 //    [[RRFeedLoader sharedLoader] setUseMainQuene:YES];
     NSArray* op = [[RRFeedLoader sharedLoader] reloadAll:all infoBlock:^(MWFeedInfo * _Nonnull info) {
-//        NSLog(@"%@",info);
-//        NSLog(@"33333");
+//        //NSLog(@"%@",info);
+//        //NSLog(@"33333");
         successCount++;
         [RRFeedAction insertFeedInfo:info finish:^{
             
@@ -148,10 +148,10 @@
        
     } errorBlock:^(NSString* _Nonnull infoURL, NSError * _Nonnull error) {
    
-        NSLog(@"error");
+        //NSLog(@"error");
         errorCount++;
     } finishBlock:^{
-        NSLog(@"finish");
+        //NSLog(@"finish");
         finishCount++;
         setCount(allCount,finishCount);
     }];

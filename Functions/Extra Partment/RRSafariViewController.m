@@ -35,8 +35,8 @@
 {
     [super viewDidLayoutSubviews];
     
-//    NSLog(@"111 %@",self.navigationController);
-//    NSLog(@"222 %@",self.navigationController.navigationController);
+//    //NSLog(@"111 %@",self.navigationController);
+//    //NSLog(@"222 %@",self.navigationController.navigationController);
 //    if (self.navigationController.navigationController) {
 //        [self.navigationController.navigationController setNavigationBarHidden:YES animated:NO];
 //        [self.navigationController.navigationController setToolbarHidden:YES animated:NO];
@@ -64,11 +64,11 @@
     
     if (isTrait) {
         // 正在分屏
-        NSLog(@"SF正在分屏");
+        //NSLog(@"SF正在分屏");
         [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"RRSplit"];
     }else {
         
-        NSLog(@"SF没有分屏");
+        //NSLog(@"SF没有分屏");
         ;
         [[NSUserDefaults standardUserDefaults] setBool:NO forKey:@"RRSplit"];
     }

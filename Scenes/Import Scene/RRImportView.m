@@ -87,7 +87,7 @@
 
 - (void)dealloc
 {
-    NSLog(@"%s",__func__);
+    //NSLog(@"%s",__func__);
     [self.handleDocument closeWithCompletionHandler:^(BOOL success) {
         
     }];

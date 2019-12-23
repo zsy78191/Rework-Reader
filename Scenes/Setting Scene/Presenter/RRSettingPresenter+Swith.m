@@ -19,7 +19,7 @@
     if (![sender isKindOfClass:[UISwitch class]]) {
         return;
     }
-    //    //NSLog(@"%@",sender);
+    //    ////NSLog(@"%@",sender);
     if (sender.on == NO) {
         [[NSUserDefaults standardUserDefaults] setBool:NO forKey:self.notiSetting.switchkey];
         [[NSUserDefaults standardUserDefaults] synchronize];
@@ -31,9 +31,9 @@
     [[UNUserNotificationCenter currentNotificationCenter] requestAuthorizationWithOptions:UNAuthorizationOptionAlert|UNAuthorizationOptionBadge|UNAuthorizationOptionSound completionHandler:^(BOOL granted, NSError * _Nullable error) {
         
         if (!granted) {
-            //            //NSLog(@"%@",weakSelf.badgeSetting);
+            //            ////NSLog(@"%@",weakSelf.badgeSetting);
             weakSelf.notiSetting.switchValue = @(NO);
-            //            //NSLog(@"%@",self.badgeSetting.switchValue);
+            //            ////NSLog(@"%@",self.badgeSetting.switchValue);
             UI_Alert().
             titled(@"请在系统「设置」中开启Reader的通知功能")
             .recommend(@"前往「设置」", ^(UIAlertAction * _Nonnull action, UIAlertController * _Nonnull alert) {

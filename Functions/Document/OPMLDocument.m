@@ -22,9 +22,9 @@
 {
     self = [super init];
     if (self) {
-//        NSLog(@"%@",element);
+//        //NSLog(@"%@",element);
         NSDictionary* d = [element attributesAsDictionary];
-//        NSLog(@"%@",d);
+//        //NSLog(@"%@",d);
         self.text = d[@"text"];
         self.title = d[@"title"];
         self.type = d[@"type"];
@@ -116,10 +116,10 @@
 - (id)contentsForType:(NSString *)typeName error:(NSError * _Nullable __autoreleasing *)outError
 {
     [self.content setString:@"<?xml version=\"1.0\" encoding=\"UTF-8\"?><opml version=\"1.0\"></opml>"];
-//    NSLog(@"%@",typeName);
+//    //NSLog(@"%@",typeName);
     self.xmlDocument = [[DDXMLDocument alloc] initWithXMLString:self.content options:DDXMLDocumentXMLKind error:outError];
-//    NSLog(@"%@",self.xmlDocument);
-//    NSLog(@"%@",[self.xmlDocument rootElement]);
+//    //NSLog(@"%@",self.xmlDocument);
+//    //NSLog(@"%@",[self.xmlDocument rootElement]);
     DDXMLElement* root = [self.xmlDocument rootElement];
     DDXMLElement* headNode = [DDXMLElement elementWithName:@"head"];
     DDXMLElement* titleNode = [DDXMLElement elementWithName:@"title" stringValue:@"RSS Reader Prime Export"];
@@ -149,23 +149,23 @@
 
 - (void)handleError:(NSError *)error userInteractionPermitted:(BOOL)userInteractionPermitted
 {
-    NSLog(@"%@",error);
+    //NSLog(@"%@",error);
     
 }
 
 
 - (void)finishedHandlingError:(NSError *)error recovered:(BOOL)recovered
 {
-    NSLog(@"%@",error);
+    //NSLog(@"%@",error);
 }
 
 - (void)userInteractionNoLongerPermittedForError:(NSError *)error
 {
-    NSLog(@"%@",error);
+    //NSLog(@"%@",error);
 }
 
 - (void)dealloc
 {
-    NSLog(@"%s",__func__);
+    //NSLog(@"%s",__func__);
 }
 @end

@@ -43,7 +43,7 @@
 - (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath
 {
     id model = [self.inputer mvp_modelAtIndexPath:indexPath];
-//    //NSLog(@"%@",model);
+//    ////NSLog(@"%@",model);
     if ([model conformsToProtocol:@protocol(RRCanEditProtocol)]) {
         id<RRCanEditProtocol>m = model;
         return m.canEdit;
@@ -54,7 +54,7 @@
 - (UITableViewCellEditingStyle)tableView:(UITableView *)tableView editingStyleForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     id model = [self.inputer mvp_modelAtIndexPath:indexPath];
-    //    //NSLog(@"%@",model);
+    //    ////NSLog(@"%@",model);
     if ([model conformsToProtocol:@protocol(RRCanEditProtocol)]) {
         id<RRCanEditProtocol>m = model;
         if (!tableView.editing) {
@@ -149,7 +149,7 @@
             }];
         }
         else if([model isKindOfClass:[RRFeedInfoListOtherModel class]]){
-//            NSLog(@"%@",[model class]);
+//            //NSLog(@"%@",[model class]);
             RRFeedInfoListOtherModel* m = model;
             m.editType = RRCEEditTypeInsert;
             [tableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationNone];
@@ -158,7 +158,7 @@
     else if(editingStyle == UITableViewCellEditingStyleInsert)
     {
         if([model isKindOfClass:[RRFeedInfoListOtherModel class]]){
-            //            NSLog(@"%@",[model class]);
+            //            //NSLog(@"%@",[model class]);
             RRFeedInfoListOtherModel* m = model;
             m.editType = RRCEEditTypeDelete;
             [tableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationNone];
@@ -170,7 +170,7 @@
 //{
 //    id model = [self.inputer mvp_modelAtIndexPath:indexPath];
 //    if([model isKindOfClass:[RRFeedInfoListOtherModel class]]){
-//        //            NSLog(@"%@",[model class]);
+//        //            //NSLog(@"%@",[model class]);
 //        RRFeedInfoListOtherModel* m = model;
 //        if (m.type == RRCEEditTypeInsert) {
 //            return 0;

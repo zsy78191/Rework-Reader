@@ -40,7 +40,7 @@
             return;
         }
         
-//        NSLog(@"^^^^");
+//        //NSLog(@"^^^^");
         [[view presenter] mvp_bindBlock:^(RRFeedConfigView* view2, id value2) {
             dispatch_async(dispatch_get_main_queue(), ^{
                 if ([value2 boolValue]) {
@@ -121,7 +121,7 @@
     }
     
     UIAlertController* a = [self alert:@"是否放弃订阅？" recommend:@"继续订阅" action:@"" cancel:@"放弃" block:^(NSInteger idx, __kindof UIViewController *vc) {
-//        //NSLog(@"%@",@(idx));
+//        ////NSLog(@"%@",@(idx));
         if (idx == 0) {
             [[vc navigationController] popViewControllerAnimated:YES];
         }
@@ -149,7 +149,7 @@
 
 - (void)loadIcon:(NSString *)icon
 {
-//    //NSLog(@"%@",icon);
+//    ////NSLog(@"%@",icon);
     dispatch_async(dispatch_get_main_queue(), ^{
         if ([self.presenter conformsToProtocol:@protocol(MVPViewLoadProtocol)]) {
             [(id)self.presenter loadIcon:icon];

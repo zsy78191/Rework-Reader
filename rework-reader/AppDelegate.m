@@ -8,6 +8,8 @@
 
 #import "AppDelegate.h"
 #import "AppDelegate+Ext.h"
+#import "AppDelegate+Crash.h"
+
 #import "OttoFPSButton.h"
 #import "OPMLDocument.h"
 @import ReactiveObjC;
@@ -16,13 +18,15 @@
 @import BackgroundTasks;
 #import "UIViewController+PresentAndPush.h"
 #import "RRFeedInfoListOtherModel.h"
+#import "DebugViewController.h"
+@import KSCrash;
 
 @interface AppDelegate () <SDWebImageManagerDelegate,UISplitViewControllerDelegate>
 {
 //    CDEPersistentStoreEnsemble *ensemble;
 //    CDEICloudFileSystem *cloudFileSystem;
 }
-
+@property (nonatomic, strong) id caller;
 @end
 
 @implementation AppDelegate
@@ -33,62 +37,142 @@
 }
 
 #pragma mark - lifecircle
+- (BOOL)isBackgroundMode {
+    return [UIApplication sharedApplication].applicationState==UIApplicationStateBackground;
+}
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
-
-    NSLog(@"%@", [[NSBundle mainBundle] bundlePath]);
     
-    // 加载logger
-    [self preload];
+    [self crashReporterSetup];
     
-    // 加载字体
-    [self loadFonts];
-    
-    // 加载数据
-    [self loadCoreData];
-    BOOL useiCloud = [[NSUserDefaults standardUserDefaults] boolForKey:@"kiCloudSetting"];
-    if (useiCloud) {
-        NSLog(@"-----iCloud--Auto------");
-//        CDESetCurrentLoggingLevel(CDELoggingLevelVerbose);
-//        [self loadEnsemble];
+    if([self isBackgroundMode]) {
+//        [self loadCoreData];
+            [self loadParts];
+    } else {
+        [[NSUserDefaults standardUserDefaults] registerDefaults:@{@"kReport":@(YES),@"kBoot":@(YES)}];
+        BOOL boot = [[NSUserDefaults standardUserDefaults] boolForKey:@"kBoot"];
+        if(boot) {
+            [[NSUserDefaults standardUserDefaults] setBool:NO forKey:@"kBoot"];
+            [[NSUserDefaults standardUserDefaults] synchronize];
+            [self loadParts];
+        } else {
+            [self loadReport];
+        }
     }
     
-    self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
-    
-    // 加载Classy样式
-    [self loadCas];
-    
-    // 加载额外的样式
-    [self loadExtra];
-    
-    // 加载路由
-    [self loadRouter];
-    
-    // 加载VC
-    [self loadPage];
-    
-    
-    // 配置background fetch
-#if !TARGET_OS_MACCATALYST
-    [[UIApplication sharedApplication] setMinimumBackgroundFetchInterval:UIApplicationBackgroundFetchIntervalMinimum];
-#endif
-
-    
-    //NSLog(@"%@",launchOptions);
-    
-    int r = arc4random() % 4;
-    if (r == 2) {
-        [AppleAPIHelper review];
-    }
-    
-#ifdef DEBUG
-//    CGRect frame = CGRectMake(0, 300, 80, 30);
-//    UIColor *btnBGColor = [UIColor colorWithWhite:0.000 alpha:0.700];
-//    OttoFPSButton *btn = [OttoFPSButton setTouchWithFrame:frame titleFont:[UIFont systemFontOfSize:15] backgroundColor:btnBGColor backgroundImage:nil];
-//    [self.window addSubview:btn];
-#endif
-  
     return YES;
+}
+
+- (void)loadReport
+{
+        DebugViewController* vc = [[DebugViewController alloc] initWithNibName:@"DebugViewController" bundle:nil];
+        self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
+        self.window.rootViewController = vc;
+        [self.window makeKeyAndVisible];
+        
+        __weak typeof(self) ws = self;
+        [vc setActionBlock:^(NSInteger selection) {
+            switch (selection) {
+                case 0:
+                {
+//                    NSArray* a = @[];
+//                    [a objectAtIndex:10];
+                    [self loadParts];
+                    break;
+                }
+                case 1:
+                {
+                    [ws.ci1 sendAllReportsWithCompletion:^(NSArray *filteredReports, BOOL completed, NSError *error) {
+                        dispatch_async(dispatch_get_main_queue(), ^{
+                            if (!completed) {
+                                [SVProgressHUD showErrorWithStatus:@"发送失败"];
+                            } else {
+                                if (filteredReports.count == 0) {
+                                    [SVProgressHUD showSuccessWithStatus:@"没有可发送的报告"];
+                                } else {
+                                   [SVProgressHUD showSuccessWithStatus:@"发送成功，感谢"];
+                                }
+                                
+                            }
+                        });
+                    }];
+                    break;
+                }
+                    case 2:
+                {
+                    [ws.ci2 sendAllReportsWithCompletion:^(NSArray *filteredReports, BOOL completed, NSError *error) {
+                        dispatch_async(dispatch_get_main_queue(), ^{
+                                               if (!completed) {
+                                                                              [SVProgressHUD showErrorWithStatus:@"发送失败"];
+                                                                          } else {
+                                                                              if (filteredReports.count == 0) {
+                                                                                  [SVProgressHUD showSuccessWithStatus:@"没有可发送的报告"];
+                                                                              } else {
+                                                                                 [SVProgressHUD showSuccessWithStatus:@"发送成功，感谢"];
+                                                                              }
+                                                                              
+                                                                          }
+                                           });
+                    }];
+                    break;
+                }
+                default:
+                    break;
+            }
+        }];
+}
+
+- (void)loadParts {
+
+        // 加载logger
+        [self preload];
+        
+        // 加载字体
+        [self loadFonts];
+        
+        // 加载数据
+        [self loadCoreData];
+//        BOOL useiCloud = [[NSUserDefaults standardUserDefaults] boolForKey:@"kiCloudSetting"];
+//        if (useiCloud) {
+//            //NSLog(@"-----iCloud--Auto------");
+    //        CDESetCurrentLoggingLevel(CDELoggingLevelVerbose);
+    //        [self loadEnsemble];
+//        }
+        
+        self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
+        
+        // 加载Classy样式
+        [self loadCas];
+        
+        // 加载额外的样式
+        [self loadExtra];
+        
+        // 加载路由
+        [self loadRouter];
+        
+        // 加载VC
+        [self loadPage];
+        
+        
+        // 配置background fetch
+    #if !TARGET_OS_MACCATALYST
+        [[UIApplication sharedApplication] setMinimumBackgroundFetchInterval:UIApplicationBackgroundFetchIntervalMinimum];
+    #endif
+
+        ////NSLog(@"%@",launchOptions);
+        
+        int r = arc4random() % 4;
+        if (r == 2) {
+            [AppleAPIHelper review];
+        }
+        
+    #ifdef DEBUG
+    //    CGRect frame = CGRectMake(0, 300, 80, 30);
+    //    UIColor *btnBGColor = [UIColor colorWithWhite:0.000 alpha:0.700];
+    //    OttoFPSButton *btn = [OttoFPSButton setTouchWithFrame:frame titleFont:[UIFont systemFontOfSize:15] backgroundColor:btnBGColor backgroundImage:nil];
+    //    [self.window addSubview:btn];
+    #endif
+      
 }
 
 - (void)notiArticle:(NSUInteger)count
@@ -108,7 +192,7 @@
         UNNotificationRequest* r = [UNNotificationRequest requestWithIdentifier:[[NSUUID UUID] UUIDString] content:c trigger:nil];
         [[UNUserNotificationCenter currentNotificationCenter] addNotificationRequest:r withCompletionHandler:^(NSError * _Nullable error) {
             if (error) {
-                //NSLog(@"%@",error);
+                ////NSLog(@"%@",error);
             }
         }];
     }
@@ -117,6 +201,7 @@
 #if !TARGET_OS_MACCATALYST
 - (void)application:(UIApplication *)application performFetchWithCompletionHandler:(void (^)(UIBackgroundFetchResult))completionHandler
 {
+    //NSLog(@"Background Fetch Start");
     __weak typeof(self) weakSelf = self;
     [self updateFeedData:^(NSInteger x) {
         
@@ -125,7 +210,7 @@
             [[NSUserDefaults standardUserDefaults] synchronize];
             [weakSelf notiArticle:x];
         }
-//        NSLog(@"更新了%ld",x);
+        //NSLog(@"更新了%ld",x);
         if (x > 0) {
             completionHandler(UIBackgroundFetchResultNewData);
         }
@@ -134,7 +219,7 @@
             completionHandler(UIBackgroundFetchResultNoData);
         }
     }];
-    //NSLog(@"%s",__func__);
+    ////NSLog(@"%s",__func__);
 }
 #endif
 
@@ -193,7 +278,10 @@
 
 - (void)applicationWillTerminate:(UIApplication *)application {
     // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
-     [AppleAPIHelper endTestForStore:[ApplePurchaseDelegate sharedOne]];
+//    self.caller = nil;
+    [AppleAPIHelper endTestForStore:[ApplePurchaseDelegate sharedOne]];
+    [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"kBoot"];
+    [[NSUserDefaults standardUserDefaults] synchronize];
 }
 
 - (BOOL)kBackgroundFetchNoti
@@ -240,9 +328,9 @@
 - (void)handleScheme:(NSURL*)url
 {
 //    NSString* urlStr = [[url path] stringByReplacingOccurrencesOfString:@"readerprime" withString:@"rr"];
-//    NSLog(@"%@",url.host);
-//    NSLog(@"%@",url.query);
-//    NSLog(@"%@",url.path);
+//    //NSLog(@"%@",url.host);
+//    //NSLog(@"%@",url.query);
+//    //NSLog(@"%@",url.path);
     __block NSString* keyword = nil;
     if ([[url host] isEqualToString:@"search"]) {
         NSURLComponents *components = [[NSURLComponents alloc] initWithString:url.absoluteString];
@@ -276,7 +364,7 @@
     if ([self.window.rootViewController isKindOfClass:[UISplitViewController class]]) {
         UISplitViewController* split = (UISplitViewController*)self.window.rootViewController;
         UIViewController* v = [split.viewControllers firstObject];
-        //        NSLog(@"%@",v);
+        //        //NSLog(@"%@",v);
         if ([v isKindOfClass:[UINavigationController class]]) {
             n = (UINavigationController*)v;
         }
@@ -291,10 +379,10 @@
 
 - (BOOL)application:(UIApplication *)app openURL:(NSURL *)url options:(NSDictionary<UIApplicationOpenURLOptionsKey,id> *)options
 {
-//    NSLog(@"%s",__func__);
-//    NSLog(@"%@",url);
-//    NSLog(@"%@",options);
-//    NSLog(@"%@",[url absoluteString]);
+//    //NSLog(@"%s",__func__);
+//    //NSLog(@"%@",url);
+//    //NSLog(@"%@",options);
+//    //NSLog(@"%@",[url absoluteString]);
     if ([[url absoluteString] hasPrefix:@"readerprime"]) {
         [self handleScheme:url];
         return YES;
@@ -306,12 +394,12 @@
         return NO;
     }
     
-//    NSLog(@"%@",self.window.rootViewController);
+//    //NSLog(@"%@",self.window.rootViewController);
     UINavigationController* n = nil;
     if ([self.window.rootViewController isKindOfClass:[UISplitViewController class]]) {
         UISplitViewController* split = (UISplitViewController*)self.window.rootViewController;
         UIViewController* v = [split.viewControllers firstObject];
-//        NSLog(@"%@",v);
+//        //NSLog(@"%@",v);
         if ([v isKindOfClass:[UINavigationController class]]) {
           n = (UINavigationController*)v;
         }

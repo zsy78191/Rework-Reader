@@ -16,7 +16,7 @@
 - (void)main
 {
     if (!self.insertClass) {
-        NSLog(@"%@ need set class",self);
+        //NSLog(@"%@ need set class",self);
         return;
     }
     
@@ -89,10 +89,10 @@
         if (self.modifyValue) {
             value = self.modifyValue(obj,value);
         }
-//        //NSLog(@"set %@ %@",obj,value);
+//        ////NSLog(@"set %@ %@",obj,value);
         if (value) {
             [p removeObject:obj];
-//            //NSLog(@"--) %@ %@",value,obj);
+//            ////NSLog(@"--) %@ %@",value,obj);
             if ([value isKindOfClass:[NSManagedObject class]]) {
                 value = [value MR_inContext:context];
             }
@@ -108,7 +108,7 @@
         }
         [p removeObject:key];
         if (![value isKindOfClass:[NSNull class]]) {
-//            //NSLog(@"--) %@ %@",value,key);
+//            ////NSLog(@"--) %@ %@",value,key);
             [cd setValue:value forKey:key];
         }
         else {

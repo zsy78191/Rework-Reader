@@ -31,14 +31,14 @@
 {
     NSString *urlString = urlSchemeTask.request.URL.relativeString;
    
-//    //NSLog(@"-- %@",urlString);
+//    ////NSLog(@"-- %@",urlString);
 //    __block NSData *data = nil;
     __weak typeof(self) weakSelf = self;
     if ([urlString hasPrefix:@"local"]) {
         
-//        NSLog(@"%@",urlString);
+//        //NSLog(@"%@",urlString);
         NSString* name = [urlString substringFromIndex:8];
-//        NSLog(@"%@",name);
+//        //NSLog(@"%@",name);
       
         UIImage* i  = [UIImage imageNamed:name];
         UIImage* t = [UIImage imageWithCGImage:i.CGImage scale:2 orientation:UIImageOrientationUp];
@@ -116,7 +116,7 @@
             }
             
             if (error) {
-                //NSLog(@"%@",error);
+                ////NSLog(@"%@",error);
                 [urlSchemeTask didFailWithError:error];
                 return;
             }
@@ -153,7 +153,7 @@
             }
             
             if (!data && image) {
-                //            //NSLog(@"没有图");
+                //            ////NSLog(@"没有图");
                 data = [image sd_imageData];
             }
             

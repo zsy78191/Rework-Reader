@@ -21,7 +21,7 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     [[self.view subviews] enumerateObjectsUsingBlock:^(__kindof UIView * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
-//        //NSLog(@"%@",obj);
+//        ////NSLog(@"%@",obj);
         if ([obj isKindOfClass:[UIToolbar class]]) {
             obj.cas_styleClass = @"PhotoToolBar";
         }

@@ -12,7 +12,7 @@
 
 - (void)mvp_setupView:(__kindof UIView *)view
 {
-//    //NSLog(@"v %@",view);
+//    ////NSLog(@"v %@",view);
     switch (view.tag) {
         case MVPViewTagContentView:
         {

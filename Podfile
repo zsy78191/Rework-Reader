@@ -21,7 +21,7 @@ target 'rework-reader' do
   pod 'coobjc'
 
   #RSS解析库
-  pod 'Fork-MWFeedParser'
+#  pod 'Fork-MWFeedParser'
   
   #log框架
 #  pod 'CocoaLumberjack'
@@ -47,6 +47,8 @@ target 'rework-reader' do
   pod 'PromiseKit'
  
   pod 'Masonry'
+  
+  pod 'KSCrash'
 
   # Pods for rework-reader
   target 'rework-readerTests' do

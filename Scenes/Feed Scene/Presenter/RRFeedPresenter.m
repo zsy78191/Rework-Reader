@@ -12,7 +12,10 @@
 #import "RRFeedArticleModel.h"
 #import "RRFeedLoader.h"
 @import DateTools;
-@import Fork_MWFeedParser;
+//@import Fork_MWFeedParser;
+#import "NSString+HTML.h"
+#import "MWFeedItem.h"
+#import "MWFeedInfo.h"
 #import "RRCoreDataModel.h"
 #import "RPDataManager.h"
 @import ui_base;
@@ -207,7 +210,7 @@
         }
         
         
-//        //NSLog(@"%@",m);
+//        ////NSLog(@"%@",m);
     }
 }
 
@@ -239,10 +242,10 @@
     self.finished = YES;
     
     
-//    //NSLog(@"%@",@());
+//    ////NSLog(@"%@",@());
     CGFloat avg = self.allWords/self.count;
     CGFloat imgavg = self.allImgs/self.count;
-//    //NSLog(@"avg %@",@(avg));
+//    ////NSLog(@"avg %@",@(avg));
     if (avg > 250 || imgavg > 3) {
         self.directOpenSwitch.switchValue = @(NO);
     }
@@ -255,7 +258,7 @@
         }
     }
     
-//    //NSLog(@"%@",self.lastedArticleDate);
+//    ////NSLog(@"%@",self.lastedArticleDate);
     
     if (![self.autoFeedSwitch.switchValue boolValue]) {
         if (self.lastedArticleDate) {
@@ -297,7 +300,7 @@
 {
     NSArray* all = [self.inputer allModels];
     NSInteger x = [all indexOfObject:current];
-//    //NSLog(@"%@ %ld" ,current,x);
+//    ////NSLog(@"%@ %ld" ,current,x);
     if (x == 0) {
         return nil;
     }
@@ -313,7 +316,7 @@
 {
     NSArray* all = [self.inputer allModels];
     NSInteger x = [all indexOfObject:current];
-    //    //NSLog(@"%@ %ld" ,current,x);
+    //    ////NSLog(@"%@ %ld" ,current,x);
     if (x == all.count - 1) {
         return nil;
     }
@@ -392,7 +395,7 @@
     sender.enabled = NO;
     NSMutableDictionary* d = [[[RPDataManager sharedManager] dictionaryWithModels:self.inputer.allModels getKeys:@[@"title",@"summary",@"link",@"url",@"language",@"updateDate",@"managingEditor",@"ttl",@"copyright",@"icon",@"generator",@"usettl",@"usesafari",@"useautoupdate"] getModel:NO] mutableCopy];
     
-//    //NSLog(@"%@",d);
+//    ////NSLog(@"%@",d);
     d[@"icon"] = self.feedInfo.icon;
     d[@"ttl"] = self.ttl;
     

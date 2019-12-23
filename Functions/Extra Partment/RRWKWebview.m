@@ -27,7 +27,7 @@
 
 - (void)dealloc
 {
-    NSLog(@"%s",__func__);
+    //NSLog(@"%s",__func__);
 }
 
 - (instancetype)initWithFrame:(CGRect)frame configuration:(WKWebViewConfiguration *)configuration

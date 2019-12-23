@@ -175,14 +175,14 @@
     [SDWebImageDownloader sharedDownloader].downloadTimeout = 5;
     
     BOOL x = [[[RRDataBackuper alloc] init] ensureFileDownloaded];
-//    NSLog(@"%@",@(x));
+//    //NSLog(@"%@",@(x));
 }
 
 - (void)loadFonts
 {
     //    BOOL a1 = [RPFontLoader registerFontsAtPath:[[NSBundle mainBundle] pathForResource:@"TsangerXuanSanM-W02" ofType:@"ttf"]];
     //    BOOL a2 = [RPFontLoader registerFontsAtPath:[[NSBundle mainBundle] pathForResource:@"SourceHanSerifCN-Regular" ofType:@"otf"]];
-    //    //NSLog(@"font load %@ %@",@(a1),@(a2));
+    //    ////NSLog(@"font load %@ %@",@(a1),@(a2));
     
     //加载预设字体大小
     [RRWebStyleModel setupDefalut];
@@ -195,7 +195,7 @@
     self.window.backgroundColor = [UIColor whiteColor];
     [[UIApplication sharedApplication] setHUDStyle];
     [SVProgressHUD setHapticsEnabled:YES];
-    //    //NSLog(@"%@",[UIApplication sharedApplication].bundleID());
+    //    ////NSLog(@"%@",[UIApplication sharedApplication].bundleID());
     
     [MMKV setLogLevel:MMKVLogNone];
     
@@ -312,27 +312,25 @@
 
 - (void)updateFeedData:(void (^)(NSInteger x))finished
 {
+    //NSLog(@"Step 1");
     NSArray* all = nil;
     if (!all) {
         all = [[RPDataManager sharedManager] getAll:@"EntityFeedInfo" predicate:nil key:nil value:nil sort:@"sort" asc:YES];
     }
     all =
     all.filter(^BOOL(RRFeedInfoListModel*  _Nonnull x) {
-        
         if (!x.useautoupdate) {
             return NO;
         }
-        
-        NSString* key = [NSString stringWithFormat:@"UPDATE_%@",x.url];
-        NSInteger lastU = [MVCKeyValue getIntforKey:key];
-        if (lastU != 0) {
-            NSDate* d = [NSDate dateWithTimeIntervalSince1970:lastU];
-            //NSLog(@"last %@ %@",d,@([d timeIntervalSinceDate:[NSDate date]]));
-            if ([d timeIntervalSinceDate:[NSDate date]] > - 10) {
-                return NO;
-            }
-        }
-        
+//        NSString* key = [NSString stringWithFormat:@"UPDATE_%@",x.url];
+//        NSInteger lastU = [MVCKeyValue getIntforKey:key];
+//        if (lastU != 0) {
+//            NSDate* d = [NSDate dateWithTimeIntervalSince1970:lastU];
+//            ////NSLog(@"last %@ %@",d,@([d timeIntervalSinceDate:[NSDate date]]));
+//            if ([d timeIntervalSinceDate:[NSDate date]] > - 10) {
+//                return NO;
+//            }
+//        }
         if (x.usettl) {
             NSUInteger ttl = [x.ttl integerValue];
             NSDate* d = [x.updateDate dateByAddingMinutes:ttl];
@@ -345,10 +343,11 @@
     .map(^id _Nonnull(RRFeedInfoListModel*  _Nonnull x) {
         return [x.url absoluteString];
     });
-    
+    //NSLog(@"Step 2");
     [[RRFeedLoader sharedLoader] refresh:all endRefreshBlock:^{
-        
+        //NSLog(@"Step 3");
     } finishBlock:^(NSUInteger all, NSUInteger error, NSUInteger article) {
+        //NSLog(@"Step 4");
         if (finished) {
             finished(article);
         }
