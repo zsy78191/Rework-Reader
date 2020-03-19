@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="15508" systemVersion="19C57" minimumToolsVersion="Automatic" sourceLanguage="Objective-C" userDefinedModelVersionIdentifier="">
+    <entity name="EntityFeedArticle" representedClassName="EntityFeedArticle" syncable="YES" codeGenerationType="class">
+        <attribute name="author" optional="YES" attributeType="String"/>
+        <attribute name="categories" optional="YES" attributeType="String"/>
+        <attribute name="content" optional="YES" attributeType="String"/>
+        <attribute name="date" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="enclosures" optional="YES" attributeType="String"/>
+        <attribute name="identifier" optional="YES" attributeType="String"/>
+        <attribute name="lastread" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="lastUpdateResult" optional="YES" attributeType="Boolean" defaultValueString="YES" usesScalarValueType="YES"/>
+        <attribute name="liked" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
+        <attribute name="likedTime" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="link" optional="YES" attributeType="String"/>
+        <attribute name="readed" optional="YES" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES"/>
+        <attribute name="readlater" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
+        <attribute name="readlatertime" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="sort" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="summary" optional="YES" attributeType="String"/>
+        <attribute name="title" optional="YES" attributeType="String" spotlightIndexingEnabled="YES"/>
+        <attribute name="uniqueIdentifier" optional="YES" attributeType="String"/>
+        <attribute name="updateTime" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="uuid" optional="YES" attributeType="String"/>
+        <relationship name="feed" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="EntityFeedInfo" inverseName="articles" inverseEntity="EntityFeedInfo"/>
+    </entity>
+    <entity name="EntityFeedInfo" representedClassName="EntityFeedInfo" syncable="YES" codeGenerationType="class">
+        <attribute name="copyright" optional="YES" attributeType="String"/>
+        <attribute name="generator" optional="YES" attributeType="String"/>
+        <attribute name="icon" optional="YES" attributeType="String"/>
+        <attribute name="language" optional="YES" attributeType="String"/>
+        <attribute name="lastUpdateResult" optional="YES" attributeType="Boolean" defaultValueString="YES" usesScalarValueType="YES"/>
+        <attribute name="link" optional="YES" attributeType="String"/>
+        <attribute name="managingEditor" optional="YES" attributeType="String"/>
+        <attribute name="slider" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="sort" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="summary" optional="YES" attributeType="String"/>
+        <attribute name="title" optional="YES" attributeType="String" spotlightIndexingEnabled="YES"/>
+        <attribute name="ttl" optional="YES" attributeType="String"/>
+        <attribute name="uniqueIdentifier" optional="YES" attributeType="String"/>
+        <attribute name="updateDate" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="url" optional="YES" attributeType="URI"/>
+        <attribute name="useachieve" optional="YES" attributeType="Boolean" defaultValueString="YES" usesScalarValueType="YES"/>
+        <attribute name="useautoupdate" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
+        <attribute name="usesafari" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
+        <attribute name="usettl" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
+        <attribute name="uuid" optional="YES" attributeType="String"/>
+        <relationship name="articles" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="EntityFeedArticle" inverseName="feed" inverseEntity="EntityFeedArticle"/>
+        <relationship name="hub" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="EntityHub" inverseName="infos" inverseEntity="EntityHub"/>
+        <relationship name="styles" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="EntityFeedStyle" inverseName="feeds" inverseEntity="EntityFeedStyle"/>
+    </entity>
+    <entity name="EntityFeedStyle" representedClassName="EntityFeedStyle" syncable="YES" codeGenerationType="class">
+        <attribute name="countLimit" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="dayLimit" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="keyword" optional="YES" attributeType="String"/>
+        <attribute name="liked" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
+        <attribute name="sort" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="title" optional="YES" attributeType="String"/>
+        <attribute name="uniqueIdentifier" optional="YES" attributeType="String"/>
+        <attribute name="unread" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
+        <attribute name="uuid" optional="YES" attributeType="String"/>
+        <relationship name="feeds" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="EntityFeedInfo" inverseName="styles" inverseEntity="EntityFeedInfo"/>
+    </entity>
+    <entity name="EntityHub" representedClassName="EntityHub" syncable="YES" codeGenerationType="class">
+        <attribute name="icon" optional="YES" attributeType="String"/>
+        <attribute name="slider" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="sort" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="title" optional="YES" attributeType="String"/>
+        <attribute name="type" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="uuid" optional="YES" attributeType="String"/>
+        <relationship name="infos" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="EntityFeedInfo" inverseName="hub" inverseEntity="EntityFeedInfo"/>
+    </entity>
+    <elements>
+        <element name="EntityFeedArticle" positionX="-54" positionY="99" width="128" height="360"/>
+        <element name="EntityFeedInfo" positionX="-63" positionY="-18" width="128" height="388"/>
+        <element name="EntityFeedStyle" positionX="-63" positionY="135" width="128" height="195"/>
+        <element name="EntityHub" positionX="-54" positionY="135" width="128" height="148"/>
+    </elements>
+</model>

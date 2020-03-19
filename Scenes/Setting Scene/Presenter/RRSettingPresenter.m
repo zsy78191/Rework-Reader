@@ -68,11 +68,11 @@
         NSURL* url = [[NSBundle mainBundle] URLForResource:self.settingFileName withExtension:@"json"];
         NSString* json = [[NSString alloc] initWithContentsOfURL:url encoding:NSUTF8StringEncoding error:&error];
         if (error) {
-            NSLog(@"%@",error);
+            //NSLog(@"%@",error);
         }
         _item = [RRModelItem fromJSON:json encoding:NSUTF8StringEncoding error:&error2];
         if (error2) {
-            NSLog(@"%@",error2);
+            //NSLog(@"%@",error2);
         }
     }
     return _item;
@@ -80,7 +80,7 @@
 
 - (void)mvp_initFromModel:(MVPInitModel *)model
 {
-    NSLog(@"paied %@",@([self isPaied]));
+    //NSLog(@"paied %@",@([self isPaied]));
     
     
     NSString* setting = [model.queryProperties valueForKey:@"setting"];
@@ -90,14 +90,14 @@
     else {
         self.settingFileName = @"ModelTypeSetting";
         [[ApplePurchaseDelegate sharedOne].products enumerateObjectsUsingBlock:^(SKProduct * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
-            NSLog(@"%@",obj);
+            //NSLog(@"%@",obj);
 //            NSString* title = obj.localizedTitle?obj.localizedTitle:NSLocalizedString(@"赞助开发者", nil);
 //            NSString* cost = [NSNumberFormatter localizedStringFromNumber:obj.price numberStyle:NSNumberFormatterCurrencyStyle];
             NSNumberFormatter* f = [[NSNumberFormatter alloc] init];
             [f setLocale:obj.priceLocale];
             [f setNumberStyle:NSNumberFormatterCurrencyPluralStyle];
             //        [f setCurrencyCode:obj.priceLocale.currencyCode];
-//            NSLog(@"%@",[f stringFromNumber:obj.price]);
+//            //NSLog(@"%@",[f stringFromNumber:obj.price]);
             
             RRSetting* setting = [[RRSetting alloc] init];
             setting.title = obj.localizedTitle;
@@ -205,6 +205,7 @@
     NSDictionary* fontDict = @{
                                 @"苹方细体":@"PingFangSC-Light",
                                 @"苹方标准体":@"PingFangSC-Regular",
+                                @"苹方中粗体":@"PingFangSC-Medium",
                                 @"思源宋体细体":@"SourceHanSerifCN-Light",
                                 };
     NSString* font = fontDict[select];
@@ -234,7 +235,7 @@
        .recommend(@"确定", ^(UIAlertAction * _Nonnull action, UIAlertController * _Nonnull alert) {
            dispatch_async(dispatch_get_main_queue(), ^{
                 UITextField* t = alert.textFields[0];
-                //           NSLog(@"%@",t.text);
+                //           //NSLog(@"%@",t.text);
                if(![[t text] hasPrefix:@"http"]) {
                    [[weakself view] hudInfo:@"请输入http开头的URL地址"];
                } else {
@@ -355,7 +356,7 @@
         [o start];
         
     } itemBlock:^(MWFeedItem * _Nonnull item) {
-        //        //NSLog(@"%@",item);
+        //        ////NSLog(@"%@",item);
         [tv loadData:item];
         
     } errorBlock:^(NSError * _Nonnull error) {
@@ -407,7 +408,7 @@
 
 - (void)documentPicker:(UIDocumentPickerViewController *)controller didPickDocumentsAtURLs:(NSArray<NSURL *> *)urls
 {
-    //    NSLog(@"%@",urls);
+    //    //NSLog(@"%@",urls);
     OPMLDocument* d = [[RRFeedLoader sharedLoader] loadOPML:urls.firstObject];
     __weak typeof(self) weakSelf = self;
     [d openWithCompletionHandler:^(BOOL success) {
@@ -464,7 +465,7 @@
     }
     __weak typeof(self) weakSelf = self;
     [self.backuper backupToiCloud:^(BOOL x) {
-//        NSLog(@"%s %@",__func__,@(x));
+//        //NSLog(@"%s %@",__func__,@(x));
         dispatch_async(dispatch_get_main_queue(), ^{
             if (x) {
                 [[weakSelf view] hudSuccess:@"备份成功"];
@@ -590,7 +591,7 @@
 
 - (void)dealloc
 {
-    NSLog(@"%s",__func__);
+    //NSLog(@"%s",__func__);
 }
 
 - (void)paied{

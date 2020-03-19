@@ -15,7 +15,7 @@
 - (NSURL*)iCloudURL
 {
     NSString* s = [NSString stringWithFormat:@"iCloud.%@",[UIApplication sharedApplication].bundleID()];
-//    NSLog(@"%s %@",__func__,s);
+//    //NSLog(@"%s %@",__func__,s);
     NSFileManager *filemgr = [NSFileManager defaultManager];
     return [[filemgr URLForUbiquityContainerIdentifier:s] URLByAppendingPathComponent:@"Documents"];
 }
@@ -30,7 +30,7 @@
                 NSError* e;
                 [[NSFileManager defaultManager] createDirectoryAtURL:u withIntermediateDirectories:YES attributes:nil error:&e];
                 if (e) {
-                    NSLog(@"%s %@",__func__,e);
+                    //NSLog(@"%s %@",__func__,e);
                 }
             }
         }
@@ -43,7 +43,7 @@
     NSURL* icloud_url = [self iCloudURL];
     NSArray* b = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:[icloud_url path] error:nil];
     [b enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
-//        NSLog(@"%@",obj);
+//        //NSLog(@"%@",obj);
     }];
     return b;
 }
@@ -57,7 +57,7 @@
         NSError* e;
         result = result &&  [[NSFileManager defaultManager] startDownloadingUbiquitousItemAtURL:[icloud_url URLByAppendingPathComponent:obj] error:&e];
         if (e) {
-            NSLog(@"%@",e);
+            //NSLog(@"%@",e);
         }
     }];
     return result;
@@ -92,17 +92,17 @@
 //                    [[NSFileManager defaultManager] removeItemAtURL:url1b error:nil];
 //                    [[NSFileManager defaultManager] moveItemAtURL:url1 toURL:url1b error:&del_error];
                     if (del_error) {
-                        NSLog(@"备份失败");
+                        //NSLog(@"备份失败");
                     }
                 }
                 BOOL copy = [[NSFileManager defaultManager] copyItemAtURL:url2 toURL:url1 error:&error];
                 ss = ss && copy;
                 if (!copy) {
                     [[NSFileManager defaultManager] startDownloadingUbiquitousItemAtURL:url2 error:nil];
-//                    NSLog(@"失败2");
+//                    //NSLog(@"失败2");
 //                    [[NSFileManager defaultManager] removeItemAtURL:url1 error:nil];
 //                    BOOL recover = [[NSFileManager defaultManager] moveItemAtURL:url1b toURL:url1 error:nil];
-//                    NSLog(@"恢复 %@",@(recover));
+//                    //NSLog(@"恢复 %@",@(recover));
                 }
                 else
                 {
@@ -150,20 +150,20 @@
                     [[NSFileManager defaultManager] removeItemAtURL:url2 error:&del_error];
 //                    [[NSFileManager defaultManager] moveItemAtURL:url2 toURL:[url2 URLByAppendingPathExtension:@"bak"] error:&del_error];
                     if (del_error) {
-                        NSLog(@"备份失败");
+                        //NSLog(@"备份失败");
                     }
                 }
                 BOOL copy = [[NSFileManager defaultManager] copyItemAtURL:url1 toURL:url2 error:&error];
                 s = s && copy;
                 if (copy) {
-                    NSLog(@"COPY {%@} TO {%@}",url1,url2);
+                    //NSLog(@"COPY {%@} TO {%@}",url1,url2);
                 }
                 else
                 {
                     NSError* del_error;
 //                    [[NSFileManager defaultManager] moveItemAtURL:[url2 URLByAppendingPathExtension:@"bak"] toURL:url2 error:&del_error];
                     if (del_error) {
-                        NSLog(@"恢复失败");
+                        //NSLog(@"恢复失败");
                     }
                 }
             }];
@@ -221,15 +221,15 @@
             NSError*e2;
             [filemgr evictUbiquitousItemAtURL:url error:&e2];
             if (e2) {
-                NSLog(@"%@",e2);
+                //NSLog(@"%@",e2);
             }
             BOOL s =  [filemgr startDownloadingUbiquitousItemAtURL:url error:&error];
             if (error) {
-                NSLog(@"startDownloadingiCloud error %@",error);
+                //NSLog(@"startDownloadingiCloud error %@",error);
             }
             else
             {
-                NSLog(@"startDownloadingiCloud %@",@(s));
+                //NSLog(@"startDownloadingiCloud %@",@(s));
             }
             if (finish) {
                 finish(s);

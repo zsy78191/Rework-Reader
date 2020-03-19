@@ -32,7 +32,7 @@
 - (void)main
 {
     if (!self.getClass) {
-        NSLog(@"%@ need set class",self);
+        //NSLog(@"%@ need set class",self);
         return;
     }
     

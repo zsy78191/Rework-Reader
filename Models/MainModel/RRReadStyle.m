@@ -84,7 +84,7 @@
             NSPredicate* p = [NSPredicate predicateWithFormat:q];
             return p;
         });
-//        NSLog(@"%@ %@",p,self.keyword);
+//        //NSLog(@"%@ %@",p,self.keyword);
         
         NSCompoundPredicate* c = [[NSCompoundPredicate alloc] initWithType:NSAndPredicateType subpredicates:all];
         return c;
@@ -156,7 +156,7 @@
             NSPredicate * pp = [NSPredicate predicateWithFormat:m,d];
             return pp;
         }
-                NSLog(@"%@",m);
+                //NSLog(@"%@",m);
         return [NSPredicate predicateWithFormat:m];
     }
     return [NSPredicate predicateWithFormat:@"feed = %@",self.feed];

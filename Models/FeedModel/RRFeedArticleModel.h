@@ -7,12 +7,14 @@
 //
 
 @import mvc_base;
-@import Fork_MWFeedParser;
-
+//@import Fork_MWFeedParser;
+#import "MWFeedItem.h"
+#import "MWFeedInfo.h"
 NS_ASSUME_NONNULL_BEGIN
 
 @class EntityFeedArticle;
 @class EntityFeedInfo;
+
 
 @interface RRFeedArticleModel : MVPModel <NSCoding>
 

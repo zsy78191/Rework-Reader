@@ -62,11 +62,11 @@
  
     if (isTrait) {
         // 正在分屏
-//        NSLog(@"正在分屏");
+//        //NSLog(@"正在分屏");
         [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"RRSplit"];
     }else {
         
-//        NSLog(@"没有分屏");
+//        //NSLog(@"没有分屏");
         ;
         [[NSUserDefaults standardUserDefaults] setBool:NO forKey:@"RRSplit"];
     }

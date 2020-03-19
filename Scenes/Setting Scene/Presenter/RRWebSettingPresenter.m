@@ -225,7 +225,7 @@
     __block BOOL e = NO;
     [[UIFont familyNames] enumerateObjectsUsingBlock:^(NSString * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
         NSArray* b= [UIFont fontNamesForFamilyName:obj];
-        //NSLog(@"%@",b);
+        ////NSLog(@"%@",b);
         if ([b containsObject:fontName]) {
             e = YES;
             *stop = YES;

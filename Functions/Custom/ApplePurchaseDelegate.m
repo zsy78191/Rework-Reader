@@ -27,50 +27,50 @@
 
 - (void)paymentQueue:(SKPaymentQueue *)queue updatedDownloads:(NSArray<SKDownload *> *)downloads
 {
-    NSLog(@"%s",__func__);
-    NSLog(@"%@",downloads);
+    //NSLog(@"%s",__func__);
+    //NSLog(@"%@",downloads);
 }
 
 - (void)paymentQueue:(SKPaymentQueue *)queue updatedTransactions:(NSArray<SKPaymentTransaction *> *)transactions
 {
-    NSLog(@"%s",__func__);
-//    NSLog(@"%@",transactions);
+    //NSLog(@"%s",__func__);
+//    //NSLog(@"%@",transactions);
     [self anylsisTranstions:transactions];
 }
 
 - (void)paymentQueueRestoreCompletedTransactionsFinished:(SKPaymentQueue *)queue
 {
-    NSLog(@"%s",__func__);
+    //NSLog(@"%s",__func__);
     [self anylsisTranstions:queue.transactions];
 }
 
 - (void)paymentQueue:(SKPaymentQueue *)queue restoreCompletedTransactionsFailedWithError:(NSError *)error
 {
-    NSLog(@"%s",__func__);
+    //NSLog(@"%s",__func__);
 }
 
 - (void)productsRequest:(SKProductsRequest *)request didReceiveResponse:(SKProductsResponse *)response
 {
-    //    NSLog(@"AAPI %@",);
+    //    //NSLog(@"AAPI %@",);
     self.products = [response.products copy];
     
     [response.products enumerateObjectsUsingBlock:^(SKProduct * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
-        NSLog(@"%@",obj.localizedTitle);
-        NSLog(@"%@",obj.localizedDescription);
-        NSLog(@"%@",obj.price);
-        NSLog(@"%@",obj.productIdentifier);
+        //NSLog(@"%@",obj.localizedTitle);
+        //NSLog(@"%@",obj.localizedDescription);
+        //NSLog(@"%@",obj.price);
+        //NSLog(@"%@",obj.productIdentifier);
         NSNumberFormatter* f = [[NSNumberFormatter alloc] init];
         [f setLocale:obj.priceLocale];
         [f setNumberStyle:NSNumberFormatterCurrencyPluralStyle];
         //        [f setCurrencyCode:obj.priceLocale.currencyCode];
-        NSLog(@"%@",[f stringFromNumber:obj.price]);
+        //NSLog(@"%@",[f stringFromNumber:obj.price]);
     }];
 }
 
 - (void)anylsisTranstions:(NSArray<SKPaymentTransaction*>*)transactions
 {
     [transactions enumerateObjectsUsingBlock:^(SKPaymentTransaction * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
-        NSLog(@"%@ %@ %@",obj.payment.productIdentifier,obj.transactionDate,obj.error);
+        //NSLog(@"%@ %@ %@",obj.payment.productIdentifier,obj.transactionDate,obj.error);
         
         if (self.purchasedBlock) {
             self.purchasedBlock(obj);
@@ -79,29 +79,29 @@
             case SKPaymentTransactionStateFailed:
             {
                 [[SKPaymentQueue defaultQueue] finishTransaction:obj];
-                NSLog(@"SKPaymentTransactionStateFailed");
+                //NSLog(@"SKPaymentTransactionStateFailed");
                 break;
             }
             case SKPaymentTransactionStateDeferred:
             {
-                NSLog(@"SKPaymentTransactionStateDeferred");
+                //NSLog(@"SKPaymentTransactionStateDeferred");
                 break;
             }
             case SKPaymentTransactionStateRestored:
             {
                 [[SKPaymentQueue defaultQueue] finishTransaction:obj];
-                NSLog(@"SKPaymentTransactionStateRestored");
+                //NSLog(@"SKPaymentTransactionStateRestored");
                 break;
             }
             case SKPaymentTransactionStatePurchased:
             {
                 [[SKPaymentQueue defaultQueue] finishTransaction:obj];
-                NSLog(@"SKPaymentTransactionStatePurchased");
+                //NSLog(@"SKPaymentTransactionStatePurchased");
                 break;
             }
             case SKPaymentTransactionStatePurchasing:
             {
-                NSLog(@"SKPaymentTransactionStatePurchasing");
+                //NSLog(@"SKPaymentTransactionStatePurchasing");
                 break;
             }
             default:

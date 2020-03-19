@@ -7,7 +7,8 @@
 //
 
 #import "RRFeedLoader.h"
-@import Fork_MWFeedParser;
+//@import Fork_MWFeedParser;
+
 #import "MVPViewLoadProtocol.h"
 #import "RRGetWebIconOperation.h"
 @import mvc_base;
@@ -65,6 +66,7 @@
 {
     if (!_netQuene) {
         _netQuene = [[NSOperationQueue alloc] init];
+        _netQuene.qualityOfService = NSQualityOfServiceBackground;
         [_netQuene setMaxConcurrentOperationCount:30];
     }
     return _netQuene;
@@ -74,7 +76,7 @@
 {
     if (!_highQuene) {
         _highQuene = [[NSOperationQueue alloc] init];
-        [_highQuene setQualityOfService:NSQualityOfServiceUtility];
+        [_highQuene setQualityOfService:NSQualityOfServiceBackground];
         [_netQuene setMaxConcurrentOperationCount:30];
     }
     return _highQuene;
@@ -82,7 +84,7 @@
 
 - (FMFeedParserOperation*)loadOfficalWithInfoBlock:(void (^)(MWFeedInfo * _Nonnull))infoblock itemBlock:(void (^)(MWFeedItem * _Nonnull))itemblock errorBlock:(void (^)(NSError * _Nonnull))errblock finishBlock:(void (^)(void))finishblock
 {
-    return [self loadFeed:@"http://www.orzer.club/atom.xml" infoBlock:infoblock itemBlock:itemblock errorBlock:errblock finishBlock:finishblock needUpdateIcon:YES];
+    return [self loadFeed:@"http://orzer.zhangzichuan.cn/atom.xml" infoBlock:infoblock itemBlock:itemblock errorBlock:errblock finishBlock:finishblock needUpdateIcon:YES];
 }
 
 - (FMFeedParserOperation*)loadFeed:(NSString *)url infoBlock:(void (^)(MWFeedInfo * _Nonnull))infoblock itemBlock:(void (^)(MWFeedItem * _Nonnull))itemblock errorBlock:(void (^)(NSError * _Nonnull))errblock finishBlock:(void (^)(void))finishblock needUpdateIcon:(BOOL)need
@@ -92,7 +94,7 @@
         o.feedURL = [NSURL URLWithString:url];
         o.title = name;
         o.netWorkQuene = quene;
-        o.timeout = 16;
+        o.timeout = 4;
         return o;
     };
     
@@ -129,7 +131,8 @@
         }
     }];
     
-    [self.quene addOperation:o];
+    //NSLog(@"Add Operation %@",url);
+    [self.highQuene addOperation:o];
     return o;
 }
 
@@ -154,13 +157,6 @@
                 itemblock(info,item);
             }
         } errorBlock:^(NSError * _Nonnull error) {
-//            NSLog(@"error %@",obj);
-//            __block id info = nil;
-//            [feeds enumerateObjectsUsingBlock:^(MWFeedInfo*  _Nonnull obj2, NSUInteger idx, BOOL * _Nonnull stop) {
-//                if ([[obj2.url absoluteString] isEqualToString:obj]) {
-//                    info = obj2;
-//                }
-//            }];
             if (errblock) {
                 errblock(obj,error);
             }
@@ -277,6 +273,7 @@
 - (void)refresh:(NSArray*)origin endRefreshBlock:(void (^)(void))endBlock progress:(void(^ _Nullable )(NSUInteger current,NSUInteger all))progressblock finishBlock:(void (^)(NSUInteger all,NSUInteger error, NSUInteger article))finishBlock;
 {
     if (self.loading) {
+        //NSLog(@"End 1");
         if (endBlock) {
            endBlock();
         }
@@ -288,6 +285,7 @@
     self.loading = true;
     NSArray* all = origin;
     if (all.count == 0) {
+         //NSLog(@"End 2");
 //        [sender endRefreshing];
 //        [PWToastView showText:@"没有更新的订阅"];
         if (endBlock) {
@@ -308,16 +306,19 @@
     NSMapTable* dd = [[NSMapTable alloc] initWithKeyOptions:NSPointerFunctionsStrongMemory valueOptions:NSPointerFunctionsStrongMemory capacity:10];
     NSMutableArray* a = [[NSMutableArray alloc] init];
     
+         //NSLog(@"Step 6");
     [[RRFeedLoader sharedLoader] reloadAll:all infoBlock:^(MWFeedInfo * _Nonnull info) {
-                //NSLog(@"更新%@",info.title);
-        dispatch_async(dispatch_get_main_queue(), ^{
-            NSString* key = [NSString stringWithFormat:@"UPDATE_%@",info.url];
-            NSString* failedKey = [NSString stringWithFormat:@"FAILED_%@",info.url];
-            [MVCKeyValue setInt:[[NSDate date] timeIntervalSince1970] forKey:key];
-            [MVCKeyValue setBool:NO forKey:failedKey];
-        });
+                ////NSLog(@"更新%@",info.title);
+         //NSLog(@"Info 1 %@",info.title);
+//        dispatch_async(dispatch_get_main_queue(), ^{
+//            NSString* key = [NSString stringWithFormat:@"UPDATE_%@",info.url];
+//            NSString* failedKey = [NSString stringWithFormat:@"FAILED_%@",info.url];
+//            [MVCKeyValue setInt:[[NSDate date] timeIntervalSince1970] forKey:key];
+//            [MVCKeyValue setBool:NO forKey:failedKey];
+//        });
         
     } itemBlock:^(MWFeedInfo * _Nonnull info, MWFeedItem * _Nonnull item) {
+//        //NSLog(@"item 1");
         RRFeedArticleModel* m = [[RRFeedArticleModel alloc] initWithItem:item];
         EntityFeedInfo* i = [dd objectForKey:info];
         if (!i)
@@ -339,12 +340,12 @@
            [a addObject:m];
         }
         
-        //        //NSLog(@"- %@- %@",info.title, item.title);
+        //        ////NSLog(@"- %@- %@",info.title, item.title);
     } errorBlock:^(NSString * _Nonnull infoURL, NSError * _Nonnull error) {
-        
+             //NSLog(@"Error 1");
         EntityFeedInfo* i = [[RPDataManager sharedManager] getFirst:@"EntityFeedInfo" predicate:nil key:@"url" value:infoURL sort:nil asc:YES];
-        NSLog(@"%@ 更新失败",infoURL);
-        NSLog(@"%@",i.title);
+        //NSLog(@"%@ 更新失败",infoURL);
+        //NSLog(@"%@",i.title);
         @try {
             [RRFeedAction markFeedAsEnable:NO feedUUID:[i uuid]];
         } @catch (NSException *exception) {
@@ -354,13 +355,13 @@
         }
      
 //        NSDictionary* d = @{}
-        //NSLog(@"err %@",error);
+        ////NSLog(@"err %@",error);
         errorCount ++;
         
     } finishBlock:^{
         
         finishCount ++;
-        //NSLog(@"finish %ld %ld",errorCount,finishCount);
+        ////NSLog(@"finish %ld %ld",errorCount,finishCount);
         
         if (progressblock) {
             progressblock(finishCount,feedCount);

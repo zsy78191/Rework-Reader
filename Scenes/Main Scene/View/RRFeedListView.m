@@ -21,6 +21,8 @@
 #import "targetconditionals.h"
 #import "MVPView+iOS13.h"
 #import "UIKeyCommand+iOS13.h"
+#import "AppDelegate.h"
+@import KSCrash;
 
 #if !TARGET_OS_MACCATALYST
 @interface RRFeedListView () <UIViewControllerPreviewingDelegate,UISearchBarDelegate,UIDropInteractionDelegate>
@@ -71,7 +73,7 @@
     [self.view addInteraction:self.dropIntercation];
     
     if (@available(iOS 13.0, *)) {
-//        NSLog(@"--- %@",@(self.preferredUserInterfaceStyle));
+//        //NSLog(@"--- %@",@(self.preferredUserInterfaceStyle));
     } else {
         // Fallback on earlier versions
     }
@@ -84,7 +86,24 @@
 
 - (void)mvp_initFromModel:(MVPInitModel *)model
 {
+    [super mvp_initFromModel:model];
     
+    AppDelegate* d = (AppDelegate*)[UIApplication sharedApplication].delegate;
+    [d.ci1 sendAllReportsWithCompletion:^(NSArray *filteredReports, BOOL completed, NSError *error) {
+        
+    }];
+    [d.ci2 sendAllReportsWithCompletion:^(NSArray *filteredReports, BOOL completed, NSError *error) {
+        
+    }];
+    
+//    NSArray* a = @[];
+//    [a objectAtIndex:10];
+    
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"kBoot"];
+        [[NSUserDefaults standardUserDefaults] synchronize];
+//        [self hudSuccess:@"1"];
+    });
 }
 
 - (void)reloadEmpty
@@ -112,14 +131,14 @@
         if (!weakSelf.afterLoaded) {
             return;
         }
-        NSLog(@"****");
+        //NSLog(@"****");
         if (onLunach) {
             onLunach = NO;
             return;
         }
         MVPTableViewOutput* output = (id)view.outputer;
         dispatch_async(dispatch_get_main_queue(), ^{
-            NSLog(@"+++++");
+            //NSLog(@"+++++");
             double height = [weakSelf statusframe].size.height + view.navigationController.navigationBar.frame.size.height;
             [[output tableview] setContentOffset:CGPointMake(0, [value doubleValue]-height) animated:NO];
         });
@@ -236,6 +255,9 @@
     
     
 //    [o mvp_bindTableRefreshActionName:@"refreshData:"];
+    
+    
+
 }
 
 - (void)mvp_bindData
@@ -427,7 +449,7 @@
 
 - (BOOL)dropInteraction:(UIDropInteraction *)interaction canHandleSession:(id<UIDropSession>)session
 {
-    NSLog(@"%@",session);
+    //NSLog(@"%@",session);
     return YES;
 }
 

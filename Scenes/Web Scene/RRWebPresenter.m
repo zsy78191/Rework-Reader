@@ -12,7 +12,7 @@
 @import ui_base;
 #import "RPDataManager.h"
 #import "RRFeedArticleModel.h"
-@import Fork_MWFeedParser;
+//@import Fork_MWFeedParser;
 #import "RRFeedAction.h"
 #import "RRExtraViewController.h"
 @import Classy;
@@ -43,7 +43,7 @@
 //    self.hasModel = self.model!=nil;
     self.webStyle = [RRWebStyleModel currentStyle];
     
-    //NSLog(@"%ld %ld",self.webStyle.fontSize,self.webStyle.titleFontSize);
+    ////NSLog(@"%ld %ld",self.webStyle.fontSize,self.webStyle.titleFontSize);
 }
 
 - (NSNumber*)hasModel
@@ -70,7 +70,7 @@
         UIPopoverPresentationController* p = v.popoverPresentationController;
         //            [p setSourceRect:r];
         [p setBarButtonItem:sender];
-        //            //NSLog(@"%@",v.popoverPresentationController);
+        //            ////NSLog(@"%@",v.popoverPresentationController);
         v.modalPresentationStyle = UIModalPresentationPopover;
         [[self view] mvp_presentViewController:v animated:YES completion:^{
             
@@ -87,9 +87,9 @@
 - (void)openAction2:(id)sender
 {
     if (self.model) {
-//        NSLog(@"%@",self.model.link);
+//        //NSLog(@"%@",self.model.link);
         #ifdef DEBUG
-//            NSLog(@"%@",self.model);
+//            //NSLog(@"%@",self.model);
             [self outputHTML];
         #else
             [self activeShare:[NSURL URLWithString:self.model.link] sender:sender];
@@ -155,7 +155,7 @@
 
 - (void)shareFile:(NSDictionary*)t
 {
-//    NSLog(@"%@",t[@"sender"]);
+//    //NSLog(@"%@",t[@"sender"]);
     [self activeShare:[NSURL fileURLWithPath:t[@"file"]] sender:t[@"sender"]];
 }
 
@@ -292,7 +292,7 @@
 
 //弹框消失时调用的方法
 -(void)popoverPresentationControllerDidDismissPopover:(UIPopoverPresentationController *)popoverPresentationController{
-    //NSLog(@"弹框已经消失");
+    ////NSLog(@"弹框已经消失");
 }
 #else
 - (BOOL)presentationControllerShouldDismiss:(UIPresentationController *)presentationController
@@ -309,7 +309,7 @@
 
 - (void)dealloc
 {
-    NSLog(@"%s",__func__);
+    //NSLog(@"%s",__func__);
 }
 
 @end

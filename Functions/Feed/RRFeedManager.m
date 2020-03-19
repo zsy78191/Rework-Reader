@@ -138,10 +138,10 @@
         [EntityHub MR_deleteAllMatchingPredicate:[NSPredicate predicateWithFormat:@"1 > 0"] inContext:localContext];
     } completion:^(BOOL contextDidSave, NSError * _Nullable error) {
         if (contextDidSave) {
-            NSLog(@"remove all hubs");
+            //NSLog(@"remove all hubs");
         }
         else {
-            NSLog(@"%@ %@",error,@(contextDidSave));
+            //NSLog(@"%@ %@",error,@(contextDidSave));
         }
     }];
 }
@@ -156,10 +156,10 @@
             complete(contextDidSave);
         }
         if (contextDidSave) {
-            NSLog(@"remove the hub");
+            //NSLog(@"remove the hub");
         }
         else {
-            NSLog(@"%@ %@",error,@(contextDidSave));
+            //NSLog(@"%@ %@",error,@(contextDidSave));
         }
     }];
 }

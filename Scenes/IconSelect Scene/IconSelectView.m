@@ -37,7 +37,7 @@
     self.title = @"请选择图标";
     
     [self.outputer setRegistBlock:^(MVPCollectViewOutput*  _Nonnull output) {
-//        NSLog(@"%@",output.collectionView.backgroundView);
+//        //NSLog(@"%@",output.collectionView.backgroundView);
         [output collectionView].backgroundView = [UIView new];
         [output collectionView].backgroundView.cas_styleClass = @"bgView";
         [[output collectionView] setBackgroundColor:[UIColor whiteColor]];

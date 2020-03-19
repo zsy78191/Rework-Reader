@@ -48,7 +48,7 @@ RSS是否复兴了，我并不清楚，但有趣的是一个有趣的项目诞�
 
 RSSHub是一个轻量、易于扩展的 RSS 生成器, 可以给任何奇奇怪怪的内容生成 RSS 订阅源。作者是就职于B站的大佬**DIYgod**，他们的口号是**万物皆可 RSS**
 
-[这是他们的官网](innerhttps://docs.rsshub.app/)
+[这是他们的官网](https://docs.rsshub.app/)
 
 [这是他们的Github](https://github.com/DIYgod/RSSHub)
 

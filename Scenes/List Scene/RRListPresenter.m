@@ -48,6 +48,7 @@ typedef struct  {
 
 @property (nonatomic, strong) NSString* title;
 @property (nonatomic, strong) NSString* modelTitle;
+@property (nonatomic, strong) NSNumber* segmentOrigin;
 
 @property (nonatomic, strong) RRFeedInfoListModel* infoModel;
 @property (nonatomic, strong) RRFeedInfoListOtherModel* styleModel;
@@ -238,15 +239,20 @@ typedef struct  {
         RRFeedInfoListModel* mm = m;
         self.modelTitle = self.title = mm.title;
         self.infoModel = mm;
+    
         if (mm.thehub) {
+//            mm.thehub.slider = 3;
             self.inputerCoreData.hub = mm.thehub;
-        }
-        else if(mm.feed)
-        {
+            [self.inputerCoreData predicate];
+            [self changeTypeByType:mm.thehub.slider];
+            self.segmentOrigin = @(mm.thehub.slider);
+        } else if (mm.feed) {
+//            mm.feed.slider = 3;
             self.inputerCoreData.feed = mm.feed;
+            [self.inputerCoreData predicate];
+            [self changeTypeByType:mm.feed.slider];
+            self.segmentOrigin = @(mm.feed.slider);
         }
-        
-        [self changeTypeByType:0];
     }
     else if([m isKindOfClass:[RRFeedInfoListOtherModel class]])
     {
@@ -264,7 +270,7 @@ typedef struct  {
     UIAlertController* a = UI_ActionSheet()
     .titled(@"快捷方式")
     .recommend(@"拷贝URLScheme", ^(UIAlertAction * _Nonnull action, UIAlertController * _Nonnull alert) {
-//        NSLog(@"%@",self.styleModel.readStyle.keyword);
+//        //NSLog(@"%@",self.styleModel.readStyle.keyword);
         NSString* scheme = [NSString stringWithFormat:@"readerprime://search?keyword=%@",weakself.styleModel.readStyle.keyword._urlEncodeString];
         [[UIPasteboard generalPasteboard] setString:scheme];
         [weakself.view hudSuccess:@"已复制到剪切板"];
@@ -434,7 +440,7 @@ typedef struct  {
     [[RPDataManager sharedManager] delData:@"EntityFeedArticle" predicate:p key:nil value:nil beforeDel:^BOOL(__kindof NSManagedObject * _Nonnull o) {
         return YES;
     } finish:^(NSUInteger count, NSError * _Nonnull e) {
-        //NSLog(@"delete %ld articles",count);
+        ////NSLog(@"delete %ld articles",count);
         if (!e) {
             [weakSelf delFeedInfoStep2:info];
         }
@@ -497,7 +503,7 @@ typedef struct  {
             __block NSMutableArray* temp = [[NSMutableArray alloc] init];
             [[RRFeedLoader sharedLoader] loadFeed:[self.infoModel.feed.url absoluteString] infoBlock:^(MWFeedInfo * _Nonnull info) {
             } itemBlock:^(MWFeedItem * _Nonnull item) {
-                //NSLog(@"%@",item.title);
+                ////NSLog(@"%@",item.title);
                 // AllReadyTODO:新增文章
                 RRFeedArticleModel* m = [[RRFeedArticleModel alloc] initWithItem:item];
                 [temp addObject:m];
@@ -521,7 +527,7 @@ typedef struct  {
                 __block NSMutableArray* temp = [[NSMutableArray alloc] init];
                 [[RRFeedLoader sharedLoader] loadFeed:[obj.url absoluteString] infoBlock:^(MWFeedInfo * _Nonnull info) {
                 } itemBlock:^(MWFeedItem * _Nonnull item) {
-                    //NSLog(@"%@",item.title);
+                    ////NSLog(@"%@",item.title);
                     // AllReadyTODO:新增文章
                     RRFeedArticleModel* m = [[RRFeedArticleModel alloc] initWithItem:item];
                     [temp addObject:m];
@@ -559,15 +565,15 @@ typedef struct  {
     }
     all =
     all.filter(^BOOL(RRFeedInfoListModel*  _Nonnull x) {
-        NSString* key = [NSString stringWithFormat:@"UPDATE_%@",x.url];
-        NSInteger lastU = [MVCKeyValue getIntforKey:key];
-        if (lastU != 0) {
-            NSDate* d = [NSDate dateWithTimeIntervalSince1970:lastU];
-            //NSLog(@"last %@ %@",d,@([d timeIntervalSinceDate:[NSDate date]]));
-            if ([d timeIntervalSinceDate:[NSDate date]] > - 10) {
-                return NO;
-            }
-        }
+//        NSString* key = [NSString stringWithFormat:@"UPDATE_%@",x.url];
+//        NSInteger lastU = [MVCKeyValue getIntforKey:key];
+//        if (lastU != 0) {
+//            NSDate* d = [NSDate dateWithTimeIntervalSince1970:lastU];
+//            ////NSLog(@"last %@ %@",d,@([d timeIntervalSinceDate:[NSDate date]]));
+//            if ([d timeIntervalSinceDate:[NSDate date]] > - 10) {
+//                return NO;
+//            }
+//        }
         
         if (x.usettl) {
             NSUInteger ttl = [x.ttl integerValue];
@@ -627,7 +633,7 @@ typedef struct  {
         UIViewController* v = (id)self.view;
         BOOL isTrait = [[NSUserDefaults standardUserDefaults] boolForKey:@"RRSplit"];
         
-//        NSLog(@"%@",v.splitViewController.viewControllers);
+//        //NSLog(@"%@",v.splitViewController.viewControllers);
         if (v.splitViewController && !isTrait) {
             
             RRExtraViewController* n = [[RRExtraViewController alloc] initWithRootViewController:vc];
@@ -687,7 +693,7 @@ typedef struct  {
             }
             
             SFSafariViewControllerConfiguration* c = [[SFSafariViewControllerConfiguration alloc] init];
-            c.entersReaderIfAvailable = YES;
+            c.entersReaderIfAvailable = i.usereadmode;
             RRSafariViewController* s = [[RRSafariViewController alloc] initWithURL:u configuration:c];
 //            [self.view mvp_presentViewController:s animated:YES completion:^{
 //            }];
@@ -754,7 +760,7 @@ typedef struct  {
 //    NSArray* all = [self.hashTable allObjects];
     NSArray* all = self.hashTable;
     NSUInteger x = [all indexOfObject:current];
-    //    //NSLog(@"%@ %ld" ,current,x);
+    //    ////NSLog(@"%@ %ld" ,current,x);
     if (x == 0 || x == NSNotFound) {
         return nil;
     }
@@ -772,7 +778,7 @@ typedef struct  {
 //    NSArray* all = [self.hashTable allObjects];
     NSArray* all = self.hashTable;
     NSInteger x = [all indexOfObject:current];
-    //    //NSLog(@"%@ %ld" ,current,x);
+    //    ////NSLog(@"%@ %ld" ,current,x);
     if (x == all.count - 1 || x == NSNotFound) {
         return nil;
     }
@@ -974,6 +980,7 @@ typedef struct  {
     BOOL usetll = feed.usettl;
     BOOL useauto = feed.useautoupdate;
     BOOL usesafari = feed.usesafari;
+    BOOL usereadmode = feed.usereadmode;
     
     __weak typeof(self) weakSelf = self;
     UIAlertController* a = UI_ActionSheet()
@@ -1018,6 +1025,10 @@ typedef struct  {
     })
     .action(usesafari?@"关闭直接阅读原文":@"开启直接阅读原文", ^(UIAlertAction * _Nonnull action, UIAlertController * _Nonnull alert) {
         [weakSelf changeFeedValue:@(!usesafari) forKey:@"usesafari" feed:feed void:^(NSError *e) {
+        }];
+    })
+    .action(usereadmode?@"关闭自动进入阅读模式":@"开启自动进入阅读模式", ^(UIAlertAction * _Nonnull action, UIAlertController * _Nonnull alert) {
+        [weakSelf changeFeedValue:@(!usereadmode) forKey:@"usereadmode" feed:feed void:^(NSError *e) {
         }];
     })
     .action(@"删除订阅源", ^(UIAlertAction * _Nonnull action, UIAlertController * _Nonnull alert) {
@@ -1080,7 +1091,7 @@ typedef struct  {
 }
 
 - (void)loadMore {
-    NSLog(@"load more");
+    //NSLog(@"load more");
     [self addPage];
     [self.inputerCoreData rebuildFetch];
     [self reloadHashDataWithouClean];
@@ -1118,9 +1129,25 @@ typedef struct  {
 
 - (void)changeType:(UISegmentedControl*)sender
 {
-//    NSLog(@"%@",sender);
+//    //NSLog(@"%@",sender);
+    NSInteger i = sender.selectedSegmentIndex;
     self.currentIdx = sender.selectedSegmentIndex;
     [self changeTypeByType:self.currentIdx];
+    if(self.inputerCoreData.hub) {
+        NSPredicate* p = [NSPredicate predicateWithFormat:@"uuid = %@",[self.inputerCoreData.hub valueForKey:@"uuid"]];
+        [[RPDataManager sharedManager] updateDatas:@"EntityHub" predicate:p modify:^(EntityHub*  _Nonnull obj) {
+            obj.slider = i;
+        } finish:^(NSArray * _Nonnull results, NSError * _Nonnull e) {
+//             //NSLog(@"-- %@",e);
+        }];
+    } else if(self.inputerCoreData.feed) {
+        NSPredicate* p = [NSPredicate predicateWithFormat:@"uuid = %@",[self.inputerCoreData.feed valueForKey:@"uuid"]];
+       [[RPDataManager sharedManager] updateDatas:@"EntityFeedInfo" predicate:p modify:^(EntityFeedInfo*  _Nonnull obj) {
+           obj.slider = i;
+       } finish:^(NSArray * _Nonnull results, NSError * _Nonnull e) {
+//           //NSLog(@"-- %@",e);
+       }];
+    }
 }
 
 - (void)maskAllReaded:(id)sender
@@ -1153,7 +1180,7 @@ typedef struct  {
     [[RPDataManager sharedManager] updateDatas:@"EntityFeedArticle" predicate:p modify:^(EntityFeedArticle*  _Nonnull obj) {
         obj.readed = YES;
     } finish:^(NSArray * _Nonnull results, NSError * _Nonnull e) {
-        NSLog(@"%@",e);
+        //NSLog(@"%@",e);
         if(!e) {
             if([UIDevice currentDevice].iPad()) {
                 
@@ -1178,7 +1205,7 @@ typedef struct  {
 //        EntityFeedArticle* a = [model MR_inContext:localContext];
 //        a.readed = YES;
 //    } completion:^(BOOL contextDidSave, NSError * _Nullable error) {
-////        NSLog(@"save %@")
+////        //NSLog(@"save %@")
 //    }];
 }
 
@@ -1207,7 +1234,7 @@ typedef struct  {
     __weak typeof(self) weakself = self;
      UIViewController* v = (UIViewController* )self.view;
     id changeCallback = ^ (NSString* name ){
-//        NSLog(@"%@",name);
+//        //NSLog(@"%@",name);
         [weakself changeFeedValue:name forKey:@"icon" feed:feed void:^(NSError *e) {
             if (!e) {
                 [[weakself view] mvp_reloadData];

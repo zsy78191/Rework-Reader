@@ -100,9 +100,9 @@
         //切换icon
         [app setAlternateIconName:name completionHandler:^(NSError * _Nullable error) {
             if (error) {
-                NSLog(@"error==> %@",error.localizedDescription);
+                //NSLog(@"error==> %@",error.localizedDescription);
             }else{
-                NSLog(@"done!!!");
+                //NSLog(@"done!!!");
             }
         }];
     }

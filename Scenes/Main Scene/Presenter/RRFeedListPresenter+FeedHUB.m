@@ -94,7 +94,7 @@
         alert.show((id)self.view);
     }
     
-//    NSLog(@"%@",a);
+//    //NSLog(@"%@",a);
  
 }
 

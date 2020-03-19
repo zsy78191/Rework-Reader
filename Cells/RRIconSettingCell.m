@@ -38,7 +38,7 @@
 //    [self.textLabel cas_setNeedsUpdateStyling];
     self.detailTextLabel.text = model.subtitle;
     
-    //NSLog(@"%@",self.textLabel.cas_styleClass);
+    ////NSLog(@"%@",self.textLabel.cas_styleClass);
 }
 
 - (void)prepareForReuse

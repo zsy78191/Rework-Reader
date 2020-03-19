@@ -21,19 +21,19 @@
     NSError* e;
     NSArray* all = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:[u path] error:&e];
     if (e) {
-        NSLog(@"%@",e);
+        //NSLog(@"%@",e);
     }
     else {
         [all.filter(^BOOL(id  _Nonnull x) {
             return [x hasSuffix:@"cas"];
         }) enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
-//            //NSLog(@"%@",obj);
+//            ////NSLog(@"%@",obj);
             BOOL x = [[NSFileManager defaultManager] removeItemAtURL:[u URLByAppendingPathComponent:obj] error:nil];
             if (x) {
-                NSLog(@"删除成功%@",obj);
+                //NSLog(@"删除成功%@",obj);
             }
             else {
-                NSLog(@"删除失败%@",obj);
+                //NSLog(@"删除失败%@",obj);
             }
         }];
     }
@@ -49,10 +49,10 @@
             NSError* e;
             [[NSFileManager defaultManager] copyItemAtURL:[NSURL fileURLWithPath:obj] toURL:u error:&e];
             if (e) {
-                NSLog(@"%@",e);
+                //NSLog(@"%@",e);
             }
             else {
-                NSLog(@"拷贝Cas文件成功");
+                //NSLog(@"拷贝Cas文件成功");
             }
         }
     }];
@@ -93,7 +93,7 @@
         [styleVariables setValue:[RPFontLoader fontSizeWithTextStyle:UIFontTextStyleSubheadline] forKey:@"$sub-font-size"];
     }
     
-    NSLog(@"%@",styleVariables);
+    //NSLog(@"%@",styleVariables);
     
     [[CASStyler defaultStyler] setVariables:styleVariables];
 
@@ -112,7 +112,7 @@
     [CASStyler defaultStyler].filePath = u.path;
 //    [CASStyler defaultStyler].watchFilePath = u.path;
     
-//    NSLog(@"%@",[CASStyler defaultStyler].targetWindows);
+//    //NSLog(@"%@",[CASStyler defaultStyler].targetWindows);
 #endif
 }
 

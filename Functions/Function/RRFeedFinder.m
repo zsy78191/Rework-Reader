@@ -40,12 +40,12 @@
     NSArray* all = [content componentsMatchedByRegex:@"<link.*?>"];
     all = all.filter(^BOOL(NSString*  _Nonnull x) {
         BOOL ok = [x componentsMatchedByRegex:@"type=\"application/atom\\+xml\""].count > 0 || [x componentsMatchedByRegex:@"type=\"application/xml\""].count > 0 || [x componentsMatchedByRegex:@"type=\"application/rss\\+xml\""].count > 0;
-        //                   NSLog(@"%@",@(ok));
+        //                   //NSLog(@"%@",@(ok));
         return ok;
     }).map(^id _Nonnull(NSString*   _Nonnull x) {
         return [x componentsMatchedByRegex:@"(?<=href=\").*?(?=\")"].firstObject;
     });
-    //               NSLog(@"%@",all);
+    //               //NSLog(@"%@",all);
     
     if (all.count>0) {
         
@@ -79,7 +79,7 @@
 
 + (void)findItemFinal:(NSString *)url result:(void(^)(BOOL,NSString*))result
 {
-    //    NSLog(@"find %@",url);
+    //    //NSLog(@"find %@",url);
     NSURLSession* s = [NSURLSession sessionWithConfiguration:[NSURLSessionConfiguration defaultSessionConfiguration]];
     NSURLSessionTask* t = [s dataTaskWithURL:[NSURL URLWithString:url] completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
         
@@ -110,13 +110,13 @@
 
 + (void)findItemOther:(NSString *)url result:(void(^)(BOOL,NSString*))result
 {
-    //    NSLog(@"find %@",url);
+    //    //NSLog(@"find %@",url);
     NSURLSession* s = [NSURLSession sessionWithConfiguration:[NSURLSessionConfiguration defaultSessionConfiguration]];
     NSURLSessionTask* t = [s dataTaskWithURL:[NSURL URLWithString:url] completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
         
         if ([response.MIMEType rangeOfString:@"xml"].location != NSNotFound || [response.MIMEType rangeOfString:@"rss"].location != NSNotFound || [response.MIMEType rangeOfString:@"atom"].location != NSNotFound) {
             
-            //            NSLog(@"%@",[[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding]);
+            //            //NSLog(@"%@",[[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding]);
             
             if (result) {
                 result(NO,url);

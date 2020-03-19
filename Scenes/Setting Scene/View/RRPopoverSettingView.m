@@ -38,7 +38,7 @@
     [self.presenter mvp_bindBlock:^(RRPopoverSettingView* view, id value) {
         view.title = value;
     } keypath:@"title"];
-//    //NSLog(@"%@",self.view);
+//    ////NSLog(@"%@",self.view);
 }
 
 - (void)viewWillAppear:(BOOL)animated

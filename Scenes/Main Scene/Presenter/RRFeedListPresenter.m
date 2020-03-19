@@ -160,7 +160,7 @@ NSString* const kShowRecent = @"kShowRecent";
     
     self.offsetY = [MVCKeyValue getFloatforKey:kOffsetMainList];
     //    self.offsetY = 100;
-//    NSLog(@"main offset %@",@(self.offsetY));
+//    //NSLog(@"main offset %@",@(self.offsetY));
     self.mode = [[NSUserDefaults standardUserDefaults] integerForKey:@"kRRReadMode"];
     [[(UIViewController*)self.view toolbarItems] firstObject].enabled = YES;
 }
@@ -208,10 +208,10 @@ NSString* const kShowRecent = @"kShowRecent";
         }
     }];
 //
-//    NSLog(@"-- %@",@(self.recentModel != nil));
-//    NSLog(@"-- %@",@(self.laterModel != nil));
-//    NSLog(@"-- %@",@(self.favModel != nil));
-//    NSLog(@"-- %@",@(self.unreadModel != nil));
+//    //NSLog(@"-- %@",@(self.recentModel != nil));
+//    //NSLog(@"-- %@",@(self.laterModel != nil));
+//    //NSLog(@"-- %@",@(self.favModel != nil));
+//    //NSLog(@"-- %@",@(self.unreadModel != nil));
     
     if (self.recentModel) {
         self.listItemSetting[kShowRecent] = @(self.recentModel.editType == RRCEEditTypeDelete);
@@ -464,6 +464,7 @@ NSString* const kShowRecent = @"kShowRecent";
 
 - (void)openSetting
 {
+//    [(NSArray*)@"" objectAtIndex:1];
     id view = [MVPRouter viewForURL:@"rr://setting" withUserInfo:nil];
     [self.view mvp_pushViewController:view];
 }
@@ -477,7 +478,7 @@ NSString* const kShowRecent = @"kShowRecent";
 - (void)addHub
 {
 //    NSArray* d = [[RPDataManager sharedManager] getAll:@"EntityFeedInfo"  predicate:nil key:nil value:nil sort:nil asc:YES];
-    //NSLog(@"%@",d);
+    ////NSLog(@"%@",d);
 }
 
 - (void)openSearch:(NSString*)searchText
@@ -535,21 +536,21 @@ NSString* const kShowRecent = @"kShowRecent";
     }).flatten(1);
     
 //    [all enumerateObjectsUsingBlock:^(RRFeedInfoListModel*  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
-//        NSLog(@"%@",obj.title);
+//        //NSLog(@"%@",obj.title);
 //    }];
 //
     // RRTODO:这部分也需要拆分，目前已经有三个地方用到了
     all =
     all.filter(^BOOL(RRFeedInfoListModel*  _Nonnull x) {
-        NSString* key = [NSString stringWithFormat:@"UPDATE_%@",x.url];
-        NSInteger lastU = [MVCKeyValue getIntforKey:key];
-        if (lastU != 0) {
-            NSDate* d = [NSDate dateWithTimeIntervalSince1970:lastU];
-            //NSLog(@"last %@ %@",d,@([d timeIntervalSinceDate:[NSDate date]]));
-            if ([d timeIntervalSinceDate:[NSDate date]] > - 60) {
-                return NO;
-            }
-        }
+//        NSString* key = [NSString stringWithFormat:@"UPDATE_%@",x.url];
+//        NSInteger lastU = [MVCKeyValue getIntforKey:key];
+//        if (lastU != 0) {
+//            NSDate* d = [NSDate dateWithTimeIntervalSince1970:lastU];
+//            ////NSLog(@"last %@ %@",d,@([d timeIntervalSinceDate:[NSDate date]]));
+//            if ([d timeIntervalSinceDate:[NSDate date]] > - 60) {
+//                return NO;
+//            }
+//        }
         
         if (x.usettl) {
             NSUInteger ttl = [x.ttl integerValue];
@@ -611,7 +612,7 @@ NSString* const kShowRecent = @"kShowRecent";
         NSInteger lastU = [MVCKeyValue getIntforKey:key];
         if (lastU != 0) {
             NSDate* d = [NSDate dateWithTimeIntervalSince1970:lastU];
-            //NSLog(@"last %@ %@",d,@([d timeIntervalSinceDate:[NSDate date]]));
+            ////NSLog(@"last %@ %@",d,@([d timeIntervalSinceDate:[NSDate date]]));
             if ([d timeIntervalSinceDate:[NSDate date]] > - 60 * 10) {
                 return NO;
             }
@@ -645,11 +646,11 @@ NSString* const kShowRecent = @"kShowRecent";
     NSMutableArray* a = [[NSMutableArray alloc] init];
     
     [[RRFeedLoader sharedLoader] reloadAll:all infoBlock:^(MWFeedInfo * _Nonnull info) {
-//        //NSLog(@"更新%@",info.title);
+//        ////NSLog(@"更新%@",info.title);
         
         dispatch_async(dispatch_get_main_queue(), ^{
-            NSString* key = [NSString stringWithFormat:@"UPDATE_%@",info.url];
-            [MVCKeyValue setInt:[[NSDate date] timeIntervalSince1970] forKey:key];
+//            NSString* key = [NSString stringWithFormat:@"UPDATE_%@",info.url];
+//            [MVCKeyValue setInt:[[NSDate date] timeIntervalSince1970] forKey:key];
         });
         
     } itemBlock:^(MWFeedInfo * _Nonnull info, MWFeedItem * _Nonnull item) {
@@ -663,7 +664,7 @@ NSString* const kShowRecent = @"kShowRecent";
         m.feedEntity = i;
         [a addObject:m];
  
-//        //NSLog(@"- %@- %@",info.title, item.title);
+//        ////NSLog(@"- %@- %@",info.title, item.title);
     } errorBlock:^(NSString * _Nonnull infoURL, NSError * _Nonnull error) {
  
         errorCount ++;
@@ -671,14 +672,14 @@ NSString* const kShowRecent = @"kShowRecent";
     } finishBlock:^{
         
         finishCount ++;
-        //NSLog(@"finish %ld %ld",errorCount,finishCount);
+        ////NSLog(@"finish %ld %ld",errorCount,finishCount);
         if (finishCount + errorCount == feedCount) {
             dispatch_async(dispatch_get_main_queue(), ^{
                 [sender endRefreshing];
             });
             
             [RRFeedAction insertArticle:a finish:^(NSUInteger x) {
-                //NSLog(@"添加 %ld 篇文章",x);
+                ////NSLog(@"添加 %ld 篇文章",x);
                 dispatch_async(dispatch_get_main_queue(), ^{
                     if (x == 0) {
                         [PWToastView showText:@"没有更新的订阅"];
@@ -789,7 +790,7 @@ NSString* const kShowRecent = @"kShowRecent";
 
 //弹框消失时调用的方法
 -(void)popoverPresentationControllerDidDismissPopover:(UIPopoverPresentationController *)popoverPresentationController{
-    //NSLog(@"弹框已经消失");
+    ////NSLog(@"弹框已经消失");
 }
 #else
 - (BOOL)presentationControllerShouldDismiss:(UIPresentationController *)presentationController
@@ -811,7 +812,7 @@ NSString* const kShowRecent = @"kShowRecent";
         [[RPDataManager sharedManager] updateDatas:@"EntityFeedArticle" predicate:p modify:^(EntityFeedArticle*  _Nonnull obj) {
             obj.readed = YES;
         } finish:^(NSArray * _Nonnull results, NSError * _Nonnull e) {
-            NSLog(@"%@",e);
+            //NSLog(@"%@",e);
             if (!e) {
                 dispatch_async(dispatch_get_main_queue(), ^{
                     [weakSelf.view hudSuccess:@"全部标记成功"];
@@ -837,12 +838,12 @@ NSString* const kShowRecent = @"kShowRecent";
     else {
         [self.selectArray enumerateObjectsUsingBlock:^(NSIndexPath*  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
             EntityFeedInfo* i = [self.complexInput mvp_modelAtIndexPath:obj];
-//            NSLog(@"%@",i);
+//            //NSLog(@"%@",i);
             NSPredicate* p = [NSPredicate predicateWithFormat:@"feed.uuid = %@",i.uuid];
             [[RPDataManager sharedManager] updateDatas:@"EntityFeedArticle" predicate:p modify:^(EntityFeedArticle*  _Nonnull obj) {
                 obj.readed = YES;
             } finish:^(NSArray * _Nonnull results, NSError * _Nonnull e) {
-                NSLog(@"%@",e);
+                //NSLog(@"%@",e);
                 if (!e) {
                     dispatch_async(dispatch_get_main_queue(), ^{
                         [weakSelf.view hudSuccess:@"标记成功"];
@@ -879,7 +880,7 @@ NSString* const kShowRecent = @"kShowRecent";
 
 - (void)makeItDelete:(id)sender
 {
-//    NSLog(@"%@",sender);
+//    //NSLog(@"%@",sender);
     __weak typeof(self) weakSelf = self;
     RRFeedInfoListModel* m = (id)[self.complexInput mvp_modelAtIndexPath:sender];
     if (m.feed) {
@@ -933,7 +934,7 @@ NSString* const kShowRecent = @"kShowRecent";
 
 - (void)makeItRead:(id)sender
 {
-//    NSLog(@"%@",sender);
+//    //NSLog(@"%@",sender);
     __weak typeof(self) weakSelf = self;
     RRFeedInfoListModel* m = (id)[self.complexInput mvp_modelAtIndexPath:sender];
     NSPredicate* p;

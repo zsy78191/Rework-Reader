@@ -18,7 +18,7 @@
 
 - (NSString *)mvp_identifierForModel:(id<MVPModelProtocol>)model
 {
-//    NSLog(@"%@",model);
+//    //NSLog(@"%@",model);
     RRFeedInfoListModel* m = (RRFeedInfoListModel*)model;
     if (m.thehub) {
         return @"styleCell";

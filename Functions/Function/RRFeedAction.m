@@ -16,7 +16,9 @@
 @import oc_string;
 @import SDWebImage;
 @import RegexKitLite;
-@import Fork_MWFeedParser;
+//@import Fork_MWFeedParser;
+#import "MWFeedInfo.h"
+#import "MWFeedItem.h"
 @import MagicalRecord;
 @import WebKit;
 
@@ -107,7 +109,7 @@
     NSPredicate* p4 = [NSPredicate predicateWithFormat:@"feed.uuid = %@",info.uuid];
     
     NSCompoundPredicate* c2 = [NSCompoundPredicate andPredicateWithSubpredicates:@[c1,p4]];
-//    NSLog(@"%@",c2);
+//    //NSLog(@"%@",c2);
     
     NSNumber* c = [[RPDataManager sharedManager] getCount:@"EntityFeedArticle" predicate:c2 key:nil value:nil sort:nil asc:YES];
     return [c integerValue];
@@ -133,7 +135,7 @@
     WKWebsiteDataStore* store = [WKWebsiteDataStore defaultDataStore];
     [store.httpCookieStore getAllCookies:^(NSArray<NSHTTPCookie *> *  _Nonnull a) {
         [a enumerateObjectsUsingBlock:^(NSHTTPCookie * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
-            NSLog(@"%@",obj);
+            //NSLog(@"%@",obj);
         }];
     }];
 }
@@ -153,7 +155,7 @@
         if (!url) {
             url = [obj componentsMatchedByRegex:@"(?<=data-original=\").*?(?=\")"].firstObject;
         }
-//        //NSLog(@"11 %@",url);
+//        ////NSLog(@"11 %@",url);
         if ([url hasPrefix:@"//"]) {
             url = [@"http:" stringByAppendingString:url];
         }
@@ -185,23 +187,23 @@
             NSUInteger i = [RRFeedAction exist:obj feed:info];
             if (i == 0) {
                 c++;
-//                NSLog(@"添加 %@",[obj title]);
+//                //NSLog(@"添加 %@",[obj title]);
                 [RRFeedAction _insert:obj keys:ps feed:info context:localContext];
             }
             else {
-//                NSLog(@"%@ | %@ | %@  有 %@",[obj title],[obj link],[obj identifier],@(i));
+//                //NSLog(@"%@ | %@ | %@  有 %@",[obj title],[obj link],[obj identifier],@(i));
             }
         }];
         if (finish) {
 //            NSError*e;
 //            [rc save:&e];
 //            if (e) {
-//                NSLog(@"%@",e);
+//                //NSLog(@"%@",e);
 //            }
             finish(c);
         }
     }];
-    //NSLog(@"一共增加%ld篇文章",c);
+    ////NSLog(@"一共增加%ld篇文章",c);
 }
 
 + (void)insertFeedInfo:(MWFeedInfo*)info finish:(void (^)(void))finish
@@ -230,7 +232,7 @@
         }
         NSDate* ddate = [d valueForKey:@"lastBuildDate"];
         if (ddate) {
-//            NSLog(@"%@",@([ddate timeIntervalSinceNow]));
+//            //NSLog(@"%@",@([ddate timeIntervalSinceNow]));
             if ([ddate timeIntervalSinceNow] > -3600*24*3) {
                 [d setObject:@(YES) forKey:@"useautoupdate"];
             }
@@ -260,7 +262,7 @@
 
 + (void)insertArticle:(NSArray*)article finish:(void (^)(NSUInteger))finish
 {
-//    NSLog(@"Before %@",@(article.count));
+//    //NSLog(@"Before %@",@(article.count));
     NSArray* copy = [article copy];
     @try {
         article = [[self class] removeSame:article];
@@ -269,7 +271,7 @@
     } @finally {
         
     }
-//    NSLog(@"After %@",@(article.count));
+//    //NSLog(@"After %@",@(article.count));
     [MagicalRecord saveWithBlockAndWait:^(NSManagedObjectContext * _Nonnull localContext) {
         __block NSUInteger c = 0;
         [article enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
@@ -286,7 +288,7 @@
             finish(c);
         }
     }];
-    //NSLog(@"一共增加%ld篇文章",c);
+    ////NSLog(@"一共增加%ld篇文章",c);
 }
 
 //插入数据库前先做一次排重
@@ -294,11 +296,11 @@
 {
     NSMutableDictionary* d = [NSMutableDictionary dictionaryWithCapacity:10];
     article = [article filteredArrayUsingPredicate:[NSPredicate predicateWithBlock:^BOOL(EntityFeedArticle*  _Nullable evaluatedObject, NSDictionary<NSString *,id> * _Nullable bindings) {
-//        NSLog(@"%@",evaluatedObject);
-//        NSLog(@"%@",bindings);
+//        //NSLog(@"%@",evaluatedObject);
+//        //NSLog(@"%@",bindings);
         NSString* title = evaluatedObject.title?evaluatedObject.title:@"";
         if (!evaluatedObject.link) {
-            NSLog(@"No link %@ %@",evaluatedObject.title,evaluatedObject.feed);
+            //NSLog(@"No link %@ %@",evaluatedObject.title,evaluatedObject.feed);
         }
         NSString* key = [title stringByAppendingString:evaluatedObject.link?evaluatedObject.link:@""]._md5String;
         if (!key) {
@@ -328,9 +330,9 @@
         return value;
     } finish:^(__kindof NSManagedObject * _Nonnull obj, NSError * _Nonnull e) {
         if (e) {
-            //NSLog(@"%s %@",__func__,e);
+            ////NSLog(@"%s %@",__func__,e);
         }
-        //NSLog(@"%@",obj);
+        ////NSLog(@"%@",obj);
     }];
 }
 
@@ -394,7 +396,7 @@
     [[RPDataManager sharedManager] delData:@"EntityFeedArticle" predicate:p key:nil value:nil beforeDel:^BOOL(__kindof NSManagedObject * _Nonnull o) {
         return YES;
     } finish:^(NSUInteger count, NSError * _Nonnull e) {
-        //NSLog(@"delete %ld articles",count);
+        ////NSLog(@"delete %ld articles",count);
         if (!e) {
             [RRFeedAction delFeedInfoStep2:info view:view finish:finishBlock];
         }

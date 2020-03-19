@@ -37,7 +37,7 @@
     RRFeedHub* hub = [RRFeedManager hubWithName:@"IT"];
     
     hub.save(^(BOOL s) {
-        NSLog(@"save 1 %@",@(s));
+        //NSLog(@"save 1 %@",@(s));
     });
     NSUInteger c = [RRFeedManager allHubs].count;
     NSAssert(c == 1, @"一个");
@@ -48,7 +48,7 @@
     .named(@"Sport")
     .icond(@"123")
     .save(^(BOOL s) {
-        NSLog(@"save 2 %@",@(s));
+        //NSLog(@"save 2 %@",@(s));
     });
     
     EntityFeedInfo* i1 = [EntityFeedInfo MR_findFirst];
@@ -59,13 +59,13 @@
     NSArray* all = [EntityFeedInfo MR_findAll];
     
     hub2.insertFeeds(all).save(^(BOOL s) {
-         NSLog(@"save 3 %@",@(s));
+         //NSLog(@"save 3 %@",@(s));
     });
     
-    NSLog(@"all %@",@(hub2.feeds.count));
+    //NSLog(@"all %@",@(hub2.feeds.count));
     
-    NSLog(@"%@",hub2.name);
-    NSLog(@"%@",hub2.icon);
+    //NSLog(@"%@",hub2.name);
+    //NSLog(@"%@",hub2.icon);
 }
 
 - (void)atestPerformanceExample {
