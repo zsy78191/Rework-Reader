@@ -84,7 +84,7 @@
 
 - (FMFeedParserOperation*)loadOfficalWithInfoBlock:(void (^)(MWFeedInfo * _Nonnull))infoblock itemBlock:(void (^)(MWFeedItem * _Nonnull))itemblock errorBlock:(void (^)(NSError * _Nonnull))errblock finishBlock:(void (^)(void))finishblock
 {
-    return [self loadFeed:@"http://www.orzer.club/atom.xml" infoBlock:infoblock itemBlock:itemblock errorBlock:errblock finishBlock:finishblock needUpdateIcon:YES];
+    return [self loadFeed:@"http://orzer.zhangzichuan.cn/atom.xml" infoBlock:infoblock itemBlock:itemblock errorBlock:errblock finishBlock:finishblock needUpdateIcon:YES];
 }
 
 - (FMFeedParserOperation*)loadFeed:(NSString *)url infoBlock:(void (^)(MWFeedInfo * _Nonnull))infoblock itemBlock:(void (^)(MWFeedItem * _Nonnull))itemblock errorBlock:(void (^)(NSError * _Nonnull))errblock finishBlock:(void (^)(void))finishblock needUpdateIcon:(BOOL)need

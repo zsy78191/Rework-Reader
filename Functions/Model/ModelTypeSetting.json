@@ -1,6 +1,46 @@
 {
     "setting": [
         {
+                 "title": "软件设置",
+                 "value": null,
+                 "action": null,
+                 "switchkey": null,
+                 "select": null,
+                 "type": 2
+             },
+             {
+                 "title": "界面设置",
+                 "value": "UISetting",
+                 "action": "openUISetting:",
+                 "switchkey": null,
+                 "select": null,
+                 "type": 4
+             },
+             {
+               "title": "功能设置",
+               "value": "FuncSetting",
+               "action": "openUISetting:",
+               "switchkey": null,
+               "select": null,
+               "type": 4
+           },
+             {
+                  "title": "数据管理",
+                  "value": "DataSetting",
+                  "action": "openUISetting:",
+                  "switchkey": null,
+                  "select": null,
+                  "type": 4
+              },
+             {
+               "title": "更多内容",
+               "value": null,
+               "action": null,
+               "switchkey": null,
+               "select": null,
+               "type": 2
+           },
+        {
             "title": "版本",
             "value": "1.0",
             "action": "openVersion",
@@ -56,109 +96,6 @@
             "select": null,
             "type": 1
         },
-        {
-            "title": "UI设置",
-            "value": null,
-            "action": null,
-            "switchkey": null,
-            "select": null,
-            "type": 2
-        },
-        {
-            "title": "界面设置",
-            "value": "UISetting",
-            "action": "openUISetting:",
-            "switchkey": null,
-            "select": null,
-            "type": 4
-        },
-        {
-            "title": "隐藏工具栏返回按钮",
-            "value": "可从屏幕左侧滑动返回",
-            "action": "changeToolBack:",
-            "switchkey": "kToolBackBtn",
-            "select": "toolBackSetting",
-            "type": 3
-        },
-        {
-            "title": "隐藏文章列表详情",
-            "value": "开启后列表页仅显示标题",
-            "action": "changeArticleDetial:",
-            "switchkey": "kHideArticleDetial",
-            "select": "articleDetialSetting",
-            "type": 3
-        },
-        {
-            "title": "数据管理",
-            "value": null,
-            "action": null,
-            "switchkey": null,
-            "select": null,
-            "type": 2
-        },
-        {
-            "title": "导入OPML文件",
-            "value": null,
-            "action": "openOPML",
-            "switchkey": null,
-            "select": null,
-            "type": 1
-        },
-        {
-            "title": "导出OPML文件",
-            "value": null,
-            "action": "exportOPML:",
-            "switchkey": null,
-            "select": null,
-            "type": 1
-        },
-        {
-            "title": "iCloud手动备份",
-            "value": "iCloud",
-            "action": "openUISetting:",
-            "switchkey": null,
-            "select": null,
-            "type": 4
-        },
-        {
-            "title": "功能设置",
-            "value": null,
-            "action": null,
-            "switchkey": null,
-            "select": null,
-            "type": 2
-        },
-        {
-            "title": "后台更新推送",
-            "value": "开启后，更新订阅会收到系统通知",
-            "action": "changeNoti:",
-            "switchkey": "kBackgroundFetchNoti",
-            "select": "notiSetting",
-            "type": 3
-        },
-        {
-            "title": "后台更新显示角标",
-            "value": "开启后，图标上会显示新订阅个数",
-            "action": "changeNotiBadge:",
-            "switchkey": "kBackgroundFetchNotiBadge",
-            "select": "badgeSetting",
-            "type": 3
-        },
-        {
-            "title": "应用开启默认进入「未读订阅」",
-            "value": "存在未读订阅时生效",
-            "action": "changeEnterUnread:",
-            "switchkey": "kEnterUnread",
-            "select": "enterUnreadSetting",
-            "type": 3
-        },
-        {
-            "title": "iPad版本启动默认页",
-            "value": "",
-            "action": "selectHomePage:",
-            "switchkey": null,
-            "select": ["官方博客","空白页","自定义URL"],
-            "type": 1
-        }
+        
     ]
 }

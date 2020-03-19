@@ -164,6 +164,7 @@
 		D4B538AE224FA111002F8333 /* AppleAPIHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = D4B903852245EAC400341584 /* AppleAPIHelper.m */; };
 		D4B538B4224FB021002F8333 /* icon2.png in Resources */ = {isa = PBXBuildFile; fileRef = D4B538B3224FB021002F8333 /* icon2.png */; };
 		D4B538B8224FB111002F8333 /* icon3.png in Resources */ = {isa = PBXBuildFile; fileRef = D4B538B7224FB110002F8333 /* icon3.png */; };
+		D4B5788D242216C300D9529C /* EntityFeedArticle+Ext.m in Sources */ = {isa = PBXBuildFile; fileRef = D4B5788C242216C300D9529C /* EntityFeedArticle+Ext.m */; };
 		D4B903712245602500341584 /* 1@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = D4B903702245602500341584 /* 1@2x.png */; };
 		D4B90373224567B300341584 /* 2@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = D4B90372224567B200341584 /* 2@2x.png */; };
 		D4B903752245685000341584 /* 3@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = D4B903742245685000341584 /* 3@2x.png */; };
@@ -172,6 +173,8 @@
 		D4B903802245E93C00341584 /* ApplePurchaseDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = D4B9037E2245E93B00341584 /* ApplePurchaseDelegate.m */; };
 		D4B903872245EAC400341584 /* AppleAPIHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = D4B903852245EAC400341584 /* AppleAPIHelper.m */; };
 		D4B903892246885900341584 /* 开源代码.md in Resources */ = {isa = PBXBuildFile; fileRef = D4B903882246885900341584 /* 开源代码.md */; };
+		D4C35EEF242201A300F7B704 /* FuncSetting.json in Resources */ = {isa = PBXBuildFile; fileRef = D4C35EEE242201A200F7B704 /* FuncSetting.json */; };
+		D4C35EF1242202C800F7B704 /* DataSetting.json in Resources */ = {isa = PBXBuildFile; fileRef = D4C35EF0242202C800F7B704 /* DataSetting.json */; };
 		D4CD6624225DF1CD005EA2B9 /* ActionTest.m in Sources */ = {isa = PBXBuildFile; fileRef = D4CD6623225DF1CD005EA2B9 /* ActionTest.m */; };
 		D4E0F8EB2211486100902540 /* RPSettingInputer.m in Sources */ = {isa = PBXBuildFile; fileRef = D4E0F8EA2211486100902540 /* RPSettingInputer.m */; };
 		D4E0F8F9221149F000902540 /* RPFontLoader.m in Sources */ = {isa = PBXBuildFile; fileRef = D4E0F8F8221149F000902540 /* RPFontLoader.m */; };
@@ -481,6 +484,8 @@
 		D4B538A8224FA0F3002F8333 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		D4B538B3224FB021002F8333 /* icon2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = icon2.png; sourceTree = "<group>"; };
 		D4B538B7224FB110002F8333 /* icon3.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = icon3.png; sourceTree = "<group>"; };
+		D4B5788B242216C300D9529C /* EntityFeedArticle+Ext.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "EntityFeedArticle+Ext.h"; sourceTree = "<group>"; };
+		D4B5788C242216C300D9529C /* EntityFeedArticle+Ext.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "EntityFeedArticle+Ext.m"; sourceTree = "<group>"; };
 		D4B903702245602500341584 /* 1@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "1@2x.png"; sourceTree = "<group>"; };
 		D4B90372224567B200341584 /* 2@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "2@2x.png"; sourceTree = "<group>"; };
 		D4B903742245685000341584 /* 3@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "3@2x.png"; sourceTree = "<group>"; };
@@ -493,6 +498,8 @@
 		D4B903852245EAC400341584 /* AppleAPIHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AppleAPIHelper.m; sourceTree = "<group>"; };
 		D4B903862245EAC400341584 /* AppleAPIHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AppleAPIHelper.h; sourceTree = "<group>"; };
 		D4B903882246885900341584 /* 开源代码.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = "开源代码.md"; sourceTree = "<group>"; };
+		D4C35EEE242201A200F7B704 /* FuncSetting.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = FuncSetting.json; sourceTree = "<group>"; };
+		D4C35EF0242202C800F7B704 /* DataSetting.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = DataSetting.json; sourceTree = "<group>"; };
 		D4CD6622225DF1CD005EA2B9 /* ActionTest.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ActionTest.h; sourceTree = "<group>"; };
 		D4CD6623225DF1CD005EA2B9 /* ActionTest.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ActionTest.m; sourceTree = "<group>"; };
 		D4D5EF4922B76E4200D7DE1A /* Model 2.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Model 2.xcdatamodel"; sourceTree = "<group>"; };
@@ -693,6 +700,8 @@
 				D440CFEA22154E60003B7203 /* RRFeedInfoModel.m */,
 				D440CFF122155697003B7203 /* RRFeedArticleModel.h */,
 				D440CFF222155697003B7203 /* RRFeedArticleModel.m */,
+				D4B5788B242216C300D9529C /* EntityFeedArticle+Ext.h */,
+				D4B5788C242216C300D9529C /* EntityFeedArticle+Ext.m */,
 			);
 			path = FeedModel;
 			sourceTree = "<group>";
@@ -1108,8 +1117,10 @@
 		D49941CC21FEA7370041B998 /* Model */ = {
 			isa = PBXGroup;
 			children = (
+				D4C35EEE242201A200F7B704 /* FuncSetting.json */,
 				D43F3716224372580035B28A /* iCloud.json */,
 				D4A72D10223F6E1E00AD6C75 /* UISetting.json */,
+				D4C35EF0242202C800F7B704 /* DataSetting.json */,
 				D440E1C621FF03DC0087B228 /* ModelTypeSetting.json */,
 				D440E1C821FF04030087B228 /* RRModelItem.h */,
 				D440E1C921FF04030087B228 /* RRModelItem.m */,
@@ -1489,6 +1500,7 @@
 				D47717E021ED90D00050DF14 /* Assets.xcassets in Resources */,
 				D4AC4DEC2217CF290028D342 /* RRBtnCell.xib in Resources */,
 				D451E097226245CE00674526 /* Day.json in Resources */,
+				D4C35EEF242201A300F7B704 /* FuncSetting.json in Resources */,
 				D49941BC21FDB6910041B998 /* rrstyle.cas in Resources */,
 				D418CDE422311B2E004F5706 /* RRIconSettingCell.xib in Resources */,
 				D47A3959223421A6006251A6 /* 网友推荐源.md in Resources */,
@@ -1507,6 +1519,7 @@
 				D499418B21FC9AB10041B998 /* style.cas in Resources */,
 				D4EECA8322562FF200491966 /* 6@2x.png in Resources */,
 				D440CFF82216529F003B7203 /* RRTitleCell.xib in Resources */,
+				D4C35EF1242202C800F7B704 /* DataSetting.json in Resources */,
 				D47C8EE42282BF390062B60D /* RRFeedArticleCell3.xib in Resources */,
 				D4B538B8224FB111002F8333 /* icon3.png in Resources */,
 				D4E7491E22A64C940033D53E /* Icons.xcassets in Resources */,
@@ -1615,6 +1628,7 @@
 				D4B9037A22457B0E00341584 /* RRBaseEmpty.m in Sources */,
 				D440CFE722154DE0003B7203 /* RRFeedInfoInputer.m in Sources */,
 				D4416B9C23B068C300F054D2 /* MWFeedInfo.m in Sources */,
+				D4B5788D242216C300D9529C /* EntityFeedArticle+Ext.m in Sources */,
 				D42F55F4221E7F1200321A21 /* RRListPresenter.m in Sources */,
 				D418CDDC2231135A004F5706 /* RRSettingApperance.m in Sources */,
 				D4F8553B2265855E006798C8 /* OttoFPSButton.m in Sources */,
@@ -1918,7 +1932,7 @@
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = "rework-reader/rework-reader.entitlements";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1.2.17;
+				CURRENT_PROJECT_VERSION = 1.2.19;
 				DEFINES_MODULE = YES;
 				DEVELOPMENT_TEAM = ZLQPGKAQFY;
 				GCC_PREFIX_HEADER = PrefixHeader.pch;
@@ -1933,7 +1947,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.2.5;
+				MARKETING_VERSION = 1.2.6;
 				ON_DEMAND_RESOURCES_INITIAL_INSTALL_TAGS = Extrafont;
 				OTHER_LIBTOOLFLAGS = "";
 				PRODUCT_BUNDLE_IDENTIFIER = com.orzer.rework.reader.sp;
@@ -1951,7 +1965,7 @@
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = "rework-reader/rework-reader.entitlements";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1.2.17;
+				CURRENT_PROJECT_VERSION = 1.2.19;
 				DEFINES_MODULE = YES;
 				DEVELOPMENT_TEAM = ZLQPGKAQFY;
 				GCC_PREFIX_HEADER = PrefixHeader.pch;
@@ -1966,7 +1980,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.2.5;
+				MARKETING_VERSION = 1.2.6;
 				ON_DEMAND_RESOURCES_INITIAL_INSTALL_TAGS = Extrafont;
 				OTHER_LIBTOOLFLAGS = "";
 				PRODUCT_BUNDLE_IDENTIFIER = com.orzer.rework.reader.sp;

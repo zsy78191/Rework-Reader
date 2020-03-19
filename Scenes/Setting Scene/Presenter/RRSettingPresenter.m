@@ -205,6 +205,7 @@
     NSDictionary* fontDict = @{
                                 @"苹方细体":@"PingFangSC-Light",
                                 @"苹方标准体":@"PingFangSC-Regular",
+                                @"苹方中粗体":@"PingFangSC-Medium",
                                 @"思源宋体细体":@"SourceHanSerifCN-Light",
                                 };
     NSString* font = fontDict[select];

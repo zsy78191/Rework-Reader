@@ -219,10 +219,11 @@
         BOOL hideDetial = [[NSUserDefaults standardUserDefaults] boolForKey:@"kHideArticleDetial"];
         if (hideDetial) {
             [output registNibCell:@"RRFeedArticleCell3" withIdentifier:@"articleCell"];
+            [output registNibCell:@"RRFeedArticleCell3" withIdentifier:@"articleCell2"];
         }
         else {
-            
             [output registNibCell:@"RRFeedArticleCell2" withIdentifier:@"articleCell"];
+            [output registNibCell:@"RRFeedArticleCell3" withIdentifier:@"articleCell2"];
         }
 #if !TARGET_OS_MACCATALYST
         [weakSelf registerForPreviewingWithDelegate:weakSelf sourceView:output.tableview];

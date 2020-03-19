@@ -1,0 +1,36 @@
+{
+    "setting": [
+        {
+            "title": "数据管理",
+            "value": null,
+            "action": null,
+            "switchkey": null,
+            "select": null,
+            "type": 2
+        },
+            {
+                "title": "导入OPML文件",
+                "value": null,
+                "action": "openOPML",
+                "switchkey": null,
+                "select": null,
+                "type": 1
+            },
+            {
+                "title": "导出OPML文件",
+                "value": null,
+                "action": "exportOPML:",
+                "switchkey": null,
+                "select": null,
+                "type": 1
+            },
+            {
+                "title": "iCloud手动备份",
+                "value": "iCloud",
+                "action": "openUISetting:",
+                "switchkey": null,
+                "select": null,
+                "type": 4
+            }, 
+    ]
+}

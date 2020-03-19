@@ -8,7 +8,8 @@
 
 #import "RRListInputer.h"
 #import "RRCoreDataModel.h"
-
+#import "EntityFeedArticle+CoreDataClass.h"
+#import "EntityFeedArticle+Ext.h"
 
 @import DateTools;
 
@@ -87,6 +88,11 @@
 
 - (NSString *)mvp_identifierForModel:(id<MVPModelProtocol>)model
 {
+    EntityFeedArticle* a = model;
+    NSString* s = [a showContent];
+    if(s.length == 0) {
+        return @"articleCell2";
+    }
     return @"articleCell";
 }
  

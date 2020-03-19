@@ -21,7 +21,7 @@
             "value": "",
             "action": "selectFont:",
             "switchkey": null,
-            "select": ["苹方细体","苹方标准体","思源宋体细体"],
+            "select": ["苹方细体","苹方标准体","苹方中粗体","思源宋体细体"],
             "type": 1
         },
         {

@@ -38,29 +38,32 @@
 
 #pragma mark - lifecircle
 - (BOOL)isBackgroundMode {
-    return [UIApplication sharedApplication].applicationState==UIApplicationStateBackground;
+    return [UIApplication sharedApplication].applicationState == UIApplicationStateBackground;
 }
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
-    
-    [self crashReporterSetup];
-    
-    if([self isBackgroundMode]) {
-//        [self loadCoreData];
-            [self loadParts];
-    } else {
-        [[NSUserDefaults standardUserDefaults] registerDefaults:@{@"kReport":@(YES),@"kBoot":@(YES)}];
-        BOOL boot = [[NSUserDefaults standardUserDefaults] boolForKey:@"kBoot"];
-        if(boot) {
-            [[NSUserDefaults standardUserDefaults] setBool:NO forKey:@"kBoot"];
-            [[NSUserDefaults standardUserDefaults] synchronize];
-            [self loadParts];
-        } else {
-            [self loadReport];
-        }
-    }
-    
+    [self loadParts];
     return YES;
+}
+
+- (void)loadCrashReport {
+        [self crashReporterSetup];
+        
+        if([self isBackgroundMode]) {
+    //        [self loadCoreData];
+                [self loadParts];
+        } else {
+            [[NSUserDefaults standardUserDefaults] registerDefaults:@{@"kReport":@(YES),@"kBoot":@(YES)}];
+            BOOL boot = [[NSUserDefaults standardUserDefaults] boolForKey:@"kBoot"];
+            if(boot) {
+                [[NSUserDefaults standardUserDefaults] setBool:NO forKey:@"kBoot"];
+                [[NSUserDefaults standardUserDefaults] synchronize];
+                [self loadParts];
+            } else {
+                [self loadReport];
+            }
+        }
+        
 }
 
 - (void)loadReport

@@ -9,6 +9,7 @@
 #import "RRFeedArticleCell.h"
 #import "RRFeedArticleModel.h"
 #import "RRFeedLoader.h"
+#import "EntityFeedArticle+Ext.h"
 @import DateTools;
 @import SDWebImage;
 @import oc_string;
@@ -100,11 +101,7 @@
             des = [NSString stringWithFormat:@"%@ · ",[date timeAgoSinceNow]];
         }
         
-        NSString* temp = m.content.length > 30 ? m.content : m.summary;
-        temp = [temp stringByDecodingHTMLEntities];
-        temp = [temp stringByConvertingHTMLToPlainText];
-        temp = [temp stringByTrimmingCharactersInSet: [NSCharacterSet whitespaceAndNewlineCharacterSet]];
-        temp = [temp stringByReplacingOccurrencesOfRegex:@"\\s+" withString:@" "];
+        NSString* temp = [m showContent];
         des = [des stringByAppendingFormat:@"%.1f分钟", (float)temp.length/300];
         self.dateLabel.text = des;
         

@@ -286,7 +286,7 @@
     NSInteger homepagetype = [[NSUserDefaults standardUserDefaults] integerForKey:@"kDefaultHomePage"];
     id v2 = NULL;
     if (homepagetype == 0) {
-        v2 = [MVPRouter viewForURL:@"rr://web" withUserInfo:@{@"name":@"http://www.orzer.club",@"isSub":@(NO)}];
+        v2 = [MVPRouter viewForURL:@"rr://web" withUserInfo:@{@"name":@"http://orzer.zhangzichuan.cn/",@"isSub":@(NO)}];
     } else if(homepagetype == 1) {
         v2 = [[UIViewController alloc] initWithNibName:@"PlaceholderViewController" bundle:[NSBundle mainBundle]];
     } else if(homepagetype == 2) {
@@ -295,7 +295,7 @@
     }
     
     if(!v2) {
-        v2 = [MVPRouter viewForURL:@"rr://web" withUserInfo:@{@"name":@"http://www.orzer.club",@"isSub":@(NO)}];
+        v2 = [MVPRouter viewForURL:@"rr://web" withUserInfo:@{@"name":@"http://orzer.zhangzichuan.cn/",@"isSub":@(NO)}];
     }
     RRExtraViewController* nv2 = [[RRExtraViewController alloc] initWithRootViewController:v2];
     nv2.handleTrait = YES;
