@@ -21,6 +21,7 @@
 #import "MWFeedItem.h"
 @import MagicalRecord;
 @import WebKit;
+#import "EntityFeedArticle+CoreDataProperties.h"
 
 @implementation RRFeedAction
 
@@ -62,35 +63,51 @@
     }];
 }
 
++ (id)valueForModify:(id)key value:(id)value obj:(id)obj feed:(id)info {
+    if ([key isEqualToString:@"date"] || [key isEqualToString:@"updateTime"]) {
+              return [obj valueForKey:key];
+          }
+          
+          if ([key isEqualToString:@"enclosures"]) {
+              if (value) {
+                  NSData* d =  [NSJSONSerialization dataWithJSONObject:value options:kNilOptions error:nil];
+                  return [[NSString alloc] initWithData:d encoding:NSUTF8StringEncoding];
+              }
+              return nil;
+          }
+          else if([key isEqualToString:@"categories"])
+          {
+              if ([value isKindOfClass:[NSArray class]]) {
+                  return [(NSArray*)value componentsJoinedByString:@","];
+              }
+              return nil;
+          }
+          else if([key isEqualToString:@"feed"])
+          {
+              return info;
+          }
+          return value;
+}
+
 + (void)_insert:(id)obj keys:(NSArray*)k feed:(EntityFeedInfo*)info context:(NSManagedObjectContext*)c
 {
     [[RPDataManager sharedManager] insertClass:@"EntityFeedArticle" model:obj keys:k context:c modify:^id _Nonnull(id  _Nonnull key, id  _Nonnull value) {
-        if ([key isEqualToString:@"date"] || [key isEqualToString:@"updateTime"]) {
-            return [obj valueForKey:key];
-        }
-        
-        if ([key isEqualToString:@"enclosures"]) {
-            if (value) {
-                NSData* d =  [NSJSONSerialization dataWithJSONObject:value options:kNilOptions error:nil];
-                return [[NSString alloc] initWithData:d encoding:NSUTF8StringEncoding];
-            }
-            return nil;
-        }
-        else if([key isEqualToString:@"categories"])
-        {
-            if ([value isKindOfClass:[NSArray class]]) {
-                return [(NSArray*)value componentsJoinedByString:@","];
-            }
-            return nil;
-        }
-        else if([key isEqualToString:@"feed"])
-        {
-            return info;
-        }
-        return value;
+        return [RRFeedAction valueForModify:key value:value obj:obj feed:info];
     } finish:^(__kindof NSManagedObject * _Nonnull obj, NSError * _Nonnull e) {
         
     }];
+}
+
+/// 重写文章插入方法，提速
++ (void)_insert_faster:(id)obj keys:(NSArray*)k feed:(EntityFeedInfo*)info context:(NSManagedObjectContext*)c
+{
+    EntityFeedArticle* article = [EntityFeedArticle MR_createEntityInContext:c];
+    [k enumerateObjectsUsingBlock:^(id  _Nonnull key, NSUInteger idx, BOOL * _Nonnull stop) {
+      id value = [obj valueForKey:key];
+      id ov = [RRFeedAction valueForModify:key value:value obj:obj feed:[info MR_inContext:c]];
+      [article setValue:ov forKey:key];
+    }];
+    article.uuid = [NSUUID UUID].UUIDString;
 }
 
 + (NSInteger)exist:(id)obj feed:(EntityFeedInfo*)info;
@@ -125,10 +142,15 @@
 
 + (void)preloadImages:(NSString *)uuid
 {
-    return;
+    
+}
+
++ (void)preloadImages_back:(NSString *)uuid
+{
     EntityFeedArticle* a = [[RPDataManager sharedManager] getFirst:@"EntityFeedArticle" predicate:nil key:@"uuid" value:uuid sort:nil asc:YES];
     [[self class] preloadEntityImages:a];
 }
+
 
 + (void)showCookie
 {
@@ -147,7 +169,11 @@
 
 + (void)preloadEntityImages:(EntityFeedArticle *)article
 {
-    return;
+    
+}
+
++ (void)preloadEntityImages_back:(EntityFeedArticle *)article
+{
     NSString* temp = article.content.length>30?article.content:article.summary;
     NSArray* imgs = [temp componentsMatchedByRegex:@"(?<=<img).*?(?=\\>)"];
     [imgs enumerateObjectsUsingBlock:^(NSString*  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
@@ -167,8 +193,6 @@
     }];
 }
 
-
-
 + (void)insertArticle:(NSArray*)article withFeed:(EntityFeedInfo*)info finish:(void (^)(NSUInteger))finish
 {
     NSArray* copy = [article copy];
@@ -179,29 +203,27 @@
     } @finally {
         
     }
-    [MagicalRecord saveWithBlockAndWait:^(NSManagedObjectContext * _Nonnull localContext) {
-        __block NSUInteger c = 0;
-        [article enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
-            NSMutableArray* ps = [[obj ob_propertys] mutableCopy];
-            [ps removeObject:@"feedEntity"];
-            NSUInteger i = [RRFeedAction exist:obj feed:info];
-            if (i == 0) {
-                c++;
-//                //NSLog(@"添加 %@",[obj title]);
-                [RRFeedAction _insert:obj keys:ps feed:info context:localContext];
-            }
-            else {
-//                //NSLog(@"%@ | %@ | %@  有 %@",[obj title],[obj link],[obj identifier],@(i));
-            }
-        }];
+     __block NSUInteger c = 0;
+    [MagicalRecord saveWithBlock:^(NSManagedObjectContext * _Nonnull localContext) {
+       [article enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+           NSMutableArray* ps = [[obj ob_propertys] mutableCopy];
+           [ps removeObject:@"feedEntity"];
+           NSUInteger i = [RRFeedAction exist:obj feed:info];
+           if (i == 0) {
+               c++;
+               [RRFeedAction _insert_faster:obj keys:ps feed:info context:localContext];
+           }
+           else {
+
+           }
+       }];
+    } completion:^(BOOL contextDidSave, NSError * _Nullable error) {
         if (finish) {
-//            NSError*e;
-//            [rc save:&e];
-//            if (e) {
-//                //NSLog(@"%@",e);
-//            }
             finish(c);
         }
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"RRMainListNeedUpdate" object:nil];
+        });
     }];
     ////NSLog(@"一共增加%ld篇文章",c);
 }
@@ -256,6 +278,9 @@
             if (finish) {
                 finish();
             }
+            dispatch_async(dispatch_get_main_queue(), ^{
+                 [[NSNotificationCenter defaultCenter] postNotificationName:@"RRMainListNeedUpdate" object:nil];
+             });
         }];
     }
 }
@@ -271,22 +296,28 @@
     } @finally {
         
     }
+    __block NSUInteger c = 0;
 //    //NSLog(@"After %@",@(article.count));
-    [MagicalRecord saveWithBlockAndWait:^(NSManagedObjectContext * _Nonnull localContext) {
-        __block NSUInteger c = 0;
+    [MagicalRecord saveWithBlock:^(NSManagedObjectContext * _Nonnull localContext) {
+        
         [article enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
-            NSMutableArray* ps = [[obj ob_propertys] mutableCopy];
-            id info = [obj valueForKey:@"feedEntity"];
-            [ps removeObject:@"feedEntity"];
-            NSUInteger i = [RRFeedAction exist:obj feed:info];
-            if (i == 0) {
-                c++;
-                [RRFeedAction _insert:obj keys:ps feed:info context:localContext];
-            }
+          NSMutableArray* ps = [[obj ob_propertys] mutableCopy];
+          id info = [obj valueForKey:@"feedEntity"];
+          [ps removeObject:@"feedEntity"];
+          NSUInteger i = [RRFeedAction exist:obj feed:info];
+          if (i == 0) {
+              c++;
+              [RRFeedAction _insert_faster:obj keys:ps feed:info context:localContext];
+          }
         }];
+             
+    } completion:^(BOOL contextDidSave, NSError * _Nullable error) {
         if (finish) {
-            finish(c);
-        }
+             finish(c);
+         }
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"RRMainListNeedUpdate" object:nil];
+        });
     }];
     ////NSLog(@"一共增加%ld篇文章",c);
 }

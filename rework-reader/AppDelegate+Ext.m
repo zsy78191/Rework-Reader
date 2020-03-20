@@ -168,13 +168,17 @@
     
     [[RRImageRender sharedRender] preloadFilters];
     
-    NSString* string = [[UIApplication sharedApplication].bundleID() stringByAppendingString:@".donate6"];
-    [AppleAPIHelper testForStore:[ApplePurchaseDelegate sharedOne] products:[NSSet setWithObject:string]];
+    dispatch_async(dispatch_get_main_queue(), ^{
+        NSString* string = [[UIApplication sharedApplication].bundleID() stringByAppendingString:@".donate6"];
+        [AppleAPIHelper testForStore:[ApplePurchaseDelegate sharedOne] products:[NSSet setWithObject:string]];
+    });
     
-    [SDWebImageDownloader sharedDownloader].maxConcurrentDownloads = 20;
+    [SDWebImageDownloader sharedDownloader].maxConcurrentDownloads = 50;
     [SDWebImageDownloader sharedDownloader].downloadTimeout = 5;
     
-    BOOL x = [[[RRDataBackuper alloc] init] ensureFileDownloaded];
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [[[RRDataBackuper alloc] init] ensureFileDownloaded];
+    });
 //    //NSLog(@"%@",@(x));
 }
 

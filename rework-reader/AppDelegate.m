@@ -31,6 +31,27 @@
 
 @implementation AppDelegate
 
+#pragma mark - UISceneSession lifecycle
+
+
+- (UISceneConfiguration *)application:(UIApplication *)application configurationForConnectingSceneSession:(UISceneSession *)connectingSceneSession options:(UISceneConnectionOptions *)options  API_AVAILABLE(ios(13.0)){
+    // Called when a new scene session is being created.
+    // Use this method to select a configuration to create the new scene with.
+    if (@available(iOS 13.0, *)) {
+        return [[UISceneConfiguration alloc] initWithName:@"Default Configuration" sessionRole:connectingSceneSession.role];
+    } else {
+        // Fallback on earlier versions
+    }
+    return nil;
+}
+
+
+- (void)application:(UIApplication *)application didDiscardSceneSessions:(NSSet<UISceneSession *> *)sceneSessions  API_AVAILABLE(ios(13.0)){
+    // Called when the user discards a scene session.
+    // If any sessions were discarded while the application was not running, this will be called shortly after application:didFinishLaunchingWithOptions.
+    // Use this method to release any resources that were specific to the discarded scenes, as they will not return.
+}
+
 - (void)dealloc
 {
     [[NSNotificationCenter defaultCenter] removeObserver:self name:@"RRCasNeedReload" object:nil];
@@ -135,15 +156,13 @@
         
         // 加载数据
         [self loadCoreData];
-//        BOOL useiCloud = [[NSUserDefaults standardUserDefaults] boolForKey:@"kiCloudSetting"];
-//        if (useiCloud) {
-//            //NSLog(@"-----iCloud--Auto------");
-    //        CDESetCurrentLoggingLevel(CDELoggingLevelVerbose);
-    //        [self loadEnsemble];
-//        }
-        
+ 
+    if (@available(iOS 13.0, *)) {
+             
+           } else {
         self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
-        
+    }
+    
         // 加载Classy样式
         [self loadCas];
         
@@ -154,8 +173,13 @@
         [self loadRouter];
         
         // 加载VC
-        [self loadPage];
-        
+//
+        if (@available(iOS 13.0, *)) {
+          
+        } else {
+            // Fallback on earlier versions
+            [self loadPage];
+        }
         
         // 配置background fetch
     #if !TARGET_OS_MACCATALYST
@@ -170,10 +194,10 @@
         }
         
     #ifdef DEBUG
-    //    CGRect frame = CGRectMake(0, 300, 80, 30);
-    //    UIColor *btnBGColor = [UIColor colorWithWhite:0.000 alpha:0.700];
-    //    OttoFPSButton *btn = [OttoFPSButton setTouchWithFrame:frame titleFont:[UIFont systemFontOfSize:15] backgroundColor:btnBGColor backgroundImage:nil];
-    //    [self.window addSubview:btn];
+//        CGRect frame = CGRectMake(0, 300, 80, 30);
+//        UIColor *btnBGColor = [UIColor colorWithWhite:0.000 alpha:0.700];
+//        OttoFPSButton *btn = [OttoFPSButton setTouchWithFrame:frame titleFont:[UIFont systemFontOfSize:15] backgroundColor:btnBGColor backgroundImage:nil];
+//        [self.window addSubview:btn];
     #endif
       
 }
@@ -204,7 +228,7 @@
 #if !TARGET_OS_MACCATALYST
 - (void)application:(UIApplication *)application performFetchWithCompletionHandler:(void (^)(UIBackgroundFetchResult))completionHandler
 {
-    //NSLog(@"Background Fetch Start");
+    NSLog(@"Background Fetch Start");
     __weak typeof(self) weakSelf = self;
     [self updateFeedData:^(NSInteger x) {
         
@@ -213,7 +237,7 @@
             [[NSUserDefaults standardUserDefaults] synchronize];
             [weakSelf notiArticle:x];
         }
-        //NSLog(@"更新了%ld",x);
+        NSLog(@"更新了%ld",x);
         if (x > 0) {
             completionHandler(UIBackgroundFetchResultNewData);
         }
@@ -222,7 +246,7 @@
             completionHandler(UIBackgroundFetchResultNoData);
         }
     }];
-    ////NSLog(@"%s",__func__);
+    NSLog(@"%s",__func__);
 }
 #endif
 
@@ -283,8 +307,8 @@
     // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
 //    self.caller = nil;
     [AppleAPIHelper endTestForStore:[ApplePurchaseDelegate sharedOne]];
-    [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"kBoot"];
-    [[NSUserDefaults standardUserDefaults] synchronize];
+//    [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"kBoot"];
+//    [[NSUserDefaults standardUserDefaults] synchronize];
 }
 
 - (BOOL)kBackgroundFetchNoti

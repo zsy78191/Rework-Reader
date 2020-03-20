@@ -41,6 +41,13 @@ typedef struct  {
     NSUInteger page4;
 } PageState;
 
+typedef struct  {
+    BOOL page1;
+    BOOL page2;
+    BOOL page3;
+    BOOL page4;
+} LoadState;
+
 @interface RRListPresenter ()
 {
     
@@ -61,7 +68,7 @@ typedef struct  {
 @property (nonatomic, assign) BOOL refreshing;
 
 @property (nonatomic, assign) BOOL isTrait;
-
+@property (nonatomic, assign) BOOL loadedAll;
 
 @property (nonatomic, assign) double t1OffesetY;
 @property (nonatomic, assign) double t2OffesetY;
@@ -69,6 +76,8 @@ typedef struct  {
 @property (nonatomic, assign) double t4OffesetY;
 
 @property (nonatomic, assign) PageState pageState;
+@property (nonatomic, assign) LoadState loadState;
+
 
 @end
 
@@ -477,7 +486,6 @@ typedef struct  {
     [self updateFeedData:^(NSInteger x) {
         weakSelf.refreshing = NO;
         dispatch_async(dispatch_get_main_queue(), ^{
-            //                [P]
             if (x == 0) {
                 [PWToastView showText:@"没有更新的订阅了"];
                 UIAccessibilityPostNotification(UIAccessibilityAnnouncementNotification, @"更新结束，没有更新的订阅");
@@ -496,14 +504,11 @@ typedef struct  {
 - (void)updateFeedData:(void (^)(NSInteger x))finished
 {
     if (self.infoModel) {
-        
         if (self.infoModel.feed) {
-            
             //单订阅源更新
             __block NSMutableArray* temp = [[NSMutableArray alloc] init];
             [[RRFeedLoader sharedLoader] loadFeed:[self.infoModel.feed.url absoluteString] infoBlock:^(MWFeedInfo * _Nonnull info) {
             } itemBlock:^(MWFeedItem * _Nonnull item) {
-                ////NSLog(@"%@",item.title);
                 // AllReadyTODO:新增文章
                 RRFeedArticleModel* m = [[RRFeedArticleModel alloc] initWithItem:item];
                 [temp addObject:m];
@@ -518,7 +523,6 @@ typedef struct  {
             } needUpdateIcon:NO];
         }
         else if(self.infoModel.thehub){
-            
             //订阅源集合更新
             __block NSInteger finishCount = 0;
             __block NSInteger allArticleCount = 0;
@@ -868,6 +872,9 @@ typedef struct  {
     .action(@"移除订阅源", ^(UIAlertAction * _Nonnull action, UIAlertController * _Nonnull alert) {
         [weakSelf removeIt:sender];
     })
+    .action(@"数据归档", ^(UIAlertAction * _Nonnull action, UIAlertController * _Nonnull alert) {
+        [weakSelf zipFeed:nil hub:hub sender:sender];
+    })
     .cancel(@"取消", ^(UIAlertAction * _Nonnull action) {
     });
     
@@ -925,17 +932,23 @@ typedef struct  {
     }
 }
 
-- (void)zipFeed:(EntityFeedInfo*)feed sender:(id)sender {
+- (void)zipFeed:(EntityFeedInfo*)feed hub:(EntityHub*)hub sender:(id)sender {
     __weak typeof(self) weakSelf = self;
     UIAlertController* a = UI_ActionSheet();
     a
-    .titled([NSString stringWithFormat:@"归档「%@」",feed.title])
+    .titled([NSString stringWithFormat:@"归档「%@」",feed?feed.title:hub.title])
     .descripted(@"所有操作均不会影响收藏数据")
     .recommend(@"归档一个月之前的数据", ^(UIAlertAction * _Nonnull action, UIAlertController * _Nonnull alert) {
     
         [MagicalRecord saveWithBlock:^(NSManagedObjectContext * _Nonnull localContext) {
             NSDate* d = [NSDate dateWithTimeIntervalSinceNow:-3600*24*30];
-            NSPredicate* p = [NSPredicate predicateWithFormat:@"date != nil and date < %@ and liked = false and feed = %@",d,feed];
+            NSPredicate* p = nil;
+            if(feed) {
+                p =  [NSPredicate predicateWithFormat:@"date != nil and date < %@ and liked = false and feed = %@",d,feed];
+            }
+            if (hub) {
+                p = [NSPredicate predicateWithFormat:@"date != nil and date < %@ and liked = false and feed in %@",d,hub.infos];
+            }
           
             NSInteger count = [EntityFeedArticle MR_countOfEntitiesWithPredicate:p inContext:localContext];
             UI_Alert().
@@ -1035,7 +1048,7 @@ typedef struct  {
         [weakSelf deleteIt:sender];
     })
     .action(@"数据归档", ^(UIAlertAction * _Nonnull action, UIAlertController * _Nonnull alert) {
-        [weakSelf zipFeed:feed sender:sender];
+        [weakSelf zipFeed:feed hub:nil sender:sender];
     })
     .cancel(@"取消", ^(UIAlertAction * _Nonnull action) {
     });
@@ -1056,6 +1069,7 @@ typedef struct  {
                 self.inputerCoreData.style.onlyReaded = NO;
                 self.inputerCoreData.style.liked = NO;
                 self.inputerCoreData.currentPage = self.pageState.page2;
+                self.loadedAll = self.loadState.page2;
                 break;
             }
             case 0:
@@ -1064,6 +1078,7 @@ typedef struct  {
                 self.inputerCoreData.style.onlyReaded = NO;
                 self.inputerCoreData.style.liked = NO;
                 self.inputerCoreData.currentPage = self.pageState.page1;
+                self.loadedAll = self.loadState.page1;
                 break;
             }
             case 2:
@@ -1072,6 +1087,7 @@ typedef struct  {
                 self.inputerCoreData.style.onlyReaded = YES;
                 self.inputerCoreData.style.liked = NO;
                 self.inputerCoreData.currentPage = self.pageState.page3;
+                self.loadedAll = self.loadState.page3;
                 break;
             }
             case 3:
@@ -1080,6 +1096,7 @@ typedef struct  {
                 self.inputerCoreData.style.onlyReaded = NO;
                 self.inputerCoreData.style.liked = YES;
                 self.inputerCoreData.currentPage = self.pageState.page4;
+                self.loadedAll = self.loadState.page4;
                 break;
             }
             default:
@@ -1091,11 +1108,34 @@ typedef struct  {
 }
 
 - (void)loadMore {
-    //NSLog(@"load more");
+    if(self.loadedAll) return;
+    NSLog(@"load more");
     [self addPage];
     [self.inputerCoreData rebuildFetch];
     [self reloadHashDataWithouClean];
     [self.view mvp_reloadData];
+    
+    self.loadedAll = self.inputerCoreData.mvp_count == self.inputerCoreData.countAll;
+    LoadState s = self.loadState;
+    switch (self.currentIdx) {
+            case 0: {
+                s.page1 = self.loadedAll;
+                break;
+            }
+            case 1: {
+                s.page2 = self.loadedAll;
+                break;
+            }
+            case 2: {
+                s.page3 = self.loadedAll;
+                break;
+            }
+            case 3: {
+                s.page4 = self.loadedAll;
+                break;
+            }
+    }
+    self.loadState = s;
 }
 
 - (void)addPage {

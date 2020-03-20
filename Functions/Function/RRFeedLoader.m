@@ -47,7 +47,7 @@
     dispatch_once(&onceToken, ^{
         _shared_loader_g = [[RRFeedLoader alloc] init];
 //        _shared_loader_g.useMainQuene = NO;
-        [_shared_loader_g setQualityLevel:NSQualityOfServiceBackground];
+        [_shared_loader_g setQualityLevel:NSQualityOfServiceDefault];
     });
     return _shared_loader_g;
 }
@@ -56,8 +56,7 @@
 {
     if (!_quene) {
         _quene = [[NSOperationQueue alloc] init];
-        
-        [_quene setMaxConcurrentOperationCount:30];
+        [_quene setMaxConcurrentOperationCount:50];
     }
     return _quene;
 }
@@ -66,8 +65,8 @@
 {
     if (!_netQuene) {
         _netQuene = [[NSOperationQueue alloc] init];
-        _netQuene.qualityOfService = NSQualityOfServiceBackground;
-        [_netQuene setMaxConcurrentOperationCount:30];
+        _netQuene.qualityOfService = NSQualityOfServiceDefault;
+        [_netQuene setMaxConcurrentOperationCount:50];
     }
     return _netQuene;
 }
@@ -76,8 +75,8 @@
 {
     if (!_highQuene) {
         _highQuene = [[NSOperationQueue alloc] init];
-        [_highQuene setQualityOfService:NSQualityOfServiceBackground];
-        [_netQuene setMaxConcurrentOperationCount:30];
+        [_highQuene setQualityOfService:NSQualityOfServiceDefault];
+        [_netQuene setMaxConcurrentOperationCount:50];
     }
     return _highQuene;
 }
@@ -395,7 +394,6 @@
                         else {
 //                            [PWToastView showText:[NSString stringWithFormat:@"更新了%ld个订阅源，共计%ld篇订阅，%ld个源更新失败",finishCount,x,errorCount]];
                         }
-                        
                     }
                 });
             }];

@@ -8,6 +8,14 @@
             "select": null,
             "type": 2
         },
+        {
+            "title": "隐藏主页「更新失败」提示",
+            "value": "",
+            "action": "changeHideFailed:",
+            "switchkey": "kHideFaildBtn",
+            "select": "hideFailedSetting",
+            "type": 3
+        },
          {
              "title": "隐藏工具栏返回按钮",
              "value": "可从屏幕左侧滑动返回",

@@ -67,6 +67,8 @@
 		D44EDCE6223A2A7900BC24CA /* RRMutiSelectCell.m in Sources */ = {isa = PBXBuildFile; fileRef = D44EDCE4223A2A7900BC24CA /* RRMutiSelectCell.m */; };
 		D44EDCE7223A2A7900BC24CA /* RRMutiSelectCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = D44EDCE5223A2A7900BC24CA /* RRMutiSelectCell.xib */; };
 		D44EDCEB223EAB1200BC24CA /* RRImageRender.m in Sources */ = {isa = PBXBuildFile; fileRef = D44EDCEA223EAB1200BC24CA /* RRImageRender.m */; };
+		D451D18524236EB40046C06D /* SceneDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = D451D18324236EB40046C06D /* SceneDelegate.m */; };
+		D451D188242372630046C06D /* SceneDelegate+Ext.m in Sources */ = {isa = PBXBuildFile; fileRef = D451D187242372630046C06D /* SceneDelegate+Ext.m */; };
 		D451E095226240A200674526 /* RRSettingPresenter+Swith.m in Sources */ = {isa = PBXBuildFile; fileRef = D451E094226240A200674526 /* RRSettingPresenter+Swith.m */; };
 		D451E097226245CE00674526 /* Day.json in Resources */ = {isa = PBXBuildFile; fileRef = D451E096226245CE00674526 /* Day.json */; };
 		D451E099226245EE00674526 /* Night.json in Resources */ = {isa = PBXBuildFile; fileRef = D451E098226245EE00674526 /* Night.json */; };
@@ -327,6 +329,10 @@
 		D44EDCE5223A2A7900BC24CA /* RRMutiSelectCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = RRMutiSelectCell.xib; sourceTree = "<group>"; };
 		D44EDCE9223EAB1200BC24CA /* RRImageRender.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RRImageRender.h; sourceTree = "<group>"; };
 		D44EDCEA223EAB1200BC24CA /* RRImageRender.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RRImageRender.m; sourceTree = "<group>"; };
+		D451D18324236EB40046C06D /* SceneDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SceneDelegate.m; sourceTree = "<group>"; };
+		D451D18424236EB40046C06D /* SceneDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SceneDelegate.h; sourceTree = "<group>"; };
+		D451D186242372630046C06D /* SceneDelegate+Ext.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "SceneDelegate+Ext.h"; sourceTree = "<group>"; };
+		D451D187242372630046C06D /* SceneDelegate+Ext.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "SceneDelegate+Ext.m"; sourceTree = "<group>"; };
 		D451E093226240A200674526 /* RRSettingPresenter+Swith.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "RRSettingPresenter+Swith.h"; sourceTree = "<group>"; };
 		D451E094226240A200674526 /* RRSettingPresenter+Swith.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "RRSettingPresenter+Swith.m"; sourceTree = "<group>"; };
 		D451E096226245CE00674526 /* Day.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = Day.json; sourceTree = "<group>"; };
@@ -840,6 +846,10 @@
 		D47717D521ED90CF0050DF14 /* rework-reader */ = {
 			isa = PBXGroup;
 			children = (
+				D451D18424236EB40046C06D /* SceneDelegate.h */,
+				D451D18324236EB40046C06D /* SceneDelegate.m */,
+				D451D186242372630046C06D /* SceneDelegate+Ext.h */,
+				D451D187242372630046C06D /* SceneDelegate+Ext.m */,
 				D4E7491D22A64C940033D53E /* Icons.xcassets */,
 				D473F29E22278B4900DF3C6D /* MWPhotoBrowser.bundle */,
 				D42F55CF221CFBF900321A21 /* rework-reader.entitlements */,
@@ -1667,6 +1677,7 @@
 				D418CDEB22311D45004F5706 /* RRIconSettingModel.m in Sources */,
 				D4E7491C22A517CA0033D53E /* RRFeedManager.m in Sources */,
 				D411F4462368441E00DA3F95 /* UIKeyCommand+iOS13.m in Sources */,
+				D451D18524236EB40046C06D /* SceneDelegate.m in Sources */,
 				D4CD6624225DF1CD005EA2B9 /* ActionTest.m in Sources */,
 				D4E0F8EB2211486100902540 /* RPSettingInputer.m in Sources */,
 				D473F28E2223E77D00DF3C6D /* RRFeedAction.m in Sources */,
@@ -1691,6 +1702,7 @@
 				D418CDE322311B2E004F5706 /* RRIconSettingCell.m in Sources */,
 				D4143D7C22A8B1DF00CCA329 /* RRFeedListPresenter+FeedHUB.m in Sources */,
 				D4E7492522A64F800033D53E /* IconSelectPresenter.m in Sources */,
+				D451D188242372630046C06D /* SceneDelegate+Ext.m in Sources */,
 				D49941D521FEA7BB0041B998 /* RRFeedListPresenter.m in Sources */,
 				D4E7492822A6502E0033D53E /* IconModel.m in Sources */,
 				D4A79756238518CB007ED977 /* AppDelegate+Crash.m in Sources */,
@@ -1932,7 +1944,7 @@
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = "rework-reader/rework-reader.entitlements";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1.2.19;
+				CURRENT_PROJECT_VERSION = 1.2.21;
 				DEFINES_MODULE = YES;
 				DEVELOPMENT_TEAM = ZLQPGKAQFY;
 				GCC_PREFIX_HEADER = PrefixHeader.pch;
@@ -1947,7 +1959,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.2.6;
+				MARKETING_VERSION = 1.2.7;
 				ON_DEMAND_RESOURCES_INITIAL_INSTALL_TAGS = Extrafont;
 				OTHER_LIBTOOLFLAGS = "";
 				PRODUCT_BUNDLE_IDENTIFIER = com.orzer.rework.reader.sp;
@@ -1965,7 +1977,7 @@
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = "rework-reader/rework-reader.entitlements";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1.2.19;
+				CURRENT_PROJECT_VERSION = 1.2.21;
 				DEFINES_MODULE = YES;
 				DEVELOPMENT_TEAM = ZLQPGKAQFY;
 				GCC_PREFIX_HEADER = PrefixHeader.pch;
@@ -1980,7 +1992,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.2.6;
+				MARKETING_VERSION = 1.2.7;
 				ON_DEMAND_RESOURCES_INITIAL_INSTALL_TAGS = Extrafont;
 				OTHER_LIBTOOLFLAGS = "";
 				PRODUCT_BUNDLE_IDENTIFIER = com.orzer.rework.reader.sp;

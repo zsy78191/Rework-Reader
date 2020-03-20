@@ -7,6 +7,11 @@ UIButton {
     }
 }
 
+UILabel.mainPageSpecialBtnItem {
+    font $main-font 14
+    text-color $main-text-color-readed
+}
+
 DZNEmptyDataSetView > ^UIButton {
     title-text-attributes: @{
         font: $main-font $main-font-size
@@ -87,6 +92,7 @@ UILabel.TipLabel {
     text-color $sub-text-color
 }
 
+
 ^UIView.bgView
 {
     backgroundColor $main-bg-color
@@ -136,6 +142,12 @@ UIView.selectView {
 
 ^UITableViewCell > ^UIView > ^UILabel.F3 {
     font SourceHanSerifCN-Light $main-font-size
+    text-color $main-text-color
+}
+
+
+^UITableViewCell > ^UIView > ^UILabel.F4 {
+    font PingFangSC-Medium $main-font-size
     text-color $main-text-color
 }
 

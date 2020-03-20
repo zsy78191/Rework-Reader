@@ -27,6 +27,7 @@
 @import oc_util;
 #import "RRFeedListPresenter+FeedHUB.h"
 #import "RRFeedManager.h"
+@import ReactiveObjC;
 
 NSString* const kOffsetMainList = @"kOffsetMainList";
 NSString* const kMainListItemSetting = @"kOffsetMainList";
@@ -39,6 +40,7 @@ NSString* const kShowRecent = @"kShowRecent";
 {
     
 }
+@property (nonatomic, assign) BOOL isVisible;
 
 @end
 
@@ -113,7 +115,7 @@ NSString* const kShowRecent = @"kShowRecent";
     self = [super init];
     if (self) {
         self.firstEnter = YES;
-        self.title = @"Reader Prime";
+        self.title = @"";
         self.needUpdate = YES;
         self.needUpdateFeed = NO;
         self.mode = [[NSUserDefaults standardUserDefaults] integerForKey:@"kRRReadMode"];
@@ -144,11 +146,26 @@ NSString* const kShowRecent = @"kShowRecent";
 
 - (void)needUpdateData
 {
+   
+//    NSLog(@"%@",@(self.isVisible));
+    dispatch_async(dispatch_get_main_queue(), ^{
+        if (self.isVisible && !self.needUpdate) {
+            [self loadData];
+        }
+    });
+    
     self.needUpdate = YES;
+}
+
+- (void)viewWillDisappear:(BOOL)animated {
+    
+    self.isVisible = NO;
 }
 
 - (void)viewWillAppear:(BOOL)animated
 {
+    self.isVisible = YES;
+    
     if (self.needUpdate) {
         [self loadData];
     }
@@ -455,6 +472,7 @@ NSString* const kShowRecent = @"kShowRecent";
     }
     
     self.needUpdate = NO;
+    [self updateFailedCount];
 }
 
 - (NSNumber*)hasData
@@ -539,18 +557,9 @@ NSString* const kShowRecent = @"kShowRecent";
 //        //NSLog(@"%@",obj.title);
 //    }];
 //
-    // RRTODO:这部分也需要拆分，目前已经有三个地方用到了
+    // RRXXTODO:这部分也需要拆分，目前已经有三个地方用到了
     all =
     all.filter(^BOOL(RRFeedInfoListModel*  _Nonnull x) {
-//        NSString* key = [NSString stringWithFormat:@"UPDATE_%@",x.url];
-//        NSInteger lastU = [MVCKeyValue getIntforKey:key];
-//        if (lastU != 0) {
-//            NSDate* d = [NSDate dateWithTimeIntervalSince1970:lastU];
-//            ////NSLog(@"last %@ %@",d,@([d timeIntervalSinceDate:[NSDate date]]));
-//            if ([d timeIntervalSinceDate:[NSDate date]] > - 60) {
-//                return NO;
-//            }
-//        }
         
         if (x.usettl) {
             NSUInteger ttl = [x.ttl integerValue];
@@ -573,32 +582,49 @@ NSString* const kShowRecent = @"kShowRecent";
         });
     } progress:^(NSUInteger current, NSUInteger all) {
         dispatch_async(dispatch_get_main_queue(), ^{
-            weakSelf.title = [@"更新" stringByAppendingFormat:@"(%ld/%ld)",current,all];
+            weakSelf.title = [@"" stringByAppendingFormat:@"%ld/%ld",current,all];
         });
     }  finishBlock:^(NSUInteger all, NSUInteger error, NSUInteger article) {
         dispatch_async(dispatch_get_main_queue(), ^{
         
             
             weakSelf.updating = NO;
-            weakSelf.title = @"Reader Prime";
+            weakSelf.title = @"";
             if (article == 0) {
                 UIAccessibilityPostNotification(UIAccessibilityAnnouncementNotification, @"更新结束，没有更新的订阅");
 //                [PWToastView showText:@"没有更新的订阅"];
-            }
-            else {
+            } else {
                 [weakSelf loadDataMain];
                 if (error == 0) {
                     NSString* tip = [NSString stringWithFormat:@"更新了%ld个订阅源，共计%ld篇订阅",all,article];
                     [PWToastView showText:tip];
                     UIAccessibilityPostNotification(UIAccessibilityAnnouncementNotification, [NSString stringWithFormat:@"更新了%ld篇订阅",article]);
-                }
-                else {
+                } else {
                     [PWToastView showText:[NSString stringWithFormat:@"更新了%ld个订阅源，共计%ld篇订阅，%ld个源更新失败",all,article,error]];
                     UIAccessibilityPostNotification(UIAccessibilityAnnouncementNotification, [NSString stringWithFormat:@"更新了%ld篇订阅",article]);
                 }
             }
+            
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [weakSelf updateFailedCount];
+            });
         });
     }];
+}
+
+- (void)updateFailedCount {
+   if(self.updating) return;
+      NSArray* feeds = [RRFeedManager failedFeedInfos];
+     if (feeds.count > 0) {
+         BOOL hide = [[NSUserDefaults standardUserDefaults] boolForKey:@"kHideFaildBtn"];
+         if (!hide) {
+             self.title = [NSString stringWithFormat:@"%@个源更新失败",@(feeds.count)];
+         } else {
+             self.title = @"";
+         }
+     } else {
+         self.title = @"";
+     }
 }
 
 - (void)refreshData2:(UIRefreshControl*)sender
@@ -768,6 +794,13 @@ NSString* const kShowRecent = @"kShowRecent";
     nv.popoverPresentationController.backgroundColor = UIColor.hex(style[@"$bar-tint-color"]);
     [(UIViewController*)self.view presentViewController:nv animated:YES completion:^{
         
+    }];
+    
+    __weak typeof(self) ws = self;
+    [[nv rac_signalForSelector:@selector(viewDidDisappear:)] subscribeNext:^(RACTuple * _Nullable x) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [[(UIViewController*)ws.view toolbarItems] firstObject].enabled = YES;
+        });
     }];
     
     [[(UIViewController*)self.view toolbarItems] firstObject].enabled = NO;
@@ -970,6 +1003,35 @@ NSString* const kShowRecent = @"kShowRecent";
         else {
         }
     }];
+}
+
+- (void)handleFailed
+{
+//    self.title = @"123";
+    __weak typeof(self) ws = self;
+    UIAlertController* a = UI_Alert()
+    .titled(@"删除订阅源");
+    [[RRFeedManager failedFeedInfos] enumerateObjectsUsingBlock:^(EntityFeedInfo*  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+        a.action(obj.title, ^(UIAlertAction * _Nonnull action, UIAlertController * _Nonnull alert) {
+            [RRFeedAction delFeed:obj view:(id)self.view item:nil arrow:UIPopoverArrowDirectionRight finish:^{
+                dispatch_async(dispatch_get_main_queue(), ^{
+                   [ws loadData];
+                });
+            }];
+        });
+    }];
+    a.recommend(@"不再显示更新失败", ^(UIAlertAction * _Nonnull action, UIAlertController * _Nonnull alert) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"kHideFaildBtn"];
+            [[NSUserDefaults standardUserDefaults] synchronize];
+            [ws.view hudSuccess:@"已隐藏「更新失败」提示"];
+            [ws loadData];
+        });
+    });
+    a.cancel(@"取消", ^(UIAlertAction * _Nonnull action) {
+        
+    });
+    a.show((id)self.view);
 }
 
 @end
