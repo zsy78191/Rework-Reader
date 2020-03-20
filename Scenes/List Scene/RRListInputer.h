@@ -19,6 +19,8 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, assign) NSUInteger currentPage;
 @property (nonatomic, assign) NSUInteger pageCount;
 
+- (NSUInteger)countAll;
+
 @property (nonatomic, strong, nullable) RRFeedInfoListOtherModel* model;
 
 @property (nonatomic, strong) RRReadStyle* style;

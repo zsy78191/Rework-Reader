@@ -10,6 +10,7 @@
 #import "RRCoreDataModel.h"
 #import "EntityFeedArticle+CoreDataClass.h"
 #import "EntityFeedArticle+Ext.h"
+@import MagicalRecord;
 
 @import DateTools;
 
@@ -77,6 +78,11 @@
     return nil;
 }
 
+- (NSUInteger)countAll
+{
+    return [EntityFeedArticle MR_countOfEntitiesWithPredicate:[self predicate]];
+}
+
 - (NSUInteger)fetchLimitCount
 {
     if(self.model)
@@ -88,7 +94,7 @@
 
 - (NSString *)mvp_identifierForModel:(id<MVPModelProtocol>)model
 {
-    EntityFeedArticle* a = model;
+    EntityFeedArticle* a = (id)model;
     NSString* s = [a showContent];
     if(s.length == 0) {
         return @"articleCell2";

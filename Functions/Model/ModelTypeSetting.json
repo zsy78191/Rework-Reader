@@ -33,6 +33,30 @@
                   "type": 4
               },
              {
+                  "title": "反馈",
+                  "value": null,
+                  "action": null,
+                  "switchkey": null,
+                  "select": null,
+                  "type": 2
+              },
+             {
+                   "title": "问题反馈",
+                   "value": "",
+                   "action": "feedback:",
+                   "switchkey": null,
+                   "select": ["QQ群","Telegram群"],
+                   "type": 1
+               },
+               {
+                   "title": "在AppStore反馈问题",
+                   "value": null,
+                   "action": "appstore",
+                   "switchkey": null,
+                   "select": null,
+                   "type": 1
+               },
+             {
                "title": "更多内容",
                "value": null,
                "action": null,
@@ -47,6 +71,14 @@
             "switchkey": null,
             "select": null,
             "type": 0
+        },
+        {
+           "title": "清理Web缓存",
+           "value": "",
+           "action": "clearCache",
+           "switchkey": null,
+           "select": null,
+           "type": 0
         },
         {
             "title": "关于RSS",
@@ -76,22 +108,6 @@
             "title": "订阅Reader官方源",
             "value": null,
             "action": "feedOffical",
-            "switchkey": null,
-            "select": null,
-            "type": 1
-        },
-        {
-            "title": "问题反馈",
-            "value": "",
-            "action": "feedback:",
-            "switchkey": null,
-            "select": ["QQ群","Telegram群"],
-            "type": 1
-        },
-        {
-            "title": "在AppStore反馈问题",
-            "value": null,
-            "action": "appstore",
             "switchkey": null,
             "select": null,
             "type": 1

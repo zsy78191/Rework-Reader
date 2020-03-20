@@ -128,6 +128,14 @@
     })];
     
     [self.inputer mvp_addModel:({
+         RRIconSettingModel* m = [[RRIconSettingModel alloc] init];
+         m.title = @"苹方中粗体";
+         m.fontStyle = @"F4";
+         m.icon = @"icon_f";
+         m;
+     })];
+    
+    [self.inputer mvp_addModel:({
         RRIconSettingModel* m = [[RRIconSettingModel alloc] init];
         m.title = @"思源宋体细体";
         m.fontStyle = @"F3";
@@ -202,6 +210,11 @@
             break;
         }
         case 12:
+       {
+           [self style].font = @"PingFangSC-Medium";
+           break;
+       }
+        case 13:
         {
             [self style].font = @"SourceHanSerifCN";
             break;

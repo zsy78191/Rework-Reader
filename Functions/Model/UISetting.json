@@ -13,7 +13,7 @@
             "value": "",
             "action": "selectMainColor:",
             "switchkey": null,
-            "select": ["系统","紫色","黑色","橙色","青色","马尔斯绿"],
+            "select": ["系统","紫色","黑色","橙色","青色","马尔斯绿","自选颜色"],
             "type": 1
         },
         {
@@ -32,6 +32,14 @@
             "select": ["默认图标","黑底绿标","白底黑标(纯黑)","白底黑标(渐变)"],
             "type": 1
         },
+        {
+           "title": "修改主页标题",
+           "value": null,
+           "action": "changeMainPageTitle:",
+           "switchkey": null,
+           "select": null,
+           "type": 4
+       },
         {
             "title": "主题",
             "value": null,

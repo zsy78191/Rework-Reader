@@ -301,11 +301,10 @@
         void (^checkLoadMoreBlock)(CGPoint) = ^(CGPoint x) {
            CGFloat y1 = x.y + t.frame.size.height;
            CGFloat y2 = t.contentSize.height;
-//           //NSLog(@"-- %@ %@",@(y1),@(y2));
-           if(fabs(y1 - y2)<t.frame.size.height) {
+//           NSLog(@"-- %@ %@",@(y1),@(y2));/
+           if(fabs(y1 - y2)< t.frame.size.height) {
                if(!loadMore) {
                    loadMore = true;
-                   
                    [weakSelf.presenter mvp_runAction:@"loadMore"];
                }
            } else {

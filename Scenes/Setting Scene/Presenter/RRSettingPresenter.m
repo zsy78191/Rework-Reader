@@ -29,7 +29,9 @@
 #import "RRSettingPresenter+Swith.h"
 @import ReactiveObjC;
 #import "RRExtraViewController.h"
-
+#import "RRReadMode.h"
+@import RegexKitLite;
+@import WebKit;
 
 @interface RRSettingPresenter () <UIDocumentPickerDelegate,MVPPresenterProtocol_private,SKStoreProductViewControllerDelegate>
 {
@@ -216,6 +218,27 @@
     }
 }
 
+
+- (void)clearCache {
+    if ([[[UIDevice currentDevice]systemVersion]intValue ] >= 9.0) {
+        NSArray * types =@[WKWebsiteDataTypeMemoryCache,WKWebsiteDataTypeDiskCache]; // 9.0之后才有的
+        NSSet *websiteDataTypes = [NSSet setWithArray:types];
+        NSDate *dateFrom = [NSDate dateWithTimeIntervalSince1970:0];
+        __weak typeof(self) ws = self;
+        [[WKWebsiteDataStore defaultDataStore] removeDataOfTypes:websiteDataTypes modifiedSince:dateFrom completionHandler:^{
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [ws.view hudSuccess:@"清理成功"];
+            });
+        }];
+    }else{
+        NSString *libraryPath = [NSSearchPathForDirectoriesInDomains(NSLibraryDirectory,NSUserDomainMask,YES) objectAtIndex:0];
+        NSString *cookiesFolderPath = [libraryPath stringByAppendingString:@"/Cookies"];
+        NSLog(@"%@", cookiesFolderPath);
+        NSError *errors;
+        [[NSFileManager defaultManager] removeItemAtPath:cookiesFolderPath error:&errors];
+    }
+}
+
 //      "action": "selectHomePage:",
 //    "select": ["官方博客","空白页","自定义URL"],
 - (void)selectHomePage:(NSString*)select
@@ -259,32 +282,102 @@
     }
 }
 
+- (void)changeMainPageTitle:(id)data {
+    __weak typeof(self) ws = self;
+    UI_Alert()
+      .titled(@"请输入自定义首页标题")
+      .recommend(@"确定", ^(UIAlertAction * _Nonnull action, UIAlertController * _Nonnull alert) {
+          UITextField* t = alert.textFields[0];
+          NSString * title = t.text;
+          [[NSUserDefaults standardUserDefaults] setObject:title forKey:@"kAppTitle"];
+          [[NSUserDefaults standardUserDefaults] synchronize];
+          [ws.view hudSuccess:[NSString stringWithFormat:@"首页标题修改为「%@」",title]];
+      })
+      .cancel(@"取消", ^(UIAlertAction * _Nonnull action) {
+          
+      })
+      .input(@"首页标题", ^(UITextField * _Nonnull field) {
+          field.text = [[NSUserDefaults standardUserDefaults] stringForKey:@"kAppTitle"];
+      })
+      .show((id)self.view);
+}
+
 - (void)selectMainColor:(NSString*)select
 {
-    NSDictionary* colorDict = @{
-                                @"系统":@"#007AFF",
-                                @"紫色":@"#BD10E0",
-                                @"黑色":@"#303E58",
-                                @"橙色":@"#F5A623",
-                                @"青色":@"#50E3C2",
-                                @"马尔斯绿":@"#1aaba8"
-                                };
-    NSDictionary* colorDictDark = @{
-                                @"系统":@"#007AFF",
-                                @"紫色":@"#BD10E0",
-                                @"黑色":@"#CFD7DB",
-                                @"橙色":@"#F5A623",
-                                @"青色":@"#50E3C2",
-                                @"马尔斯绿":@"#1aaba8"
-                                };
-    NSString* color = colorDict[select];
-    NSString* colorDark = colorDictDark[select];
-    if (color) {
+    RRReadMode mode = [[NSUserDefaults standardUserDefaults] integerForKey:@"kRRReadMode"];
+    __block NSString* color = nil;
+    __block NSString* colorDark = nil;
+    if([select isEqualToString:@"自选颜色"]) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            __weak typeof(self) weakself = self;
+                       UI_Alert()
+                       .titled(@"请输入自定义颜色Hex值")
+                       .recommend(@"确定", ^(UIAlertAction * _Nonnull action, UIAlertController * _Nonnull alert) {
+                           UITextField* t = alert.textFields[0];
+            //               NSLog(@"%@",t.text);
+                           NSString * hex = t.text;
+                           if (![hex matchesRegex:@"^#?([1-9A-Fa-f]){6}$" options:NSRegularExpressionCaseInsensitive|NSRegularExpressionAnchorsMatchLines]) {
+                               dispatch_async(dispatch_get_main_queue(), ^{
+                                  [weakself.view hudInfo:@"请输入正确的6位十六进制色值"];
+                               });
+                           } else {
+                               if (hex.length == 6) {
+                                   color = colorDark = [@"#" stringByAppendingString:hex];
+                               } else {
+                                   color = colorDark = hex;
+                               }
+                           }
+                          if (color && mode == RRReadModeLight) {
+                              [weakself setColor:color forMode:mode];
+                          }
+                          if (colorDark  && mode == RRReadModeDark) {
+                              [weakself setColor:colorDark forMode:mode];
+                          }
+                       })
+                       .cancel(@"取消", ^(UIAlertAction * _Nonnull action) {
+                           
+                       })
+                       .input(@"颜色HEX值", ^(UITextField * _Nonnull field) {
+                           field.keyboardType = UIKeyboardTypeAlphabet;
+                       })
+                       .show((id)self.view);
+        });
+    } else {
+       NSDictionary* colorDict = @{
+                                 @"系统":@"#007AFF",
+                                 @"紫色":@"#BD10E0",
+                                 @"黑色":@"#303E58",
+                                 @"橙色":@"#F5A623",
+                                 @"青色":@"#50E3C2",
+                                 @"马尔斯绿":@"#1aaba8"
+                                 };
+      NSDictionary* colorDictDark = @{
+                                 @"系统":@"#007AFF",
+                                 @"紫色":@"#BD10E0",
+                                 @"黑色":@"#CFD7DB",
+                                 @"橙色":@"#F5A623",
+                                 @"青色":@"#50E3C2",
+                                 @"马尔斯绿":@"#1aaba8"
+                                 };
+      color = colorDict[select];
+      colorDark = colorDictDark[select];
+    }
+   
+    if (color && mode == RRReadModeLight) {
+        [self setColor:color forMode:mode];
+    }
+    if (colorDark  && mode == RRReadModeDark) {
+        [self setColor:colorDark forMode:mode];
+    }
+}
+
+- (void)setColor:(NSString*)color forMode:(RRReadMode)mode {
+    if (color && mode == RRReadModeLight) {
         [[NSUserDefaults standardUserDefaults] setObject:color forKey:@"mainTintColor"];
         [[NSUserDefaults standardUserDefaults] synchronize];
     }
-    if (colorDark) {
-        [[NSUserDefaults standardUserDefaults] setObject:colorDark forKey:@"mainTintColorDark"];
+    if (color  && mode == RRReadModeDark) {
+        [[NSUserDefaults standardUserDefaults] setObject:color forKey:@"mainTintColorDark"];
         [[NSUserDefaults standardUserDefaults] synchronize];
         
     }

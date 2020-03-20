@@ -164,4 +164,9 @@
     }];
 }
 
++ (NSArray*)failedFeedInfos
+{
+    return [EntityFeedInfo MR_findByAttribute:@"lastUpdateResult" withValue:@(NO)];
+}
+
 @end

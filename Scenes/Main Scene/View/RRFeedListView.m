@@ -34,6 +34,8 @@
 }
 @property (nonatomic, strong) UIBarButtonItem* blackBtn;
 @property (nonatomic, strong) UIBarButtonItem* cleanAllBtn;
+@property (nonatomic, strong) UIBarButtonItem* titleItem;
+@property (nonatomic, strong) UILabel* titleItemBtn;
 @property (nonatomic, strong) UIBarButtonItem* addHUBItem;
 @property (nonatomic, strong) UISearchController* svc;
 @property (nonatomic, assign) BOOL afterLoaded;
@@ -262,8 +264,13 @@
 
 - (void)mvp_bindData
 {
+    __weak typeof(self) ws = self;
     [self.presenter mvp_bindBlock:^(__kindof UIViewController* view, id value) {
-        view.title = value;
+        dispatch_async(dispatch_get_main_queue(), ^{
+//            ws.titleItem.title = value;
+//            [ws.titleItemBtn setTitle:value forState:UIControlStateNormal];
+            ws.titleItemBtn.text = value;
+        });
     } keypath:@"title"];
 }
 
@@ -362,15 +369,35 @@
     [self.svc.searchBar setUserInteractionEnabled:!editing];
 }
 
+- (void)failedOrigin:(UIBarButtonItem*)sender
+{
+    if ([self.titleItemBtn.text hasSuffix:@"失败"]) {
+        [self.presenter mvp_runAction:@"handleFailed"];
+    }
+}
+
 - (void)reloadToolBar
 {
     UIBarButtonItem* item3 = self.editing?self.cleanAllBtn: self.blackBtn;
-    
+//    UIBarButtonItem* label = [[UIBarButtonItem alloc] initWithTitle:@"" style:UIBarButtonItemStylePlain target:self action:@selector(failedOrigin:)];
+    UILabel* btn = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 150, 50)];
+    btn.cas_styleClass = @"mainPageSpecialBtnItem";
+    btn.text = @"";
+    btn.textAlignment = NSTextAlignmentCenter;
+    [btn setAdjustsFontSizeToFitWidth:YES];
+    UIBarButtonItem* label = [[UIBarButtonItem alloc] initWithCustomView:btn];
+    btn.userInteractionEnabled = YES;
+    UITapGestureRecognizer* tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(failedOrigin:)];
+    [btn addGestureRecognizer:tap];
+    self.titleItem = label;
+    self.titleItemBtn = btn;
+//    label.cas_styleClass = @"mainPageSpecialBtnItem";
     UIBarButtonItem* bAdd = self.editing?self.addHUBItem : [self mvp_buttonItemWithSystem:UIBarButtonSystemItemAdd actionName:@"openActionText:" title:@"添加订阅源"];
 //    bAdd.enabled = !self.editing;
     //    UIBarButtonItem* bAddHub = [self mvp_buttonItemWithActionName:@"addHub" title:@"添加阅读规则"];
     UIBarButtonItem* space = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
-    self.toolbarItems = @[item3,space,bAdd];
+    UIBarButtonItem* space2 = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
+    self.toolbarItems = @[item3,space2,label,space,bAdd];
 }
 
 - (void)motionBegan:(UIEventSubtype)motion withEvent:(UIEvent *)event
@@ -398,6 +425,8 @@
     if ([self.presenter respondsToSelector:@selector(viewWillAppear:)]) {
         [(id)self.presenter viewWillAppear:animated];
     }
+    
+    self.title = [[NSUserDefaults standardUserDefaults] stringForKey:@"kAppTitle"];
 //    [[IQKeyboardManager sharedManager] setEnable:YES];
     
 //    MVPTableViewOutput* o  = (id)self.outputer;
@@ -418,6 +447,9 @@
     double height = [weakSelf statusframe].size.height + weakSelf.navigationController.navigationBar.frame.size.height;
     [[weakSelf presenter] mvp_runAction:@"updateOffsetY:" value:@(o.tableview.contentOffset.y+height)];
     
+    if ([self.presenter respondsToSelector:@selector(viewWillDisappear:)]) {
+       [(id)self.presenter viewWillDisappear:animated];
+    }
 }
 
 #if !TARGET_OS_MACCATALYST

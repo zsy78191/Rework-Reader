@@ -20,6 +20,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, weak) RRSetting* enterUnreadSetting;
 @property (nonatomic, weak) RRSetting* iCloudSetting;
 @property (nonatomic, weak) RRSetting* toolBackSetting;
+@property (nonatomic, weak) RRSetting* hideFailedSetting;
 @property (nonatomic, weak) RRSetting* articleDetialSetting;
 @property (nonatomic, weak) RRSetting* autoThemeSetting;
 @property (nonatomic, weak) RRSetting* autoThemeDarkModeSetting;

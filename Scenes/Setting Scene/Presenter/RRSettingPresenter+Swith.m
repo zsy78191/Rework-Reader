@@ -96,6 +96,20 @@
     [[NSUserDefaults standardUserDefaults] synchronize];
 }
 
+- (void)changeHideFailed:(UISwitch*)sender
+{
+    if (![sender isKindOfClass:[UISwitch class]]) {
+        return;
+    }
+    
+    [[NSUserDefaults standardUserDefaults] setBool:[sender isOn] forKey:self.hideFailedSetting.switchkey];
+    [[NSUserDefaults standardUserDefaults] synchronize];
+    
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"RRMainListNeedUpdate" object:nil];
+}
+
+
+
 - (void)changeArticleDetial:(UISwitch*)sender
 {
     if (![sender isKindOfClass:[UISwitch class]]) {

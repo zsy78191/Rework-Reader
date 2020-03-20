@@ -415,14 +415,13 @@
         });
 //        [self insertArticle:a withFeed:obj];
         [RRFeedAction insertArticle:a withFeed:obj finish:^(NSUInteger x) {
-            
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [(UIViewController*)self.view hudSuccess:@"成功订阅"];
+                [self.view mvp_popViewController:nil];
+                sender.enabled = YES;
+                [AppleAPIHelper review];
+            });
         }];
-        dispatch_async(dispatch_get_main_queue(), ^{
-            [(UIViewController*)self.view hudSuccess:@"订阅成功"];
-            [self.view mvp_popViewController:nil];
-            sender.enabled = YES;
-            [AppleAPIHelper review];
-        });
     }];
 }
 
