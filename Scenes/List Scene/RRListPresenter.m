@@ -31,6 +31,7 @@
 @import ReactiveObjC;
 #import "UIViewController+PresentAndPush.h"
 #import "RRFeedManager.h"
+#import "SceneDelegate.h"
 
 static NSString * const kShortcutItemsKey = @"kShortcutItemsKey";
 
@@ -503,6 +504,7 @@ typedef struct  {
 
 - (void)updateFeedData:(void (^)(NSInteger x))finished
 {
+    __weak typeof(self) ws = self;
     if (self.infoModel) {
         if (self.infoModel.feed) {
             //单订阅源更新
@@ -513,7 +515,9 @@ typedef struct  {
                 RRFeedArticleModel* m = [[RRFeedArticleModel alloc] initWithItem:item];
                 [temp addObject:m];
             } errorBlock:^(NSError * _Nonnull error) {
-                
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    [ws.view hudFail:[error localizedDescription]];
+                });
             } finishBlock:^{
                 [RRFeedAction insertArticle:temp withFeed:self.infoModel.feed finish:^(NSUInteger x) {
                     if (finished) {
@@ -536,7 +540,9 @@ typedef struct  {
                     RRFeedArticleModel* m = [[RRFeedArticleModel alloc] initWithItem:item];
                     [temp addObject:m];
                 } errorBlock:^(NSError * _Nonnull error) {
-                    
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                      [ws.view hudFail:[error localizedDescription]];
+                   });
                 } finishBlock:^{
                     [RRFeedAction insertArticle:temp withFeed:obj finish:^(NSUInteger x) {
                         finishCount ++;
@@ -636,6 +642,13 @@ typedef struct  {
 //        }
         UIViewController* v = (id)self.view;
         BOOL isTrait = [[NSUserDefaults standardUserDefaults] boolForKey:@"RRSplit"];
+        if (@available(iOS 13.0, *)) {
+            UIView* view = [(UIViewController*)self.view view];
+            SceneDelegate* sceneDelegate = (SceneDelegate*)view.window.windowScene.delegate;
+            isTrait =  sceneDelegate.isSplit;
+       } else {
+           
+       }
         
 //        //NSLog(@"%@",v.splitViewController.viewControllers);
         if (v.splitViewController && !isTrait) {

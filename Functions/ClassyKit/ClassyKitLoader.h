@@ -16,7 +16,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 + (void)copyStyleFile;
 
-+ (void)loadWithStyle:(NSString*)style variables:(NSString*)variablesFileName;
++ (void)loadWithStyle:(NSString*)style variables:(NSString*)variablesFileName windows:(id)windows;
 
 + (NSDictionary*)values;
 

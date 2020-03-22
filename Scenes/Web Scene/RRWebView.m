@@ -33,6 +33,7 @@
 #import "targetconditionals.h"
 @import Masonry;
 #import "MVPView+iOS13.h"
+#import "SceneDelegate.h"
 
 @interface RRWebView () <WKUIDelegate,WKNavigationDelegate,UIScrollViewDelegate,MWPhotoBrowserDelegate,WKScriptMessageHandler,MFMailComposeViewControllerDelegate>
 {
@@ -1098,6 +1099,12 @@
     NSMutableArray* items = [NSMutableArray array];
     BOOL hide = [[NSUserDefaults standardUserDefaults] boolForKey:@"kToolBackBtn"];
     BOOL isSplited =  [[NSUserDefaults standardUserDefaults] boolForKey:@"RRSplit"];
+    if (@available(iOS 13.0, *)) {
+         SceneDelegate* sceneDelegate = (SceneDelegate*)self.view.window.windowScene.delegate;
+         isSplited =  sceneDelegate.isSplit;
+    } else {
+        
+    }
     if (!hide && (![UIDevice currentDevice].iPad() || isSplited)) {
         UIBarButtonItem* favItem = [self mvp_buttonItemWithActionName:@"acBack" title:@"返回"];
         favItem.image = [UIImage imageNamed:@"icon_zuo"];
@@ -1446,11 +1453,11 @@
 
 - (BOOL)navigationShouldPopOnBackButton
 {
-    BOOL isTrait = [[NSUserDefaults standardUserDefaults] boolForKey:@"RRSplit"];
-    if (self.splitViewController && !isTrait) {
-//        //NSLog(@"123123");
-    }
-    
+//    BOOL isTrait = [[NSUserDefaults standardUserDefaults] boolForKey:@"RRSplit"];
+//    if (self.splitViewController && !isTrait) {
+////        //NSLog(@"123123");
+//    }
+//
     if (self.webView.backForwardList.backItem) {
         [self.webView goBack];
 //        [self addCloseBtn];
@@ -1505,6 +1512,13 @@
         dispatch_async(dispatch_get_main_queue(), ^{
             if (self.splitViewController) {
                 BOOL split = [[NSUserDefaults standardUserDefaults] boolForKey:@"RRSplit"];
+                if (@available(iOS 13.0, *)) {
+                       UIView* view = [(UIViewController*)self.view view];
+                       SceneDelegate* sceneDelegate = (SceneDelegate*)view.window.windowScene.delegate;
+                       split =  sceneDelegate.isSplit;
+                  } else {
+                      
+                  }
                 if (split) {
                     [self mvp_pushViewController:vc];
                 }

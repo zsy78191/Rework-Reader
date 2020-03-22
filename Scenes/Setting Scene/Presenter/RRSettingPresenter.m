@@ -32,8 +32,9 @@
 #import "RRReadMode.h"
 @import RegexKitLite;
 @import WebKit;
+@import MessageUI;
 
-@interface RRSettingPresenter () <UIDocumentPickerDelegate,MVPPresenterProtocol_private,SKStoreProductViewControllerDelegate>
+@interface RRSettingPresenter () <UIDocumentPickerDelegate,MVPPresenterProtocol_private,SKStoreProductViewControllerDelegate,MFMailComposeViewControllerDelegate>
 {
     
 }
@@ -316,7 +317,7 @@
                            UITextField* t = alert.textFields[0];
             //               NSLog(@"%@",t.text);
                            NSString * hex = t.text;
-                           if (![hex matchesRegex:@"^#?([1-9A-Fa-f]){6}$" options:NSRegularExpressionCaseInsensitive|NSRegularExpressionAnchorsMatchLines]) {
+                           if (![hex matchesRegex:@"^#?([0-9A-Fa-f]){6}$" options:NSRegularExpressionCaseInsensitive|NSRegularExpressionAnchorsMatchLines]) {
                                dispatch_async(dispatch_get_main_queue(), ^{
                                   [weakself.view hudInfo:@"请输入正确的6位十六进制色值"];
                                });
@@ -486,7 +487,7 @@
 
 - (void)openOPML
 {
-    UIDocumentPickerViewController* dvc = [[UIDocumentPickerViewController alloc] initWithDocumentTypes:@[@"com.orzer.reader.opml",@"com.orzer.reader.opml2",@"public.xml"] inMode:UIDocumentPickerModeImport];
+    UIDocumentPickerViewController* dvc = [[UIDocumentPickerViewController alloc] initWithDocumentTypes:@[@"com.orzer.reader.opml",@"com.orzer.reader.opml2",@"com.orzer.reader.opml3",@"public.xml"] inMode:UIDocumentPickerModeImport];
     [[self view] mvp_presentViewController:dvc animated:YES completion:^{
         
     }];
@@ -870,15 +871,51 @@
 
 - (void)feedback:(NSString*)str
 {
+    NSString* email = @"nsstring@qq.com";
     if ([str isEqualToString:@"QQ群"]) {
         [[UIPasteboard generalPasteboard] setString:@"819888483"];
         [self.view hudSuccess:@"群号已复制"];
-    }
-    else if([str isEqualToString:@"Telegram群"])
-    {
+    } else if([str isEqualToString:@"Telegram群"]) {
         id vc = [MVPRouter viewForURL:@"rr://web" withUserInfo:@{@"name":@"http://t.me/meiyiumingzi"}];
         [[self view] mvp_pushViewController:vc];
+    } else if([str isEqualToString:@"E-Mail"]) {
+        if(![MFMailComposeViewController canSendMail]) {
+            [[UIPasteboard generalPasteboard] setString:email];
+            [self.view hudInfo:@"您无法使用系统邮件应用，反馈地址已拷贝到剪切板"];
+        } else {
+            MFMailComposeViewController* mVC = [[MFMailComposeViewController alloc] init];
+            [mVC setSubject:@"RSS Prime应用反馈"];
+            [mVC setToRecipients:@[email]];
+            [self.view mvp_showViewController:mVC];
+            [mVC setMailComposeDelegate:self];
+        }
     }
+}
+
+- (void)mailComposeController:(MFMailComposeViewController *)controller didFinishWithResult:(MFMailComposeResult)result error:(NSError *)error
+{
+    __weak typeof(self) ws = self;
+    [controller dismissViewControllerAnimated:YES completion:^{
+        dispatch_async(dispatch_get_main_queue(), ^{
+            switch (result) {
+                case MFMailComposeResultCancelled:
+                    [ws.view hudInfo:@"取消发送"];
+                break;
+                case MFMailComposeResultSaved:
+                    [ws.view hudInfo:@"草稿已保存"];
+                break;
+                case MFMailComposeResultFailed:
+                    [ws.view hudFail:@"发送失败"];
+                break;
+                case MFMailComposeResultSent:
+                    [ws.view hudSuccess:@"发送成功"];
+                break;
+
+                default:
+                    break;
+            }
+        });
+    }];
 }
 
 @end

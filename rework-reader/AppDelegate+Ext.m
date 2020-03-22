@@ -27,10 +27,10 @@
         if(userSystemDarkMode) {
             [self iOS13SystemDark];
         }
-        [self notiReloadCas];
+        [self notiReloadCas:UIApplication.sharedApplication.windows];
     } else if(userSystemDarkMode) {
         [self iOS13SystemDark];
-        [self notiReloadCas];
+        [self notiReloadCas:UIApplication.sharedApplication.windows];
     } else {
         [self checkThemeWithScreenLight];
     }
@@ -52,8 +52,8 @@
 {
     [[NSUserDefaults standardUserDefaults] setInteger:mode forKey:@"kRRReadMode"];
     [[NSUserDefaults standardUserDefaults] synchronize];
-    [self notiReloadCas];
-    [self notiReloadCas];
+    [self notiReloadCas:UIApplication.sharedApplication.windows];
+    [self notiReloadCas:UIApplication.sharedApplication.windows];
     [self.window.rootViewController setNeedsStatusBarAppearanceUpdate];
     [[NSNotificationCenter defaultCenter] postNotificationName:@"RRWebNeedReload" object:nil];
     
@@ -82,7 +82,7 @@
     return same;
 }
 
-- (void)notiReloadCas
+- (void)notiReloadCas:(id)windows
 {
     RRReadMode mode = [[NSUserDefaults standardUserDefaults] integerForKey:@"kRRReadMode"];
 
@@ -95,12 +95,12 @@
             switch (darkMode) {
                 case RRReadDarkSubModeDefalut:
                 {
-                    [ClassyKitLoader loadWithStyle:@"rrstyle" variables:@"style_dark"];
+                    [ClassyKitLoader loadWithStyle:@"rrstyle" variables:@"style_dark" windows:windows];
                     break;
                 }
                 case RRReadDarkSubModeGray:
                 {
-                    [ClassyKitLoader loadWithStyle:@"rrstyle" variables:@"style_dark_1"];
+                    [ClassyKitLoader loadWithStyle:@"rrstyle" variables:@"style_dark_1" windows:windows];
                     break;
                 }
                 default:
@@ -114,17 +114,17 @@
             switch (subMode) {
                 case RRReadLightSubModeDefalut:
                 {
-                    [ClassyKitLoader loadWithStyle:@"rrstyle" variables:@"style"];
+                    [ClassyKitLoader loadWithStyle:@"rrstyle" variables:@"style" windows:windows];
                     break;
                 }
                 case RRReadLightSubModeMice:
                 {
-                    [ClassyKitLoader loadWithStyle:@"rrstyle" variables:@"style_1"];
+                    [ClassyKitLoader loadWithStyle:@"rrstyle" variables:@"style_1" windows:windows];
                     break;
                 }
                 case RRReadLightSubModeSafariMice:
                 {
-                    [ClassyKitLoader loadWithStyle:@"rrstyle" variables:@"style_2"];
+                    [ClassyKitLoader loadWithStyle:@"rrstyle" variables:@"style_2" windows:windows];
                     break;
                 }
                 default:
@@ -152,7 +152,7 @@
 - (void)updateStyle
 {
     [ClassyKitLoader needReload];
-    [self notiReloadCas];
+    [self notiReloadCas:UIApplication.sharedApplication.windows];
 }
 
 

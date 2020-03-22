@@ -45,11 +45,11 @@
                    "value": "",
                    "action": "feedback:",
                    "switchkey": null,
-                   "select": ["QQ群","Telegram群"],
+                   "select": ["QQ群","Telegram群","E-Mail"],
                    "type": 1
                },
                {
-                   "title": "在AppStore反馈问题",
+                   "title": "在App Store反馈问题",
                    "value": null,
                    "action": "appstore",
                    "switchkey": null,

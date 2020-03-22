@@ -46,7 +46,7 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)loadPage;
 - (void)updateFeedData:(void (^)(NSInteger x))finished;
 - (BOOL)iOS13SystemDark;
-- (void)notiReloadCas;
+- (void)notiReloadCas:(id)windows;
 - (void)checkThemeWithScreenLight;
 @end
 
