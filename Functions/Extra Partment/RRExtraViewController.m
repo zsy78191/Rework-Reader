@@ -8,6 +8,7 @@
 
 #import "RRExtraViewController.h"
 #import "RRReadMode.h"
+#import "SceneDelegate.h"
 @interface RRExtraViewController ()
 
 @end
@@ -59,18 +60,27 @@
     }
     // 判断当前的SizeClass,如果为width compact&height regular 则说明正在分屏
     BOOL isTrait = (self.traitCollection.horizontalSizeClass == UIUserInterfaceSizeClassCompact) && (self.traitCollection.verticalSizeClass == UIUserInterfaceSizeClassRegular);
- 
     if (isTrait) {
-        // 正在分屏
-//        //NSLog(@"正在分屏");
-        [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"RRSplit"];
+        NSLog(@"正在分屏2");
+        if (@available(iOS 13.0, *)) {
+            SceneDelegate* sceneDelegate = (SceneDelegate*)self.view.window.windowScene.delegate;
+            sceneDelegate.isSplit = YES;
+        } else {
+            [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"RRSplit"];
+            [[NSUserDefaults standardUserDefaults] synchronize];
+        }
+       
     }else {
-        
-//        //NSLog(@"没有分屏");
-        ;
-        [[NSUserDefaults standardUserDefaults] setBool:NO forKey:@"RRSplit"];
+        NSLog(@"结束分屏2");
+        if (@available(iOS 13.0, *)) {
+            SceneDelegate* sceneDelegate = (SceneDelegate*)self.view.window.windowScene.delegate;
+            sceneDelegate.isSplit = NO;
+        } else {
+             [[NSUserDefaults standardUserDefaults] setBool:NO forKey:@"RRSplit"];
+             [[NSUserDefaults standardUserDefaults] synchronize];
+        }
     }
-    [[NSUserDefaults standardUserDefaults] synchronize];
+
     
 }
 /*

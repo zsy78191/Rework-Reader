@@ -94,13 +94,31 @@
         else
         {
             NSString* s = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
-            @try {
-                 [[self class] findItemWithContent:s url:url result:result];
-            } @catch (NSException *exception) {
-                
-            } @finally {
+            if (data.length > 0 && !s) {
+                NSStringEncoding enc =CFStringConvertEncodingToNSStringEncoding(kCFStringEncodingGB_18030_2000);
+                s = [[NSString alloc] initWithData:data encoding:enc];
+            }
+            if (data.length > 0 && !s) {
+                NSStringEncoding enc =CFStringConvertEncodingToNSStringEncoding(kCFStringEncodingGB_2312_80);
+                s = [[NSString alloc] initWithData:data encoding:enc];
+            }
+            if (data.length > 0 && !s) {
+                NSStringEncoding enc =CFStringConvertEncodingToNSStringEncoding(kCFStringEncodingGBK_95);
+                s = [[NSString alloc] initWithData:data encoding:enc];
+            }
+            if (!s) {
                 if (result) {
                     result(NO,nil);
+                }
+            } else {
+                @try {
+                     [[self class] findItemWithContent:s url:url result:result];
+                } @catch (NSException *exception) {
+                    
+                } @finally {
+                    if (result) {
+                        result(NO,nil);
+                    }
                 }
             }
         }

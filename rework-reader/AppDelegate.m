@@ -161,11 +161,13 @@
              
            } else {
         self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
+               
+       // 加载Classy样式
+       [self loadCas];
+               
     }
     
-        // 加载Classy样式
-        [self loadCas];
-        
+
         // 加载额外的样式
         [self loadExtra];
         
@@ -294,7 +296,7 @@
                BOOL same = [self iOS13SystemDark];
                dispatch_async(dispatch_get_main_queue(), ^{
                    if (!same) {
-                       [self notiReloadCas];
+                       [self notiReloadCas:application.windows];
                        [[NSNotificationCenter defaultCenter] postNotificationName:@"RRWebNeedReload" object:nil];
                    }
                });
@@ -354,10 +356,7 @@
 
 - (void)handleScheme:(NSURL*)url
 {
-//    NSString* urlStr = [[url path] stringByReplacingOccurrencesOfString:@"readerprime" withString:@"rr"];
-//    //NSLog(@"%@",url.host);
-//    //NSLog(@"%@",url.query);
-//    //NSLog(@"%@",url.path);
+ 
     __block NSString* keyword = nil;
     if ([[url host] isEqualToString:@"search"]) {
         NSURLComponents *components = [[NSURLComponents alloc] initWithString:url.absoluteString];

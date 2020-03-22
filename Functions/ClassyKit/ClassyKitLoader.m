@@ -58,7 +58,7 @@
     }];
 }
 
-+ (void)loadWithStyle:(NSString*)style variables:(NSString*)variablesFileName;
++ (void)loadWithStyle:(NSString*)style variables:(NSString*)variablesFileName windows:(id)windows;
 {
     NSURL* u = [UIApplication.sharedApplication.doucumentDictionary() URLByAppendingPathComponent:[style stringByAppendingString:@".cas"]];
     
@@ -99,10 +99,11 @@
 
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
-         [CASStyler bootstrapClassyWithTargetWindows:UIApplication.sharedApplication.windows];
+//            NSLog(@"windows, %@",windows);
+            [CASStyler bootstrapClassyWithTargetWindows:windows];
     });
     
-    
+
 //    [CASStyler defaultStyler].filePath = [[NSBundle mainBundle] pathForResource:[style stringByAppendingString:@".cas"] ofType:nil];
    
 #if TARGET_IPHONE_SIMULATOR

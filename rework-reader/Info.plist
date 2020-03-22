@@ -22,6 +22,34 @@
 				<string>com.orzer.reader.opml</string>
 			</array>
 		</dict>
+		<dict>
+			<key>CFBundleTypeIconFiles</key>
+			<array/>
+			<key>CFBundleTypeName</key>
+			<string>opml2</string>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>LSHandlerRank</key>
+			<string>Owner</string>
+			<key>LSItemContentTypes</key>
+			<array>
+				<string>com.orzer.reader.opml2</string>
+			</array>
+		</dict>
+		<dict>
+			<key>CFBundleTypeIconFiles</key>
+			<array/>
+			<key>CFBundleTypeName</key>
+			<string>opml3</string>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>LSHandlerRank</key>
+			<string>Owner</string>
+			<key>LSItemContentTypes</key>
+			<array>
+				<string>com.orzer.reader.opml3</string>
+			</array>
+		</dict>
 	</array>
 	<key>CFBundleExecutable</key>
 	<string>$(EXECUTABLE_NAME)</string>
@@ -243,7 +271,7 @@
 		<dict>
 			<key>UTTypeConformsTo</key>
 			<array>
-				<string>public.item</string>
+				<string>public.xml</string>
 			</array>
 			<key>UTTypeDescription</key>
 			<string>OPML file</string>
@@ -255,7 +283,7 @@
 			<dict>
 				<key>public.filename-extension</key>
 				<array>
-					<string>opml</string>
+					<string>xml</string>
 				</array>
 			</dict>
 		</dict>
@@ -281,7 +309,25 @@
 				</dict>
 			</dict>
 		</dict>
-		<dict/>
+		<dict>
+			<key>UTTypeConformsTo</key>
+			<array>
+				<string>public.txt</string>
+			</array>
+			<key>UTTypeDescription</key>
+			<string>OPML file3</string>
+			<key>UTTypeIconFiles</key>
+			<array/>
+			<key>UTTypeIdentifier</key>
+			<string>com.orzer.reader.opml3</string>
+			<key>UTTypeTagSpecification</key>
+			<dict>
+				<key>public.filename-extension</key>
+				<array>
+					<string>opml</string>
+				</array>
+			</dict>
+		</dict>
 	</array>
 </dict>
 </plist>

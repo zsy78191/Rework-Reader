@@ -26,6 +26,7 @@
 @import RegexKitLite;
 #import "AppleAPIHelper.h"
 #import "RRExtraViewController.h"
+#import "SceneDelegate.h"
 
 @interface RRFeedPresenter ()
 {
@@ -77,6 +78,10 @@
 - (void)loadError:(NSError *)error
 {
 //    self.feedError = YES;
+    NSLog(@"%@",error);
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        [self.view hudFail:[error localizedDescription]];
+    });
 }
 
 - (NSNumber*)canFeed
@@ -352,6 +357,13 @@
     
     UIViewController* v = (id)self.view;
     BOOL isTrait = [[NSUserDefaults standardUserDefaults] boolForKey:@"RRSplit"];
+    if (@available(iOS 13.0, *)) {
+          UIView* view = [(UIViewController*)self.view view];
+          SceneDelegate* sceneDelegate = (SceneDelegate*)view.window.windowScene.delegate;
+          isTrait =  sceneDelegate.isSplit;
+     } else {
+         
+     }
     if (v.splitViewController && !isTrait) {
         RRExtraViewController* n = [[RRExtraViewController alloc] initWithRootViewController:web];
         n.handleTrait = YES;
