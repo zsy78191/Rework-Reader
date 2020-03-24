@@ -300,7 +300,7 @@ NSString* const kShowRecent = @"kShowRecent";
 //    [self.readStyleInputer mvp_addModel:mTitle];
     
     {
-        RRFeedInfoListOtherModel* mUnread = GetRRFeedInfoListOtherModel(@"未读订阅",@"favicon",@"三日内的未读文章",@"unread");
+        RRFeedInfoListOtherModel* mUnread = GetRRFeedInfoListOtherModel(@"未读订阅",@"icons/i69",@"三日内的未读文章",@"unread");
         mUnread.canRefresh = YES;
         mUnread.canEdit = YES;
         mUnread.idx = 0;
@@ -753,6 +753,12 @@ NSString* const kShowRecent = @"kShowRecent";
 
 - (void)recommand
 {
+    id vc = [MVPRouter viewForURL:@"rr://web" withUserInfo:@{@"name":@"精选订阅源.md"}];
+    [[self view] mvp_pushViewController:vc];
+}
+
+- (void)recommand3
+{
     id vc = [MVPRouter viewForURL:@"rr://web" withUserInfo:@{@"name":@"推荐订阅源.md"}];
     [[self view] mvp_pushViewController:vc];
 }
@@ -763,7 +769,26 @@ NSString* const kShowRecent = @"kShowRecent";
     [[self view] mvp_pushViewController:vc];
 }
 
-- (void)openActionText:(UIBarButtonItem*)sender
+- (void)openActionText:(UIBarButtonItem*)sender {
+    UIAlertController* a = UI_ActionSheet()
+    .titled(@"添加订阅源")
+    .action(@"通过URL添加", ^(UIAlertAction * _Nonnull action, UIAlertController * _Nonnull alert) {
+        [self addRSS];
+    })
+   .recommend(@"添加精选订阅源", ^(UIAlertAction * _Nonnull action, UIAlertController * _Nonnull alert) {
+        [self recommand];
+   }).cancel(@"取消",nil);
+    if ([UIDevice currentDevice].iPad()) {
+ 
+        [[self view] showAsProver:a view:[(UIViewController*)[self view] view] item:sender arrow:UIPopoverArrowDirectionDown];
+    }
+    else {
+        a.show((id)self.view);
+    }
+}
+
+// 备份代码
+- (void)openActionText2:(UIBarButtonItem*)sender
 {
     __weak typeof(self) weakSelf = self;
     NSBlockOperation* action1 = [NSBlockOperation blockOperationWithBlock:^{

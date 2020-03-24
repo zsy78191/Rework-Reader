@@ -63,6 +63,7 @@
 		D4416BA223B068C300F054D2 /* NSDate+InternetDateTime.m in Sources */ = {isa = PBXBuildFile; fileRef = D4416B9823B068C300F054D2 /* NSDate+InternetDateTime.m */; };
 		D4416BA323B068C300F054D2 /* NSString+HTML.m in Sources */ = {isa = PBXBuildFile; fileRef = D4416B9A23B068C300F054D2 /* NSString+HTML.m */; };
 		D4416BA423B068C300F054D2 /* GTMNSString+HTML.m in Sources */ = {isa = PBXBuildFile; fileRef = D4416B9B23B068C300F054D2 /* GTMNSString+HTML.m */; };
+		D444A06D2429AEF700E4D38C /* 精选订阅源.md in Resources */ = {isa = PBXBuildFile; fileRef = D444A06C2429AEF700E4D38C /* 精选订阅源.md */; };
 		D44EDCE2223A296800BC24CA /* RRImportOutput.m in Sources */ = {isa = PBXBuildFile; fileRef = D44EDCE1223A296800BC24CA /* RRImportOutput.m */; };
 		D44EDCE6223A2A7900BC24CA /* RRMutiSelectCell.m in Sources */ = {isa = PBXBuildFile; fileRef = D44EDCE4223A2A7900BC24CA /* RRMutiSelectCell.m */; };
 		D44EDCE7223A2A7900BC24CA /* RRMutiSelectCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = D44EDCE5223A2A7900BC24CA /* RRMutiSelectCell.xib */; };
@@ -322,6 +323,7 @@
 		D4416B9A23B068C300F054D2 /* NSString+HTML.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+HTML.m"; sourceTree = "<group>"; };
 		D4416B9B23B068C300F054D2 /* GTMNSString+HTML.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "GTMNSString+HTML.m"; sourceTree = "<group>"; };
 		D4416BA523B0703B00F054D2 /* Model 4.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Model 4.xcdatamodel"; sourceTree = "<group>"; };
+		D444A06C2429AEF700E4D38C /* 精选订阅源.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = "精选订阅源.md"; sourceTree = "<group>"; };
 		D44EDCE0223A296800BC24CA /* RRImportOutput.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RRImportOutput.h; sourceTree = "<group>"; };
 		D44EDCE1223A296800BC24CA /* RRImportOutput.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RRImportOutput.m; sourceTree = "<group>"; };
 		D44EDCE3223A2A7900BC24CA /* RRMutiSelectCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RRMutiSelectCell.h; sourceTree = "<group>"; };
@@ -1267,6 +1269,7 @@
 		D4E0F9072213C46C00902540 /* Help */ = {
 			isa = PBXGroup;
 			children = (
+				D444A06C2429AEF700E4D38C /* 精选订阅源.md */,
 				D484562F2213E6D200202401 /* 什么是RSS.md */,
 				D4AC4DD62216F9E70028D342 /* 推荐订阅源.md */,
 				D47A7A27221A9E9D00F13194 /* Reader SP说明书.md */,
@@ -1515,6 +1518,7 @@
 				D418CDE422311B2E004F5706 /* RRIconSettingCell.xib in Resources */,
 				D47A3959223421A6006251A6 /* 网友推荐源.md in Resources */,
 				D440E1C721FF03DC0087B228 /* ModelTypeSetting.json in Resources */,
+				D444A06D2429AEF700E4D38C /* 精选订阅源.md in Resources */,
 				D48456302213E6D200202401 /* 什么是RSS.md in Resources */,
 				D4966340235ED8E40004DFCA /* PlaceholderViewController.xib in Resources */,
 				D49941C621FE241C0041B998 /* style.plist in Resources */,
@@ -1944,7 +1948,7 @@
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = "rework-reader/rework-reader.entitlements";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1.2.23;
+				CURRENT_PROJECT_VERSION = 1.2.26;
 				DEFINES_MODULE = YES;
 				DEVELOPMENT_TEAM = ZLQPGKAQFY;
 				GCC_PREFIX_HEADER = PrefixHeader.pch;
@@ -1959,7 +1963,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.2.8;
+				MARKETING_VERSION = 1.2.9;
 				ON_DEMAND_RESOURCES_INITIAL_INSTALL_TAGS = Extrafont;
 				OTHER_LIBTOOLFLAGS = "";
 				PRODUCT_BUNDLE_IDENTIFIER = com.orzer.rework.reader.sp;
@@ -1977,7 +1981,7 @@
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = "rework-reader/rework-reader.entitlements";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1.2.23;
+				CURRENT_PROJECT_VERSION = 1.2.26;
 				DEFINES_MODULE = YES;
 				DEVELOPMENT_TEAM = ZLQPGKAQFY;
 				GCC_PREFIX_HEADER = PrefixHeader.pch;
@@ -1992,7 +1996,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.2.8;
+				MARKETING_VERSION = 1.2.9;
 				ON_DEMAND_RESOURCES_INITIAL_INSTALL_TAGS = Extrafont;
 				OTHER_LIBTOOLFLAGS = "";
 				PRODUCT_BUNDLE_IDENTIFIER = com.orzer.rework.reader.sp;

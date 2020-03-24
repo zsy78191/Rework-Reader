@@ -346,6 +346,8 @@ didReceiveResponse:(NSURLResponse *)response
             data = [string dataUsingEncoding:NSUTF8StringEncoding];
         }
 		
+        
+        
 		// Create NSXMLParser
 		if (data) {
 			NSXMLParser *newFeedParser = [[NSXMLParser alloc] initWithData:data];
@@ -876,7 +878,7 @@ didReceiveResponse:(NSURLResponse *)response
 		// Try decoding with NSUTF8StringEncoding & NSISOLatin1StringEncoding
 		string = [[NSString alloc] initWithData:CDATABlock encoding:NSUTF8StringEncoding];
 		if (!string) string = [[NSString alloc] initWithData:CDATABlock encoding:NSISOLatin1StringEncoding];
-		
+        string = [string stringByReplacingOccurrencesOfString:@"\n" withString:@"|*.*|"];
 		// Add - No need to encode as CDATA should not be encoded as it's ignored by the parser
 		if (string) [currentText appendString:string];
 		
