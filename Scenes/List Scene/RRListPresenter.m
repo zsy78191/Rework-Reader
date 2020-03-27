@@ -673,7 +673,7 @@ typedef struct  {
                 }];
             }
             else {
-                [self.view mvp_pushViewController:vc];
+                [self.view mvp_showViewController:vc];
             }
         }
     }

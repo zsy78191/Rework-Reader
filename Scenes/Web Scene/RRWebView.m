@@ -461,6 +461,8 @@
     self.voiceover = UIAccessibilityIsVoiceOverRunning();
     self.view.cas_styleClass = @"bgView";
     self.restorationIdentifier = @"RRWebRestoreView";
+//    self.navigationItem.largeTitleDisplayMode = UINavigationItemLargeTitleDisplayModeAlways;
+    
 }
 
 - (void)encodeRestorableStateWithCoder:(NSCoder *)coder
@@ -627,7 +629,7 @@
         [view resetDownView];
     } keypath:@"webStyle.font"];
     
-    [[[self navigationController] navigationBar] setPrefersLargeTitles:NO];
+//    [[[self navigationController] navigationBar] setPrefersLargeTitles:NO];
     
     self.prepareLoadLast = NO;
     self.prepareLoadNext = NO;
@@ -862,7 +864,7 @@
     string = [string stringByReplacingOccurrencesOfString:@"src=\"//" withString:@"src=\"http://"];
     NSURL* u = [NSURL URLWithString:m.link];
     string = [string stringByReplacingOccurrencesOfString:@"<#host#>" withString:[NSString stringWithFormat:@"%@://%@",u.scheme,u.host]];
-    
+    string = [string stringByReplacingOccurrencesOfString:@"|*.*|" withString:@"\n"];
     [self.webView loadHTMLString:string baseURL:[[NSBundle mainBundle] resourceURL]];
 }
 
@@ -941,21 +943,21 @@
     [super viewWillAppear:animated];
     [self.navigationController setToolbarHidden:NO animated:animated];
     [self configToolBar];
-    [[[self navigationController] navigationBar] setPrefersLargeTitles:NO];
+//    [[[self navigationController] navigationBar] setPrefersLargeTitles:NO];
     
+    [self.navigationItem setLargeTitleDisplayMode:UINavigationItemLargeTitleDisplayModeNever];
     
     __weak typeof(self) weakSelf = self;
-    static dispatch_once_t onceToken;
-    dispatch_once(&onceToken, ^{
-        if (@available(iOS 11, *)) {
-            weakSelf.webView.scrollView.contentInsetAdjustmentBehavior = UIScrollViewContentInsetAdjustmentNever;
-            CGRect sf = [self statusframe];
-            CGFloat height = sf.size.height + weakSelf.navigationController.navigationBar.frame.size.height;
-            CGFloat toolHeight = [weakSelf.navigationController toolbar].frame.size.height;
-            weakSelf.webView.scrollView.contentInset = UIEdgeInsetsMake(height, 0, toolHeight, 0);
-        }
-        
-    });
+//    static dispatch_once_t onceToken;
+//    dispatch_once(&onceToken, ^{
+//        if (@available(iOS 11, *)) {
+//            weakSelf.webView.scrollView.contentInsetAdjustmentBehavior = UIScrollViewContentInsetAdjustmentNever;
+//            CGRect sf = [self statusframe];
+//            CGFloat height = sf.size.height + weakSelf.navigationController.navigationBar.frame.size.height;
+//            CGFloat toolHeight = [weakSelf.navigationController toolbar].frame.size.height;
+//            weakSelf.webView.scrollView.contentInset = UIEdgeInsetsMake(height, 0, toolHeight, 0);
+//        }
+//    });
     CGRect sf = [self statusframe];
     CGFloat toolHeight = [weakSelf.navigationController toolbar].frame.size.height + sf.size.height;
     self.upView.frame = CGRectMake(0, -toolHeight, self.view.frame.size.width, 80);
@@ -987,7 +989,8 @@
     [self.navigationController setToolbarHidden:NO animated:animated];
     [self hudDismiss];
     [self resetToolBar];
-    [[[self navigationController] navigationBar] setPrefersLargeTitles:YES];
+//    [[[self navigationController] navigationBar] setPrefersLargeTitles:YES];
+
     
     
     #if !TARGET_OS_MACCATALYST
