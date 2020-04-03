@@ -1948,7 +1948,7 @@
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = "rework-reader/rework-reader.entitlements";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1.2.26;
+				CURRENT_PROJECT_VERSION = 1.3.27;
 				DEFINES_MODULE = YES;
 				DEVELOPMENT_TEAM = ZLQPGKAQFY;
 				GCC_PREFIX_HEADER = PrefixHeader.pch;
@@ -1963,7 +1963,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.2.9;
+				MARKETING_VERSION = 1.3.0;
 				ON_DEMAND_RESOURCES_INITIAL_INSTALL_TAGS = Extrafont;
 				OTHER_LIBTOOLFLAGS = "";
 				PRODUCT_BUNDLE_IDENTIFIER = com.orzer.rework.reader.sp;
@@ -1981,7 +1981,7 @@
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = "rework-reader/rework-reader.entitlements";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1.2.26;
+				CURRENT_PROJECT_VERSION = 1.3.27;
 				DEFINES_MODULE = YES;
 				DEVELOPMENT_TEAM = ZLQPGKAQFY;
 				GCC_PREFIX_HEADER = PrefixHeader.pch;
@@ -1996,7 +1996,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.2.9;
+				MARKETING_VERSION = 1.3.0;
 				ON_DEMAND_RESOURCES_INITIAL_INSTALL_TAGS = Extrafont;
 				OTHER_LIBTOOLFLAGS = "";
 				PRODUCT_BUNDLE_IDENTIFIER = com.orzer.rework.reader.sp;

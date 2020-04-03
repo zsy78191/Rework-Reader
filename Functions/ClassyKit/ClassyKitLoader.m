@@ -60,8 +60,10 @@
 
 + (void)loadWithStyle:(NSString*)style variables:(NSString*)variablesFileName windows:(id)windows;
 {
+    #if TARGET_IPHONE_SIMULATOR
+    #else
     NSURL* u = [UIApplication.sharedApplication.doucumentDictionary() URLByAppendingPathComponent:[style stringByAppendingString:@".cas"]];
-    
+    #endif
     NSString* mainColorKey = @"mainTintColor";
     RRReadMode mode = [[NSUserDefaults standardUserDefaults] integerForKey:@"kRRReadMode"];
     if (mode == RRReadModeDark) {

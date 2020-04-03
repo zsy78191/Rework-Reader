@@ -120,11 +120,22 @@
 
 - (UIViewController *)splitViewController:(UISplitViewController *)splitViewController separateSecondaryViewControllerFromPrimaryViewController:(UIViewController *)primaryViewController
 {
+//    UIViewController* v = [[UIViewController alloc] init];
+//    [[v view] setBackgroundColor:[UIColor grayColor]];
+//    return v;
+//
     if ([primaryViewController isKindOfClass:[RRExtraViewController class]]) {
         RRExtraViewController* r = (RRExtraViewController*)primaryViewController;
         id vc = [r topViewController];
+        while ([vc isKindOfClass:[UINavigationController class]]) {
+//            r = vc;
+            vc = [vc topViewController];
+        }
         if ([vc isKindOfClass:NSClassFromString(@"RRWebView")]) {
             id pop = [r popViewControllerAnimated:NO];
+            if ([pop isKindOfClass:[UINavigationController class]]) {
+                return pop;
+            }
             id v = [self initialVCWith:pop];
             return v;
         }
@@ -172,5 +183,7 @@
     nv2.handleTrait = YES;
     return nv2;
 }
+
+
 
 @end

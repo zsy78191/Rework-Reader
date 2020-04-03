@@ -81,14 +81,6 @@
            "type": 0
         },
         {
-            "title": "关于RSS",
-            "value": null,
-            "action": "openAbout",
-            "switchkey": null,
-            "select": null,
-            "type": 1
-        },
-        {
             "title": "开源代码",
             "value": null,
             "action": "openSourceList",

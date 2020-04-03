@@ -649,6 +649,7 @@ typedef struct  {
        } else {
            
        }
+        NSLog(@" ---- %@",@(isTrait));
         
 //        //NSLog(@"%@",v.splitViewController.viewControllers);
         if (v.splitViewController && !isTrait) {
